@@ -14,6 +14,9 @@ AllCops:
     - "**/Gemfile"
     - "**/Rakefile"
   Exclude:
+    - 'bin/**/*'
+    - db/schema.rb
+    - db/migrate/*
     - "**/vendor/**/*"
     - "development_app/**/*"
     - "spec/decidim_dummy_app/**/*"
@@ -1187,7 +1190,11 @@ Lint/UnusedMethodArgument:
 ##################### Performance ############################
 
 Metrics/BlockLength:
-  Enabled: false
+  Exclude:
+    - 'Rakefile'
+    - 'config/routes.rb'
+    - '**/*.rake'
+    - 'test/**/*'
 
 RSpec/BeforeAfterAll:
   Enabled: true
