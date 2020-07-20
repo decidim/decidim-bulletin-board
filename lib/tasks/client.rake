@@ -6,6 +6,6 @@ namespace :client do
   task :add_authority, [:name, :public_key] => :environment do |t, args|
     puts "Args were: #{args}"
     puts "Task was: #{t}"
-    ::Client.create!(client_type: "authority", key: args[:public_key])
+    ::Client.create!(client_type: "authority", name: args[:name], key: args[:public_key])
   end
 end
