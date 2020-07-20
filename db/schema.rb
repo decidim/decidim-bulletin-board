@@ -18,7 +18,8 @@ ActiveRecord::Schema.define(version: 2020_07_17_065508) do
   create_table "clients", force: :cascade do |t|
     t.string "type"
     t.text "name"
-    t.text "key"
+    t.text "public_key"
+    t.text "api_key"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end
