@@ -5,7 +5,7 @@ require "rails_helper"
 Rails.application.load_tasks
 
 describe "client.rake" do
-  after(:each) do
+  after do
     Rake.application["client:add_authority"].reenable
   end
 
@@ -13,6 +13,7 @@ describe "client.rake" do
     output = capture_output("client:add_authority", "Decidim Barcelona", "public_key")
     expect(output.index(/Authority 'Decidim Barcelona' successfuly added!/)).to be_truthy
   end
+
   it "returns message of existing authority" do
     authority = create(:authority)
     output = capture_output("client:add_authority", authority.name, authority.public_key)
@@ -26,5 +27,5 @@ def capture_output(task_name, name, public_key)
   $stdout = stdout
   Rake::Task[task_name].invoke(name, public_key)
   $stdout = STDOUT
-  return stdout.string
+  stdout.string
 end
