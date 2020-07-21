@@ -18,8 +18,8 @@ namespace :client do
       Authority.create!(name: name, public_key: public_key, api_key: api_key)
       puts "Authority '#{name}' successfuly added!"
     end
-      puts "The API key for this authority is:"
-      puts "#{api_key}"
+    puts "The API key for this authority is:"
+    puts "#{api_key}"
   end
 
   def generate_api_key
