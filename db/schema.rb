@@ -16,8 +16,10 @@ ActiveRecord::Schema.define(version: 2020_07_17_065508) do
   enable_extension "plpgsql"
 
   create_table "clients", force: :cascade do |t|
-    t.text "client_type"
-    t.text "key"
+    t.string "type"
+    t.text "name"
+    t.text "public_key"
+    t.text "api_key"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end
