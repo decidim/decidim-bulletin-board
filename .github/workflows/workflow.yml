@@ -57,3 +57,41 @@ jobs:
       #   name: Lint ERB files
       # - run: bundle exec mdl *.md docs/**/*.md
       #   name: Lint Markdown files
+
+  rspec-test:
+    name: RSpec tests
+    needs: lint
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:latest
+        ports:
+        - 5432:5432
+        env:
+          POSTGRES_USER: ${{ env.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ env.POSTGRES_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v2.0.0
+        with:
+          fetch-depth: 1
+      - uses: ruby/setup-ruby@master
+        with:
+          ruby-version: ${{ env.RUBY_VERSION }}
+      - name: Install postgres client
+        run: sudo apt-get install libpq-dev
+      # - name: Install dependencies
+      #   run: |
+      #     gem install bundler
+      #     bundler install
+      - name: Create database
+        run: |
+          bundler exec rails db:create RAILS_ENV=test
+          bundler exec rails db:migrate RAILS_ENV=test
+      - name: Run tests
+        run: bundler exec rake
+      # - name: Upload coverage results    
+      #   uses: actions/upload-artifact@master
+      #   if: always()
+      #   with:
+      #     name: coverage-report
+      #     path: coverage
