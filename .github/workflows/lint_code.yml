@@ -9,7 +9,7 @@ on: push
 env:
   CI: "true"
   SIMPLECOV: "true"
-  RUBY_VERSION: 2.6
+  RUBY_VERSION: 2.6.6
 
 jobs:
   lint:
@@ -39,12 +39,12 @@ jobs:
       #       ${{ runner.OS }}-rubydeps-${{ env.cache-name }}-
       #       ${{ runner.OS }}-rubydeps-
       #       ${{ runner.OS }}-
-      # - name: Install Ruby deps
-      #   uses: nick-invision/retry@v1
-      #   with:
-      #     timeout_minutes: 10
-      #     max_attempts: 3
-      #     command: bundle install --path vendor/bundle --jobs 4 --retry 3
+      - name: Install Ruby deps
+        uses: nick-invision/retry@v1
+        with:
+          timeout_minutes: 10
+          max_attempts: 3
+          command: bundle install --path vendor/bundle --jobs 4 --retry 3
       # - run: npm ci
       #   name: Install JS deps
       - name: Install Rubocop
