@@ -79,10 +79,12 @@ jobs:
           ruby-version: ${{ env.RUBY_VERSION }}
       - name: Install postgres client
         run: sudo apt-get install libpq-dev
-      # - name: Install dependencies
-      #   run: |
-      #     gem install bundler
-      #     bundler install
+      - name: Install Ruby deps
+        uses: nick-invision/retry@v1
+        with:
+          timeout_minutes: 10
+          max_attempts: 3
+          command: bundle install --path vendor/bundle --jobs 4 --retry 3
       - name: Create database
         run: |
           bundler exec rails db:create RAILS_ENV=test
