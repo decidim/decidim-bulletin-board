@@ -3,7 +3,7 @@
 namespace :client do
   desc "Add a new client to the bulletin board"
 
-  task :add_authority, [:name, :public_key] => :environment do |t, args|
+  task :add_authority, [:name, :public_key] => :environment do |_t, args|
     name = args[:name]
     public_key = args[:public_key]
     api_key = ""
@@ -18,8 +18,8 @@ namespace :client do
       Authority.create!(name: name, public_key: public_key, api_key: api_key)
       puts "Authority '#{name}' successfuly added!"
     end
-      puts "The API key for this authority is:"
-      puts "#{api_key}"
+    puts "The API key for this authority is:"
+    puts api_key.to_s
   end
 
   def generate_api_key
