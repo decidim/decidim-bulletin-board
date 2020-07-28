@@ -9,17 +9,20 @@ Things you may want to cover:
 * Rails version: 6
 
 * System dependencies:
+
 The Bulletin Board depends on the existence of a Decidim installation.
 
 
 * Installation. Execute these commands:
+```
 bundle install
 yarn install
 rails db:create
 rails db:migrate
+```
 
 
 * How to run the test suite
+```
 bundle exec rspec
-
-* Services (job queues, cache servers, search engines, etc.)
+```
