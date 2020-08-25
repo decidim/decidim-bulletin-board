@@ -2,8 +2,8 @@
 
 FactoryBot.define do
   factory :authority do
-    name { "Decidim Authority" }
-    public_key { "public_key" }
-    api_key { "api_key" }
+    name { Faker::Name.unique.name }
+    public_key { Faker::Internet.password }
+    api_key { Faker::Internet.unique.uuid }
   end
 end
