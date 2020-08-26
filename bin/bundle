@@ -39,10 +39,7 @@ m = Module.new do
 
   def gemfile
     gemfile = ENV["BUNDLE_GEMFILE"]
-    # rubocop:disable Rails/Present
-    return gemfile if gemfile && !gemfile.empty?
-
-    # rubocop:enable Rails/Present
+    return gemfile if gemfile.present
 
     File.expand_path("../Gemfile", __dir__)
   end
