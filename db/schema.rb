@@ -23,8 +23,8 @@ ActiveRecord::Schema.define(version: 20_200_826_103_217) do
     t.text "api_key", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["api_key"], name: "index_clients_on_api_key"
-    t.index ["name"], name: "index_clients_on_name"
-    t.index ["public_key"], name: "index_clients_on_public_key"
+    t.index ["api_key"], name: "index_clients_on_api_key", unique: true
+    t.index ["name"], name: "index_clients_on_name", unique: true
+    t.index ["public_key"], name: "index_clients_on_public_key", unique: true
   end
 end
