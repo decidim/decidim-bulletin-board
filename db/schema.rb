@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 # This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
@@ -12,7 +10,8 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20_200_827_134_307) do
+ActiveRecord::Schema.define(version: 2020_08_27_134307) do
+
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -30,11 +29,45 @@ ActiveRecord::Schema.define(version: 20_200_827_134_307) do
 
   create_table "elections", force: :cascade do |t|
     t.bigint "client_id", null: false
-    t.boolean "open", default: false
+    t.string "title", null: false
+    t.string "status", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["client_id"], name: "index_elections_on_client_id"
+    t.index ["title"], name: "index_elections_on_title", unique: true
+  end
+
+  create_table "elections_trustees", force: :cascade do |t|
+    t.bigint "election_id", null: false
+    t.bigint "trustee_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["election_id", "trustee_id"], name: "index_elections_trustees_on_election_id_and_trustee_id", unique: true
+    t.index ["election_id"], name: "index_elections_trustees_on_election_id"
+    t.index ["trustee_id"], name: "index_elections_trustees_on_trustee_id"
+  end
+
+  create_table "log_entry", force: :cascade do |t|
+    t.bigint "election_id", null: false
+    t.text "data", null: false
+    t.text "hash", null: false
+    t.string "type", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["data"], name: "index_log_entry_on_data", unique: true
+    t.index ["election_id"], name: "index_log_entry_on_election_id"
+    t.index ["hash"], name: "index_log_entry_on_hash", unique: true
+  end
+
+  create_table "trustees", force: :cascade do |t|
+    t.text "partial_key"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["partial_key"], name: "index_trustees_on_partial_key", unique: true
   end
 
   add_foreign_key "elections", "clients"
+  add_foreign_key "elections_trustees", "elections"
+  add_foreign_key "elections_trustees", "trustees"
+  add_foreign_key "log_entry", "elections"
 end
