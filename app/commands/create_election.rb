@@ -5,9 +5,8 @@ class CreateElection < Rectify::Command
   # Public: Initializes the command.
   #
   # form - A form object with the params.
-  def initialize(form, author)
+  def initialize(form)
     @form = form
-    @author = author
   end
 
   # Executes the command. Broadcasts these events:
@@ -17,7 +16,7 @@ class CreateElection < Rectify::Command
   #
   # Returns nothing.
   def call
-    # return broadcast(:invalid) if form.invalid?
+    return broadcast(:invalid) if form.invalid?
 
     create_election
 
@@ -29,6 +28,11 @@ class CreateElection < Rectify::Command
   attr_reader :form, :election
 
   def create_election
-    # TODO
+    attributes = {
+      title: form.title,
+      status: form.status,
+      client: form.client
+    }
+    Election.create(attributes)
   end
 end

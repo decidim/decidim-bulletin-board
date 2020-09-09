@@ -42,7 +42,7 @@ ActiveRecord::Schema.define(version: 2020_08_27_134307) do
     t.bigint "trustee_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["election_id", "trustee_id"], name: "index_elections_trustees_on_election_id_and_trustee_id", unique: true
+    t.index %w(election_id trustee_id), name: "index_elections_trustees_on_election_id_and_trustee_id", unique: true
     t.index ["election_id"], name: "index_elections_trustees_on_election_id"
     t.index ["trustee_id"], name: "index_elections_trustees_on_trustee_id"
   end
