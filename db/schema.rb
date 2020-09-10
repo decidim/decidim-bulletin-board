@@ -42,21 +42,21 @@ ActiveRecord::Schema.define(version: 2020_08_27_134307) do
     t.bigint "trustee_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index %w(election_id trustee_id), name: "index_elections_trustees_on_election_id_and_trustee_id", unique: true
+    t.index ["election_id", "trustee_id"], name: "index_elections_trustees_on_election_id_and_trustee_id", unique: true
     t.index ["election_id"], name: "index_elections_trustees_on_election_id"
     t.index ["trustee_id"], name: "index_elections_trustees_on_trustee_id"
   end
 
-  create_table "log_entry", force: :cascade do |t|
+  create_table "log_entries", force: :cascade do |t|
     t.bigint "election_id", null: false
     t.text "data", null: false
-    t.text "hash", null: false
-    t.string "type", null: false
+    t.text "data_hash", null: false
+    t.string "log_type", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["data"], name: "index_log_entry_on_data", unique: true
-    t.index ["election_id"], name: "index_log_entry_on_election_id"
-    t.index ["hash"], name: "index_log_entry_on_hash", unique: true
+    t.index ["data"], name: "index_log_entries_on_data", unique: true
+    t.index ["data_hash"], name: "index_log_entries_on_data_hash", unique: true
+    t.index ["election_id"], name: "index_log_entries_on_election_id"
   end
 
   create_table "trustees", force: :cascade do |t|
@@ -69,5 +69,5 @@ ActiveRecord::Schema.define(version: 2020_08_27_134307) do
   add_foreign_key "elections", "clients"
   add_foreign_key "elections_trustees", "elections"
   add_foreign_key "elections_trustees", "trustees"
-  add_foreign_key "log_entry", "elections"
+  add_foreign_key "log_entries", "elections"
 end

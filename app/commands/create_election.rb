@@ -21,8 +21,9 @@ class CreateElection < Rectify::Command
   def call
     return broadcast(:invalid) if form.invalid?
 
-    create_election
-
+    transaction do
+      create_election
+    end
     broadcast(:ok, election)
   end
 
@@ -31,11 +32,19 @@ class CreateElection < Rectify::Command
   attr_reader :form, :election
 
   def create_election
-    attributes = {
+    election_attributes = {
       title: form.title,
       status: form.status,
       client: form.client
     }
-    Election.create(attributes)
+    @election = Election.create(election_attributes)
+
+    log_entry_attributes = {
+      data: form.data,
+      data_hash: form.data_hash,
+      log_type: form.log_type,
+      election: @election
+    }
+    LogEntry.create(log_entry_attributes)
   end
 end

@@ -22,13 +22,13 @@ class CreateElections < ActiveRecord::Migration[6.0]
       t.timestamps
     end
 
-    create_table :log_entry do |t|
+    create_table :log_entries do |t|
       t.references :election, null: false, foreign_key: true
       t.text :data, null: false
-      t.text :hash, null: false
-      t.string :type, null: false
+      t.text :data_hash, null: false
+      t.string :log_type, null: false
       t.index :data, unique: true
-      t.index :hash, unique: true
+      t.index :data_hash, unique: true
       t.timestamps
     end
   end
