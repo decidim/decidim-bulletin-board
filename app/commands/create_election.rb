@@ -6,9 +6,6 @@ class CreateElection < Rectify::Command
   #
   # form - A form object with the params.
   def initialize(form)
-    # TODO: This logic needs to be migrated to a GraphQL class
-    # which will invoke the call method
-    # and the initialize method will receive the form through parameters
     @form = form
   end
 
