@@ -8,5 +8,6 @@ module Types
     field :id, !types.ID
     field :name, !types.String
     field :public_key, !types.String
+    field :type, !types.String
   end
 end
