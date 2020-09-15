@@ -1,13 +1,10 @@
 # frozen_string_literal: true
 
 module Types
-  ClientType = GraphQL::ObjectType.define do
-    name "ClientType"
-    description "The client in the Bulletin Board"
-
-    field :id, !types.ID
-    field :name, !types.String
-    field :public_key, !types.String
-    field :type, !types.String
+  class ClientType < Types::BaseObject
+    field :id, ID, null: false
+    field :name, String, null: false
+    field :public_key, String, null: true
+    field :type, String, null: true
   end
 end
