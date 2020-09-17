@@ -18,7 +18,7 @@ module DecidimBulletinBoard
     # -- all .rb files in that directory are automatically loaded after loading
     # the framework and any gems in your application.
 
-    # Permit classic autoloader for heroku environment, so we can run rails console there
-    config.autoloader = :classic
+    # # Permit classic autoloader for heroku environment, so we can run rails console there
+    # config.autoloader = :classic
   end
 end
