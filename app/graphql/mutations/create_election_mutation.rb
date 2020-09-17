@@ -3,13 +3,13 @@
 module Mutations
   class CreateElectionMutation < GraphQL::Schema::Mutation
     argument :title, String, required: true
-    argument :data, String, required: true
+    argument :signed_data, String, required: true
 
     field :outcome, String, null: true
-    def resolve(title:, data:)
-      chained_hash = Digest::SHA256.hexdigest(data)
+    def resolve(title:, signed_data:)
+      chained_hash = Digest::SHA256.hexdigest(signed_data)
       election_form = ElectionForm.new(title: title, status: "Published", authority: Authority.last,
-                                       data: data,
+                                       signed_data: signed_data,
                                        chained_hash: chained_hash, log_type: "createElection")
 
       if CreateElection.call(election_form)

@@ -50,14 +50,14 @@ ActiveRecord::Schema.define(version: 20_200_827_134_307) do
 
   create_table "log_entries", force: :cascade do |t|
     t.bigint "election_id", null: false
-    t.text "data", null: false
+    t.text "signed_data", null: false
     t.text "chained_hash", null: false
     t.string "log_type", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["chained_hash"], name: "index_log_entries_on_chained_hash", unique: true
-    t.index ["data"], name: "index_log_entries_on_data", unique: true
     t.index ["election_id"], name: "index_log_entries_on_election_id"
+    t.index ["signed_data"], name: "index_log_entries_on_signed_data", unique: true
   end
 
   create_table "trustees", force: :cascade do |t|
