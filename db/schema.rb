@@ -29,12 +29,12 @@ ActiveRecord::Schema.define(version: 20_200_827_134_307) do
   end
 
   create_table "elections", force: :cascade do |t|
-    t.bigint "client_id", null: false
+    t.bigint "authority_id", null: false
     t.string "title", null: false
     t.string "status", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["client_id"], name: "index_elections_on_client_id"
+    t.index ["authority_id"], name: "index_elections_on_authority_id"
     t.index ["title"], name: "index_elections_on_title", unique: true
   end
 
@@ -67,7 +67,7 @@ ActiveRecord::Schema.define(version: 20_200_827_134_307) do
     t.index ["partial_key"], name: "index_trustees_on_partial_key", unique: true
   end
 
-  add_foreign_key "elections", "clients"
+  add_foreign_key "elections", "clients", column: "authority_id"
   add_foreign_key "elections_trustees", "elections"
   add_foreign_key "elections_trustees", "trustees"
   add_foreign_key "log_entries", "elections"

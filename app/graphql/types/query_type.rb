@@ -13,7 +13,7 @@ module Types
     field :clients,
           [Types::ClientType],
           null: false,
-          description: "Returns a list of items in the martian library"
+          description: "Returns a list of clients in the bulletin board"
 
     def clients
       Client.all

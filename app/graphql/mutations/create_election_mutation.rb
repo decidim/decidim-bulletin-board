@@ -8,7 +8,7 @@ module Mutations
     field :outcome, String, null: true
     def resolve(title:, data:)
       data_hash = Digest::SHA256.hexdigest(data)
-      election_form = ElectionForm.new(title: title, status: "Published", client: Client.last,
+      election_form = ElectionForm.new(title: title, status: "Published", authority: Authority.last,
                                        data: data,
                                        data_hash: data_hash, log_type: "createElection")
 
