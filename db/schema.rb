@@ -60,15 +60,8 @@ ActiveRecord::Schema.define(version: 20_200_827_134_307) do
     t.index ["signed_data"], name: "index_log_entries_on_signed_data", unique: true
   end
 
-  create_table "trustees", force: :cascade do |t|
-    t.text "partial_key"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["partial_key"], name: "index_trustees_on_partial_key", unique: true
-  end
-
   add_foreign_key "elections", "clients", column: "authority_id"
+  add_foreign_key "elections_trustees", "clients", column: "trustee_id"
   add_foreign_key "elections_trustees", "elections"
-  add_foreign_key "elections_trustees", "trustees"
   add_foreign_key "log_entries", "elections"
 end
