@@ -20,6 +20,7 @@ class CreateElection < Rectify::Command
 
     transaction do
       create_election
+      create_log_entry
     end
     broadcast(:ok, election)
   end
@@ -35,7 +36,9 @@ class CreateElection < Rectify::Command
       authority: form.authority
     }
     @election = Election.create(election_attributes)
+  end
 
+  def create_log_entry
     log_entry_attributes = {
       signed_data: form.signed_data,
       chained_hash: form.chained_hash,
