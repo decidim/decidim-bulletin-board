@@ -19,6 +19,7 @@ class CreateElections < ActiveRecord::Migration[6.0]
 
     create_table :log_entries do |t|
       t.references :election, null: false, foreign_key: true
+      t.references :client, null: false, foreign_key: true
       t.text :signed_data, null: false
       t.text :chained_hash, null: false
       t.string :log_type, null: false

@@ -43,7 +43,8 @@ class CreateElection < Rectify::Command
       signed_data: form.signed_data,
       chained_hash: form.chained_hash,
       log_type: form.log_type,
-      election: @election
+      election: @election,
+      client: form.authority
     }
     LogEntry.create(log_entry_attributes)
   end
