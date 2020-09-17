@@ -1,5 +1,5 @@
 # frozen_string_literal: true
 
-class ElectionTrustee < ApplicationRecord
-  has_many :elections
+class Trustee < Client
+  has_many :elections, through: :elections_trustees
 end
