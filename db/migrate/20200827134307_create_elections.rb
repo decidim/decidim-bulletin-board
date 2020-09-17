@@ -9,7 +9,7 @@ class CreateElections < ActiveRecord::Migration[6.0]
     end
 
     create_table :elections do |t|
-      t.references :client, null: false, foreign_key: true
+      t.references :authority, null: false, foreign_key: { to_table: :clients }
       t.string :title, null: false
       t.string :status, null: false
       t.index :title, unique: true

@@ -32,7 +32,7 @@ class CreateElection < Rectify::Command
     election_attributes = {
       title: form.title,
       status: form.status,
-      client: form.client
+      authority: form.authority
     }
     @election = Election.create(election_attributes)
 
