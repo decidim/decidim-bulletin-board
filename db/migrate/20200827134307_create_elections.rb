@@ -24,10 +24,10 @@ class CreateElections < ActiveRecord::Migration[6.0]
 
     create_table :log_entries do |t|
       t.references :election, null: false, foreign_key: true
-      t.text :data, null: false
+      t.text :signed_data, null: false
       t.text :chained_hash, null: false
       t.string :log_type, null: false
-      t.index :data, unique: true
+      t.index :signed_data, unique: true
       t.index :chained_hash, unique: true
       t.timestamps
     end
