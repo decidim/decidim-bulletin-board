@@ -7,10 +7,10 @@ module Mutations
 
     field :outcome, String, null: true
     def resolve(title:, data:)
-      data_hash = Digest::SHA256.hexdigest(data)
+      chained_hash = Digest::SHA256.hexdigest(data)
       election_form = ElectionForm.new(title: title, status: "Published", authority: Authority.last,
                                        data: data,
-                                       data_hash: data_hash, log_type: "createElection")
+                                       chained_hash: chained_hash, log_type: "createElection")
 
       if CreateElection.call(election_form)
         { outcome: "Success!" }
