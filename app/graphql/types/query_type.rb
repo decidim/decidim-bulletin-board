@@ -12,5 +12,13 @@ module Types
     def clients
       Client.all
     end
+    field :elections,
+          [Types::ElectionType],
+          null: false,
+          description: "Returns a list of elections in the bulletin board"
+
+    def elections
+      Election.all
+    end
   end
 end
