@@ -23,6 +23,8 @@ class CreateElection < Rectify::Command
       create_log_entry
     end
     broadcast(:ok, election)
+  rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotUnique
+    broadcast(:invalid, "The data provided was not valid or not unique")
   end
 
   private
@@ -36,8 +38,6 @@ class CreateElection < Rectify::Command
       authority: form.authority
     }
     @election = Election.create(election_attributes)
-  rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotUnique
-    broadcast_error
   end
 
   def create_log_entry
@@ -49,12 +49,5 @@ class CreateElection < Rectify::Command
       client: form.authority
     }
     LogEntry.create(log_entry_attributes)
-    broadcast(:ok, election)
-  rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotUnique
-    broadcast_error
-  end
-
-  def broadcast_error
-    broadcast(:invalid, "The data provided was not valid or not unique")
   end
 end
