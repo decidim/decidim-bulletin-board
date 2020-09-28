@@ -11,9 +11,9 @@ module Mutations
       authority = get_authority(api_key)
       return { error: "Authority not found" } unless authority
 
-      # json_data = decode_signed_data(signed_data, authority.public_key)
+      json_data = decode_signed_data(signed_data, authority.public_key)
       chained_hash = Digest::SHA256.hexdigest(signed_data)
-      election_form = ElectionForm.new(title: "Test", status: "Published", authority: authority,
+      election_form = ElectionForm.new(title: get_title(json_data), status: "Published", authority: authority,
                                        signed_data: signed_data,
                                        chained_hash: chained_hash, log_type: "createElection")
       CreateElection.call(election_form) do
@@ -24,8 +24,6 @@ module Mutations
           return { error: error }
         end
       end
-    rescue StandardError => e
-      { error: "JSON_DATA #{json_data} #{e}" }
     end
 
     def get_authority(api_key)
