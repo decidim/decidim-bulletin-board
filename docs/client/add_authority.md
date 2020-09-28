@@ -7,7 +7,7 @@ In order to add a new authority you will need:
 
 Having these data, you only have to go to a server console of the Bulletin Board and type:
 ```bash
-bin/rails "client:add_authority[Authority name, public key]"
+bin/rails 'client:add_authority[Authority name, public key]'
 ```
 
 "Authority name" needs to be replaced by the authority name to add.

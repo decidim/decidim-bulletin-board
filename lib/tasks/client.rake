@@ -8,7 +8,7 @@ namespace :client do
     public_key = args[:public_key]
 
     auth = Authority.find_by("name = ? or public_key = ?", name, public_key)
-
+    public_key.gsub!(/\\n/, "\n") || public_key
     if !auth
       auth = Authority.create!(name: name, public_key: public_key, api_key: generate_api_key)
       puts "Authority '#{auth.name}' successfuly added!"
