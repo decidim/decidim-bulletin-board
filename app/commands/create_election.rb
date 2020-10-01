@@ -17,13 +17,7 @@ class CreateElection < Rectify::Command
   #
   # Returns nothing.
   def call
-    json_data = decode_signed_data(@signed_data, @authority.public_key)
-    chained_hash = Digest::SHA256.hexdigest(@signed_data)
-    @form = ElectionForm.new(title: get_title(json_data), status: "key_ceremony", authority: @authority,
-                             signed_data: @signed_data,
-                             chained_hash: chained_hash, log_type: "create_election")
-
-    return broadcast(:invalid, "The election form is invalid") if @form.invalid?
+    broadcast(:invalid, invalid_message) if invalid?
 
     transaction do
       create_election
@@ -36,34 +30,51 @@ class CreateElection < Rectify::Command
 
   private
 
-  attr_reader :form, :election
+  attr_reader :form, :election, :authority, :signed_data, :invalid_message
 
-  def decode_signed_data(signed_data, public_key)
-    rsa_public_key = OpenSSL::PKey::RSA.new(public_key)
-    JWT.decode signed_data, rsa_public_key, false, algorithm: "RS256"
-  end
-
-  def get_title(json_data)
-    json_data.dig(0, "description", "name", "text", 0, "value")
+  def invalid?
+    (@invalid_message = if json_data.blank?
+                          "Invalid signature"
+                        elsif title.blank?
+                          "Missing title"
+                        end).present?
   end
 
   def create_election
     election_attributes = {
-      title: form.title,
-      status: form.status,
-      authority: form.authority
+      title: title,
+      status: "key_ceremony",
+      authority: authority
     }
     @election = Election.create!(election_attributes)
   end
 
   def create_log_entry
     log_entry_attributes = {
-      signed_data: form.signed_data,
-      chained_hash: form.chained_hash,
-      log_type: form.log_type,
-      election: @election,
-      client_id: form.authority.id
+      signed_data: signed_data,
+      chained_hash: chained_hash,
+      log_type: "create_election",
+      election: election,
+      client_id: authority.id
     }
     LogEntry.create!(log_entry_attributes)
+  end
+
+  def rsa_public_key
+    @rsa_public_key ||= OpenSSL::PKey::RSA.new(authority.public_key)
+  end
+
+  def json_data
+    @json_data ||= JWT.decode signed_data, rsa_public_key, true, algorithm: "RS256"
+  rescue JWT::DecodeError
+    nil
+  end
+
+  def title
+    json_data.dig(0, "description", "name", "text", 0, "value")
+  end
+
+  def chained_hash
+    Digest::SHA256.hexdigest(signed_data)
   end
 end
