@@ -11,12 +11,7 @@ module Mutations
       authority = get_authority(api_key)
       return { error: "Authority not found" } unless authority
 
-      json_data = decode_signed_data(signed_data, authority.public_key)
-      chained_hash = Digest::SHA256.hexdigest(signed_data)
-      election_form = ElectionForm.new(title: get_title(json_data), status: "Published", authority: authority,
-                                       signed_data: signed_data,
-                                       chained_hash: chained_hash, log_type: "createElection")
-      CreateElection.call(election_form) do
+      CreateElection.call(authority, signed_data) do
         on(:ok) do |election|
           return { election: election }
         end
@@ -28,15 +23,6 @@ module Mutations
 
     def get_authority(api_key)
       Authority.find_by(api_key: api_key)
-    end
-
-    def decode_signed_data(signed_data, public_key)
-      rsa_public_key = OpenSSL::PKey::RSA.new(public_key)
-      JWT.decode signed_data, rsa_public_key, false, algorithm: "RS256"
-    end
-
-    def get_title(json_data)
-      json_data[0]["description"]["name"]["text"][0]["value"]
     end
   end
 end

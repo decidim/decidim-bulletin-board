@@ -5,8 +5,9 @@ class CreateElection < Rectify::Command
   # Public: Initializes the command.
   #
   # form - A form object with the params.
-  def initialize(form)
-    @form = form
+  def initialize(authority, signed_data)
+    @authority = authority
+    @signed_data = signed_data
   end
 
   # Executes the command. Broadcasts these events:
@@ -16,7 +17,13 @@ class CreateElection < Rectify::Command
   #
   # Returns nothing.
   def call
-    return broadcast(:invalid, "The election form is invalid") if form.invalid?
+    json_data = decode_signed_data(@signed_data, @authority.public_key)
+    chained_hash = Digest::SHA256.hexdigest(@signed_data)
+    @form = ElectionForm.new(title: get_title(json_data), status: "key_ceremony", authority: @authority,
+                             signed_data: @signed_data,
+                             chained_hash: chained_hash, log_type: "create_election")
+
+    return broadcast(:invalid, "The election form is invalid") if @form.invalid?
 
     transaction do
       create_election
@@ -30,6 +37,15 @@ class CreateElection < Rectify::Command
   private
 
   attr_reader :form, :election
+
+  def decode_signed_data(signed_data, public_key)
+    rsa_public_key = OpenSSL::PKey::RSA.new(public_key)
+    JWT.decode signed_data, rsa_public_key, false, algorithm: "RS256"
+  end
+
+  def get_title(json_data)
+    json_data[0]["description"]["name"]["text"][0]["value"]
+  end
 
   def create_election
     election_attributes = {
