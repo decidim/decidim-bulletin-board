@@ -44,7 +44,7 @@ class CreateElection < Rectify::Command
   end
 
   def get_title(json_data)
-    json_data[0]["description"]["name"]["text"][0]["value"]
+    json_data.dig(0, "description", "name", "text", 0, "value")
   end
 
   def create_election
@@ -53,7 +53,7 @@ class CreateElection < Rectify::Command
       status: form.status,
       authority: form.authority
     }
-    @election = Election.create(election_attributes)
+    @election = Election.create!(election_attributes)
   end
 
   def create_log_entry
@@ -64,6 +64,6 @@ class CreateElection < Rectify::Command
       election: @election,
       client_id: form.authority.id
     }
-    LogEntry.create(log_entry_attributes)
+    LogEntry.create!(log_entry_attributes)
   end
 end
