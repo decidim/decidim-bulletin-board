@@ -13,6 +13,7 @@ gem "pg", ">= 0.18", "< 2.0"
 gem "graphql", "~> 1.9"
 # Use Puma as the app server
 gem "puma", "~> 4.1"
+gem "redcarpet"
 # Use SCSS for stylesheets
 gem "sass-rails", ">= 6"
 # Transpile app-like JavaScript. Read more: https://github.com/rails/webpacker
@@ -21,7 +22,6 @@ gem "webpacker", "~> 4.0"
 gem "turbolinks", "~> 5"
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem "jbuilder", "~> 2.7"
-gem "jwt"
 # Use Redis adapter to run Action Cable in production
 # gem 'redis', '~> 4.0'
 # Use Active Model has_secure_password
@@ -33,7 +33,11 @@ gem "jwt"
 # Reduces boot times through caching; required in config/boot.rb
 gem "bootsnap", ">= 1.4.2", require: false
 gem "faker", "~> 1.9"
+gem "graphiql-rails"
+gem "jquery-rails"
+gem "jwt"
 gem "rectify", "~> 0.13.0"
+gem "sprockets-es6"
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
@@ -65,5 +69,3 @@ end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem "tzinfo-data", platforms: [:mingw, :mswin, :x64_mingw, :jruby]
-
-gem "graphiql-rails"
