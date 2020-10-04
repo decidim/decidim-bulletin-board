@@ -13,6 +13,6 @@ module ApplicationHelper
   end
 
   def markdown
-    @markdown ||= Redcarpet::Render::HTML.new
+    Redcarpet::Render::HTML.new
   end
 end
