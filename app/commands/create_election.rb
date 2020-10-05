@@ -37,6 +37,14 @@ class CreateElection < Rectify::Command
                           "Invalid signature"
                         elsif title.blank?
                           "Missing title"
+                        elsif start_date.after?(end_date)
+                          "Starting date cannot be after the end date"
+                        elsif start_date.before?(Time.current)
+                          "Starting date cannot be before the current date"
+                        elsif questions.blank? || questions.empty?
+                          "There must be at least 1 question for the election"
+                        else
+                          answers_validations
                         end).present?
   end
 
@@ -72,6 +80,31 @@ class CreateElection < Rectify::Command
 
   def title
     json_data.dig(0, "description", "name", "text", 0, "value")
+  end
+
+  def start_date
+    start_date = json_data.dig(0, "description", "start_date")
+    Time.zone.parse(start_date) if start_date.present?
+  end
+
+  def end_date
+    end_date = json_data.dig(0, "description", "end_date")
+    Time.zone.parse(end_date) if end_date.present?
+  end
+
+  def questions
+    json_data.dig(0, "description", "contests")
+  end
+
+  def answers_validations
+    questions.each do |quest|
+      number_elected = quest.dig("number_elected")
+      ballot_selections = quest.dig("ballot_selections")
+      return "There must be specified the number of answers to be selected" if number_elected.blank?
+      return "There must be at least 2 answers for each question" if ballot_selections.blank? || ballot_selections.size <= 1
+      return "The number of possible answers cannot be greater than the number of answers offered" if number_elected.to_i > ballot_selections.size
+    end
+    ""
   end
 
   def chained_hash
