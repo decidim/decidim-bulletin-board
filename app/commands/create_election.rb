@@ -21,6 +21,7 @@ class CreateElection < Rectify::Command
 
     transaction do
       create_election
+      create_trustees
       create_log_entry
     end
     broadcast(:ok, election)
@@ -68,6 +69,22 @@ class CreateElection < Rectify::Command
     LogEntry.create!(log_entry_attributes)
   end
 
+  def create_trustees
+    trustees.each do |trustee|
+      create_trustee(trustee)
+    end
+  end
+
+  def create_trustee(trustee)
+    trustee_attributes = {
+      name: trustee_name(trustee),
+      public_key: trustee_public_key(trustee),
+      api_key: trustee_public_key(trustee)
+    }
+    t = Trustee.create!(trustee_attributes)
+    t.elections_trustees.create!(election: election)
+  end
+
   def rsa_public_key
     @rsa_public_key ||= OpenSSL::PKey::RSA.new(authority.public_key)
   end
@@ -76,6 +93,18 @@ class CreateElection < Rectify::Command
     @json_data ||= JWT.decode signed_data, rsa_public_key, true, algorithm: "RS256"
   rescue JWT::DecodeError
     nil
+  end
+
+  def trustees
+    json_data.dig(0, "trustees")
+  end
+
+  def trustee_name(trustee)
+    trustee.dig("name")
+  end
+
+  def trustee_public_key(trustee)
+    trustee.dig("public_key")
   end
 
   def title
