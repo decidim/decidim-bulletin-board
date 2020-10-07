@@ -17,17 +17,14 @@ class CreateElection < Rectify::Command
   #
   # Returns nothing.
   def call
-    json_data = decode_signed_data(@signed_data, @authority.public_key)
-    chained_hash = Digest::SHA256.hexdigest(@signed_data)
-    @form = ElectionForm.new(title: get_title(json_data), status: "key_ceremony", authority: @authority,
-                             signed_data: @signed_data,
-                             chained_hash: chained_hash, log_type: "create_election")
-
-    return broadcast(:invalid, "The election form is invalid") if @form.invalid?
+    build_log_entry
+    build_election
+    broadcast(:invalid, invalid_message) if invalid?
 
     transaction do
-      create_election
-      create_log_entry
+      election.save!
+      log_entry.save!
+      create_trustees
     end
     broadcast(:ok, election)
   rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotUnique
@@ -36,34 +33,105 @@ class CreateElection < Rectify::Command
 
   private
 
-  attr_reader :form, :election
+  attr_reader :form, :election, :log_entry, :authority, :signed_data, :invalid_message
+  delegate :decoded_data, to: :log_entry
 
-  def decode_signed_data(signed_data, public_key)
-    rsa_public_key = OpenSSL::PKey::RSA.new(public_key)
-    JWT.decode signed_data, rsa_public_key, false, algorithm: "RS256"
-  end
-
-  def get_title(json_data)
-    json_data[0]["description"]["name"]["text"][0]["value"]
-  end
-
-  def create_election
+  def build_election
     election_attributes = {
-      title: form.title,
-      status: form.status,
-      authority: form.authority
+      title: title,
+      status: "key_ceremony",
+      authority: authority
     }
-    @election = Election.create(election_attributes)
+    @election = Election.new(election_attributes)
+    log_entry.election = election
+    election.log_entries = [log_entry]
   end
 
-  def create_log_entry
+  def build_log_entry
     log_entry_attributes = {
-      signed_data: form.signed_data,
-      chained_hash: form.chained_hash,
-      log_type: form.log_type,
-      election: @election,
-      client_id: form.authority.id
+      signed_data: signed_data,
+      chained_hash: chained_hash,
+      log_type: "create_election",
+      client_id: authority.id
     }
-    LogEntry.create(log_entry_attributes)
+    @log_entry = LogEntry.new(log_entry_attributes)
+  end
+
+  def invalid?
+    @invalid_message = if decoded_data.blank?
+                         "Invalid signature"
+                       elsif title.blank?
+                         "Missing title"
+                       elsif start_date.after?(end_date)
+                         "Starting date cannot be after the end date"
+                       elsif start_date.before?(Time.current + 2 * 60 * 60)
+                         "Starting date cannot be before the current date plus two hours"
+                       elsif questions.blank? || questions.empty?
+                         "There must be at least 1 question for the election"
+                       end
+    @invalid_message ||= answers_validations
+    @invalid_message ||= election.voting_scheme.validate_election
+    @invalid_message.present?
+  end
+
+  def create_trustees
+    trustees.each do |trustee|
+      create_trustee(trustee)
+    end
+  end
+
+  def create_trustee(trustee)
+    trustee_attributes = {
+      name: trustee_name(trustee),
+      public_key: trustee_public_key(trustee),
+      api_key: trustee_public_key(trustee)
+    }
+    t = Trustee.create!(trustee_attributes)
+    t.elections_trustees.create!(election: election)
+  end
+
+  def trustees
+    decoded_data.dig("trustees")
+  end
+
+  def trustee_name(trustee)
+    trustee.dig("name")
+  end
+
+  def trustee_public_key(trustee)
+    trustee.dig("public_key")
+  end
+
+  def title
+    decoded_data.dig("description", "name", "text", 0, "value")
+  end
+
+  def start_date
+    start_date = decoded_data.dig("description", "start_date")
+    Time.zone.parse(start_date) if start_date.present?
+  end
+
+  def end_date
+    end_date = decoded_data.dig("description", "end_date")
+    Time.zone.parse(end_date) if end_date.present?
+  end
+
+  def questions
+    decoded_data.dig("description", "contests")
+  end
+
+  def answers_validations
+    questions.each do |quest|
+      number_elected = quest.dig("number_elected")
+      ballot_selections = quest.dig("ballot_selections")
+      return "There must be specified the number of answers to be selected" if number_elected.blank?
+      return "There must be at least 2 answers for each question" if ballot_selections.blank? || ballot_selections.size <= 1
+      return "The number of possible answers cannot be greater than the number of answers offered" if number_elected.to_i > ballot_selections.size
+    end
+    nil
+  end
+
+  def chained_hash
+    Digest::SHA256.hexdigest(signed_data)
   end
 end

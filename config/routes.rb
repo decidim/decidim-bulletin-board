@@ -1,7 +1,10 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
-  mount GraphiQL::Rails::Engine, at: "/graphiql", graphql_path: "/graphql"
-  post "/graphql", to: "graphql#execute"
-  # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
+  scope "/api" do
+    mount GraphiQL::Rails::Engine, at: "/graphiql", graphql_path: "/api"
+    get "/docs", to: "documentation#show", as: :documentation
+    get "/", to: redirect("/api/docs")
+    post "/", to: "graphql#execute"
+  end
 end
