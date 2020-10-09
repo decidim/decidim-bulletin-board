@@ -8,7 +8,7 @@ module VotingSchemes
     test: Test
   }.freeze
 
-  def from_name(name)
+  def self.from_name(name)
     VOTING_SCHEMES[name.to_sym]
   end
 end

@@ -60,6 +60,8 @@ class CreateElection < Rectify::Command
   def invalid?
     @invalid_message = if decoded_data.blank?
                          "Invalid signature"
+                       elsif election.voting_scheme_class.blank?
+                         "A valid Voting Scheme must be specified"
                        elsif title.blank?
                          "Missing title"
                        elsif start_date.after?(end_date)
