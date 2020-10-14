@@ -85,10 +85,9 @@ class CreateElection < Rectify::Command
   def create_trustee(trustee)
     trustee_attributes = {
       name: trustee_name(trustee),
-      public_key: trustee_public_key(trustee),
-      api_key: trustee_public_key(trustee)
+      public_key: trustee_public_key(trustee)
     }
-    t = Trustee.where(name: trustee_name(trustee)).or(Trustee.where(public_key: trustee_public_key(trustee))).or(Trustee.where(api_key: trustee_public_key(trustee))).first
+    t = Trustee.where(name: trustee_name(trustee)).or(Trustee.where(public_key: trustee_public_key(trustee))).first
     t = Trustee.create!(trustee_attributes) if t.blank?
     t.elections_trustees.create!(election: election)
   end
