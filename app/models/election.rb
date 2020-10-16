@@ -11,7 +11,7 @@ class Election < ApplicationRecord
   end
 
   def voting_scheme_class
-    VotingSchemes.from_name(manifest["scheme"]["name"])
+    VotingSchemes.from_name(manifest["data"]["scheme"]["name"])
   end
 
   def manifest
