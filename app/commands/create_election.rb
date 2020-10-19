@@ -70,10 +70,18 @@ class CreateElection < Rectify::Command
                          "Starting date cannot be before the current date plus two hours"
                        elsif questions.blank? || questions.empty?
                          "There must be at least 1 question for the election"
+                       elsif !election_not_expired?
+                         "Election is expired"
                        end
+
     @invalid_message ||= answers_validations
     @invalid_message ||= election.voting_scheme.validate_election
     @invalid_message.present?
+  end
+
+  def election_not_expired?
+    iat = decoded_data.dig("iat")
+    return if Time.zone.at(iat).between?(1.hour.ago, Time.zone.now)
   end
 
   def create_trustees
