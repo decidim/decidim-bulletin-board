@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
@@ -10,8 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_10_22_122359) do
-
+ActiveRecord::Schema.define(version: 20_201_022_122_359) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -42,7 +43,7 @@ ActiveRecord::Schema.define(version: 2020_10_22_122359) do
     t.bigint "trustee_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["election_id", "trustee_id"], name: "index_elections_trustees_on_election_id_and_trustee_id", unique: true
+    t.index %w(election_id trustee_id), name: "index_elections_trustees_on_election_id_and_trustee_id", unique: true
     t.index ["election_id"], name: "index_elections_trustees_on_election_id"
     t.index ["trustee_id"], name: "index_elections_trustees_on_trustee_id"
   end
