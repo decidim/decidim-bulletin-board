@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20_201_014_064_915) do
+ActiveRecord::Schema.define(version: 20_201_022_122_359) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -59,7 +59,6 @@ ActiveRecord::Schema.define(version: 20_201_014_064_915) do
     t.index ["chained_hash"], name: "index_log_entries_on_chained_hash", unique: true
     t.index ["client_id"], name: "index_log_entries_on_client_id"
     t.index ["election_id"], name: "index_log_entries_on_election_id"
-    t.index ["signed_data"], name: "index_log_entries_on_signed_data", unique: true
   end
 
   add_foreign_key "elections", "clients", column: "authority_id"
