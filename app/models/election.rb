@@ -15,7 +15,6 @@ class Election < ApplicationRecord
   end
 
   def manifest
-    puts "DECODED DATAAAA #{log_entries.first.decoded_data}"
     @manifest ||= log_entries.first.decoded_data
   end
 end
