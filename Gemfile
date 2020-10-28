@@ -9,8 +9,11 @@ ruby "2.6.6"
 gem "rails", "~> 6.0.3", ">= 6.0.3.2"
 # Use postgresql as the database for Active Record
 gem "pg", ">= 0.18", "< 2.0"
+# Use GraphQL for the API communication
+gem "graphql", "~> 1.9"
 # Use Puma as the app server
 gem "puma", "~> 4.1"
+gem "redcarpet"
 # Use SCSS for stylesheets
 gem "sass-rails", ">= 6"
 # Transpile app-like JavaScript. Read more: https://github.com/rails/webpacker
@@ -30,6 +33,12 @@ gem "jbuilder", "~> 2.7"
 # Reduces boot times through caching; required in config/boot.rb
 gem "bootsnap", ">= 1.4.2", require: false
 gem "faker", "~> 1.9"
+gem "graphiql-rails"
+gem "jquery-rails"
+gem "jwt"
+gem "rectify", "~> 0.13.0"
+gem "sprockets-es6"
+
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem "byebug", platforms: [:mri, :mingw, :x64_mingw]
@@ -52,6 +61,7 @@ end
 group :test do
   # Adds support for Capybara system testing and selenium driver
   gem "capybara", ">= 2.15"
+  gem "rspec-graphql_matchers"
   gem "selenium-webdriver"
   # Easy installation and use of web drivers to run system tests with browsers
   gem "webdrivers"

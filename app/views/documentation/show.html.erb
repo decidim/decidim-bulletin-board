@@ -1,0 +1,19 @@
+
+<div class="intro">
+  <div class="version">Bulletin Board Version 1.0s</div>
+
+  <h1>Bulletin Board Version API documentation</h1>
+  <% if defined?(graphiql_path) %>
+    <%= link_to "Explore the API interactively with GraphiQL", graphiql_path %>
+  <% end %>
+</div>
+
+<div class="info">
+  <%= render_doc("usage") %>
+</div>
+
+<div id="documentation"></div>
+
+<script>
+ window.renderDocumentation("/api");
+</script>
