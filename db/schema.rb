@@ -12,20 +12,22 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20_201_022_122_359) do
+ActiveRecord::Schema.define(version: 20_201_029_175_557) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "clients", force: :cascade do |t|
     t.string "type", null: false
     t.text "name", null: false
-    t.text "public_key", null: false
+    t.jsonb "public_key", null: false
     t.text "api_key"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.string "unique_id", null: false
+    t.string "public_key_thumbprint"
     t.index ["api_key"], name: "index_clients_on_api_key", unique: true
     t.index ["public_key"], name: "index_clients_on_public_key", unique: true
+    t.index ["public_key_thumbprint"], name: "index_clients_on_public_key_thumbprint", unique: true
     t.index ["unique_id"], name: "index_clients_on_unique_id", unique: true
   end
 
