@@ -31,6 +31,16 @@ ActiveRecord::Schema.define(version: 20_201_029_175_557) do
     t.index ["unique_id"], name: "index_clients_on_unique_id", unique: true
   end
 
+  create_table "election_trustees", force: :cascade do |t|
+    t.bigint "election_id", null: false
+    t.bigint "trustee_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index %w(election_id trustee_id), name: "index_election_trustees_on_election_id_and_trustee_id", unique: true
+    t.index ["election_id"], name: "index_election_trustees_on_election_id"
+    t.index ["trustee_id"], name: "index_election_trustees_on_trustee_id"
+  end
+
   create_table "elections", force: :cascade do |t|
     t.bigint "authority_id", null: false
     t.string "title", null: false
@@ -40,16 +50,6 @@ ActiveRecord::Schema.define(version: 20_201_029_175_557) do
     t.string "unique_id", null: false
     t.index ["authority_id"], name: "index_elections_on_authority_id"
     t.index ["unique_id"], name: "index_elections_on_unique_id", unique: true
-  end
-
-  create_table "elections_trustees", force: :cascade do |t|
-    t.bigint "election_id", null: false
-    t.bigint "trustee_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index %w(election_id trustee_id), name: "index_elections_trustees_on_election_id_and_trustee_id", unique: true
-    t.index ["election_id"], name: "index_elections_trustees_on_election_id"
-    t.index ["trustee_id"], name: "index_elections_trustees_on_trustee_id"
   end
 
   create_table "log_entries", force: :cascade do |t|
@@ -65,9 +65,9 @@ ActiveRecord::Schema.define(version: 20_201_029_175_557) do
     t.index ["election_id"], name: "index_log_entries_on_election_id"
   end
 
+  add_foreign_key "election_trustees", "clients", column: "trustee_id"
+  add_foreign_key "election_trustees", "elections"
   add_foreign_key "elections", "clients", column: "authority_id"
-  add_foreign_key "elections_trustees", "clients", column: "trustee_id"
-  add_foreign_key "elections_trustees", "elections"
   add_foreign_key "log_entries", "clients"
   add_foreign_key "log_entries", "elections"
 end
