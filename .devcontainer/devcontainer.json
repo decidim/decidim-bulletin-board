@@ -3,9 +3,9 @@
 	"dockerComposeFile": ["docker-compose.yml"],
 	"service": "rails",
 	"workspaceFolder": "/workspace",
-	
+
 	// Set *default* container specific settings.json values on container create.
-	"settings": { 
+	"settings": {
 		"terminal.integrated.shell.linux": "/bin/bash"
 	},
 
@@ -13,14 +13,13 @@
 	"extensions": [
 		"rebornix.Ruby"
 	],
-	
+
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
-  "forwardPorts": [3001],
+  "forwardPorts": [8000]
 
 	// Use 'postCreateCommand' to run commands after the container is created.
 	// "postCreateCommand": "bundle && yarn && bin/rails db:setup",
 
 	// Uncomment to connect as a non-root user. See https://aka.ms/vscode-remote/containers/non-root.
 	// "remoteUser": "vscode"
-
 }

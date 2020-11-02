@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "utils"
+require "jwk_utils"
 
 # rubocop:disable Metrics/LineLength
 dev_private_key = {
@@ -18,7 +18,7 @@ dev_private_key = {
 # rubocop:enable Metrics/LineLength
 
 dev_public_key = JWT::JWK.import(dev_private_key).export
-dev_public_key_thumbprint = Utils.jwk_thumbprint(dev_private_key)
+dev_public_key_thumbprint = JwkUtils.thumbprint(dev_private_key)
 
 Authority.create!(
   name: "Decidim Test Authority",
