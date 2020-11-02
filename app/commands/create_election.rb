@@ -2,11 +2,14 @@
 
 # A command with all the business logic to create a new election
 class CreateElection < Rectify::Command
+  include LogEntryCommand
+
   # Public: Initializes the command.
   #
-  # form - A form object with the params.
+  # authority - The authority that requests the creation of the election
+  # signed_data - The signed message received
   def initialize(authority, signed_data)
-    @authority = authority
+    @client = @authority = authority
     @signed_data = signed_data
   end
 
@@ -17,9 +20,9 @@ class CreateElection < Rectify::Command
   #
   # Returns nothing.
   def call
-    build_log_entry
+    build_log_entry "create_election"
     build_election
-    broadcast(:invalid, invalid_message) if invalid?
+    return broadcast(:invalid, invalid_message) if invalid?
 
     transaction do
       election.save!
@@ -33,11 +36,11 @@ class CreateElection < Rectify::Command
 
   private
 
-  attr_reader :form, :election, :log_entry, :authority, :signed_data, :invalid_message
-  delegate :decoded_data, to: :log_entry
+  attr_reader :authority, :invalid_message, :election
 
   def build_election
     election_attributes = {
+      unique_id: election_id,
       title: title,
       status: "key_ceremony",
       authority: authority
@@ -47,101 +50,84 @@ class CreateElection < Rectify::Command
     election.log_entries = [log_entry]
   end
 
-  def build_log_entry
-    log_entry_attributes = {
-      signed_data: signed_data,
-      chained_hash: chained_hash,
-      log_type: "create_election",
-      client_id: authority.id
-    }
-    @log_entry = LogEntry.new(log_entry_attributes)
-  end
-
   def invalid?
-    @invalid_message = if decoded_data.blank?
-                         "Invalid signature"
-                       elsif election.voting_scheme_class.blank?
-                         "A valid Voting Scheme must be specified"
-                       elsif title.blank?
-                         "Missing title"
-                       elsif start_date.after?(end_date)
-                         "Starting date cannot be after the end date"
-                       elsif start_date.before?(Time.current + 2 * 60 * 60)
-                         "Starting date cannot be before the current date plus two hours"
-                       elsif questions.blank? || questions.empty?
-                         "There must be at least 1 question for the election"
-                       elsif !valid_timestamp?
-                         "Message must get created between now and one hour ago"
-                       end
-
-    @invalid_message ||= answers_validations
-    @invalid_message ||= election.voting_scheme.validate_election
+    @invalid_message ||= log_entry_validations || election_validations || questions_validations || election.voting_scheme.validate_election
     @invalid_message.present?
-  end
-
-  def valid_timestamp?
-    iat = decoded_data.dig("iat")
-    Time.zone.at(iat).between?(1.hour.ago, 5.minutes.from_now)
   end
 
   def create_trustees
     trustees.each do |trustee|
-      create_trustee(trustee)
+      find_or_create_trustee(trustee).election_trustees.create!(election: election)
     end
   end
 
-  def create_trustee(trustee)
-    trustee_attributes = {
-      name: trustee_name(trustee),
-      public_key: trustee_public_key(trustee)
-    }
-    t = Trustee.where(name: trustee_name(trustee)).or(Trustee.where(public_key: trustee_public_key(trustee))).first
-    t = Trustee.create!(trustee_attributes) if t.blank?
-    t.elections_trustees.create!(election: election)
+  def find_or_create_trustee(trustee)
+    Trustee.where(name: trustee["name"]).or(Trustee.where(public_key: trustee["public_key"])).first ||
+      Trustee.create!(
+        name: trustee["name"],
+        public_key: trustee["public_key"]
+      )
   end
 
   def trustees
-    decoded_data.dig("trustees")
+    @trustees ||= decoded_data["trustees"]
   end
 
-  def trustee_name(trustee)
-    trustee.dig("name")
-  end
-
-  def trustee_public_key(trustee)
-    trustee.dig("public_key")
+  def election_id
+    @election_id ||= decoded_data["election_id"]
   end
 
   def title
-    decoded_data.dig("description", "name", "text", 0, "value")
+    @title ||= decoded_data.dig("description", "name", "text", 0, "value")
   end
 
   def start_date
-    start_date = decoded_data.dig("description", "start_date")
-    Time.zone.parse(start_date) if start_date.present?
+    return @start_date if defined?(@start_date)
+
+    @start_date ||= Time.zone.parse(decoded_data.dig("description", "start_date") || "")
   end
 
   def end_date
-    end_date = decoded_data.dig("description", "end_date")
-    Time.zone.parse(end_date) if end_date.present?
+    return @end_date if defined?(@end_date)
+
+    @end_date ||= Time.zone.parse(decoded_data.dig("description", "end_date") || "")
   end
 
   def questions
-    decoded_data.dig("description", "contests")
+    @questions ||= decoded_data.dig("description", "contests")
   end
 
-  def answers_validations
-    questions.each do |quest|
+  def election_validations
+    @election_validations = if decoded_data.blank?
+                              "Invalid signature"
+                            elsif decode_error.present?
+                              decode_error
+                            elsif election.voting_scheme_class.blank?
+                              "A valid Voting Scheme must be specified"
+                            elsif title.blank?
+                              "Missing title"
+                            elsif start_date.after?(end_date)
+                              "Starting date cannot be after the end date"
+                            elsif start_date.before?(Time.current + 2 * 60 * 60)
+                              "Starting date cannot be before the current date plus two hours"
+                            elsif questions.blank?
+                              "There must be at least 1 question for the election"
+                            elsif !valid_timestamp?
+                              "Message must get created between now and one hour ago"
+                            end
+  end
+
+  def questions_validations
+    @questions_validations ||= questions.map do |quest|
       number_elected = quest.dig("number_elected")
       ballot_selections = quest.dig("ballot_selections")
-      return "There must be specified the number of answers to be selected" if number_elected.blank?
-      return "There must be at least 2 answers for each question" if ballot_selections.blank? || ballot_selections.size <= 1
-      return "The number of possible answers cannot be greater than the number of answers offered" if number_elected.to_i > ballot_selections.size
-    end
-    nil
-  end
-
-  def chained_hash
-    Digest::SHA256.hexdigest(signed_data)
+      if number_elected.blank?
+        "There must be specified the number of answers to be selected"
+      elsif ballot_selections.blank? || ballot_selections.size <= 1
+        "There must be at least 2 answers for each question"
+      elsif number_elected.to_i > ballot_selections.size
+        "The number of possible answers cannot be greater than the number of answers offered"
+      end
+    end.compact.first
   end
 end
