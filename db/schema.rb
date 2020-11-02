@@ -23,9 +23,10 @@ ActiveRecord::Schema.define(version: 20_201_022_122_359) do
     t.text "api_key"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.string "unique_id", null: false
     t.index ["api_key"], name: "index_clients_on_api_key", unique: true
-    t.index ["name"], name: "index_clients_on_name", unique: true
     t.index ["public_key"], name: "index_clients_on_public_key", unique: true
+    t.index ["unique_id"], name: "index_clients_on_unique_id", unique: true
   end
 
   create_table "elections", force: :cascade do |t|
@@ -34,8 +35,9 @@ ActiveRecord::Schema.define(version: 20_201_022_122_359) do
     t.string "status", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.string "unique_id", null: false
     t.index ["authority_id"], name: "index_elections_on_authority_id"
-    t.index ["title"], name: "index_elections_on_title", unique: true
+    t.index ["unique_id"], name: "index_elections_on_unique_id", unique: true
   end
 
   create_table "elections_trustees", force: :cascade do |t|
