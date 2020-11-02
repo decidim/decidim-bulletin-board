@@ -2,16 +2,15 @@
 
 module Types
   class QueryType < Types::BaseObject
-    # Add root-level fields here.
-    # They will be entry points for queries on your schema.
-    field :clients,
+    field :authorities,
           [Types::ClientType],
           null: false,
-          description: "Returns a list of clients in the bulletin board"
+          description: "Returns a list of authorities in the bulletin board"
 
-    def clients
-      Client.all
+    def authorities
+      Authority.all
     end
+
     field :elections,
           [Types::ElectionType],
           null: false,

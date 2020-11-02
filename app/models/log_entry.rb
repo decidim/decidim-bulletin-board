@@ -4,13 +4,19 @@ class LogEntry < ApplicationRecord
   belongs_to :election
   belongs_to :client
 
+  before_create do
+    self.chained_hash = Digest::SHA256.hexdigest([previous_hash, signed_data].join("."))
+  end
+
   def decoded_data
     @decoded_data ||= begin
-                        JWT.decode(signed_data, client.rsa_public_key, true, verify_iat: true, algorithm: "RS256").first
-                      rescue JWT::DecodeError => e
-                        { error: e.message }
-                      rescue JWT::InvalidIatError => e
+                        JWT.decode(signed_data, client.public_key_rsa, true, verify_iat: true, algorithm: "RS256").first
+                      rescue JWT::VerificationError, JWT::DecodeError, JWT::InvalidIatError, JWT::InvalidPayload => e
                         { error: e.message }
                       end
+  end
+
+  def previous_hash
+    election.log_entries.last&.chained_hash || election.unique_id
   end
 end
