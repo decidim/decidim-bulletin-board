@@ -5,6 +5,7 @@
   "addons": [
     "heroku-postgresql:hobby-basic"
   ],
+  "success_url": "/api",
   "scripts": {
     "postdeploy":"bundle exec rake db:schema:load db:seed"
   },
