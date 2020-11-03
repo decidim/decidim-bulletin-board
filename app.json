@@ -1,0 +1,21 @@
+{
+  "name": "Decidim Bulletin Board Staging",
+  "description": "Decidim Bulletin Board Staging - an Encryption Engine and an Append-Only Log for Decidim framework",
+  "keywords": [],
+  "addons": [
+    "heroku-postgresql:hobby-basic"
+  ],
+  "scripts": {
+    "postdeploy":"bundle exec rake db:schema:load db:seed"
+  },
+  "env": {
+    "HEROKU_APP_NAME": {
+      "description": "Needed for review apps",
+      "required": false
+    },
+    "SECRET_KEY_BASE": {
+      "description": "A secret used by Rails to identify sessions",
+      "generator": "secret"
+    }
+  }
+}
