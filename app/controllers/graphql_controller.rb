@@ -14,9 +14,9 @@ class GraphqlController < ApplicationController
     operation_name = params[:operationName]
 
     context = {
-      api_key: request.headers[:api_key],
-      trustee_id: request.headers[:trustee_id]
+      token: request.headers["Authorization"]
     }
+
     result = DecidimBulletinBoardSchema.execute(query, variables: variables, context: context, operation_name: operation_name)
     render json: result
   rescue StandardError => e

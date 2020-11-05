@@ -22,7 +22,7 @@ module Mutations
         }
       GQL
     end
-    let(:headers) { { api_key: authority.api_key } }
+    let(:headers) { { "Authorization": authority.api_key } }
     let(:private_key) { generate(:private_key) }
     let(:authority) { create(:authority, private_key: private_key) }
     let(:signature_key) { private_key.keypair }

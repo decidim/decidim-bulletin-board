@@ -21,7 +21,7 @@ module Mutations
     end
 
     def authority
-      @authority ||= Authority.find_by(api_key: context[:api_key])
+      @authority ||= Authority.find_by(api_key: context[:token])
     end
   end
 end
