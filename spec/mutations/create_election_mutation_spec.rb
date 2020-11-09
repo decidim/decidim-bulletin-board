@@ -35,8 +35,8 @@ module Mutations
 
     it "returns an election" do
       subject
-      json = JSON.parse(response.body)
-      data = json["data"]["createElection"].deep_symbolize_keys
+      json = JSON.parse(response.body, symbolize_names: true)
+      data = json.dig(:data, :createElection)
 
       expect(data).to include(
         election: {

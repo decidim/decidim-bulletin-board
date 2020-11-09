@@ -21,5 +21,6 @@ module DecidimBulletinBoard
 
     # # Permit classic autoloader for heroku environment, so we can run rails console there
     # config.autoloader = :classic
+    config.settings = config_for(:settings)
   end
 end

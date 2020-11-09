@@ -56,7 +56,7 @@ RSpec.describe CreateElection do
     let(:create_election_message_params) { { iat: 1.day.ago.to_i } }
 
     it "broadcasts invalid" do
-      expect { subject.call }.to broadcast(:invalid, "Message must get created between now and one hour ago")
+      expect { subject.call }.to broadcast(:invalid, "Message is too old to be accepted")
     end
   end
 
@@ -65,6 +65,14 @@ RSpec.describe CreateElection do
 
     it "broadcasts invalid" do
       expect { subject.call }.to broadcast(:invalid, "Invalid iat")
+    end
+  end
+
+  context "when the start date is too soon" do
+    let(:create_election_message_params) { { start_date: 1.minute.from_now } }
+
+    it "broadcasts invalid" do
+      expect { subject.call }.to broadcast(:invalid, "Election should start at least in 2 hours from now.")
     end
   end
 end

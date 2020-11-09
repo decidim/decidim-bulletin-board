@@ -1,0 +1,14 @@
+
+default: &default
+  iat_expiration_minutes: 60
+  create_election:
+    hours_before: 2
+
+development:
+  <<: *default
+
+test:
+  <<: *default
+
+production:
+  <<: *default
