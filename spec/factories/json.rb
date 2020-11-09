@@ -20,6 +20,7 @@ FactoryBot.define do
     factory :create_election_message do
       transient do
         authority
+        start_date { 1.week.from_now }
       end
 
       iat { Time.now.to_i }
@@ -27,7 +28,7 @@ FactoryBot.define do
       type { "create_election" }
       scheme
       trustees { build_list(:json_trustee, 3) }
-      description
+      description { build(:description, start_date: start_date) }
     end
 
     factory :scheme do

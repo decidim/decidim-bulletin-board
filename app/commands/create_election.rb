@@ -100,16 +100,16 @@ class CreateElection < Rectify::Command
   def election_validations
     @election_validations = if decoded_data.blank?
                               "Invalid signature"
-                            elsif decode_error.present?
-                              decode_error
+                            elsif decoded_error.present?
+                              decoded_error
                             elsif election.voting_scheme_class.blank?
                               "A valid Voting Scheme must be specified"
                             elsif title.blank?
                               "Missing title"
                             elsif start_date.after?(end_date)
                               "Starting date cannot be after the end date"
-                            elsif start_date.before?(Time.current + 2 * 60 * 60)
-                              "Starting date cannot be before the current date plus two hours"
+                            elsif start_date.before?(settings.create_election[:hours_before].hours.from_now)
+                              "Election should start at least in #{settings.create_election[:hours_before]} hours from now."
                             elsif questions.blank?
                               "There must be at least 1 question for the election"
                             elsif !valid_timestamp?
