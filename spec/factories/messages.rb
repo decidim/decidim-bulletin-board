@@ -17,22 +17,26 @@ FactoryBot.define do
     initialize_with { ActiveSupport::HashWithIndifferentAccess[**attributes] }
     skip_create
 
+    # Warning! All transient parameters should have a block to prevent them from
+    # being added to the hash
+
     factory :create_election_message do
       transient do
-        authority
+        authority { build(:authority) }
         start_date { 1.week.from_now }
+        trustees_plus_keys { build_list(:trustee, 3).zip(generate_list(:private_key, 3)) }
       end
 
       iat { Time.now.to_i }
       election_id { [authority.name.parameterize, generate(:election_id)].join(".") }
       type { "create_election" }
       scheme
-      trustees { build_list(:json_trustee, 3) }
+      trustees { trustees_plus_keys.map { |trustee, private_key| build(:json_trustee, trustee: trustee, private_key: private_key) } }
       description { build(:description, start_date: start_date) }
     end
 
     factory :scheme do
-      name { "test" }
+      name { "dummy" }
       params do
         {
           quorum: 2
@@ -42,10 +46,11 @@ FactoryBot.define do
 
     factory :json_trustee do
       transient do
+        trustee { build(:trustee, private_key: private_key) }
         private_key { generate(:private_key) }
       end
 
-      name { Faker::Internet.username }
+      name { trustee.name }
       public_key { private_key.export.to_json }
     end
 
@@ -102,6 +107,32 @@ FactoryBot.define do
       object_id { "#{contest_id}-#{generate(:selection_id)}" }
       sequence_order { 0 }
       candidate_id { generate(:candidate_id) }
+    end
+
+    factory :key_ceremony_message do
+      transient do
+        election { build(:election) }
+        trustee { build(:trustee) }
+      end
+
+      iat { Time.now.to_i }
+      election_id { election.unique_id }
+      type { "key_ceremony" }
+
+      owner_id { trustee.id }
+      sequence_order { election.manifest }
+      auxiliary_public_key { 1 }
+      election_public_key { 3 }
+      election_public_key_proof
+    end
+
+    factory :election_public_key_proof do
+      challenge { 1 }
+      commitment { 1 }
+      name { "Schnorr Proof" }
+      public_key { 3 }
+      response { 2 }
+      usage { "SecretValue" }
     end
   end
 end
