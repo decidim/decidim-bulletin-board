@@ -4,8 +4,7 @@ require "jwk_utils"
 require "rack/utils"
 
 namespace :client do
-  desc "Add a new client to the bulletin board"
-
+  desc "Add a new authority to the bulletin board"
   task :add_authority, [:name, :public_key] => :environment do |_t, args|
     name = args[:name]
     public_key = Rack::Utils.parse_nested_query(args[:public_key])
