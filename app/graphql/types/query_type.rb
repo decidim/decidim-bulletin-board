@@ -2,6 +2,15 @@
 
 module Types
   class QueryType < Types::BaseObject
+    field :me,
+          Types::ClientType,
+          null: false,
+          description: "Returns the information for this bulletin board instance"
+
+    def me
+      BulletinBoard
+    end
+
     field :authorities,
           [Types::ClientType],
           null: false,

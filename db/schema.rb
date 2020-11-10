@@ -54,7 +54,7 @@ ActiveRecord::Schema.define(version: 20_201_029_175_557) do
 
   create_table "log_entries", force: :cascade do |t|
     t.bigint "election_id", null: false
-    t.bigint "client_id", null: false
+    t.bigint "client_id"
     t.text "signed_data", null: false
     t.text "chained_hash", null: false
     t.string "log_type", null: false
