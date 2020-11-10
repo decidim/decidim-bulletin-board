@@ -6,6 +6,8 @@ class Election < ApplicationRecord
   has_many :trustees, through: :election_trustees
   has_many :log_entries
 
+  enum status: [:key_ceremony, :ready, :vote, :tally, :results, :results_published].map { |status| [status, status.to_s] }.to_h
+
   def voting_scheme
     @voting_scheme ||= voting_scheme_class.new(self)
   end
