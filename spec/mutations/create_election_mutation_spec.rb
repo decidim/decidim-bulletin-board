@@ -23,13 +23,13 @@ module Mutations
       GQL
     end
     let(:headers) { { "Authorization": authority.api_key } }
-    let(:private_key) { generate(:private_key) }
     let(:authority) { create(:authority, private_key: private_key) }
+    let(:private_key) { generate(:private_key) }
     let(:signature_key) { private_key.keypair }
     let(:signed_data) { JWT.encode(payload.as_json, signature_key, "RS256") }
     let(:payload) { build(:create_election_message, authority: authority) }
 
-    it "setups an election" do
+    it "setup an election" do
       expect { subject }.to change(Election, :count).by(1)
     end
 
