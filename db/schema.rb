@@ -65,6 +65,17 @@ ActiveRecord::Schema.define(version: 20_201_029_175_557) do
     t.index ["election_id"], name: "index_log_entries_on_election_id"
   end
 
+  create_table "pending_messages", force: :cascade do |t|
+    t.bigint "election_id"
+    t.bigint "client_id", null: false
+    t.text "signed_data", null: false
+    t.string "status", default: "0", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["client_id"], name: "index_pending_messages_on_client_id"
+    t.index ["election_id"], name: "index_pending_messages_on_election_id"
+  end
+
   add_foreign_key "election_trustees", "clients", column: "trustee_id"
   add_foreign_key "election_trustees", "elections"
   add_foreign_key "elections", "clients", column: "authority_id"
