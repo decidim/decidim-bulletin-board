@@ -1,15 +1,13 @@
 # frozen_string_literal: true
 
-module VotingSchemes
+module VotingScheme
   class Base
     attr_reader :election
-
+    
     def initialize(election)
       @election = election
     end
 
-    def validate_election
-      raise StandardError, "Not implemented"
-    end
+    def validate_election; end
   end
 end
