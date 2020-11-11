@@ -112,15 +112,15 @@ FactoryBot.define do
     factory :key_ceremony_message do
       transient do
         election { build(:election) }
-        trustee { build(:trustee) }
+        trustee { election.trustees.first }
       end
 
       iat { Time.now.to_i }
       election_id { election.unique_id }
       type { "key_ceremony" }
 
-      owner_id { trustee.id }
-      sequence_order { election.manifest }
+      owner_id { trustee.unique_id }
+      sequence_order { election.manifest["trustees"].find_index {|trustee_json| trustee_json["name"] == trustee.name } }
       auxiliary_public_key { 1 }
       election_public_key { 3 }
       election_public_key_proof
