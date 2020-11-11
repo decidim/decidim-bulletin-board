@@ -10,11 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-<<<<<<< HEAD:db/schema.rb
 ActiveRecord::Schema.define(version: 2020_11_05_150616) do
-=======
-ActiveRecord::Schema.define(version: 2020_10_29_175557) do
->>>>>>> 3ad66ec (chore: move rails app to its own folder and js client scaffold):decidim-bulletin-board-app/db/schema.rb
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
