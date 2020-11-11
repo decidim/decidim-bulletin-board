@@ -120,7 +120,7 @@ FactoryBot.define do
       type { "key_ceremony" }
 
       owner_id { trustee.unique_id }
-      sequence_order { election.manifest["trustees"].find_index {|trustee_json| trustee_json["name"] == trustee.name } }
+      sequence_order { election.manifest["trustees"].find_index { |trustee_json| trustee_json["name"] == trustee.name } }
       auxiliary_public_key { 1 }
       election_public_key { 3 }
       election_public_key_proof

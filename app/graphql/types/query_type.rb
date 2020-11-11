@@ -33,7 +33,6 @@ module Types
           Types::PendingMessageType,
           null: true,
           description: "Returns the information for a given message" do
-
       argument :id, ID, required: true
 
       def resolve(_parent, args, _context)

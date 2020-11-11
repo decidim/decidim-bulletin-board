@@ -18,7 +18,7 @@ module Mutations
         end
       end
 
-      return result
+      result
     end
 
     def trustee
