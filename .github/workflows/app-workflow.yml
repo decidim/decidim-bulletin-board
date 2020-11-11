@@ -1,22 +1,22 @@
 name: "[CI] Lint"
-on: push
-# on:
-#   push:
-#     paths:
-#       - ./decidim-bulletin-board-app
+on:
+  push:
+    paths:
+      - "decidim-bulletin-board-app/**"
 
 env:
   CI: "true"
   SIMPLECOV: "true"
   RUBY_VERSION: 2.6.6
 
+defaults:
+  run:
+    working-directory: ./decidim-bulletin-board-app
+
 jobs:
   lint:
     name: Lint code
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./decidim-bulletin-board-app
     steps:
       - uses: actions/checkout@v2.0.0
         with:
@@ -24,6 +24,15 @@ jobs:
       - uses: ruby/setup-ruby@master
         with:
           ruby-version: ${{ env.RUBY_VERSION }}
+      - name: Recover dependency cache
+        uses: actions/cache@v1
+        with:
+          path: ./decidim-bulletin-board-app/vendor/bundle
+          key: ${{ runner.OS }}-decidim-bulletin-board-app-deps-${{ hashFiles('decidim-bulletin-board-app/Gemfile.lock') }}
+          restore-keys: |
+            ${{ runner.OS }}-decidim-bulletin-board-app-deps-${{ env.cache-name }}-
+            ${{ runner.OS }}-decidim-bulletin-board-app-deps-
+            ${{ runner.OS }}-decidim-bulletin-board-app-
       - name: Install Ruby deps
         uses: nick-invision/retry@v1
         with:
@@ -60,6 +69,15 @@ jobs:
       - uses: ruby/setup-ruby@master
         with:
           ruby-version: ${{ env.RUBY_VERSION }}
+      - name: Recover dependency cache
+        uses: actions/cache@v1
+        with:
+          path: ./decidim-bulletin-board-app/vendor/bundle
+          key: ${{ runner.OS }}-decidim-bulletin-board-app-deps-${{ hashFiles('decidim-bulletin-board-app/Gemfile.lock') }}
+          restore-keys: |
+            ${{ runner.OS }}-decidim-bulletin-board-app-deps-${{ env.cache-name }}-
+            ${{ runner.OS }}-decidim-bulletin-board-app-deps-
+            ${{ runner.OS }}-decidim-bulletin-board-app-
       - name: Install postgres client
         run: sudo apt-get install libpq-dev
       - name: Install Ruby deps
@@ -67,7 +85,7 @@ jobs:
         with:
           timeout_minutes: 10
           max_attempts: 3
-          command: bundle install --path vendor/bundle --jobs 4 --retry 3
+          command: cd decidim-bulletin-board-app && bundle install --path vendor/bundle --jobs 4 --retry 3
       - name: Create database
         run: |
           bundler exec rails db:create RAILS_ENV=test
