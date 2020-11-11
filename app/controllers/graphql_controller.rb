@@ -13,8 +13,9 @@ class GraphqlController < ApplicationController
     query = params[:query]
     operation_name = params[:operationName]
 
+    headers = variables.delete(:headers) || {}
     context = {
-      token: request.headers["Authorization"]
+      token: request.headers["Authorization"] || headers["Authorization"]
     }
 
     result = DecidimBulletinBoardSchema.execute(query, variables: variables, context: context, operation_name: operation_name)
