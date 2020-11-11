@@ -10,14 +10,15 @@ module Mutations
     def resolve(signed_data:)
       return { error: "Trustee not found" } unless trustee
 
+      result = { error: "There was an error adding the message to the pending list." }
+
       EnqueueMessage.call(trustee, signed_data, KeyCeremonyJob) do
         on(:ok) do |pending_message|
-          return { pending_message: pending_message }
-        end
-        on(:invalid) do
-          return { error: "There was an error adding the message to the pending list." }
+          result = { pending_message: pending_message }
         end
       end
+
+      return result
     end
 
     def trustee
