@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-exit if Rails.env.production?
+exit if Rails.env.production? && !ENV["SEED"]
 
 base_path = File.expand_path("seeds", __dir__)
 $LOAD_PATH.push base_path

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # A command with all the business logic to perform a step of the key ceremony
-class KeyCeremony < Rectify::Command
+class ProcessKeyCeremonyStep < Rectify::Command
   include LogEntryCommand
 
   # Public: Initializes the command.
@@ -23,12 +23,12 @@ class KeyCeremony < Rectify::Command
   def call
     build_log_entry "key_ceremony"
 
-    return broadcast(:invalid, invalid_message) if invalid?
+    return broadcast(:invalid, invalid_message) if invalid_format?
 
     election.with_lock do
       broadcast(:election, election)
 
-      return broadcast(:invalid, "The voting scheme rejected the message") unless process_message
+      return broadcast(:invalid, invalid_message) if invalid_content?
 
       election.log_entries << log_entry
       log_entry.save!
@@ -44,9 +44,18 @@ class KeyCeremony < Rectify::Command
   attr_accessor :trustee, :invalid_message, :response_message
   delegate :voting_scheme, to: :election
 
-  def invalid?
+  def invalid_format?
     @invalid_message ||= log_entry_validations
-    @invalid_message.present?
+    invalid_message.present?
+  end
+
+  def invalid_content?
+    @invalid_message ||= if !election.key_ceremony?
+                           "The election is not in the Key ceremony step"
+                         elsif !process_message
+                           "The voting scheme rejected the message"
+                         end
+    invalid_message.present?
   end
 
   def process_message

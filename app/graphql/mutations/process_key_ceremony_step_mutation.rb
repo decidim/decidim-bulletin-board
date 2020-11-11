@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Mutations
-  class KeyCeremonyMutation < GraphQL::Schema::Mutation
+  class ProcessKeyCeremonyStepMutation < GraphQL::Schema::Mutation
     argument :signed_data, String, required: true
 
     field :pending_message, Types::PendingMessageType, null: true
@@ -12,7 +12,7 @@ module Mutations
 
       result = { error: "There was an error adding the message to the pending list." }
 
-      EnqueueMessage.call(trustee, signed_data, KeyCeremonyJob) do
+      EnqueueMessage.call(trustee, signed_data, ProcessKeyCeremonyStepJob) do
         on(:ok) do |pending_message|
           result = { pending_message: pending_message }
         end

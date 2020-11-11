@@ -3,13 +3,13 @@
 require "rails_helper"
 
 module Mutations
-  RSpec.describe KeyCeremonyMutation, type: :request do
+  RSpec.describe ProcessKeyCeremonyStepMutation, type: :request do
     subject { post "/api", params: { query: query, variables: { signedData: signed_data } }, headers: headers }
 
     let(:query) do
       <<~GQL
         mutation($signedData: String!) {
-          keyCeremony(signedData: $signedData) {
+          processKeyCeremonyStep(signedData: $signedData) {
             pendingMessage {
               id
               client {
@@ -41,7 +41,25 @@ module Mutations
 
     it "enqueues a key ceremony job to process the message", :jobs do
       subject
-      expect(KeyCeremonyJob).to have_been_enqueued
+      expect(ProcessKeyCeremonyStepJob).to have_been_enqueued
+    end
+
+    it "returns a pending message" do
+      subject
+      json = JSON.parse(response.body, symbolize_names: true)
+      data = json.dig(:data, :processKeyCeremonyStep)
+
+      expect(data).to include(
+        pendingMessage: {
+          id: be_present,
+          election: nil,
+          status: "enqueued",
+          signedData: signed_data,
+          client: {
+            id: trustee.unique_id
+          }
+        }
+      )
     end
   end
 end

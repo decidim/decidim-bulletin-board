@@ -36,7 +36,7 @@ module Types
       argument :id, ID, required: true
 
       def resolve(_parent, args, _context)
-        PendingMessage.find(args[:id])
+        PendingMessage.find_by(id: args[:id])
       end
     end
   end
