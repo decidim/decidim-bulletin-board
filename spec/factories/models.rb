@@ -40,7 +40,7 @@ FactoryBot.define do
 
     after(:build) do |election, evaluator|
       evaluator.trustees_plus_keys.each do |trustee, _key|
-        election.election_trustees << build(:election_trustee, election: election, trustee: trustee)
+        election.trustees << trustee
       end
       election.log_entries << build(:create_election_entry, election: election, private_key: evaluator.authority_private_key,
                                                             client: election.authority, trustees_plus_keys: evaluator.trustees_plus_keys)
