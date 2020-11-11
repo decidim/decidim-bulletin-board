@@ -3,15 +3,17 @@
 require "rails_helper"
 require "./spec/commands/shared/log_entry_validations"
 
-RSpec.describe KeyCeremony do
+RSpec.describe ProcessKeyCeremonyStep do
   subject { described_class.call(trustee, signed_data) }
 
   include_context "with a signed message"
 
   let!(:election) do
-    create(:election, trustees_plus_keys: trustees_plus_keys,
+    create(:election, status: election_status,
+                      trustees_plus_keys: trustees_plus_keys,
                       voting_scheme_state: voting_scheme_state)
   end
+  let(:election_status) { :key_ceremony }
   let(:trustees_plus_keys) { generate_list(:private_key, 3).map { |key| [create(:trustee, private_key: key), key] } }
   let(:voting_scheme_state) { nil }
   let(:trustee) { trustees_plus_keys.first.first }
@@ -82,6 +84,16 @@ RSpec.describe KeyCeremony do
 
     it "broadcasts invalid" do
       expect { subject }.to broadcast(:invalid, "The voting scheme rejected the message")
+    end
+  end
+
+  context "when the election status is not key_ceremony" do
+    let(:election_status) { :ready }
+
+    it_behaves_like "key ceremony fails"
+
+    it "broadcasts invalid" do
+      expect { subject }.to broadcast(:invalid, "The election is not in the Key ceremony step")
     end
   end
 

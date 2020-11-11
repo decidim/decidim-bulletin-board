@@ -7,7 +7,7 @@ RSpec.describe EnqueueMessage do
 
   let(:client) { create(:trustee) }
   let(:signed_data) { "SOME SIGNED DATA THAT WILL NOT BE VALIDATED" }
-  let(:job) { KeyCeremonyJob }
+  let(:job) { ProcessKeyCeremonyStepJob }
 
   it "broadcasts ok" do
     expect { subject }.to broadcast(:ok)

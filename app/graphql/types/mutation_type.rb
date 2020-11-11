@@ -3,6 +3,6 @@
 module Types
   class MutationType < Types::BaseObject
     field :create_election, mutation: Mutations::CreateElectionMutation
-    field :key_ceremony, mutation: Mutations::KeyCeremonyMutation
+    field :process_key_ceremony_step, mutation: Mutations::ProcessKeyCeremonyStepMutation
   end
 end

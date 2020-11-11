@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class KeyCeremonyJob < ApplicationJob
+class ProcessKeyCeremonyStepJob < ApplicationJob
   queue_as :key_ceremony
 
   def perform(pending_message_id)
@@ -9,24 +9,18 @@ class KeyCeremonyJob < ApplicationJob
     pending_message.with_lock do
       next unless pending_message.enqueued?
 
-      KeyCeremony.call(pending_message.client, pending_message.signed_data) do
+      ProcessKeyCeremonyStep.call(pending_message.client, pending_message.signed_data) do
         on(:election) { |election| pending_message.election = election }
-        on(:processed) { |_result| pending_message.status = :processed }
+        on(:processed) { |_result| pending_message.status = :accepted }
         on(:invalid) do |_result, _message|
           pending_message.status = :rejected
         end
       end
 
-      raise MessageNotProcessed unless processed?(pending_message)
+      raise MessageNotProcessed unless pending_message.processed?
 
       pending_message.save!
     end
-  end
-
-  private
-
-  def processed?(pending_message)
-    (pending_message.processed? && pending_message.election) || pending_message.rejected?
   end
 end
 
