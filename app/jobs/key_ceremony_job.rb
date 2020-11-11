@@ -26,7 +26,7 @@ class KeyCeremonyJob < ApplicationJob
   private
 
   def processed?(pending_message)
-    pending_message.election && !pending_message.enqueued?
+    (pending_message.processed? && pending_message.election) || pending_message.rejected?
   end
 end
 
