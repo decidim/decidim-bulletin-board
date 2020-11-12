@@ -67,3 +67,30 @@ jobs:
           command: cd decidim-bulletin-board-client-js && npm ci
       - run: npm run format
         name: Format JS files
+  test:
+    name: Test code
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2.0.0
+        with:
+          fetch-depth: 1
+      - uses: actions/setup-node@v2-beta
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - name: Recover dependency cache
+        uses: actions/cache@v1
+        with:
+          path: ./decidim-bulletin-board-client-js/node_modules
+          key: ${{ runner.OS }}-decidim-bulletin-board-client-js-deps-${{ hashFiles('decidim-bulletin-board-client-js/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.OS }}-decidim-bulletin-board-client-js-deps-${{ env.cache-name }}-
+            ${{ runner.OS }}-decidim-bulletin-board-client-js-deps-
+            ${{ runner.OS }}-decidim-bulletin-board-client-js-
+      - name: Install Node deps
+        uses: nick-invision/retry@v1
+        with:
+          timeout_minutes: 10
+          max_attempts: 3
+          command: cd decidim-bulletin-board-client-js && npm ci
+      - run: npm run test
+        name: Test JS files
