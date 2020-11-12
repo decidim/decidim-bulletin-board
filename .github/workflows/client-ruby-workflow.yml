@@ -1,0 +1,46 @@
+name: "[CI] Ruby Client"
+on: push
+# on:
+#   push:
+#     paths:
+#       - "decidim-bulletin-board-client-ruby/**"
+
+env:
+  CI: "true"
+  SIMPLECOV: "true"
+  RUBY_VERSION: 2.6.6
+
+defaults:
+  run:
+    working-directory: ./decidim-bulletin-board-client-ruby
+
+jobs:
+  lint:
+    name: Lint code
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2.0.0
+        with:
+          fetch-depth: 1
+      - uses: ruby/setup-ruby@master
+        with:
+          ruby-version: ${{ env.RUBY_VERSION }}
+      - name: Recover dependency cache
+        uses: actions/cache@v1
+        with:
+          path: ./decidim-bulletin-board-client-ruby/vendor/bundle
+          key: ${{ runner.OS }}-decidim-bulletin-board-client-ruby-deps-${{ hashFiles('decidim-bulletin-board-client-ruby/Gemfile.lock') }}
+          restore-keys: |
+            ${{ runner.OS }}-decidim-bulletin-board-client-ruby-deps-${{ env.cache-name }}-
+            ${{ runner.OS }}-decidim-bulletin-board-client-ruby-deps-
+            ${{ runner.OS }}-decidim-bulletin-board-client-ruby-
+      - name: Install Ruby deps
+        uses: nick-invision/retry@v1
+        with:
+          timeout_minutes: 10
+          max_attempts: 3
+          command: cd decidim-bulletin-board-client-ruby && bundle install --path vendor/bundle --jobs 4 --retry 3
+      - name: Install Rubocop
+        run: gem install rubocop
+      - run: bundle exec rubocop -P
+        name: Lint Ruby files
