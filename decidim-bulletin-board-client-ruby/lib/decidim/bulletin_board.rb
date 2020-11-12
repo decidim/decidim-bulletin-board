@@ -1,5 +1,8 @@
-require "decidim/bulletin_board/version"
-require "decidim/bulletin_board/client"
+# frozen_string_literal: true
+# frozen_string_literal: true
+
+require 'decidim/bulletin_board/version'
+require 'decidim/bulletin_board/client'
 
 module Decidim
   module BulletinBoard
