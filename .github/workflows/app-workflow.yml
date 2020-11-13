@@ -1,4 +1,4 @@
-name: "[CI] Lint"
+name: "[CI] Application"
 on:
   push:
     paths:
