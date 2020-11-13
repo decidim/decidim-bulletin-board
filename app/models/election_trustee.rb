@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class ElectionsTrustee < ApplicationRecord
+class ElectionTrustee < ApplicationRecord
   belongs_to :election
   belongs_to :trustee
 end

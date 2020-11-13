@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 class Election < ApplicationRecord
-  belongs_to :authority, class_name: "Client"
-  has_many :elections_trustees
-  has_many :trustees, through: :elections_trustees
+  belongs_to :authority
+  has_many :election_trustees
+  has_many :trustees, through: :election_trustees
   has_many :log_entries
 
   def voting_scheme

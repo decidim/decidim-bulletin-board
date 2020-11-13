@@ -3,12 +3,11 @@
 module Mutations
   class CreateElectionMutation < GraphQL::Schema::Mutation
     argument :signed_data, String, required: true
-    argument :api_key, String, required: true
 
     field :election, Types::ElectionType, null: true
     field :error, String, null: true
-    def resolve(signed_data:, api_key:)
-      authority = get_authority(api_key)
+
+    def resolve(signed_data:)
       return { error: "Authority not found" } unless authority
 
       CreateElection.call(authority, signed_data) do
@@ -21,8 +20,8 @@ module Mutations
       end
     end
 
-    def get_authority(api_key)
-      Authority.find_by(api_key: api_key)
+    def authority
+      @authority ||= Authority.find_by(api_key: context[:token])
     end
   end
 end

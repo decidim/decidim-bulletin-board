@@ -1,31 +1,51 @@
 # frozen_string_literal: true
 
 require "rails_helper"
+require "jwk_utils"
 
-Rails.application.load_tasks
+RSpec.describe "client:add_authority", type: :task do
+  subject { task.execute(name: name, public_key: public_key) }
 
-describe "client.rake" do
-  after do
-    Rake.application["client:add_authority"].reenable
-  end
+  let(:name) { authority.name }
+  let(:public_key) { private_key.export.map { |k, v| "#{k}=#{v}" }.join("&") }
+  let(:authority) { build(:authority, private_key: private_key) }
+  let(:private_key) { generate(:private_key) }
 
   it "creates a new authority" do
-    output = capture_output("client:add_authority", "Decidim Barcelona", "public_key")
-    expect(output.index(/Authority 'Decidim Barcelona' successfuly added!/)).to be_truthy
+    subject
+    check_message_printed("Authority '#{authority.name}' successfuly added!")
+    check_message_printed(Authority.last.api_key)
   end
 
-  it "returns message of existing authority" do
-    authority = create(:authority)
-    output = capture_output("client:add_authority", authority.name, authority.public_key)
-    expect(output.index(/The authority already exists!/)).to be_truthy
-    expect(output.index(authority.api_key)).to be_truthy
-  end
-end
+  context "when authority's public key already exists" do
+    let(:authority) { create(:authority, private_key: private_key) }
+    let(:name) { authority.name + "2" }
 
-def capture_output(task_name, name, public_key)
-  stdout = StringIO.new
-  $stdout = stdout
-  Rake::Task[task_name].invoke(name, public_key)
-  $stdout = STDOUT
-  stdout.string
+    it "detects the existing public key" do
+      subject
+      check_message_printed("The authority already exists!")
+      check_message_printed(authority.api_key)
+    end
+  end
+
+  context "when authority's name already exists" do
+    let(:authority) { create(:authority, private_key: private_key) }
+    let(:public_key) { private_key.export.map { |k, v| "#{k}=#{v}" }.join("&") }
+
+    it "detects the existing name" do
+      subject
+      check_message_printed("The authority already exists!")
+      check_message_printed(authority.api_key)
+    end
+  end
+
+  context "when receives a private key" do
+    let(:public_key) { JwkUtils.private_export(private_key).to_json }
+
+    it "detects the private key and warns the user" do
+      subject
+      check_message_printed("The authority might have sent you their private key!")
+      check_message_printed("The authority needs to generate another pair of keys and then send only the public key.")
+    end
+  end
 end
