@@ -12,7 +12,7 @@ bin/rails client:generate_identification_private_key
 
 This task will output the generated private key. You should copy the private key and store that value on the environment variable IDENTIFICATION_PRIVATE_KEY.
 
-Ensure that the private key is not lost between deployments and servers reboots and that only can be accessed by the application.
+Ensure that the private key is not lost between deployments and servers reboots and that it can be accessed by the application only.
 
 ## Adding an authority as a client of the Bulletin Board
 
