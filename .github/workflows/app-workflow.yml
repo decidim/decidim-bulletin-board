@@ -1,63 +1,48 @@
 name: "[CI] Lint"
-on: push
-    # branches:
-    #   - develop
-    #   - master
-    #   - release/*
-    #   - "*-stable"
+on:
+  push:
+    paths:
+      - "decidim-bulletin-board-app/**"
 
 env:
   CI: "true"
   SIMPLECOV: "true"
   RUBY_VERSION: 2.6.6
 
+defaults:
+  run:
+    working-directory: ./decidim-bulletin-board-app
+
 jobs:
   lint:
     name: Lint code
     runs-on: ubuntu-latest
-    # if: "!startsWith(github.head_ref, 'chore/l10n')"
     steps:
-      # - uses: rokroskar/workflow-run-cleanup-action@v0.2.2
-      #   if: "github.ref != 'refs/heads/master' || github.ref != 'refs/heads/develop'"
-      #   env:
-      #     GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
       - uses: actions/checkout@v2.0.0
         with:
           fetch-depth: 1
       - uses: ruby/setup-ruby@master
         with:
           ruby-version: ${{ env.RUBY_VERSION }}
-      # - uses: actions/setup-node@master
-      #   with:
-      #     node-version: ${{ env.NODE_VERSION }}
-      # - name: Recover Ruby dependency cache
-      #   uses: actions/cache@v1
-      #   with:
-      #     path: ./vendor/bundle
-      #     key: ${{ runner.OS }}-rubydeps-${{ hashFiles('Gemfile.lock') }}
-      #     restore-keys: |
-      #       ${{ runner.OS }}-rubydeps-${{ env.cache-name }}-
-      #       ${{ runner.OS }}-rubydeps-
-      #       ${{ runner.OS }}-
+      - name: Recover dependency cache
+        uses: actions/cache@v1
+        with:
+          path: ./decidim-bulletin-board-app/vendor/bundle
+          key: ${{ runner.OS }}-decidim-bulletin-board-app-deps-${{ hashFiles('decidim-bulletin-board-app/Gemfile.lock') }}
+          restore-keys: |
+            ${{ runner.OS }}-decidim-bulletin-board-app-deps-${{ env.cache-name }}-
+            ${{ runner.OS }}-decidim-bulletin-board-app-deps-
+            ${{ runner.OS }}-decidim-bulletin-board-app-
       - name: Install Ruby deps
         uses: nick-invision/retry@v1
         with:
           timeout_minutes: 10
           max_attempts: 3
-          command: bundle install --path vendor/bundle --jobs 4 --retry 3
-      # - run: npm ci
-      #   name: Install JS deps
+          command: cd decidim-bulletin-board-app && bundle install --path vendor/bundle --jobs 4 --retry 3
       - name: Install Rubocop
         run: gem install rubocop
       - run: bundle exec rubocop -P
         name: Lint Ruby files
-      # - run: npm run lint
-      #   name: Lint JS files
-      # - run: ./.github/run_erblint.sh
-      #   name: Lint ERB files
-      # - run: bundle exec mdl *.md docs/**/*.md
-      #   name: Lint Markdown files
-
   rspec-test:
     name: RSpec tests
     needs: lint
@@ -84,6 +69,15 @@ jobs:
       - uses: ruby/setup-ruby@master
         with:
           ruby-version: ${{ env.RUBY_VERSION }}
+      - name: Recover dependency cache
+        uses: actions/cache@v1
+        with:
+          path: ./decidim-bulletin-board-app/vendor/bundle
+          key: ${{ runner.OS }}-decidim-bulletin-board-app-deps-${{ hashFiles('decidim-bulletin-board-app/Gemfile.lock') }}
+          restore-keys: |
+            ${{ runner.OS }}-decidim-bulletin-board-app-deps-${{ env.cache-name }}-
+            ${{ runner.OS }}-decidim-bulletin-board-app-deps-
+            ${{ runner.OS }}-decidim-bulletin-board-app-
       - name: Install postgres client
         run: sudo apt-get install libpq-dev
       - name: Install Ruby deps
@@ -91,16 +85,10 @@ jobs:
         with:
           timeout_minutes: 10
           max_attempts: 3
-          command: bundle install --path vendor/bundle --jobs 4 --retry 3
+          command: cd decidim-bulletin-board-app && bundle install --path vendor/bundle --jobs 4 --retry 3
       - name: Create database
         run: |
           bundler exec rails db:create RAILS_ENV=test
           bundler exec rails db:migrate RAILS_ENV=test
       - name: Run tests
         run: bundler exec rake
-      # - name: Upload coverage results    
-      #   uses: actions/upload-artifact@master
-      #   if: always()
-      #   with:
-      #     name: coverage-report
-      #     path: coverage
