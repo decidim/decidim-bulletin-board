@@ -15,7 +15,8 @@ RSpec.describe ProcessKeyCeremonyStep do
   end
   let(:election_status) { :key_ceremony }
   let(:trustees_plus_keys) { generate_list(:private_key, 3).map { |key| [create(:trustee, private_key: key), key] } }
-  let(:voting_scheme_state) { nil }
+  let(:voting_scheme_state) { Marshal.dump(joint_election_key: 1, trustees: public_keys_already_sent.map(&:unique_id)) }
+  let(:public_keys_already_sent) { [] }
   let(:trustee) { trustees_plus_keys.first.first }
   let(:private_key) { trustees_plus_keys.first.last }
   let(:message_type) { :key_ceremony_message }
@@ -34,7 +35,7 @@ RSpec.describe ProcessKeyCeremonyStep do
   end
 
   it "persists the new state for the voting scheme" do
-    expect { subject }.to change { Election.last.voting_scheme_state } .from(nil)
+    expect { subject }.to change { Election.last.voting_scheme_state }
   end
 
   it "doesn't change the election status" do
@@ -42,7 +43,7 @@ RSpec.describe ProcessKeyCeremonyStep do
   end
 
   context "when the voting scheme generates an answer" do
-    let(:voting_scheme_state) { Marshal.dump(trustees: trustees_plus_keys.size - 1, joint_election_key: 1) }
+    let(:public_keys_already_sent) { trustees_plus_keys.map(&:first).excluding(trustee) }
 
     it "broadcast the election for the message" do
       expect { subject }.to broadcast(:election, election)
@@ -77,13 +78,23 @@ RSpec.describe ProcessKeyCeremonyStep do
 
   it_behaves_like "with an invalid signed data", "key ceremony fails"
 
+  context "when the trustee already sent the message" do
+    let(:public_keys_already_sent) { [trustee] }
+
+    it_behaves_like "key ceremony fails"
+
+    it "broadcasts invalid" do
+      expect { subject }.to broadcast(:invalid, "The trustee already sent their public keys")
+    end
+  end
+
   context "when the data is invalid" do
     let(:extra_message_params) { { election_public_key: 4 } }
 
     it_behaves_like "key ceremony fails"
 
     it "broadcasts invalid" do
-      expect { subject }.to broadcast(:invalid, "The voting scheme rejected the message")
+      expect { subject }.to broadcast(:invalid, "The election public key should be a prime number")
     end
   end
 
@@ -93,7 +104,7 @@ RSpec.describe ProcessKeyCeremonyStep do
     it_behaves_like "key ceremony fails"
 
     it "broadcasts invalid" do
-      expect { subject }.to broadcast(:invalid, "The election is not in the Key ceremony step")
+      expect { subject }.to broadcast(:invalid, "The election is not in the right step")
     end
   end
 

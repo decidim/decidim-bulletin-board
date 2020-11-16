@@ -23,12 +23,15 @@ class ProcessKeyCeremonyStep < Rectify::Command
   def call
     build_log_entry "key_ceremony"
 
-    return broadcast(:invalid, invalid_message) if invalid_format?
+    return broadcast(:invalid, error) unless
+      valid_log_entry? &&
+      valid_step?(election.key_ceremony?)
 
     election.with_lock do
       broadcast(:election, election)
 
-      return broadcast(:invalid, invalid_message) if invalid_content?
+      return broadcast(:invalid, error) unless
+        process_message
 
       election.log_entries << log_entry
       log_entry.save!
@@ -41,30 +44,7 @@ class ProcessKeyCeremonyStep < Rectify::Command
 
   private
 
-  attr_accessor :trustee, :invalid_message, :response_message
-  delegate :voting_scheme, to: :election
-
-  def invalid_format?
-    @invalid_message ||= log_entry_validations
-    invalid_message.present?
-  end
-
-  def invalid_content?
-    @invalid_message ||= if !election.key_ceremony?
-                           "The election is not in the Key ceremony step"
-                         elsif !process_message
-                           "The voting scheme rejected the message"
-                         end
-    invalid_message.present?
-  end
-
-  def process_message
-    @response_message = voting_scheme.process_message(log_entry.decoded_data)
-    voting_scheme.save
-    true
-  rescue VotingScheme::RejectedMessage
-    false
-  end
+  attr_accessor :trustee
 
   def create_response_log_entry!
     return unless response_message
