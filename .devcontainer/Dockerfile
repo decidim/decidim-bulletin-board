@@ -2,6 +2,7 @@
 ARG VARIANT=2.6
 FROM mcr.microsoft.com/vscode/devcontainers/ruby:${VARIANT}
 
+# Install Rails dependencies
 RUN apt-get update && \
     apt-get install -y postgresql-client && \
     apt-get install -y inotify-tools && \
@@ -28,3 +29,5 @@ RUN curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version 1.22.10
 # [Optional] Uncomment this line to install global node packages.
 # RUN su vscode -c "source /usr/local/share/nvm/nvm.sh && npm install -g <your-package-here>" 2>&1
 
+# Install ElectionGuard dependencies
+RUN apt-get install -y libgmp-dev libmpfr-dev libmpc-dev
