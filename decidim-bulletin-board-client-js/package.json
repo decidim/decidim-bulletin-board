@@ -13,6 +13,9 @@
   },
   "author": "",
   "license": "ISC",
+  "dependencies": {
+    "graphql": "^15.4.0"
+  },
   "devDependencies": {
     "@babel/core": "^7.12.3",
     "@babel/preset-env": "^7.12.1",
