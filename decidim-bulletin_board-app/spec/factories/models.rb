@@ -31,6 +31,7 @@ FactoryBot.define do
     transient do
       authority_private_key { generate(:private_key) }
       trustees_plus_keys { build_list(:trustee, 3).zip(generate_list(:private_key, 3)) }
+      voting_scheme { :dummy }
     end
 
     title { Faker::Name.name }
@@ -42,8 +43,9 @@ FactoryBot.define do
       evaluator.trustees_plus_keys.each do |trustee, _key|
         election.trustees << trustee
       end
-      election.log_entries << build(:create_election_entry, election: election, private_key: evaluator.authority_private_key,
-                                                            client: election.authority, trustees_plus_keys: evaluator.trustees_plus_keys)
+      election.log_entries << build(:create_election_entry, election: election, client: election.authority,
+                                                            voting_scheme: evaluator.voting_scheme, private_key: evaluator.authority_private_key,
+                                                            trustees_plus_keys: evaluator.trustees_plus_keys)
     end
   end
 
@@ -56,7 +58,8 @@ FactoryBot.define do
     transient do
       trustees_plus_keys { build_list(:trustee, 3).zip(generate_list(:private_key, 3)) }
       private_key { generate(:private_key) }
-      message { build(:create_election_message, trustees_plus_keys: trustees_plus_keys) }
+      voting_scheme { :dummy }
+      message { build(:create_election_message, voting_scheme: voting_scheme, trustees_plus_keys: trustees_plus_keys) }
     end
 
     election

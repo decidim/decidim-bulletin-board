@@ -34,3 +34,4 @@
 /decidim-bulletin_board-app/.rubocop-https---raw-githubusercontent-com-decidim-decidim-master--rubocop-*
 /decidim-bulletin_board-app/spec/examples.txt
 /decidim-bulletin_board-app/coverage
+/decidim-bulletin_board-app/electionguard.log
