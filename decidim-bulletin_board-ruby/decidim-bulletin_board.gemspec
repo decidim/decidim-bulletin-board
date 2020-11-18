@@ -5,8 +5,8 @@ require_relative 'lib/decidim/bulletin_board/version'
 Gem::Specification.new do |s|
   s.name          = 'decidim-bulletin_board'
   s.version       = Decidim::BulletinBoard::VERSION
-  s.authors       = ['David Morcillo']
-  s.email         = ['david@codegram.com']
+  s.authors       = ['David Morcillo', 'Svenja Schäfer']
+  s.email         = ['david@codegram.com', 'svenja@codegram.com']
 
   s.summary       = ''
   s.description   = ''
@@ -23,5 +23,7 @@ Gem::Specification.new do |s|
   s.executables   = s.files.grep(%r{^exe/}) { |f| File.basename(f) }
   s.require_paths = ['lib']
 
+  s.add_dependency 'graphlient', '~> 0.4.0'
+  s.add_dependency 'jwt'
   s.add_dependency 'rubocop', '~> 0.92.0'
 end
