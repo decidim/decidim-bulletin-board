@@ -3,9 +3,11 @@
 require "rails_helper"
 
 RSpec.describe EnqueueMessage do
-  subject { described_class.call(client, signed_data, job) }
+  subject { described_class.call(client, message_id, signed_data, job) }
 
-  let(:client) { create(:trustee) }
+  let(:election) { create(:election) }
+  let(:client) { election.trustees.first }
+  let(:message_id) { "#{election.unique_id}.key_ceremony.trustee_election_keys+t.#{client.unique_id}" }
   let(:signed_data) { "SOME SIGNED DATA THAT WILL NOT BE VALIDATED" }
   let(:job) { ProcessKeyCeremonyStepJob }
 

@@ -63,6 +63,6 @@ FactoryBot.define do
     client { build(:authority, private_key: private_key) }
     signed_data { JWT.encode(message, private_key.keypair, "RS256") }
     chained_hash { Digest::SHA256.hexdigest(election.unique_id) }
-    log_type { "create_election" }
+    message_id { message["message_id"] }
   end
 end

@@ -4,7 +4,7 @@ require "rails_helper"
 require "./spec/commands/shared/log_entry_validations"
 
 RSpec.describe ProcessKeyCeremonyStep do
-  subject { described_class.call(trustee, signed_data) }
+  subject { described_class.call(trustee, message_id, signed_data) }
 
   include_context "with a signed message"
 
@@ -35,7 +35,7 @@ RSpec.describe ProcessKeyCeremonyStep do
   end
 
   it "persists the new state for the voting scheme" do
-    expect { subject }.to change { Election.last.voting_scheme_state }
+    expect { subject }.to(change { Election.last.voting_scheme_state })
   end
 
   it "doesn't change the election status" do

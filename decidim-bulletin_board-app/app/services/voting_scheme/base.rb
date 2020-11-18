@@ -16,8 +16,6 @@ module VotingScheme
     def backup
       Marshal.dump(state)
     end
-
-    def process_message(message); end
   end
 
   class RejectedMessage < StandardError

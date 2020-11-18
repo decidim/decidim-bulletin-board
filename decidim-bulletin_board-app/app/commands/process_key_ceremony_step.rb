@@ -7,9 +7,11 @@ class ProcessKeyCeremonyStep < Rectify::Command
   # Public: Initializes the command.
   #
   # trustee - The trustee sender of the key ceremony message
+  # message_id - The message identifier
   # signed_data - The signed message received
-  def initialize(trustee, signed_data)
+  def initialize(trustee, message_id, signed_data)
     @client = @trustee = trustee
+    @message_id = message_id
     @signed_data = signed_data
   end
 
@@ -21,16 +23,16 @@ class ProcessKeyCeremonyStep < Rectify::Command
   #
   # Returns nothing.
   def call
-    build_log_entry "key_ceremony"
+    build_log_entry
 
     return broadcast(:invalid, error) unless
-      valid_log_entry? &&
-      valid_step?(election.key_ceremony?)
+      valid_log_entry?("key_ceremony")
 
     election.with_lock do
       broadcast(:election, election)
 
       return broadcast(:invalid, error) unless
+        valid_step?(election.key_ceremony?) &&
         process_message
 
       election.log_entries << log_entry
@@ -51,13 +53,13 @@ class ProcessKeyCeremonyStep < Rectify::Command
 
     LogEntry.create!(
       election: election,
+      message_id: response_message["message_id"],
       signed_data: BulletinBoard.sign(response_message),
-      log_type: :key_ceremony,
       bulletin_board: true
     )
   end
 
   def election
-    @election ||= Election.find_by(unique_id: decoded_data["election_id"])
+    @election ||= Election.find_by(unique_id: message_identifier.election_id)
   end
 end

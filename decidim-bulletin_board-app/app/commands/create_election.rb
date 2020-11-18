@@ -7,9 +7,11 @@ class CreateElection < Rectify::Command
   # Public: Initializes the command.
   #
   # authority - The authority that requests the creation of the election
+  # message_id - The message identifier
   # signed_data - The signed message received
-  def initialize(authority, signed_data)
+  def initialize(authority, message_id, signed_data)
     @client = @authority = authority
+    @message_id = message_id
     @signed_data = signed_data
   end
 
@@ -20,10 +22,10 @@ class CreateElection < Rectify::Command
   #
   # Returns nothing.
   def call
-    build_log_entry "create_election"
+    build_log_entry
 
     return broadcast(:invalid, error) unless
-      valid_log_entry? &&
+      valid_log_entry?("create_election") &&
       valid_step?(election.new_record?) &&
       valid_election? &&
       valid_questions? &&
@@ -34,6 +36,7 @@ class CreateElection < Rectify::Command
       log_entry.save!
       create_trustees
     end
+
     broadcast(:ok, election)
   rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotUnique
     broadcast(:invalid, "The data provided was not valid or not unique")
@@ -45,7 +48,7 @@ class CreateElection < Rectify::Command
 
   def election
     @election ||= log_entry.election = Election.new(
-      unique_id: election_id,
+      unique_id: message_identifier.election_id,
       title: title,
       status: "key_ceremony",
       authority: authority,
@@ -69,10 +72,6 @@ class CreateElection < Rectify::Command
 
   def trustees
     @trustees ||= decoded_data["trustees"]
-  end
-
-  def election_id
-    @election_id ||= decoded_data["election_id"]
   end
 
   def title

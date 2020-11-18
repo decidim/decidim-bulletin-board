@@ -5,8 +5,8 @@ require "prime"
 module VotingScheme
   # A dummy implementation of a voting scheme, only for tests purposes
   class Dummy < Base
-    def process_message(message)
-      method_name = :"process_#{message["type"]}_message"
+    def process_message(message_id, message)
+      method_name = :"process_#{message_id.type}_message"
       method(method_name).call(message) if respond_to?(method_name, true)
     end
 
@@ -30,8 +30,8 @@ module VotingScheme
       if state[:trustees].count == election.trustees.count
         election.status = :ready
         {
-          type: :joint_election_key,
-          joint_election_key: state[:joint_election_key]
+          "message_id" => "#{election.unique_id}.key_ceremony.joint_election_key+b.#{BulletinBoard.unique_id}",
+          "joint_election_key" => state[:joint_election_key]
         }
       end
     end

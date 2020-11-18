@@ -4,7 +4,7 @@ require "rails_helper"
 require "./spec/commands/shared/log_entry_validations"
 
 RSpec.describe CreateElection do
-  subject { described_class.call(authority, signed_data) }
+  subject { described_class.call(authority, message_id, signed_data) }
 
   include_context "with a signed message"
 
@@ -37,7 +37,8 @@ RSpec.describe CreateElection do
   it_behaves_like "with an invalid signed data", "create election fails"
 
   context "when the election already exists" do
-    let!(:election) { create(:election, authority: authority, unique_id: payload["election_id"]) }
+    let!(:existing_election) { create(:election, authority: authority) }
+    let(:extra_message_params) { { election_id: existing_election.unique_id } }
 
     it_behaves_like "create election fails"
 

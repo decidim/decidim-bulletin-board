@@ -2,13 +2,17 @@
 
 # A command with all the business logic to add a message to the pending messages list
 class EnqueueMessage < Rectify::Command
+  include HasMessageIdentifier
+
   # Public: Initializes the command.
   #
   # client - The client that sent the message
+  # message_id - The message identifier
   # signed_data - The signed message received
   # job - The job that will process the message
-  def initialize(client, signed_data, job)
+  def initialize(client, message_id, signed_data, job)
     @client = client
+    @message_id = message_id
     @signed_data = signed_data
     @job = job
   end
@@ -34,12 +38,13 @@ class EnqueueMessage < Rectify::Command
   attr_reader :client, :signed_data, :job, :pending_message
 
   def valid?
-    client && signed_data && job
+    client && message_id && signed_data && job
   end
 
   def create_pending_message!
     @pending_message = PendingMessage.create!(
       client: client,
+      message_id: message_id,
       signed_data: signed_data,
       status: :enqueued
     )

@@ -25,12 +25,12 @@ FactoryBot.define do
         authority { build(:authority) }
         start_date { 1.week.from_now }
         trustees_plus_keys { build_list(:trustee, 3).zip(generate_list(:private_key, 3)) }
+        election_id { "#{authority.name.parameterize}.#{generate(:election_id)}" }
       end
 
       iat { Time.now.to_i }
-      election_id { [authority.name.parameterize, generate(:election_id)].join(".") }
-      type { "create_election" }
-      scheme
+      message_id { "#{election_id}.create_election+a.#{authority.name.parameterize}" }
+      scheme { build(:voting_scheme, name: voting_scheme) }
       trustees { trustees_plus_keys.map { |trustee, private_key| build(:json_trustee, trustee: trustee, private_key: private_key) } }
       description { build(:description, start_date: start_date) }
     end

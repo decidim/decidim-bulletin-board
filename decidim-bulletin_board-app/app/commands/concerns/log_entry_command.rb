@@ -6,16 +6,18 @@ module LogEntryCommand
   extend ActiveSupport::Concern
 
   included do
+    include HasMessageIdentifier
+
     attr_accessor :client, :signed_data, :log_entry, :error, :response_message
     delegate :voting_scheme, to: :election
     delegate :decoded_data, to: :log_entry
 
     private
 
-    def build_log_entry(type)
+    def build_log_entry
       @log_entry = LogEntry.new(
+        message_id: message_id,
         signed_data: signed_data,
-        log_type: type,
         client: client
       )
     end
@@ -25,14 +27,16 @@ module LogEntryCommand
       @error.blank?
     end
 
-    def valid_log_entry?
+    def valid_log_entry?(type)
       run_validations do
         if decoded_data.blank?
           "Invalid signature"
         elsif decoded_error.present?
           decoded_error
-        elsif log_entry_type != log_entry.log_type
-          "The message has a wrong type"
+        elsif message_id != decoded_data["message_id"]
+          "The message identifier given doesn't match the signed data"
+        elsif message_identifier.type != type
+          "The message is not valid for this endpoint"
         elsif invalid_timestamp?
           "Message is too old to be accepted"
         end
@@ -46,7 +50,7 @@ module LogEntryCommand
     end
 
     def process_message
-      @response_message = voting_scheme.process_message(log_entry.decoded_data)
+      @response_message = voting_scheme.process_message(message_identifier, log_entry.decoded_data)
       election.voting_scheme_state = voting_scheme.backup
       true
     rescue VotingScheme::RejectedMessage => e
@@ -65,10 +69,6 @@ module LogEntryCommand
 
     def decoded_error
       @decoded_error ||= decoded_data[:error]
-    end
-
-    def log_entry_type
-      @log_entry_type ||= decoded_data["type"]
     end
   end
 end

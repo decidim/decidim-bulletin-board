@@ -4,12 +4,12 @@ require "rails_helper"
 
 module Mutations
   RSpec.describe CreateElectionMutation, type: :request do
-    subject { post "/api", params: { query: query, variables: { signedData: signed_data } }, headers: headers }
+    subject { post "/api", params: { query: query, variables: { messageId: message_id, signedData: signed_data } }, headers: headers }
 
     let(:query) do
       <<~GQL
-        mutation($signedData: String!) {
-          createElection(signedData: $signedData) {
+        mutation($messageId: String!, $signedData: String!) {
+          createElection(messageId: $messageId, signedData: $signedData) {
             election {
               id
               status
@@ -24,9 +24,10 @@ module Mutations
     end
     let(:headers) { { "Authorization": authority.api_key } }
     let(:authority) { create(:authority, private_key: private_key) }
+    let(:message_id) { payload["message_id"] }
+    let(:signed_data) { JWT.encode(payload.as_json, signature_key, "RS256") }
     let(:private_key) { generate(:private_key) }
     let(:signature_key) { private_key.keypair }
-    let(:signed_data) { JWT.encode(payload.as_json, signature_key, "RS256") }
     let(:payload) { build(:create_election_message, authority: authority) }
 
     it "setup an election" do
