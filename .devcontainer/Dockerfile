@@ -28,6 +28,3 @@ RUN curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version 1.22.10
 
 # [Optional] Uncomment this line to install global node packages.
 # RUN su vscode -c "source /usr/local/share/nvm/nvm.sh && npm install -g <your-package-here>" 2>&1
-
-# Install ElectionGuard dependencies
-RUN apt-get install -y libgmp-dev libmpfr-dev libmpc-dev
