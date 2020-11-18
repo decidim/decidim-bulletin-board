@@ -1,0 +1,8 @@
+mutation ProcessKeyCeremonyStep($signedData: String!) {
+  processKeyCeremonyStep(signedData: $signedData) {
+    pendingMessage {
+      signedData
+    }
+    error
+  }
+}
