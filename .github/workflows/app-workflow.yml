@@ -2,6 +2,7 @@ name: "[CI] Application"
 on:
   push:
     paths:
+      - ".github/workflows/app-workflow.yml"
       - "decidim-bulletin_board-app/**"
 
 env:
