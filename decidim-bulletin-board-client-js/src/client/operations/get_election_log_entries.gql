@@ -1,0 +1,8 @@
+query GetElectionLogEntries($electionId: String!) {
+  election(id: $electionId) {
+    logEntries {
+      logType
+      signedData
+    }
+  }
+}
