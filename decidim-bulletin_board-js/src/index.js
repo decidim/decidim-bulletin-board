@@ -1,1 +1,3 @@
-export const hello = "world!";
+import { Client } from "./client/client";
+
+export { Client };
