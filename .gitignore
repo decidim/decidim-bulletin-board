@@ -5,31 +5,31 @@
 #   git config --global core.excludesfile '~/.gitignore_global'
 
 # Ignore bundler config.
-/decidim-bulletin-board-app/.bundle
+/decidim-bulletin_board-app/.bundle
 
 # Ignore all logfiles and tempfiles.
-/decidim-bulletin-board-app/log/*
-/decidim-bulletin-board-app/tmp/*
-!/decidim-bulletin-board-app/log/.keep
-!/decidim-bulletin-board-app/tmp/.keep
+/decidim-bulletin_board-app/log/*
+/decidim-bulletin_board-app/tmp/*
+!/decidim-bulletin_board-app/log/.keep
+!/decidim-bulletin_board-app/tmp/.keep
 
 # Ignore pidfiles, but keep the directory.
-/decidim-bulletin-board-app/tmp/pids/*
-!/decidim-bulletin-board-app/tmp/pids/
-!/decidim-bulletin-board-app/tmp/pids/.keep
+/decidim-bulletin_board-app/tmp/pids/*
+!/decidim-bulletin_board-app/tmp/pids/
+!/decidim-bulletin_board-app/tmp/pids/.keep
 
 # Ignore uploaded files in development.
-/decidim-bulletin-board-app/storage/*
-!/decidim-bulletin-board-app/storage/.keep
+/decidim-bulletin_board-app/storage/*
+!/decidim-bulletin_board-app/storage/.keep
 
-/decidim-bulletin-board-app/public/assets
-/decidim-bulletin-board-app/.byebug_history
+/decidim-bulletin_board-app/public/assets
+/decidim-bulletin_board-app/.byebug_history
 
-/decidim-bulletin-board-app/public/packs
-/decidim-bulletin-board-app/public/packs-test
-/decidim-bulletin-board-app/node_modules
-/decidim-bulletin-board-app/yarn-error.log
-/decidim-bulletin-board-app/yarn-debug.log*
-/decidim-bulletin-board-app/.yarn-integrity
-/decidim-bulletin-board-app/.rubocop-https---raw-githubusercontent-com-decidim-decidim-master--rubocop-*
-/decidim-bulletin-board-app/spec/examples.txt
+/decidim-bulletin_board-app/public/packs
+/decidim-bulletin_board-app/public/packs-test
+/decidim-bulletin_board-app/node_modules
+/decidim-bulletin_board-app/yarn-error.log
+/decidim-bulletin_board-app/yarn-debug.log*
+/decidim-bulletin_board-app/.yarn-integrity
+/decidim-bulletin_board-app/.rubocop-https---raw-githubusercontent-com-decidim-decidim-master--rubocop-*
+/decidim-bulletin_board-app/spec/examples.txt

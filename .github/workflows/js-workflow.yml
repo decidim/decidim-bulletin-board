@@ -2,7 +2,7 @@ name: "[CI] JS Client"
 on:
   push:
     paths:
-      - "decidim-bulletin-board-client-js/**"
+      - "decidim-bulletin_board-js/**"
 
 env:
   CI: "true"
@@ -10,7 +10,7 @@ env:
 
 defaults:
   run:
-    working-directory: ./decidim-bulletin-board-client-js
+    working-directory: ./decidim-bulletin_board-js
 
 jobs:
   lint:
@@ -26,18 +26,18 @@ jobs:
       - name: Recover dependency cache
         uses: actions/cache@v1
         with:
-          path: ./decidim-bulletin-board-client-js/node_modules
-          key: ${{ runner.OS }}-decidim-bulletin-board-client-js-deps-${{ hashFiles('decidim-bulletin-board-client-js/package-lock.json') }}
+          path: ./decidim-bulletin_board-js/node_modules
+          key: ${{ runner.OS }}-decidim-bulletin_board-js-deps-${{ hashFiles('decidim-bulletin_board-js/package-lock.json') }}
           restore-keys: |
-            ${{ runner.OS }}-decidim-bulletin-board-client-js-deps-${{ env.cache-name }}-
-            ${{ runner.OS }}-decidim-bulletin-board-client-js-deps-
-            ${{ runner.OS }}-decidim-bulletin-board-client-js-
+            ${{ runner.OS }}-decidim-bulletin_board-js-deps-${{ env.cache-name }}-
+            ${{ runner.OS }}-decidim-bulletin_board-js-deps-
+            ${{ runner.OS }}-decidim-bulletin_board-js-
       - name: Install Node deps
         uses: nick-invision/retry@v1
         with:
           timeout_minutes: 10
           max_attempts: 3
-          command: cd decidim-bulletin-board-client-js && npm ci
+          command: cd decidim-bulletin_board-js && npm ci
       - run: npm run lint
         name: Lint JS files
   format:
@@ -53,18 +53,18 @@ jobs:
       - name: Recover dependency cache
         uses: actions/cache@v1
         with:
-          path: ./decidim-bulletin-board-client-js/node_modules
-          key: ${{ runner.OS }}-decidim-bulletin-board-client-js-deps-${{ hashFiles('decidim-bulletin-board-client-js/package-lock.json') }}
+          path: ./decidim-bulletin_board-js/node_modules
+          key: ${{ runner.OS }}-decidim-bulletin_board-js-deps-${{ hashFiles('decidim-bulletin_board-js/package-lock.json') }}
           restore-keys: |
-            ${{ runner.OS }}-decidim-bulletin-board-client-js-deps-${{ env.cache-name }}-
-            ${{ runner.OS }}-decidim-bulletin-board-client-js-deps-
-            ${{ runner.OS }}-decidim-bulletin-board-client-js-
+            ${{ runner.OS }}-decidim-bulletin_board-js-deps-${{ env.cache-name }}-
+            ${{ runner.OS }}-decidim-bulletin_board-js-deps-
+            ${{ runner.OS }}-decidim-bulletin_board-js-
       - name: Install Node deps
         uses: nick-invision/retry@v1
         with:
           timeout_minutes: 10
           max_attempts: 3
-          command: cd decidim-bulletin-board-client-js && npm ci
+          command: cd decidim-bulletin_board-js && npm ci
       - run: npm run format
         name: Format JS files
   test:
@@ -80,17 +80,17 @@ jobs:
       - name: Recover dependency cache
         uses: actions/cache@v1
         with:
-          path: ./decidim-bulletin-board-client-js/node_modules
-          key: ${{ runner.OS }}-decidim-bulletin-board-client-js-deps-${{ hashFiles('decidim-bulletin-board-client-js/package-lock.json') }}
+          path: ./decidim-bulletin_board-js/node_modules
+          key: ${{ runner.OS }}-decidim-bulletin_board-js-deps-${{ hashFiles('decidim-bulletin_board-js/package-lock.json') }}
           restore-keys: |
-            ${{ runner.OS }}-decidim-bulletin-board-client-js-deps-${{ env.cache-name }}-
-            ${{ runner.OS }}-decidim-bulletin-board-client-js-deps-
-            ${{ runner.OS }}-decidim-bulletin-board-client-js-
+            ${{ runner.OS }}-decidim-bulletin_board-js-deps-${{ env.cache-name }}-
+            ${{ runner.OS }}-decidim-bulletin_board-js-deps-
+            ${{ runner.OS }}-decidim-bulletin_board-js-
       - name: Install Node deps
         uses: nick-invision/retry@v1
         with:
           timeout_minutes: 10
           max_attempts: 3
-          command: cd decidim-bulletin-board-client-js && npm ci
+          command: cd decidim-bulletin_board-js && npm ci
       - run: npm run test
         name: Test JS files
