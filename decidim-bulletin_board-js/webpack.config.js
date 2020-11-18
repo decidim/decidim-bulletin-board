@@ -9,6 +9,9 @@ module.exports = (env) => ({
     library: "decidimBulletinBoard",
     libraryTarget: "window",
   },
+  resolve: {
+    extensions: [".js", ".gql"],
+  },
   devtool: "inline-source-map",
   module: {
     rules: [
@@ -17,6 +20,11 @@ module.exports = (env) => ({
         resolve: {
           fullySpecified: false,
         },
+      },
+      {
+        test: /\.(graphql|gql)$/,
+        exclude: /node_modules/,
+        loader: "graphql-tag/loader",
       },
     ],
   },
