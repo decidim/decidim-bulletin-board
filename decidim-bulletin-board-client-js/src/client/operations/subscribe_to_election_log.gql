@@ -1,5 +1,5 @@
 subscription SubscribeToElectionLog($electionUniqueId: String!) {
-  electionLogEntryAdded(uniqueId: $electionUniqueId) {
+  electionLogEntryAdded(electionUniqueId: $electionUniqueId) {
     logEntry {
       logType
       signedData

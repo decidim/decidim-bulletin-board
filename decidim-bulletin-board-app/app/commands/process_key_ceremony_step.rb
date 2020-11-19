@@ -32,6 +32,7 @@ class ProcessKeyCeremonyStep < Rectify::Command
 
       election.log_entries << log_entry
       log_entry.save!
+      LogEntryNotifier.new(log_entry).notify_subscribers
       create_response_log_entry!
       election.save!
     end
@@ -69,12 +70,16 @@ class ProcessKeyCeremonyStep < Rectify::Command
   def create_response_log_entry!
     return unless response_message
 
-    LogEntry.create!(
+    log_entry = LogEntry.create!(
       election: election,
       signed_data: BulletinBoard.sign(response_message),
       log_type: response_message[:type],
       bulletin_board: true
     )
+
+    LogEntryNotifier.new(log_entry).notify_subscribers
+
+    log_entry
   end
 
   def election
