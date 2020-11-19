@@ -23,6 +23,7 @@ module VotingScheme
     def process_key_ceremony_message(message)
       election_public_key = message.fetch("election_public_key", 0)
       raise RejectedMessage unless Prime.prime?(election_public_key)
+
       owner_id = message.fetch("owner_id", nil)
       raise RejectedMessage if owner_id.nil? || state[:trustees].include?(owner_id)
 

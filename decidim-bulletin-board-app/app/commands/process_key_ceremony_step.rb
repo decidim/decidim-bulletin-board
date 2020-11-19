@@ -69,6 +69,7 @@ class ProcessKeyCeremonyStep < Rectify::Command
   def create_response_log_entry!
     return unless response_message
 
+    LogEntry.create!(
       election: election,
       signed_data: BulletinBoard.sign(response_message),
       log_type: response_message[:type],
