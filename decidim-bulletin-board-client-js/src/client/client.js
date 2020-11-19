@@ -18,25 +18,28 @@ export class Client {
    * Query all log entries for the given election id.
    *
    * @param {Object} params - An object that include the following options.
-   *  - {String} electionId - The election's id.
+   *  - {String} electionUniqueId - The election's unique id.
    * @returns {Promise<Array<Object>>} - A collection of log entries.
    * @throws Will throw an error if the request is rejected.
    */
-  getElectionLogEntries({ electionId }) {
-    return this.apiClient.getElectionLogEntries({ electionId });
+  getElectionLogEntries({ electionUniqueId }) {
+    return this.apiClient.getElectionLogEntries({ electionUniqueId });
   }
 
   /**
    * Subscribes to an Observable and executes a callback function with each log entry added.
    *
    * @param {Object} params - An object that include the following options.
-   *  - {String} electionId - The election's id.
+   *  - {String} electionUniqueId - The election's unique id.
    * @param {Function} onNextLogEntryUpdate - A callback function that will be called with each log entry added the election.
    * @returns {Subscription} - A subscription object that can be manually unsubscribed.
    */
-  subscribeToElectionLogEntriesUpdates({ electionId }, onNextLogEntryUpdate) {
+  subscribeToElectionLogEntriesUpdates(
+    { electionUniqueId },
+    onNextLogEntryUpdate
+  ) {
     const subscription = this.apiClient.subscribeToElectionLogEntriesUpdates({
-      electionId,
+      electionUniqueId,
     });
 
     return subscription.subscribe((logEntry) => {
@@ -50,7 +53,7 @@ export class Client {
    * Process a key ceremony step sending a signed message.
    *
    * @param {Object} params - An object that include the following options.
-   *  - {String} electionId - The election's id.
+   *  - {String} signedData - The signed data to be processed.
    * @returns {Promise<Object>} - A pending message created.
    * @throws Will throw an error if the request is rejected or the data contains an error.
    */

@@ -29,6 +29,17 @@ module Types
       Election.all
     end
 
+    field :election,
+          Types::ElectionType, 
+          null: true,
+          description: "Returns an election given its unique_id" do
+      argument :unique_id, String, required: true
+    end
+
+    def election(unique_id:)
+      Election.find_by(unique_id: unique_id)
+    end
+
     field :pending_message,
           Types::PendingMessageType,
           null: true,
