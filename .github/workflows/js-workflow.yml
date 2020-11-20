@@ -2,6 +2,7 @@ name: "[CI] JS Client"
 on:
   push:
     paths:
+      - ".github/workflows/js-workflow.yml"
       - "decidim-bulletin_board-js/**"
 
 env:

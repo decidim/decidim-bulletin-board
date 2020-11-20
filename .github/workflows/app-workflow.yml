@@ -2,6 +2,7 @@ name: "[CI] Application"
 on:
   push:
     paths:
+      - ".github/workflows/app-workflow.yml"
       - "decidim-bulletin_board-app/**"
 
 env:
@@ -92,3 +93,7 @@ jobs:
           bundler exec rails db:migrate RAILS_ENV=test
       - name: Run tests
         run: bundler exec rake
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v1
+        with:
+          directory: ./decidim-bulletin_board-app/coverage

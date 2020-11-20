@@ -2,6 +2,7 @@ name: "[CI] Ruby Client"
 on:
   push:
     paths:
+      - ".github/workflows/ruby-workflow.yml"
       - "decidim-bulletin_board-ruby/**"
 
 env:
