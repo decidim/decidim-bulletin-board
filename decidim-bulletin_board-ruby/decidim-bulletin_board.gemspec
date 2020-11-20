@@ -26,7 +26,6 @@ Gem::Specification.new do |s|
   s.add_dependency "graphlient", "~> 0.4.0"
   s.add_dependency "jwt"
 
-  s.add_development_dependency "rubocop", "~> 0.92.0"
-  s.add_development_dependency "rubocop-rails", "~> 2.0"
-  s.add_development_dependency "rubocop-rspec", "~> 1.21"
+  s.add_development_dependency "rake", "~> 13.0"
+  s.add_development_dependency "rspec", "~> 3.7"
 end
