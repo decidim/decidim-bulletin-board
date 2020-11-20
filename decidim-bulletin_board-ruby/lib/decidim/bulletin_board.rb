@@ -1,9 +1,11 @@
 # frozen_string_literal: true
 
-require 'decidim/bulletin_board/version'
-require 'decidim/bulletin_board/jwk_utils'
-require 'decidim/bulletin_board/client'
-require 'decidim/bulletin_board/graphql_client'
+require "decidim/bulletin_board/version"
+require "graphlient"
+require "decidim/bulletin_board/jwk_utils"
+require "decidim/bulletin_board/client"
+require "decidim/bulletin_board/graphql/client"
+require "decidim/bulletin_board/create_election"
 
 module Decidim
   # This module holds all the logic for the Bulletin Board Ruby Client to connect
