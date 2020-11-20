@@ -34,10 +34,6 @@ module Decidim
         private_key && server && api_key
       end
 
-      def encode_data(election_data)
-        JWT.encode(election_data, private_key.keypair, 'RS256')
-      end
-
       private
 
       attr_reader :identification_private_key, :private_key
