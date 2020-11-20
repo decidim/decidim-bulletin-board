@@ -17,7 +17,7 @@ module Decidim
       def call
         signed_data = encode_data(@election_data)
 
-        response = @client.query do
+        @client.query do
           mutation do
             createElection(signedData: signed_data) do
               election do
@@ -29,14 +29,6 @@ module Decidim
               error
             end
           end
-        end
-
-        if response.data.create_election.error.present?
-          error = response.data.create_election.error
-          response.errors[:messages] << error
-        else
-          status = response.data.create_election.election.status
-          response.status = status
         end
       end
 
