@@ -47,6 +47,36 @@ RSpec.describe CreateElection do
     end
   end
 
+  context "when the voting scheme is invalid" do
+    let(:extra_message_params) { { voting_scheme: "paper" } }
+
+    it_behaves_like "create election fails"
+
+    it "broadcasts invalid" do
+      expect { subject }.to broadcast(:invalid, "A valid Voting Scheme must be specified")
+    end
+  end
+
+  context "when the title is missing" do
+    let(:extra_message_params) { { title: "" } }
+
+    it_behaves_like "create election fails"
+
+    it "broadcasts invalid" do
+      expect { subject }.to broadcast(:invalid, "Missing title")
+    end
+  end
+
+  context "when the start date is after the end date" do
+    let(:extra_message_params) { { start_date: 1.year.from_now } }
+
+    it_behaves_like "create election fails"
+
+    it "broadcasts invalid" do
+      expect { subject }.to broadcast(:invalid, "Starting date cannot be after the end date")
+    end
+  end
+
   context "when the start date is too soon" do
     let(:extra_message_params) { { start_date: 1.minute.from_now } }
 
@@ -54,6 +84,16 @@ RSpec.describe CreateElection do
 
     it "broadcasts invalid" do
       expect { subject }.to broadcast(:invalid, "Election should start at least in 2 hours from now.")
+    end
+  end
+
+  context "when there are no questions" do
+    let(:extra_message_params) { { number_of_questions: 0 } }
+
+    it_behaves_like "create election fails"
+
+    it "broadcasts invalid" do
+      expect { subject }.to broadcast(:invalid, "There must be at least 1 question for the election")
     end
   end
 end

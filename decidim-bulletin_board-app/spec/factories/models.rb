@@ -31,18 +31,18 @@ FactoryBot.define do
     transient do
       authority_private_key { generate(:private_key) }
       trustees_plus_keys { build_list(:trustee, 3).zip(generate_list(:private_key, 3)) }
-      voting_scheme { :dummy }
     end
 
     title { Faker::Name.name }
     authority { build(:authority, private_key: authority_private_key) }
     status { "key_ceremony" }
     unique_id { [authority.unique_id, generate(:election_id)].join(".") }
+    voting_scheme_state { Marshal.dump(joint_election_key: 1, trustees: []) }
 
     after(:build) do |election, evaluator|
       election.trustees << evaluator.trustees_plus_keys.map(&:first)
       election.log_entries << build(:log_entry, election: election, client: election.authority, private_key: evaluator.authority_private_key,
-                                                message: build(:create_election_message, voting_scheme: evaluator.voting_scheme,
+                                                message: build(:create_election_message, voting_scheme: :dummy,
                                                                                          trustees_plus_keys: evaluator.trustees_plus_keys))
     end
   end
@@ -57,5 +57,19 @@ FactoryBot.define do
     client { build(:authority, private_key: private_key) }
     message_id { message["message_id"] }
     signed_data { JWT.encode(message, private_key.keypair, "RS256") }
+  end
+
+  factory :pending_message, parent: :log_entry, class: :pending_message do
+    status { :enqueued }
+    election { nil }
+
+    trait :accepted do
+      status { :accepted }
+      election
+    end
+
+    trait :rejected do
+      status { :rejected }
+    end
   end
 end

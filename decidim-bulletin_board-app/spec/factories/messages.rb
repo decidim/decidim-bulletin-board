@@ -35,12 +35,14 @@ FactoryBot.define do
         trustees_plus_keys { build_list(:trustee, 3).zip(generate_list(:private_key, 3)) }
         voting_scheme { :dummy }
         election_id { "#{authority.unique_id}.#{generate(:election_id)}" }
+        number_of_questions { 2 }
+        title { Faker::Quotes::Shakespeare.as_you_like_it }
       end
 
       message_id { "#{election_id}.create_election+a.#{authority.unique_id}" }
       scheme { build(:voting_scheme, name: voting_scheme) }
       trustees { trustees_plus_keys.map { |trustee, private_key| build(:json_trustee, trustee: trustee, private_key: private_key) } }
-      description { build(:description, start_date: start_date) }
+      description { build(:description, number_of_questions: number_of_questions, start_date: start_date, title: title) }
     end
 
     factory :voting_scheme do
@@ -63,11 +65,16 @@ FactoryBot.define do
     end
 
     factory :description do
-      name { build(:text) }
+      transient do
+        number_of_questions { 2 }
+        title { Faker::Quotes::Shakespeare.as_you_like_it }
+      end
+
+      name { build(:text, value: title) }
       start_date { 1.week.from_now }
       end_date { 2.weeks.from_now }
       candidates { [] }
-      contests { build_list(:contest, 2) }
+      contests { build_list(:contest, number_of_questions) }
 
       after(:build) do |description|
         description[:contests].each_with_index do |contest, contest_order|
@@ -100,7 +107,11 @@ FactoryBot.define do
     end
 
     factory :text do
-      text { build_list(:text_value, 1) }
+      transient do
+        value { Faker::Quotes::Shakespeare.as_you_like_it }
+      end
+
+      text { build_list(:text_value, 1, value: value) }
     end
 
     factory :text_value do
@@ -131,8 +142,8 @@ FactoryBot.define do
       election_public_key { 3 }
       election_public_key_proof
 
-      trait :election_guard do
-        election_public_key { "UxmYOgII7XfkqtmIhkm2I3W5g83recLynlu+z6qK9/iSyB1hW+H7j7KpKnd+pLAOCnxrKA7Kglxk4x5jQdXfYRhiTkL9TzIhejVoXpFFEqH8I1+8mPCYMPY1GxBhZodbAl3CRSIRqS7IMQfFZ6gtZFjrij5P70SuXYyI+K2igVcQuG1BK8CKFXpzDxiKhbVltIjNk4un8K48lTkNqH+nyJ+GQiBUi+x2/gGxgF6naQO9Z/ZAgTcECf9J7LnPxY/0iFkAyJsQiyDpktPCVfy5aAfUYwbDxatIIoE7ujKXyxrbEHPu+VtX3GvLRb53kPp8Wuh3b8eDSagwmh4Fa/yHpcfq1CJSGT4C4K55VbtQ1PcMTQyGJEtgBjpU/3XGyLK1TarnmFlZonKRiuYhHMLKmj4E1F5jaJ12/AwS+jXjTASZwMHgVdflkMCH/rceutcLTKtISNtZdGmP9JcnQ1uOCr1EQe/2sTlz1M8YzvupoPtBUE9ZtgvxGzPKx+tldJQv1cqVsAYTmEL3McUFeK3YLa5819kAOdZ/1tGy3pk3mIRdbiD1GFyiW3MEOwEAKVikIxninC0TwIw0ZiKh5C6YP3mOTN2C8zmWle1uPihO7XLK0f4TKC0pyCMXklkyZa05ZmjWgctJ17RWjLE1boNVTFwFOmy3ASErzDGbJtu9g8A=" }
+      trait :invalid do
+        election_public_key { 4 }
       end
     end
 

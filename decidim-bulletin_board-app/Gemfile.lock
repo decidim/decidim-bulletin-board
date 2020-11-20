@@ -56,8 +56,6 @@ GEM
       minitest (~> 5.1)
       tzinfo (~> 1.1)
       zeitwerk (~> 2.2, >= 2.2.2)
-    addressable (2.7.0)
-      public_suffix (>= 2.0.2, < 5.0)
     ast (2.4.1)
     axiom-types (0.1.1)
       descendants_tracker (~> 0.0.4)
@@ -72,15 +70,6 @@ GEM
       msgpack (~> 1.0)
     builder (3.2.4)
     byebug (11.1.3)
-    capybara (3.33.0)
-      addressable
-      mini_mime (>= 0.1.3)
-      nokogiri (~> 1.8)
-      rack (>= 1.6.0)
-      rack-test (>= 0.6.3)
-      regexp_parser (~> 1.5)
-      xpath (~> 3.2)
-    childprocess (3.0.0)
     coderay (1.1.3)
     coercible (1.0.0)
       descendants_tracker (~> 0.0.1)
@@ -146,7 +135,6 @@ GEM
       method_source (~> 1.0)
     pry-rails (0.3.9)
       pry (>= 0.10.4)
-    public_suffix (4.0.6)
     puma (4.3.6)
       nio4r (~> 2.0)
     pycall (1.3.1)
@@ -194,7 +182,6 @@ GEM
       wisper (>= 1.6.1)
     redcarpet (3.5.0)
     redis (4.2.2)
-    regexp_parser (1.8.1)
     rspec-core (3.9.3)
       rspec-support (~> 3.9.3)
     rspec-expectations (3.9.2)
@@ -227,7 +214,6 @@ GEM
     rubocop-rspec (1.41.0)
       rubocop (>= 0.68.1)
     ruby-progressbar (1.10.1)
-    rubyzip (2.3.0)
     sass-rails (6.0.0)
       sassc-rails (~> 2.1, >= 2.1.1)
     sassc (2.4.0)
@@ -238,9 +224,6 @@ GEM
       sprockets (> 3.0)
       sprockets-rails
       tilt
-    selenium-webdriver (3.142.7)
-      childprocess (>= 0.5, < 4.0)
-      rubyzip (>= 1.2.2)
     simplecov (0.19.1)
       docile (~> 1.1)
       simplecov-html (~> 0.11)
@@ -281,10 +264,6 @@ GEM
       activemodel (>= 6.0.0)
       bindex (>= 0.4.0)
       railties (>= 6.0.0)
-    webdrivers (4.4.1)
-      nokogiri (~> 1.6)
-      rubyzip (>= 1.3.0)
-      selenium-webdriver (>= 3.0, < 4.0)
     webpacker (4.3.0)
       activesupport (>= 4.2)
       rack-proxy (>= 0.6.1)
@@ -294,8 +273,6 @@ GEM
     websocket-extensions (0.1.5)
     wisper (2.0.1)
     wisper-rspec (1.1.0)
-    xpath (3.2.0)
-      nokogiri (~> 1.8)
     zeitwerk (2.4.0)
 
 PLATFORMS
@@ -304,7 +281,6 @@ PLATFORMS
 DEPENDENCIES
   bootsnap (>= 1.4.2)
   byebug
-  capybara (>= 2.15)
   factory_bot_rails
   faker (~> 1.9)
   graphiql-rails
@@ -327,7 +303,6 @@ DEPENDENCIES
   rubocop-rails (~> 2.0)
   rubocop-rspec (~> 1.21)
   sass-rails (>= 6)
-  selenium-webdriver
   simplecov
   simplecov-cobertura
   spring
@@ -336,7 +311,6 @@ DEPENDENCIES
   turbolinks (~> 5)
   tzinfo-data
   web-console (>= 3.3.0)
-  webdrivers
   webpacker (~> 4.0)
   wisper-rspec
 
