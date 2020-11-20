@@ -24,18 +24,20 @@ FactoryBot.define do
 
     # Warning! All transient parameters should have a block to prevent them from
     # being added to the hash
+    factory :message do
+      iat { Time.now.to_i }
+    end
 
-    factory :create_election_message do
+    factory :create_election_message, parent: :message do
       transient do
         authority { build(:authority) }
         start_date { 1.week.from_now }
         trustees_plus_keys { build_list(:trustee, 3).zip(generate_list(:private_key, 3)) }
         voting_scheme { :dummy }
-        election_id { "#{authority.name.parameterize}.#{generate(:election_id)}" }
+        election_id { "#{authority.unique_id}.#{generate(:election_id)}" }
       end
 
-      iat { Time.now.to_i }
-      message_id { "#{election_id}.create_election+a.#{authority.name.parameterize}" }
+      message_id { "#{election_id}.create_election+a.#{authority.unique_id}" }
       scheme { build(:voting_scheme, name: voting_scheme) }
       trustees { trustees_plus_keys.map { |trustee, private_key| build(:json_trustee, trustee: trustee, private_key: private_key) } }
       description { build(:description, start_date: start_date) }
@@ -116,15 +118,13 @@ FactoryBot.define do
       candidate_id { generate(:candidate_id) }
     end
 
-    factory :key_ceremony_message do
+    factory :key_ceremony_message, parent: :message do
       transient do
         election { build(:election) }
         trustee { election.trustees.first }
       end
 
-      iat { Time.now.to_i }
       message_id { "#{election.unique_id}.key_ceremony.trustee_election_keys+t.#{trustee.unique_id}" }
-
       owner_id { trustee.unique_id }
       sequence_order { election.manifest["trustees"].find_index { |trustee_json| trustee_json["name"] == trustee.name } }
       auxiliary_public_key { "-----BEGIN PUBLIC KEY-----\nMIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEA6HhvGDSiKTN+Osb7m+Gt\nAKFzr00lrkN5PWvZXcQxO27VGe/007fH3w7okKszJdv4Rsc5Cu+Xf4F4EQhN2H3q\n9YT4Rck7KpnHX7RaktV8yhJb7O7+O6wLt9/AzLbHkGYJlnIJMHpG6bbL300kGmhI\nSqHzNikSTqJytkrjjgL3nL7AQXq6DGOzpn7DfIBlnZq6vdWDgT0Eqwc7FxPFHyxM\nYUBl86EjhPpvonfAVWlk9Wp55dpeXbI2JsI1uaJliQcJF5bWJcx03QbEMcvs4HUT\nBbku/qSklfuHc96ebGBMgzM7Qyp5DY5HWSg2x+tF0v5j1+ZALKrJcQgnNj3IaTzc\nG3prvjaWbUwdJLBkRD7Fz112ZatS0K/kbf17OZW254wFXuHx3/DCl0r/XXI4PFeR\nWzfGFga6OKRd5dJxpwVbJ38+t53IQPA94OIn/4Ly8n1KtKawzXwFg6+p1ALUAw/Y\nJiwOBeoVrt/ChMvl+fLLH5TLNnhFkF2C9Is2dM+Q0wEc9sTkIYT9TOGfDrIvJOk9\nO0LIdj/ojB9aNkZB6A90m1QtpjYRpza+OG3uMNsjC4xd7w28vjs6EQPK+eKcPQ44\nA/xoJoAZ735k9qMYRz9RCK52TqdTwWFUfvg+Rrh9g9s0I7tNNcgxUSYFY51WWL1+\n9VxP6xd8EJVFheoyHc6P5isCAwEAAQ==\n-----END PUBLIC KEY-----\n" }

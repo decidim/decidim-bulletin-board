@@ -37,35 +37,25 @@ FactoryBot.define do
     title { Faker::Name.name }
     authority { build(:authority, private_key: authority_private_key) }
     status { "key_ceremony" }
-    unique_id { [authority.name.parameterize, generate(:election_id)].join(".") }
+    unique_id { [authority.unique_id, generate(:election_id)].join(".") }
 
     after(:build) do |election, evaluator|
-      evaluator.trustees_plus_keys.each do |trustee, _key|
-        election.trustees << trustee
-      end
-      election.log_entries << build(:create_election_entry, election: election, client: election.authority,
-                                                            voting_scheme: evaluator.voting_scheme, private_key: evaluator.authority_private_key,
-                                                            trustees_plus_keys: evaluator.trustees_plus_keys)
+      election.trustees << evaluator.trustees_plus_keys.map(&:first)
+      election.log_entries << build(:log_entry, election: election, client: election.authority, private_key: evaluator.authority_private_key,
+                                                message: build(:create_election_message, voting_scheme: evaluator.voting_scheme,
+                                                                                         trustees_plus_keys: evaluator.trustees_plus_keys))
     end
   end
 
-  factory :election_trustee do
-    election
-    trustee
-  end
-
-  factory :create_election_entry, class: "LogEntry" do
+  factory :log_entry do
     transient do
-      trustees_plus_keys { build_list(:trustee, 3).zip(generate_list(:private_key, 3)) }
       private_key { generate(:private_key) }
-      voting_scheme { :dummy }
-      message { build(:create_election_message, voting_scheme: voting_scheme, trustees_plus_keys: trustees_plus_keys) }
+      message { {} }
     end
 
     election
     client { build(:authority, private_key: private_key) }
-    signed_data { JWT.encode(message, private_key.keypair, "RS256") }
-    chained_hash { Digest::SHA256.hexdigest(election.unique_id) }
     message_id { message["message_id"] }
+    signed_data { JWT.encode(message, private_key.keypair, "RS256") }
   end
 end

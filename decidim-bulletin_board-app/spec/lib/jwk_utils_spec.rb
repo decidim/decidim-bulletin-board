@@ -44,7 +44,7 @@ RSpec.describe JwkUtils do
 
   context "when working with a private key" do
     let(:json) { PRIVATE_KEY }
-    let(:jwk) { JwkUtils.import_private_key(json) }
+    let(:jwk) { subject.import_private_key(json) }
 
     it { expect(subject).to be_private_key(json) }
 
