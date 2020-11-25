@@ -11,7 +11,7 @@ Gem::Specification.new do |s|
   s.summary       = ''
   s.description   = ''
   s.homepage      = 'https://github.com'
-  s.license       = 'MIT'
+  s.license       = 'AGPL-3.0'
   s.required_ruby_version = Gem::Requirement.new('>= 2.3.0')
 
   # Specify which files should be added to the gem when it is released.
