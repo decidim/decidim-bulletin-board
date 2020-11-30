@@ -13,3 +13,6 @@
 
 # cached rubocop files
 .rubocop-http*
+
+# byebug history
+.byebug_history

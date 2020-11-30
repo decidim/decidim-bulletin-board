@@ -24,6 +24,7 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
 
   s.add_dependency "activesupport", "~> 5.0", ">= 5.0.0.1"
+  s.add_dependency "byebug", "~> 11.0"
   s.add_dependency "graphlient", "~> 0.4.0"
   s.add_dependency "jwt"
 
