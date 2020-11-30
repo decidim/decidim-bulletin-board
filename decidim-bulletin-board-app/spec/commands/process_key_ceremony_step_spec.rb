@@ -42,7 +42,7 @@ RSpec.describe ProcessKeyCeremonyStep do
   end
 
   context "when the voting scheme generates an answer" do
-    let(:voting_scheme_state) { Marshal.dump(trustees: trustees_plus_keys.size - 1, joint_election_key: 1) }
+    let(:voting_scheme_state) { Marshal.dump(trustees: (1..(trustees_plus_keys.size - 1)).to_a, joint_election_key: 1) }
 
     it "broadcast the election for the message" do
       expect { subject }.to broadcast(:election, election)
