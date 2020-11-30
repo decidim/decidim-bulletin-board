@@ -57,18 +57,18 @@ export class GraphQLClient {
   }
 
   /**
-   * Query all log entries for the given election id.
+   * Query all log entries for the given election unique id.
    *
    * @param {Object} params - An object that include the following options.
-   *  - {String} electionId - The election's id.
+   *  - {String} electionUniqueId - The election's unique id.
    * @returns {Promise<Array<Object>>} - A collection of log entries.
    * @throws Will throw an error if the request is rejected.
    */
-  async getElectionLogEntries({ electionId }) {
+  async getElectionLogEntries({ electionUniqueId }) {
     const result = await this.apolloClient.query({
       query: GET_ELECTION_LOG_ENTRIES,
       variables: {
-        electionId,
+        electionUniqueId,
       },
     });
 
@@ -80,15 +80,15 @@ export class GraphQLClient {
    * When a new log entry is added it maps the GraphQL result to a log entry.
    *
    * @param {Object} params - An object that include the following options.
-   *  - {String} electionId - The election's id.
+   *  - {String} electionUniqueId - The election's unique id.
    * @returns {Observable<Object>} - An observable that returns every log entry added.
    */
-  subscribeToElectionLogEntriesUpdates({ electionId }) {
+  subscribeToElectionLogEntriesUpdates({ electionUniqueId }) {
     return this.apolloClient
       .subscribe({
         query: SUBSCRIBE_TO_ELECTION_LOG,
         variables: {
-          electionId,
+          electionUniqueId,
         },
       })
       .map(
@@ -103,7 +103,7 @@ export class GraphQLClient {
    * Process a key ceremony step sending a signed message.
    *
    * @param {Object} params - An object that include the following options.
-   *  - {String} electionId - The election's id.
+   *  - {String} signedData - The signed data to be processed.
    * @returns {Promise<Object>} - A pending message created.
    * @throws Will throw an error if the request is rejected or the data contains an error.
    */

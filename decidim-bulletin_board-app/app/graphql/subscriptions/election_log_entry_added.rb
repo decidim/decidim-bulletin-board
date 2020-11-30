@@ -2,7 +2,7 @@
 
 module Subscriptions
   class ElectionLogEntryAdded < BaseSubscription
-    argument :election_id, String, required: true
+    argument :election_unique_id, String, required: true
 
     field :log_entry, Types::LogEntryType, null: false
   end
