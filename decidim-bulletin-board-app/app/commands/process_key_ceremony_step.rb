@@ -72,7 +72,7 @@ class ProcessKeyCeremonyStep < Rectify::Command
     LogEntry.create!(
       election: election,
       signed_data: BulletinBoard.sign(response_message),
-      log_type: :key_ceremony,
+      log_type: response_message[:type],
       bulletin_board: true
     )
   end
