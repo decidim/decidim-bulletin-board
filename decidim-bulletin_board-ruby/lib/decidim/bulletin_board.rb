@@ -7,6 +7,7 @@ require "decidim/bulletin_board/client"
 require "decidim/bulletin_board/graphql/client"
 require "decidim/bulletin_board/create_election"
 require "active_support/configurable"
+require "jwt"
 
 module Decidim
   # This module holds all the logic for the Bulletin Board Ruby Client to connect
