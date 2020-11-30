@@ -17,7 +17,7 @@ module Decidim
       def call
         signed_data = encode_data(@election_data)
 
-        @client.query do
+        response = @client.query do
           mutation do
             createElection(signedData: signed_data) do
               election do
@@ -30,6 +30,8 @@ module Decidim
             end
           end
         end
+
+        response.data.create_election
       end
 
       private
