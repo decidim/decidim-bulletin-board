@@ -1,10 +1,9 @@
-# rubocop:disable all
 # frozen_string_literal: true
 
 module Decidim
   module BulletinBoard
     module JwkUtils
-      JWK_PRIVATE_FIELDS = %i[d p q dp dq qi].freeze
+      JWK_PRIVATE_FIELDS = [:d, :p, :q, :dp, :dq, :qi].freeze
 
       def self.thumbprint(json)
         Base64.urlsafe_encode64(Digest::SHA256.digest(json.slice(:e, :kty, :n).to_json), padding: false)
@@ -24,7 +23,7 @@ module Decidim
       end
 
       def self.private_export(jwk)
-        raise 'Not a private key' unless jwk.private?
+        raise "Not a private key" unless jwk.private?
 
         jwk.export.merge(
           d: encode_open_ssl_bn(jwk.keypair.d),
@@ -48,4 +47,3 @@ module Decidim
     end
   end
 end
-# rubocop:enable all
