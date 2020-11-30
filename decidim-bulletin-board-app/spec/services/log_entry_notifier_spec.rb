@@ -3,9 +3,10 @@
 require "rails_helper"
 
 RSpec.describe LogEntryNotifier do
+  subject { described_class.new(log_entry) }
+
   let(:election) { create(:election) }
   let(:log_entry) { election.log_entries.first }
-  subject { described_class.new(log_entry) }
 
   describe "notify_subscribers" do
     it "triggers the `election_log_entry_added` subscription with the correct params" do

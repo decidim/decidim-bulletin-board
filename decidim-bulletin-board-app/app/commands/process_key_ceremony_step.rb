@@ -11,6 +11,7 @@ class ProcessKeyCeremonyStep < Rectify::Command
   def initialize(trustee, signed_data)
     @client = @trustee = trustee
     @signed_data = signed_data
+    @response_log_entry = nil
   end
 
   # Executes the command. Broadcasts these events:
@@ -32,17 +33,19 @@ class ProcessKeyCeremonyStep < Rectify::Command
 
       election.log_entries << log_entry
       log_entry.save!
-      LogEntryNotifier.new(log_entry).notify_subscribers
       create_response_log_entry!
       election.save!
     end
+
+    LogEntryNotifier.new(log_entry).notify_subscribers
+    LogEntryNotifier.new(response_log_entry).notify_subscribers if response_log_entry.present?
 
     broadcast(:processed)
   end
 
   private
 
-  attr_accessor :trustee, :invalid_message, :response_message
+  attr_accessor :trustee, :invalid_message, :response_message, :response_log_entry
   delegate :voting_scheme, to: :election
 
   def invalid_format?
@@ -70,16 +73,12 @@ class ProcessKeyCeremonyStep < Rectify::Command
   def create_response_log_entry!
     return unless response_message
 
-    log_entry = LogEntry.create!(
+    @response_log_entry = LogEntry.create!(
       election: election,
       signed_data: BulletinBoard.sign(response_message),
       log_type: response_message[:type],
       bulletin_board: true
     )
-
-    LogEntryNotifier.new(log_entry).notify_subscribers
-
-    log_entry
   end
 
   def election

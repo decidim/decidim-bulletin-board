@@ -19,7 +19,7 @@ RSpec.describe "GetElectionLogEntries" do
             signedData
           }
         }
-      }    
+      }
     GQL
   end
   let(:election) { create(:election) }

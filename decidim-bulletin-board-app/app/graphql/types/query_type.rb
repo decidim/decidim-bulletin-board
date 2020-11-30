@@ -30,7 +30,7 @@ module Types
     end
 
     field :election,
-          Types::ElectionType, 
+          Types::ElectionType,
           null: true,
           description: "Returns an election given its unique_id" do
       argument :unique_id, String, required: true
