@@ -6,7 +6,7 @@ module VotingScheme
   # A dummy implementation of a voting scheme, only for tests purposes
   class Dummy < Base
     def initial_state
-      { joint_election_key: 1, trustees: 0 }
+      { joint_election_key: 1, trustees: [] }
     end
 
     def validate_election
@@ -24,10 +24,13 @@ module VotingScheme
       election_public_key = message.fetch("election_public_key", 0)
       raise RejectedMessage unless Prime.prime?(election_public_key)
 
-      state[:trustees] += 1
+      owner_id = message.fetch("owner_id", nil)
+      raise RejectedMessage if owner_id.nil? || state[:trustees].include?(owner_id)
+
+      state[:trustees] << owner_id
       state[:joint_election_key] *= election_public_key
 
-      if state[:trustees] == election.trustees.count
+      if state[:trustees].length == election.trustees.count
         election.status = :ready
         {
           type: :joint_election_key,
