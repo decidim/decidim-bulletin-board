@@ -7,7 +7,6 @@ import {
 import { getMainDefinition } from "@apollo/client/utilities";
 import ActionCableLink from "graphql-ruby-client/dist/subscriptions/ActionCableLink";
 import ActionCable from "actioncable";
-import { map } from "rxjs/operators";
 
 import GET_ELECTION_LOG_ENTRIES from "./operations/get_election_log_entries";
 import SUBSCRIBE_TO_ELECTION_LOG from "./operations/subscribe_to_election_log";
@@ -92,7 +91,12 @@ export class GraphQLClient {
           electionId,
         },
       })
-      .pipe(map(({ data }) => data.electionLogEntryAdded.logEntry));
+      .map(
+        ({ data }) =>
+          data &&
+          data.electionLogEntryAdded &&
+          data.electionLogEntryAdded.logEntry
+      );
   }
 
   /**
