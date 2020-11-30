@@ -39,7 +39,11 @@ export class Client {
       electionId,
     });
 
-    return subscription.subscribe(onNextLogEntryUpdate);
+    return subscription.subscribe((logEntry) => {
+      if (logEntry) {
+        onNextLogEntryUpdate(logEntry);
+      }
+    });
   }
 
   /**
