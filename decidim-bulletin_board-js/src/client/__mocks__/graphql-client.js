@@ -35,9 +35,9 @@ export class GraphQLClient {
     this.electionLogEntriesUpdates = new Subject();
   }
 
-  getElectionLogEntries({ electionId }) {
+  getElectionLogEntries({ electionUniqueId }) {
     return Promise.resolve(
-      logEntriesByElection[electionId].data.election.logEntries
+      logEntriesByElection[electionUniqueId].data.election.logEntries
     );
   }
 

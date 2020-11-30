@@ -30,7 +30,7 @@ describe("GraphQLClient", () => {
       );
 
       const logEntries = await client.getElectionLogEntries({
-        electionId: "example.1",
+        electionUniqueId: "example.1",
       });
 
       expect(logEntries).toEqual(logEntriesResult);
@@ -41,7 +41,7 @@ describe("GraphQLClient", () => {
 
       await expect(
         client.getElectionLogEntries({
-          electionId: "example.1",
+          electionUniqueId: "example.1",
         })
       ).rejects.toThrow("something went wrong");
     });
@@ -60,7 +60,7 @@ describe("GraphQLClient", () => {
       );
 
       const pendingMessage = await client.processKeyCeremonyStep({
-        electionId: "example.1",
+        electionUniqueId: "example.1",
       });
 
       expect(pendingMessage).toEqual(pendingMessageResult);
@@ -79,7 +79,7 @@ describe("GraphQLClient", () => {
 
       await expect(
         client.processKeyCeremonyStep({
-          electionId: "example.1",
+          electionUniqueId: "example.1",
         })
       ).rejects.toThrow(errorMessage);
     });
@@ -89,7 +89,7 @@ describe("GraphQLClient", () => {
 
       await expect(
         client.processKeyCeremonyStep({
-          electionId: "example.1",
+          electionUniqueId: "example.1",
         })
       ).rejects.toThrow("something went wrong");
     });
