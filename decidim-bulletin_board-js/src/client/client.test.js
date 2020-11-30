@@ -28,7 +28,7 @@ describe("Client", () => {
   describe("getElectionLogEntries", () => {
     it("returns all the log entries from the corresponding election", async () => {
       const entries = await client.getElectionLogEntries({
-        electionId: "election-1",
+        electionUniqueId: "election-1",
       });
       expect(entries.length).toEqual(2);
     });
@@ -40,7 +40,7 @@ describe("Client", () => {
         signedData: "some-signed-data",
       };
       client.subscribeToElectionLogEntriesUpdates(
-        { electionId: "election-1" },
+        { electionUniqueId: "election-1" },
         (logEntry) => {
           expect(logEntry).toEqual(logEntryUpdate);
           done();
