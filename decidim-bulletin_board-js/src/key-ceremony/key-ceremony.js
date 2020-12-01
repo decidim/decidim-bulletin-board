@@ -1,6 +1,10 @@
+import { Subject } from "rxjs";
 import { Trustee } from "../trustee/trustee";
 
 export const WAIT_TIME_MS = 1_000; // 1s
+export const MESSAGE_RECEIVED = "[Message] Received";
+export const MESSAGE_PROCESSED = "[Message] Processed";
+
 const DEFAULT_STATE = { message: null, done: false };
 
 /**
@@ -22,6 +26,7 @@ export class KeyCeremony {
     this.electionContext = electionContext;
     this.currentTrustee = null;
     this.options = options || { bulletinBoardWaitTime: WAIT_TIME_MS };
+    this.events = new Subject();
   }
 
   /**
@@ -31,13 +36,16 @@ export class KeyCeremony {
    * @returns {Promise<void>}
    */
   async setup() {
-    const { id: electionId, currentTrusteeContext } = this.electionContext;
+    const {
+      id: electionUniqueId,
+      currentTrusteeContext,
+    } = this.electionContext;
 
     this.currentTrustee = new Trustee(currentTrusteeContext);
 
     this.electionLogEntries = await this.bulletinBoardClient.getElectionLogEntries(
       {
-        electionId,
+        electionUniqueId,
       }
     );
 
@@ -45,7 +53,7 @@ export class KeyCeremony {
 
     this.subscription = this.bulletinBoardClient.subscribeToElectionLogEntriesUpdates(
       {
-        electionId,
+        electionUniqueId,
       },
       (logEntry) => {
         this.electionLogEntries = [...this.electionLogEntries, logEntry];
@@ -114,9 +122,20 @@ export class KeyCeremony {
    * @returns {Promise<Object|null>}
    */
   async processNextLogEntry() {
-    const result = await this.currentTrustee.processLogEntry(
-      this.electionLogEntries[this.nextLogEntryIndexToProcess]
-    );
+    const message = this.electionLogEntries[this.nextLogEntryIndexToProcess];
+
+    this.events.next({
+      type: MESSAGE_RECEIVED,
+      message,
+    });
+
+    const result = await this.currentTrustee.processLogEntry(message);
+
+    this.events.next({
+      type: MESSAGE_PROCESSED,
+      message,
+      result,
+    });
 
     this.nextLogEntryIndexToProcess += 1;
 
