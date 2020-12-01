@@ -24,6 +24,11 @@ RSpec.describe EnqueueMessage do
     expect(PendingMessage.last.client).to eq(client)
   end
 
+  it "stores the message election" do
+    subject
+    expect(PendingMessage.last.election).to eq(election)
+  end
+
   it "stores the message identifier" do
     subject
     expect(PendingMessage.last.message_id).to eq(message_id)
