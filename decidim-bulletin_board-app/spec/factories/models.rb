@@ -49,12 +49,13 @@ FactoryBot.define do
 
   factory :log_entry do
     transient do
+      authority { build(:authority, private_key: private_key) }
       private_key { generate(:private_key) }
       message { {} }
     end
 
-    election
-    client { build(:authority, private_key: private_key) }
+    election { build(:election, authority: authority, authority_private_key: private_key) }
+    client { authority }
     message_id { message["message_id"] }
     signed_data { JWT.encode(message, private_key.keypair, "RS256") }
   end

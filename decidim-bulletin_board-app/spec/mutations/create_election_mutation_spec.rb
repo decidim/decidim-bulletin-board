@@ -18,6 +18,7 @@ module Mutations
                 id
               }
             }
+            error
           }
         }
       GQL
@@ -47,8 +48,28 @@ module Mutations
           authority: {
             id: authority.unique_id
           }
-        }
+        },
+        error: nil
       )
+    end
+
+    context "when the authority is not authorized" do
+      let(:headers) { {} }
+
+      it "doesn't create an election" do
+        expect { subject }.not_to change(Election, :count)
+      end
+
+      it "returns an error message" do
+        subject
+        json = JSON.parse(response.body, symbolize_names: true)
+        data = json.dig(:data, :createElection)
+
+        expect(data).to include(
+          election: nil,
+          error: "Authority not found"
+        )
+      end
     end
   end
 end

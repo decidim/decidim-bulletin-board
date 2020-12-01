@@ -19,6 +19,21 @@ RSpec.describe EnqueueMessage do
     expect { subject }.to change(PendingMessage, :count).by(1)
   end
 
+  it "stores the message client" do
+    subject
+    expect(PendingMessage.last.client).to eq(client)
+  end
+
+  it "stores the message identifier" do
+    subject
+    expect(PendingMessage.last.message_id).to eq(message_id)
+  end
+
+  it "stores the message signed data" do
+    subject
+    expect(PendingMessage.last.signed_data).to eq(signed_data)
+  end
+
   it "enqueues the job to process the message", :jobs do
     subject
     expect(job).to have_been_enqueued
