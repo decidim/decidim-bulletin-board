@@ -7,6 +7,6 @@ class PendingMessage < ApplicationRecord
   enum status: [:enqueued, :rejected, :accepted].map { |status| [status, status.to_s] }.to_h
 
   def processed?
-    (accepted? && election) || rejected?
+    accepted? || rejected?
   end
 end
