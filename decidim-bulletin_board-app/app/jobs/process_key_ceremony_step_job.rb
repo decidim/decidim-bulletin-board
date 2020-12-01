@@ -23,5 +23,3 @@ class ProcessKeyCeremonyStepJob < ApplicationJob
     end
   end
 end
-
-class MessageNotProcessed < StandardError; end
