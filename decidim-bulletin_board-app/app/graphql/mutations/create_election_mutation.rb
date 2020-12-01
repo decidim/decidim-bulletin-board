@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
-require "message_identifier"
-
 module Mutations
-  class CreateElectionMutation < GraphQL::Schema::Mutation
+  class CreateElectionMutation < BaseMutation
     argument :message_id, String, required: true
     argument :signed_data, String, required: true
 
@@ -27,13 +25,6 @@ module Mutations
       end
 
       result
-    end
-
-    private
-
-    def find_authority(message_id)
-      message_identifier = MessageIdentifier.new(message_id)
-      message_identifier.from_authority? && Authority.find_by(unique_id: message_identifier.author_id, api_key: context[:token])
     end
   end
 end
