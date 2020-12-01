@@ -1,7 +1,11 @@
 import { tap } from "rxjs/operators";
 import { Subject } from "rxjs";
 
-import { KeyCeremony } from "./key-ceremony";
+import {
+  KeyCeremony,
+  MESSAGE_RECEIVED,
+  MESSAGE_PROCESSED,
+} from "./key-ceremony";
 
 jest.mock("../trustee/trustee");
 
@@ -135,6 +139,56 @@ describe("KeyCeremony", () => {
       });
       expect(result).toEqual({
         signedData: "5678",
+      });
+    });
+
+    it("reports all the events", async () => {
+      let events = [];
+
+      electionLogEntriesUpdates.next({
+        logType: "dummy.nothing",
+        signedData: "1234",
+      });
+      electionLogEntriesUpdates.next({
+        logType: "dummy.done",
+        signedData: "5678",
+      });
+
+      keyCeremony.events.subscribe((event) => {
+        events = [...events, event];
+      });
+
+      await keyCeremony.run();
+
+      expect(events[0]).toEqual({
+        type: MESSAGE_RECEIVED,
+        message: {
+          logType: "dummy.nothing",
+          signedData: "1234",
+        },
+      });
+      expect(events[1]).toEqual({
+        type: MESSAGE_PROCESSED,
+        message: {
+          logType: "dummy.nothing",
+          signedData: "1234",
+        },
+        result: null,
+      });
+      expect(events[2]).toEqual({
+        type: MESSAGE_RECEIVED,
+        message: {
+          logType: "dummy.done",
+          signedData: "5678",
+        },
+      });
+      expect(events[3]).toEqual({
+        type: MESSAGE_PROCESSED,
+        message: {
+          logType: "dummy.done",
+          signedData: "5678",
+        },
+        result: { done: true, message: { signedData: "5678" } },
       });
     });
   });
