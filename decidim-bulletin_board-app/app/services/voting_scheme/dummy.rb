@@ -40,5 +40,9 @@ module VotingScheme
                       "joint_election_key" => state[:joint_election_key]
       end
     end
+
+    def process_vote_message(message)
+      raise RejectedMessage, "The given ballot style is invalid" if message.fetch("ballot_style", "invalid-style") == "invalid-style"
+    end
   end
 end
