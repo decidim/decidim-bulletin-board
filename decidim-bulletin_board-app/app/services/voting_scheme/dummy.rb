@@ -5,18 +5,25 @@ require "prime"
 module VotingScheme
   # A dummy implementation of a voting scheme, only for tests purposes
   class Dummy < Base
-    def process_message(message_id, message)
-      method_name = :"process_#{message_id.type}_message"
-      method(method_name).call(message) if respond_to?(method_name, true)
+    def process_message(message_identifier, message)
+      method_name = :"process_#{message_identifier.type}_message"
+      if respond_to?(method_name, true)
+        @response = nil
+        method(method_name).call(message)
+        @response
+      end
     end
 
     private
+
+    def emit_response(response)
+      @response = response
+    end
 
     def process_create_election_message(message)
       raise RejectedMessage, "There must be at least 2 Trustees" if message.fetch("trustees", []).count < 2
 
       @state = { joint_election_key: 1, trustees: [] }
-      nil
     end
 
     def process_key_ceremony_message(message)
@@ -29,10 +36,8 @@ module VotingScheme
 
       if state[:trustees].count == election.trustees.count
         election.status = :ready
-        {
-          "message_id" => "#{election.unique_id}.key_ceremony.joint_election_key+b.#{BulletinBoard.unique_id}",
-          "joint_election_key" => state[:joint_election_key]
-        }
+        emit_response "message_id" => "#{election.unique_id}.key_ceremony.joint_election_key+b.#{BulletinBoard.unique_id}",
+                      "joint_election_key" => state[:joint_election_key]
       end
     end
   end
