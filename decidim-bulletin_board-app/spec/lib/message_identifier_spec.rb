@@ -10,6 +10,7 @@ RSpec.describe MessageIdentifier do
 
   it { expect(subject).to be_from_authority }
   it { expect(subject).not_to be_from_trustee }
+  it { expect(subject).not_to be_from_voter }
   it { expect(subject.author_type).to eq(:authority) }
   it { expect(subject.author_id).to eq("decidim-barcelona") }
   it { expect(subject.authority_id).to eq("decidim-barcelona") }
@@ -23,6 +24,7 @@ RSpec.describe MessageIdentifier do
 
     it { expect(subject).not_to be_from_authority }
     it { expect(subject).to be_from_trustee }
+    it { expect(subject).not_to be_from_voter }
     it { expect(subject.author_type).to eq(:trustee) }
     it { expect(subject.author_id).to eq("trustee-1") }
     it { expect(subject.authority_id).to eq("decidim-barcelona") }
@@ -37,6 +39,7 @@ RSpec.describe MessageIdentifier do
 
     it { expect(subject).not_to be_from_authority }
     it { expect(subject).not_to be_from_trustee }
+    it { expect(subject).not_to be_from_voter }
     it { expect(subject.author_type).to eq(:bulletin_board) }
     it { expect(subject.author_id).to eq("metadecidim") }
     it { expect(subject.authority_id).to eq("decidim-barcelona") }
@@ -51,6 +54,7 @@ RSpec.describe MessageIdentifier do
 
     it { expect(subject).not_to be_from_authority }
     it { expect(subject).not_to be_from_trustee }
+    it { expect(subject).to be_from_voter }
     it { expect(subject.author_type).to eq(:voter) }
     it { expect(subject.author_id).to eq("50ad41624c25e493aa1dc7f4ab32bdc5a3b0b78ecc35b539") }
     it { expect(subject.authority_id).to eq("decidim-barcelona") }
