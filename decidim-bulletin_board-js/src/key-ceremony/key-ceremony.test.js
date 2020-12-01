@@ -59,7 +59,7 @@ describe("KeyCeremony", () => {
 
     it("query all the log entries for the given election context", () => {
       expect(bulletinBoardClient.getElectionLogEntries).toHaveBeenCalledWith({
-        electionId: electionContext.id,
+        electionUniqueId: electionContext.id,
       });
       expect(keyCeremony.electionLogEntries.length).toEqual(0);
     });
@@ -68,7 +68,7 @@ describe("KeyCeremony", () => {
       expect(
         bulletinBoardClient.subscribeToElectionLogEntriesUpdates
       ).toHaveBeenCalledWith(
-        { electionId: electionContext.id },
+        { electionUniqueId: electionContext.id },
         expect.any(Function)
       );
 

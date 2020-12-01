@@ -31,13 +31,16 @@ export class KeyCeremony {
    * @returns {Promise<void>}
    */
   async setup() {
-    const { id: electionId, currentTrusteeContext } = this.electionContext;
+    const {
+      id: electionUniqueId,
+      currentTrusteeContext,
+    } = this.electionContext;
 
     this.currentTrustee = new Trustee(currentTrusteeContext);
 
     this.electionLogEntries = await this.bulletinBoardClient.getElectionLogEntries(
       {
-        electionId,
+        electionUniqueId,
       }
     );
 
@@ -45,7 +48,7 @@ export class KeyCeremony {
 
     this.subscription = this.bulletinBoardClient.subscribeToElectionLogEntriesUpdates(
       {
-        electionId,
+        electionUniqueId,
       },
       (logEntry) => {
         this.electionLogEntries = [...this.electionLogEntries, logEntry];
