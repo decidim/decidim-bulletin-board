@@ -22,8 +22,8 @@ RSpec.describe ProcessKeyCeremonyStep do
   let(:message_type) { :key_ceremony_message }
   let(:message_params) { { election: election, trustee: trustee } }
 
-  it "broadcast processed" do
-    expect { subject }.to broadcast(:processed)
+  it "broadcast ok" do
+    expect { subject }.to broadcast(:ok)
   end
 
   it "creates the log entry for the message" do
@@ -41,8 +41,8 @@ RSpec.describe ProcessKeyCeremonyStep do
   context "when the voting scheme generates an answer" do
     let(:public_keys_already_sent) { trustees_plus_keys.map(&:first).excluding(trustee) }
 
-    it "broadcast processed" do
-      expect { subject }.to broadcast(:processed)
+    it "broadcast ok" do
+      expect { subject }.to broadcast(:ok)
     end
 
     it "creates the log entry for the message and another for the response" do

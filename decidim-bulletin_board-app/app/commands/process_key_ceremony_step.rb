@@ -22,8 +22,6 @@ class ProcessKeyCeremonyStep < Rectify::Command
   #
   # Returns nothing.
   def call
-    build_log_entry
-
     return broadcast(:invalid, error) unless
       valid_log_entry?("key_ceremony")
 
@@ -38,7 +36,7 @@ class ProcessKeyCeremonyStep < Rectify::Command
       election.save!
     end
 
-    broadcast(:processed)
+    broadcast(:ok)
   end
 
   private

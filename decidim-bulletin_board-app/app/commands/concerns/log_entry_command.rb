@@ -8,14 +8,14 @@ module LogEntryCommand
   included do
     include HasMessageIdentifier
 
-    attr_accessor :client, :signed_data, :log_entry, :error, :response_message
+    attr_accessor :client, :signed_data, :error, :response_message
     delegate :voting_scheme, to: :election
     delegate :decoded_data, to: :log_entry
 
     private
 
-    def build_log_entry
-      @log_entry = LogEntry.new(
+    def log_entry
+      @log_entry ||= LogEntry.new(
         message_id: message_id,
         signed_data: signed_data,
         client: client
