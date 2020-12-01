@@ -17,7 +17,6 @@ class ProcessKeyCeremonyStep < Rectify::Command
 
   # Executes the command. Broadcasts these events:
   #
-  # - :election with the election model referred by the message
   # - :processed when everything is valid.
   # - :invalid if the received data wasn't valid.
   #
@@ -29,8 +28,6 @@ class ProcessKeyCeremonyStep < Rectify::Command
       valid_log_entry?("key_ceremony")
 
     election.with_lock do
-      broadcast(:election, election)
-
       return broadcast(:invalid, error) unless
         valid_step?(election.key_ceremony?) &&
         process_message
