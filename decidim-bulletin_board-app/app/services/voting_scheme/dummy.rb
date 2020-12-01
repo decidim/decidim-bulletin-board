@@ -21,7 +21,7 @@ module VotingScheme
 
     def process_key_ceremony_message(message)
       election_public_key = message.fetch("election_public_key", 0)
-      raise RejectedMessage, "The trustee already sent their public keys" if state[:trustees].include?(message["owner_id"])
+      raise RejectedMessage, "The trustee sent their public keys already" if state[:trustees].include?(message["owner_id"])
       raise RejectedMessage, "The election public key should be a prime number" unless Prime.prime?(election_public_key)
 
       state[:trustees] << message["owner_id"]

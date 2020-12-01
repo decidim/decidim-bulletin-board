@@ -84,7 +84,7 @@ RSpec.describe ProcessKeyCeremonyStep do
     it_behaves_like "key ceremony fails"
 
     it "broadcasts invalid" do
-      expect { subject }.to broadcast(:invalid, "The trustee already sent their public keys")
+      expect { subject }.to broadcast(:invalid, "The trustee sent their public keys already")
     end
   end
 
