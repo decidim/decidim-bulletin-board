@@ -3,6 +3,7 @@
 require "bundler/setup"
 require "decidim/bulletin_board"
 require "byebug"
+require "webmock/rspec"
 
 RSpec.configure do |config|
   config.color = true
