@@ -43,3 +43,7 @@ bundle exec rubocop
 ```
 bundle exec rspec
 ```
+
+## License
+
+See [Decidim](https://github.com/decidim/decidim).

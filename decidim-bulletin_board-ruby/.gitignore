@@ -9,3 +9,10 @@
 
 # rspec failure tracking
 .rspec_status
+.rspec-failures
+
+# cached rubocop files
+.rubocop-http*
+
+# byebug history
+.byebug_history
