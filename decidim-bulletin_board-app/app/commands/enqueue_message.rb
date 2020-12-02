@@ -38,12 +38,13 @@ class EnqueueMessage < Rectify::Command
   attr_reader :client, :signed_data, :job, :pending_message
 
   def valid?
-    client && message_id && signed_data && job
+    client && election && message_id && signed_data && job
   end
 
   def create_pending_message!
     @pending_message = PendingMessage.create!(
       client: client,
+      election: election,
       message_id: message_id,
       signed_data: signed_data,
       status: :enqueued

@@ -56,7 +56,9 @@ module Mutations
           client: {
             id: trustee.unique_id
           },
-          election: nil,
+          election: {
+            id: election.unique_id
+          },
           signedData: signed_data,
           status: "enqueued"
         },

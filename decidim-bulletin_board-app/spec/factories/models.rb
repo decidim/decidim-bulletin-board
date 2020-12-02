@@ -62,11 +62,9 @@ FactoryBot.define do
 
   factory :pending_message, parent: :log_entry, class: :pending_message do
     status { :enqueued }
-    election { nil }
 
     trait :accepted do
       status { :accepted }
-      election
     end
 
     trait :rejected do

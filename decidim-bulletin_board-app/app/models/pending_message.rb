@@ -2,11 +2,11 @@
 
 class PendingMessage < ApplicationRecord
   belongs_to :client
-  belongs_to :election, optional: true
+  belongs_to :election
 
   enum status: [:enqueued, :rejected, :accepted].map { |status| [status, status.to_s] }.to_h
 
   def processed?
-    (accepted? && election) || rejected?
+    accepted? || rejected?
   end
 end
