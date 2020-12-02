@@ -1,1 +1,1 @@
-inherit_from: https://raw.githubusercontent.com/decidim/decidim/chore/move-rubocop-files/.rubocop_ruby.yml
+inherit_from: https://raw.githubusercontent.com/decidim/decidim/develop/.rubocop_ruby.yml
