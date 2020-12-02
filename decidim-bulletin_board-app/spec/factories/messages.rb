@@ -171,7 +171,7 @@ FactoryBot.define do
       end
 
       message_id { "#{election.unique_id}.vote.cast+v.#{_object_id}" }
-      ballot_style { 'ballot-style' }
+      ballot_style { "ballot-style" }
       contests { build_list(:contest_ballot, number_of_questions) }
       _object_id { generate(:voter_id) }
       previous_tracking_hash { "" }
