@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_11_05_150616) do
+ActiveRecord::Schema.define(version: 2020_11_17_095739) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -57,7 +57,7 @@ ActiveRecord::Schema.define(version: 2020_11_05_150616) do
     t.bigint "client_id"
     t.text "signed_data", null: false
     t.text "chained_hash", null: false
-    t.string "log_type", null: false
+    t.string "message_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["chained_hash"], name: "index_log_entries_on_chained_hash", unique: true
@@ -72,6 +72,7 @@ ActiveRecord::Schema.define(version: 2020_11_05_150616) do
     t.string "status", default: "0", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.string "message_id", null: false
     t.index ["client_id"], name: "index_pending_messages_on_client_id"
     t.index ["election_id"], name: "index_pending_messages_on_election_id"
   end

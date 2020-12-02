@@ -4,8 +4,10 @@ The Bulletin Board is a service composed by an Encryption Engine and an Append-O
 
 * Ruby version: 2.6
 * Rails version: 6
+* Python version: 3.8.2
 
 * System dependencies:
+ * Python gmpy2 package dependencies: libgmp, libmpfr and libmpc
 
 The Bulletin Board depends on the existence of a Decidim installation.
 
@@ -26,6 +28,10 @@ rails db:create
 rails db:migrate
 ```
 
+Also, install the wrappers python package:
+```
+./install_eg_wrappers.sh
+```
 
 * How to run the rubocop linter
 ```

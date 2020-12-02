@@ -2,7 +2,7 @@
 
 module Types
   class LogEntryType < Types::BaseObject
-    field :id, ID, null: false
+    field :id, ID, null: false, method: :message_id
     field :election, Types::ElectionType, null: false
     field :client, Types::ClientType, null: false
     field :signed_data, String, null: false

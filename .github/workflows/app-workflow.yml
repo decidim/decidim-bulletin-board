@@ -9,6 +9,7 @@ env:
   CI: "true"
   SIMPLECOV: "true"
   RUBY_VERSION: 2.6.6
+  ACTIONS_ALLOW_UNSECURE_COMMANDS: "true"
 
 defaults:
   run:
@@ -70,6 +71,9 @@ jobs:
       - uses: ruby/setup-ruby@master
         with:
           ruby-version: ${{ env.RUBY_VERSION }}
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.8.2'
       - name: Recover dependency cache
         uses: actions/cache@v1
         with:
@@ -87,6 +91,8 @@ jobs:
           timeout_minutes: 10
           max_attempts: 3
           command: cd decidim-bulletin_board-app && bundle install --path vendor/bundle --jobs 4 --retry 3
+      - name: Install ElectionGuard wrappers
+        run: ./install_eg_wrappers.sh
       - name: Create database
         run: |
           bundler exec rails db:create RAILS_ENV=test

@@ -7,9 +7,11 @@ class ProcessKeyCeremonyStep < Rectify::Command
   # Public: Initializes the command.
   #
   # trustee - The trustee sender of the key ceremony message
+  # message_id - The message identifier
   # signed_data - The signed message received
-  def initialize(trustee, signed_data)
+  def initialize(trustee, message_id, signed_data)
     @client = @trustee = trustee
+    @message_id = message_id
     @signed_data = signed_data
   end
 
@@ -21,14 +23,17 @@ class ProcessKeyCeremonyStep < Rectify::Command
   #
   # Returns nothing.
   def call
-    build_log_entry "key_ceremony"
+    build_log_entry
 
-    return broadcast(:invalid, invalid_message) if invalid_format?
+    return broadcast(:invalid, error) unless
+      valid_log_entry?("key_ceremony")
 
     election.with_lock do
       broadcast(:election, election)
 
-      return broadcast(:invalid, invalid_message) if invalid_content?
+      return broadcast(:invalid, error) unless
+        valid_step?(election.key_ceremony?) &&
+        process_message
 
       election.log_entries << log_entry
       log_entry.save!
@@ -41,43 +46,20 @@ class ProcessKeyCeremonyStep < Rectify::Command
 
   private
 
-  attr_accessor :trustee, :invalid_message, :response_message
-  delegate :voting_scheme, to: :election
-
-  def invalid_format?
-    @invalid_message ||= log_entry_validations
-    invalid_message.present?
-  end
-
-  def invalid_content?
-    @invalid_message ||= if !election.key_ceremony?
-                           "The election is not in the Key ceremony step"
-                         elsif !process_message
-                           "The voting scheme rejected the message"
-                         end
-    invalid_message.present?
-  end
-
-  def process_message
-    @response_message = voting_scheme.process_message(log_entry.decoded_data)
-    voting_scheme.save
-    true
-  rescue VotingScheme::RejectedMessage
-    false
-  end
+  attr_accessor :trustee
 
   def create_response_log_entry!
     return unless response_message
 
     LogEntry.create!(
       election: election,
+      message_id: response_message["message_id"],
       signed_data: BulletinBoard.sign(response_message),
-      log_type: :key_ceremony,
       bulletin_board: true
     )
   end
 
   def election
-    @election ||= Election.find_by(unique_id: decoded_data["election_id"])
+    @election ||= Election.find_by(unique_id: message_identifier.election_id)
   end
 end

@@ -36,33 +36,41 @@ FactoryBot.define do
     title { Faker::Name.name }
     authority { build(:authority, private_key: authority_private_key) }
     status { "key_ceremony" }
-    unique_id { [authority.name.parameterize, generate(:election_id)].join(".") }
+    unique_id { [authority.unique_id, generate(:election_id)].join(".") }
+    voting_scheme_state { Marshal.dump(joint_election_key: 1, trustees: []) }
 
     after(:build) do |election, evaluator|
-      evaluator.trustees_plus_keys.each do |trustee, _key|
-        election.trustees << trustee
-      end
-      election.log_entries << build(:create_election_entry, election: election, private_key: evaluator.authority_private_key,
-                                                            client: election.authority, trustees_plus_keys: evaluator.trustees_plus_keys)
+      election.trustees << evaluator.trustees_plus_keys.map(&:first)
+      election.log_entries << build(:log_entry, election: election, client: election.authority, private_key: evaluator.authority_private_key,
+                                                message: build(:create_election_message, voting_scheme: :dummy,
+                                                                                         trustees_plus_keys: evaluator.trustees_plus_keys))
     end
   end
 
-  factory :election_trustee do
-    election
-    trustee
-  end
-
-  factory :create_election_entry, class: "LogEntry" do
+  factory :log_entry do
     transient do
-      trustees_plus_keys { build_list(:trustee, 3).zip(generate_list(:private_key, 3)) }
+      authority { build(:authority, private_key: private_key) }
       private_key { generate(:private_key) }
-      message { build(:create_election_message, trustees_plus_keys: trustees_plus_keys) }
+      message { {} }
     end
 
-    election
-    client { build(:authority, private_key: private_key) }
+    election { build(:election, authority: authority, authority_private_key: private_key) }
+    client { authority }
+    message_id { message["message_id"] }
     signed_data { JWT.encode(message, private_key.keypair, "RS256") }
-    chained_hash { Digest::SHA256.hexdigest(election.unique_id) }
-    log_type { "create_election" }
+  end
+
+  factory :pending_message, parent: :log_entry, class: :pending_message do
+    status { :enqueued }
+    election { nil }
+
+    trait :accepted do
+      status { :accepted }
+      election
+    end
+
+    trait :rejected do
+      status { :rejected }
+    end
   end
 end

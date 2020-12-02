@@ -57,6 +57,10 @@ module RakeTaskOutputHelpers
   def check_message_printed(message)
     expect($stdout.string).to include(message)
   end
+
+  def output
+    $stdout.string
+  end
 end
 
 RSpec.configure do |config|

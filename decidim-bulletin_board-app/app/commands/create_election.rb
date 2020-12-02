@@ -7,9 +7,11 @@ class CreateElection < Rectify::Command
   # Public: Initializes the command.
   #
   # authority - The authority that requests the creation of the election
+  # message_id - The message identifier
   # signed_data - The signed message received
-  def initialize(authority, signed_data)
+  def initialize(authority, message_id, signed_data)
     @client = @authority = authority
+    @message_id = message_id
     @signed_data = signed_data
   end
 
@@ -20,15 +22,21 @@ class CreateElection < Rectify::Command
   #
   # Returns nothing.
   def call
-    build_log_entry "create_election"
-    build_election
-    return broadcast(:invalid, invalid_message) if invalid?
+    build_log_entry
+
+    return broadcast(:invalid, error) unless
+      valid_log_entry?("create_election") &&
+      valid_step?(election.new_record?) &&
+      valid_election? &&
+      valid_questions? &&
+      process_message
 
     transaction do
       election.save!
       log_entry.save!
       create_trustees
     end
+
     broadcast(:ok, election)
   rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotUnique
     broadcast(:invalid, "The data provided was not valid or not unique")
@@ -36,23 +44,16 @@ class CreateElection < Rectify::Command
 
   private
 
-  attr_reader :authority, :invalid_message, :election
+  attr_reader :authority
 
-  def build_election
-    election_attributes = {
-      unique_id: election_id,
+  def election
+    @election ||= log_entry.election = Election.new(
+      unique_id: message_identifier.election_id,
       title: title,
       status: "key_ceremony",
-      authority: authority
-    }
-    @election = Election.new(election_attributes)
-    log_entry.election = election
-    election.log_entries = [log_entry]
-  end
-
-  def invalid?
-    @invalid_message ||= log_entry_validations || election_validations || questions_validations || election.voting_scheme.validate_election
-    @invalid_message.present?
+      authority: authority,
+      log_entries: [log_entry]
+    )
   end
 
   def create_trustees
@@ -71,10 +72,6 @@ class CreateElection < Rectify::Command
 
   def trustees
     @trustees ||= decoded_data["trustees"]
-  end
-
-  def election_id
-    @election_id ||= decoded_data["election_id"]
   end
 
   def title
@@ -97,37 +94,36 @@ class CreateElection < Rectify::Command
     @questions ||= decoded_data.dig("description", "contests")
   end
 
-  def election_validations
-    @election_validations = if decoded_data.blank?
-                              "Invalid signature"
-                            elsif decoded_error.present?
-                              decoded_error
-                            elsif election.voting_scheme_class.blank?
-                              "A valid Voting Scheme must be specified"
-                            elsif title.blank?
-                              "Missing title"
-                            elsif start_date.after?(end_date)
-                              "Starting date cannot be after the end date"
-                            elsif start_date.before?(settings.create_election[:hours_before].hours.from_now)
-                              "Election should start at least in #{settings.create_election[:hours_before]} hours from now."
-                            elsif questions.blank?
-                              "There must be at least 1 question for the election"
-                            elsif !valid_timestamp?
-                              "Message must get created between now and one hour ago"
-                            end
+  def valid_election?
+    run_validations do
+      if election.voting_scheme_class.blank?
+        "A valid Voting Scheme must be specified"
+      elsif title.blank?
+        "Missing title"
+      elsif start_date.after?(end_date)
+        "Starting date cannot be after the end date"
+      elsif start_date.before?(settings.create_election[:hours_before].hours.from_now)
+        "Election should start at least in #{settings.create_election[:hours_before]} hours from now."
+      elsif questions.blank?
+        "There must be at least 1 question for the election"
+      end
+    end
   end
 
-  def questions_validations
-    @questions_validations ||= questions.map do |quest|
+  def valid_questions?
+    questions.each do |quest|
       number_elected = quest.dig("number_elected")
       ballot_selections = quest.dig("ballot_selections")
-      if number_elected.blank?
-        "There must be specified the number of answers to be selected"
-      elsif ballot_selections.blank? || ballot_selections.size <= 1
-        "There must be at least 2 answers for each question"
-      elsif number_elected.to_i > ballot_selections.size
-        "The number of possible answers cannot be greater than the number of answers offered"
+      return false unless run_validations do
+        if number_elected.blank?
+          "There must be specified the number of answers to be selected"
+        elsif ballot_selections.blank? || ballot_selections.size <= 1
+          "There must be at least 2 answers for each question"
+        elsif number_elected.to_i > ballot_selections.size
+          "The number of possible answers cannot be greater than the number of answers offered"
+        end
       end
-    end.compact.first
+    end
+    true
   end
 end
