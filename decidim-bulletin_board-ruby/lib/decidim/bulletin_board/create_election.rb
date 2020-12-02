@@ -21,10 +21,7 @@ module Decidim
           mutation do
             createElection(signedData: signed_data) do
               election do
-                id
                 status
-                title
-                authority
               end
               error
             end
