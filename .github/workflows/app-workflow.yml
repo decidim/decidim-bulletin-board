@@ -1,0 +1,105 @@
+name: "[CI] Application"
+on:
+  push:
+    paths:
+      - ".github/workflows/app-workflow.yml"
+      - "decidim-bulletin_board-app/**"
+
+env:
+  CI: "true"
+  SIMPLECOV: "true"
+  RUBY_VERSION: 2.6.6
+  ACTIONS_ALLOW_UNSECURE_COMMANDS: "true"
+
+defaults:
+  run:
+    working-directory: ./decidim-bulletin_board-app
+
+jobs:
+  lint:
+    name: Lint code
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2.0.0
+        with:
+          fetch-depth: 1
+      - uses: ruby/setup-ruby@master
+        with:
+          ruby-version: ${{ env.RUBY_VERSION }}
+      - name: Recover dependency cache
+        uses: actions/cache@v1
+        with:
+          path: ./decidim-bulletin_board-app/vendor/bundle
+          key: ${{ runner.OS }}-decidim-bulletin_board-app-deps-${{ hashFiles('decidim-bulletin_board-app/Gemfile.lock') }}
+          restore-keys: |
+            ${{ runner.OS }}-decidim-bulletin_board-app-deps-${{ env.cache-name }}-
+            ${{ runner.OS }}-decidim-bulletin_board-app-deps-
+            ${{ runner.OS }}-decidim-bulletin_board-app-
+      - name: Install Ruby deps
+        uses: nick-invision/retry@v1
+        with:
+          timeout_minutes: 10
+          max_attempts: 3
+          command: cd decidim-bulletin_board-app && bundle install --path vendor/bundle --jobs 4 --retry 3
+      - name: Install Rubocop
+        run: gem install rubocop
+      - run: bundle exec rubocop -P
+        name: Lint Ruby files
+  rspec-test:
+    name: RSpec tests
+    needs: lint
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:11
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        env:
+          POSTGRES_PASSWORD: postgres
+    env:
+      DATABASE_USERNAME: postgres
+      DATABASE_PASSWORD: postgres
+      DATABASE_HOST: localhost
+    steps:
+      - uses: actions/checkout@v2.0.0
+        with:
+          fetch-depth: 1
+      - uses: ruby/setup-ruby@master
+        with:
+          ruby-version: ${{ env.RUBY_VERSION }}
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.8.2'
+      - name: Recover dependency cache
+        uses: actions/cache@v1
+        with:
+          path: ./decidim-bulletin_board-app/vendor/bundle
+          key: ${{ runner.OS }}-decidim-bulletin_board-app-deps-${{ hashFiles('decidim-bulletin_board-app/Gemfile.lock') }}
+          restore-keys: |
+            ${{ runner.OS }}-decidim-bulletin_board-app-deps-${{ env.cache-name }}-
+            ${{ runner.OS }}-decidim-bulletin_board-app-deps-
+            ${{ runner.OS }}-decidim-bulletin_board-app-
+      - name: Install postgres client
+        run: sudo apt-get install libpq-dev
+      - name: Install Ruby deps
+        uses: nick-invision/retry@v1
+        with:
+          timeout_minutes: 10
+          max_attempts: 3
+          command: cd decidim-bulletin_board-app && bundle install --path vendor/bundle --jobs 4 --retry 3
+      - name: Install ElectionGuard wrappers
+        run: ./install_eg_wrappers.sh
+      - name: Create database
+        run: |
+          bundler exec rails db:create RAILS_ENV=test
+          bundler exec rails db:migrate RAILS_ENV=test
+      - name: Run tests
+        run: bundler exec rake
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v1
+        with:
+          directory: ./decidim-bulletin_board-app/coverage

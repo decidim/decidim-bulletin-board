@@ -5,34 +5,33 @@
 #   git config --global core.excludesfile '~/.gitignore_global'
 
 # Ignore bundler config.
-/.bundle
+/decidim-bulletin_board-app/.bundle
 
 # Ignore all logfiles and tempfiles.
-/log/*
-/tmp/*
-!/log/.keep
-!/tmp/.keep
+/decidim-bulletin_board-app/log/*
+/decidim-bulletin_board-app/tmp/*
+!/decidim-bulletin_board-app/log/.keep
+!/decidim-bulletin_board-app/tmp/.keep
 
 # Ignore pidfiles, but keep the directory.
-/tmp/pids/*
-!/tmp/pids/
-!/tmp/pids/.keep
+/decidim-bulletin_board-app/tmp/pids/*
+!/decidim-bulletin_board-app/tmp/pids/
+!/decidim-bulletin_board-app/tmp/pids/.keep
 
 # Ignore uploaded files in development.
-/storage/*
-!/storage/.keep
+/decidim-bulletin_board-app/storage/*
+!/decidim-bulletin_board-app/storage/.keep
 
-/public/assets
-.byebug_history
+/decidim-bulletin_board-app/public/assets
+/decidim-bulletin_board-app/.byebug_history
 
-# Ignore master key for decrypting credentials and more.
-/config/master.key
-
-/public/packs
-/public/packs-test
-/node_modules
-/yarn-error.log
-yarn-debug.log*
-.yarn-integrity
-.rubocop-https---raw-githubusercontent-com-decidim-decidim-master--rubocop-*
-spec/examples.txt
+/decidim-bulletin_board-app/public/packs
+/decidim-bulletin_board-app/public/packs-test
+/decidim-bulletin_board-app/node_modules
+/decidim-bulletin_board-app/yarn-error.log
+/decidim-bulletin_board-app/yarn-debug.log*
+/decidim-bulletin_board-app/.yarn-integrity
+/decidim-bulletin_board-app/.rubocop-https---raw-githubusercontent-com-decidim-decidim-master--rubocop-*
+/decidim-bulletin_board-app/spec/examples.txt
+/decidim-bulletin_board-app/coverage
+/decidim-bulletin_board-app/electionguard.log
