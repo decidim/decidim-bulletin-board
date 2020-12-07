@@ -100,5 +100,13 @@ RSpec.describe ProcessKeyCeremonyStep do
     end
   end
 
+  context "when the client is the authority" do
+    let(:trustee) { election.authority }
+
+    it "broadcast invalid" do
+      expect { subject }.to broadcast(:invalid)
+    end
+  end
+
   # TODO: test race conditions
 end

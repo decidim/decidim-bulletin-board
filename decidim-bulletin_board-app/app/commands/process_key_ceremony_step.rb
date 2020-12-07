@@ -27,6 +27,7 @@ class ProcessKeyCeremonyStep < Rectify::Command
 
     election.with_lock do
       return broadcast(:invalid, error) unless
+        valid_client?(client.trustee?) &&
         valid_step?(election.key_ceremony?) &&
         process_message
 

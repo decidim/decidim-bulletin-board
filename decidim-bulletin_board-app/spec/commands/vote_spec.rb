@@ -49,4 +49,12 @@ RSpec.describe Vote do
       expect { subject }.not_to change { Election.last.status } .from("vote")
     end
   end
+
+  context "when the client is a trustee" do
+    let(:authority) { election.trustees.first }
+
+    it "broadcast invalid" do
+      expect { subject }.to broadcast(:invalid)
+    end
+  end
 end

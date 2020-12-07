@@ -96,4 +96,12 @@ RSpec.describe CreateElection do
       expect { subject }.to broadcast(:invalid, "There must be at least 1 question for the election")
     end
   end
+
+  context "when the client is a trustee" do
+    let(:authority) { create(:trustee, private_key: private_key) }
+
+    it "broadcast invalid" do
+      expect { subject }.to broadcast(:invalid)
+    end
+  end
 end

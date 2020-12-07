@@ -66,6 +66,10 @@ class BulletinBoard
       "Bulletin Board"
     end
 
+    def bulletin_board?
+      true
+    end
+
     def unique_id
       name.parameterize
     end

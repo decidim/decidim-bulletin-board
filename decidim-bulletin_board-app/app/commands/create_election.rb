@@ -24,6 +24,7 @@ class CreateElection < Rectify::Command
   def call
     return broadcast(:invalid, error) unless
       valid_log_entry?("create_election") &&
+      valid_client?(client.authority?) &&
       valid_step?(election.new_record?) &&
       valid_election? &&
       valid_questions? &&
