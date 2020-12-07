@@ -76,8 +76,8 @@ describe("KeyCeremony", () => {
         expect.any(Function)
       );
 
-      electionLogEntriesUpdates.next({ logType: "foo", signedData: "1234" });
-      electionLogEntriesUpdates.next({ logType: "foo", signedData: "5678" });
+      electionLogEntriesUpdates.next({ messageId: "foo", signedData: "1234" });
+      electionLogEntriesUpdates.next({ messageId: "foo", signedData: "5678" });
       expect(keyCeremony.electionLogEntries.length).toEqual(2);
     });
   });
@@ -89,7 +89,7 @@ describe("KeyCeremony", () => {
 
     it("always processes the first log entry", async () => {
       electionLogEntriesUpdates.next({
-        logType: "dummy.done",
+        messageId: "dummy.done",
         signedData: "1234",
       });
       const result = await keyCeremony.run();
@@ -103,11 +103,11 @@ describe("KeyCeremony", () => {
 
     it("processes all messages until done", async () => {
       electionLogEntriesUpdates.next({
-        logType: "dummy.step",
+        messageId: "dummy.step",
         signedData: "1234",
       });
       electionLogEntriesUpdates.next({
-        logType: "dummy.done",
+        messageId: "dummy.done",
         signedData: "5678",
       });
       const result = await keyCeremony.run();
@@ -124,11 +124,11 @@ describe("KeyCeremony", () => {
 
     it("skips the processed log entries that doesn't output a result", async () => {
       electionLogEntriesUpdates.next({
-        logType: "dummy.nothing",
+        messageId: "dummy.nothing",
         signedData: "1234",
       });
       electionLogEntriesUpdates.next({
-        logType: "dummy.done",
+        messageId: "dummy.done",
         signedData: "5678",
       });
       const result = await keyCeremony.run();
@@ -146,11 +146,11 @@ describe("KeyCeremony", () => {
       let events = [];
 
       electionLogEntriesUpdates.next({
-        logType: "dummy.nothing",
+        messageId: "dummy.nothing",
         signedData: "1234",
       });
       electionLogEntriesUpdates.next({
-        logType: "dummy.done",
+        messageId: "dummy.done",
         signedData: "5678",
       });
 
@@ -163,14 +163,14 @@ describe("KeyCeremony", () => {
       expect(events[0]).toEqual({
         type: MESSAGE_RECEIVED,
         message: {
-          logType: "dummy.nothing",
+          messageId: "dummy.nothing",
           signedData: "1234",
         },
       });
       expect(events[1]).toEqual({
         type: MESSAGE_PROCESSED,
         message: {
-          logType: "dummy.nothing",
+          messageId: "dummy.nothing",
           signedData: "1234",
         },
         result: null,
@@ -178,14 +178,14 @@ describe("KeyCeremony", () => {
       expect(events[2]).toEqual({
         type: MESSAGE_RECEIVED,
         message: {
-          logType: "dummy.done",
+          messageId: "dummy.done",
           signedData: "5678",
         },
       });
       expect(events[3]).toEqual({
         type: MESSAGE_PROCESSED,
         message: {
-          logType: "dummy.done",
+          messageId: "dummy.done",
           signedData: "5678",
         },
         result: { done: true, message: { signedData: "5678" } },

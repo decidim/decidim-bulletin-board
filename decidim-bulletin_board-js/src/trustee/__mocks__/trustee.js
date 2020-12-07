@@ -1,6 +1,6 @@
 export class Trustee {
-  processLogEntry({ logType, signedData }) {
-    switch (logType) {
+  processLogEntry({ messageId, signedData }) {
+    switch (messageId) {
       case "dummy.nothing": {
         return null;
       }
