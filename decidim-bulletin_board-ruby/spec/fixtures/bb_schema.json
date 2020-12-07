@@ -390,7 +390,7 @@
               "deprecationReason": null
             },
             {
-              "name": "logType",
+              "name": "messageId",
               "description": null,
               "args": [
 

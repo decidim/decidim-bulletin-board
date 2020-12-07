@@ -1,7 +1,7 @@
 query GetElectionLogEntries($electionUniqueId: String!) {
   election(uniqueId: $electionUniqueId) {
     logEntries {
-      logType
+      messageId
       signedData
     }
   }

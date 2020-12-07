@@ -32,7 +32,7 @@ describe("Trustee", () => {
     it("calls the wrapper's process message method with the parsed data", async () => {
       spyOn(trustee.wrapper, "processMessage");
       await trustee.processLogEntry({
-        logType: "dummy",
+        messageId: "dummy",
         signedData: "1234",
       });
       expect(trustee.wrapper.processMessage).toHaveBeenCalledWith(

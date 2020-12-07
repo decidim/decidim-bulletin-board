@@ -28,9 +28,9 @@ export class Trustee {
    * @param {Object} logEntry - The log entry to be processed.
    * @returns {Promise<Object>} - The result of the processing if any.
    */
-  async processLogEntry({ logType, signedData }) {
+  async processLogEntry({ messageId, signedData }) {
     const payload = await this.parser.parse(signedData);
-    return this.wrapper.processMessage(logType, payload);
+    return this.wrapper.processMessage(messageId, payload);
   }
 
   /**

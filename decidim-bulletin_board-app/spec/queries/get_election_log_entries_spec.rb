@@ -15,7 +15,7 @@ RSpec.describe "GetElectionLogEntries" do
       query GetElectionLogEntries {
         election(uniqueId: "#{election_unique_id}") {
           logEntries {
-            logType
+            messageId
             signedData
           }
         }
