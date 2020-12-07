@@ -1,0 +1,9 @@
+{
+  "schema": "http://localhost:8000/api",
+  "documents": "../decidim-bulletin_board-js/src/**/*.gql",
+  "generates": {
+    "../decidim-bulletin_board-js/src/types.d.ts": {
+      "plugins": ["typescript"]
+    }
+  }
+}

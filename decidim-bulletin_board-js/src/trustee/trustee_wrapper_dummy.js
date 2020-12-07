@@ -18,7 +18,7 @@ export class TrusteeWrapper {
   processMessage(messageId, message) {
     switch (this.status) {
       case CREATE_ELECTION: {
-        if (messageId === CREATE_ELECTION) {
+        if (messageId.includes(CREATE_ELECTION)) {
           this.status = KEY_CEREMONY;
           this.electionId = message.election_id;
           this.processedMessages = [];
@@ -37,7 +37,10 @@ export class TrusteeWrapper {
         break;
       }
       case KEY_CEREMONY: {
-        if (messageId === KEY_CEREMONY && message.owner_id !== this.trusteeId) {
+        if (
+          messageId.includes(KEY_CEREMONY) &&
+          message.owner_id !== this.trusteeId
+        ) {
           this.processedMessages = [...this.processedMessages, message];
           if (
             this.processedMessages.length ===
@@ -53,7 +56,7 @@ export class TrusteeWrapper {
         break;
       }
       case JOINT_ELECTION_KEY: {
-        if (messageId === JOINT_ELECTION_KEY) {
+        if (messageId.includes(JOINT_ELECTION_KEY)) {
           return {
             done: true,
             message,

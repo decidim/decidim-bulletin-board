@@ -94,6 +94,7 @@ describe("KeyCeremony", () => {
       });
       const result = await keyCeremony.run();
       expect(bulletinBoardClient.processKeyCeremonyStep).toHaveBeenCalledWith({
+        messageId: "election-1.key_ceremony+t.trustee-1",
         signedData: "1234",
       });
       expect(result).toEqual({
@@ -112,9 +113,11 @@ describe("KeyCeremony", () => {
       });
       const result = await keyCeremony.run();
       expect(bulletinBoardClient.processKeyCeremonyStep).toHaveBeenCalledWith({
+        messageId: "election-1.key_ceremony+t.trustee-1",
         signedData: "1234",
       });
       expect(bulletinBoardClient.processKeyCeremonyStep).toHaveBeenCalledWith({
+        messageId: "election-1.key_ceremony+t.trustee-1",
         signedData: "5678",
       });
       expect(result).toEqual({

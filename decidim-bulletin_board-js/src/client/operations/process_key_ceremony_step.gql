@@ -1,5 +1,5 @@
-mutation ProcessKeyCeremonyStep($signedData: String!) {
-  processKeyCeremonyStep(signedData: $signedData) {
+mutation ProcessKeyCeremonyStep($messageId: String!, $signedData: String!) {
+  processKeyCeremonyStep(messageId: $messageId, signedData: $signedData) {
     pendingMessage {
       signedData
     }
