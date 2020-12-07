@@ -73,7 +73,7 @@ jobs:
           ruby-version: ${{ env.RUBY_VERSION }}
       - uses: actions/setup-python@v2
         with:
-          python-version: '3.8.2'
+          python-version: "3.8.2"
       - name: Recover dependency cache
         uses: actions/cache@v1
         with:
@@ -91,12 +91,29 @@ jobs:
           timeout_minutes: 10
           max_attempts: 3
           command: cd decidim-bulletin_board-app && bundle install --path vendor/bundle --jobs 4 --retry 3
+      - name: Install Javascript deps
+        uses: nick-invision/retry@v1
+        with:
+          timeout_minutes: 10
+          max_attempts: 3
+          command: cd decidim-bulletin_board-app && npm ci
       - name: Install ElectionGuard wrappers
         run: ./install_eg_wrappers.sh
       - name: Create database
+        env:
+          RAILS_ENV: test
         run: |
-          bundler exec rails db:create RAILS_ENV=test
-          bundler exec rails db:migrate RAILS_ENV=test
+          bundler exec rails db:create
+          bundler exec rails db:migrate
+      - name: Check if GraphQL schema has changed
+        env:
+          RAILS_ENV: test
+        run: |
+          bundle exec rails server &
+          sleep 5
+          bundle exec rake schema:generate
+          npm run schema:generate
+          git diff --exit-code
       - name: Run tests
         run: bundler exec rake
       - name: Upload coverage to Codecov
