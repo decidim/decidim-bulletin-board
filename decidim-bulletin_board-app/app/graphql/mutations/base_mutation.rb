@@ -1,10 +1,18 @@
 # frozen_string_literal: true
 
+require "message_identifier"
+
 module Mutations
-  class BaseMutation < GraphQL::Schema::RelayClassicMutation
-    argument_class Types::BaseArgument
-    field_class Types::BaseField
-    input_object_class Types::BaseInputObject
-    object_class Types::BaseObject
+  class BaseMutation < GraphQL::Schema::Mutation
+    def find_authority(message_id)
+      message_identifier = MessageIdentifier.new(message_id)
+      message_identifier.from_authority? && Authority.find_by(unique_id: message_identifier.author_id, api_key: context[:api_key]) ||
+        message_identifier.from_voter? && Authority.find_by(api_key: context[:api_key])
+    end
+
+    def find_trustee(message_id)
+      message_identifier = MessageIdentifier.new(message_id)
+      message_identifier.from_trustee? && Trustee.find_by(unique_id: message_identifier.author_id)
+    end
   end
 end

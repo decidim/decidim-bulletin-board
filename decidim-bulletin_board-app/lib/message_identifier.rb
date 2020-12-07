@@ -13,6 +13,10 @@ class MessageIdentifier
     author_type == :trustee
   end
 
+  def from_voter?
+    author_type == :voter
+  end
+
   def author_type
     @author_type ||= AUTHOR_TYPE[author.first.to_sym]
   end

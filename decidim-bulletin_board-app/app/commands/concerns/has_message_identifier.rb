@@ -12,5 +12,9 @@ module HasMessageIdentifier
     def message_identifier
       @message_identifier ||= MessageIdentifier.new(message_id)
     end
+
+    def election
+      @election ||= Election.find_by(unique_id: message_identifier.election_id)
+    end
   end
 end

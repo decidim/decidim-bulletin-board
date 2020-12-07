@@ -19,15 +19,6 @@ RSpec.describe PendingMessage do
     it { expect(subject).to be_processed }
     it { expect(subject).to be_accepted }
     it { expect(subject).not_to be_rejected }
-
-    context "when the election is not set" do
-      let(:pending_message) { build(:pending_message, :accepted, election: nil) }
-
-      it { expect(subject).not_to be_enqueued }
-      it { expect(subject).not_to be_processed }
-      it { expect(subject).to be_accepted }
-      it { expect(subject).not_to be_rejected }
-    end
   end
 
   context "when message has been rejected" do
