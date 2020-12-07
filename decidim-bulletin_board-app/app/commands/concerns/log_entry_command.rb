@@ -55,6 +55,12 @@ module LogEntryCommand
       end
     end
 
+    def valid_author?(valid)
+      run_validations do
+        "Invalid message author" unless valid
+      end
+    end
+
     def process_message
       @response_message = voting_scheme.process_message(message_identifier, log_entry.decoded_data)
       election.voting_scheme_state = voting_scheme.backup
