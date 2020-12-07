@@ -7,4 +7,6 @@ Rails.application.routes.draw do
     get "/", to: redirect("/api/docs")
     post "/", to: "graphql#execute"
   end
+
+  mount ActionCable.server, at: "/cable"
 end

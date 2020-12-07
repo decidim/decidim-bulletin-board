@@ -1,0 +1,8 @@
+query GetElectionLogEntries($electionUniqueId: String!) {
+  election(uniqueId: $electionUniqueId) {
+    logEntries {
+      messageId
+      signedData
+    }
+  }
+}
