@@ -34,6 +34,11 @@ module Decidim
         private_key && server && api_key
       end
 
+      def setup_election(election_data)
+        message_id = "#{election_data[:election_id]}.create_election+a.#{authority_slug}"
+        Decidim::BulletinBoard::CreateElection.call(election_data, message_id)
+      end
+
       private
 
       attr_reader :identification_private_key, :private_key

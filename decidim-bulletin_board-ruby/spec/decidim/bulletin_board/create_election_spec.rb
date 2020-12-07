@@ -6,7 +6,7 @@ require "decidim/bulletin_board/create_election"
 module Decidim
   module BulletinBoard
     describe CreateElection do
-      subject { described_class.new(election_data) }
+      subject { described_class.new(election_data, message_id) }
 
       let(:election_data) do
         {
@@ -15,6 +15,7 @@ module Decidim
           scheme: "dummy"
         }.to_h
       end
+      let(:message_id) { "test_authority.1.a+test_authority" }
 
       let(:server_url) { "https://example.org" }
       let(:api_key) { "IUdVVU0OF2qZgYIeJQnQHZPRloOh4srmXFZPPQx7" }
