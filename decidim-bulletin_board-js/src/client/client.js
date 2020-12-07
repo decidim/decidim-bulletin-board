@@ -57,7 +57,7 @@ export class Client {
    * @returns {Promise<Object>} - A pending message created.
    * @throws Will throw an error if the request is rejected or the data contains an error.
    */
-  processKeyCeremonyStep({ signedData }) {
-    return this.apiClient.processKeyCeremonyStep({ signedData });
+  processKeyCeremonyStep({ messageId, signedData }) {
+    return this.apiClient.processKeyCeremonyStep({ messageId, signedData });
   }
 }

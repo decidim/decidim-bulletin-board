@@ -107,11 +107,12 @@ export class GraphQLClient {
    * @returns {Promise<Object>} - A pending message created.
    * @throws Will throw an error if the request is rejected or the data contains an error.
    */
-  async processKeyCeremonyStep({ signedData }) {
+  async processKeyCeremonyStep({ messageId, signedData }) {
     const result = await this.apolloClient.mutate({
       mutation: PROCESS_KEY_CEREMONY_STEP,
       variables: {
         signedData,
+        messageId,
       },
     });
 
