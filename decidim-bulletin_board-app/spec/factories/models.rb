@@ -47,7 +47,7 @@ FactoryBot.define do
     end
   end
 
-  factory :log_entry do
+  trait :message_model do
     transient do
       authority { build(:authority, private_key: private_key) }
       private_key { generate(:private_key) }
@@ -60,7 +60,11 @@ FactoryBot.define do
     signed_data { JWT.encode(message, private_key.keypair, "RS256") }
   end
 
-  factory :pending_message, parent: :log_entry, class: :pending_message do
+  factory :log_entry, traits: [:message_model] do
+    content_hash { Digest::SHA256.hexdigest(signed_data) }
+  end
+
+  factory :pending_message, traits: [:message_model] do
     status { :enqueued }
 
     trait :accepted do

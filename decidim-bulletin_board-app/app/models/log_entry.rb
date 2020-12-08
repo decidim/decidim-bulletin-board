@@ -7,7 +7,8 @@ class LogEntry < ApplicationRecord
   belongs_to :client, optional: true
 
   before_create do
-    self.chained_hash = Digest::SHA256.hexdigest([previous_hash, signed_data].join("."))
+    self.content_hash = Digest::SHA256.hexdigest(signed_data)
+    self.chained_hash = Digest::SHA256.hexdigest([previous_hash, content_hash].join("."))
   end
 
   def decoded_data

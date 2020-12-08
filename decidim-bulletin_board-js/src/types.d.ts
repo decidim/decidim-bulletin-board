@@ -52,6 +52,7 @@ export type LogEntry = {
   __typename?: 'LogEntry';
   chainedHash: Scalars['String'];
   client: Client;
+  contentHash: Scalars['String'];
   election: Election;
   id: Scalars['ID'];
   messageId: Scalars['String'];
@@ -88,6 +89,7 @@ export type PendingMessage = {
   client: Client;
   election?: Maybe<Election>;
   id: Scalars['ID'];
+  messageId: Scalars['String'];
   signedData: Scalars['String'];
   status: Scalars['String'];
 };
@@ -107,6 +109,8 @@ export type Query = {
   election?: Maybe<Election>;
   /** Returns a list of elections in the bulletin board */
   elections: Array<Election>;
+  /** Returns the log entry with the given content hash for the given election */
+  logEntry?: Maybe<LogEntry>;
   /** Returns the information for this bulletin board instance */
   me: Client;
   /** Returns the information for a given message */
@@ -116,6 +120,12 @@ export type Query = {
 
 export type QueryElectionArgs = {
   uniqueId: Scalars['String'];
+};
+
+
+export type QueryLogEntryArgs = {
+  electionUniqueId: Scalars['String'];
+  contentHash: Scalars['String'];
 };
 
 

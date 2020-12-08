@@ -7,5 +7,6 @@ module Types
     field :client, Types::ClientType, null: false
     field :signed_data, String, null: false
     field :status, String, null: false
+    field :message_id, String, null: false
   end
 end
