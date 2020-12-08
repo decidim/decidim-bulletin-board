@@ -29,7 +29,8 @@ class OpenBallotBox < Rectify::Command
       return broadcast(:invalid, error) unless
         valid_step?(election.ready?) &&
         valid_client?(authority.authority?) &&
-        valid_author?(message_identifier.from_authority?)
+        valid_author?(message_identifier.from_authority?) &&
+        process_message
 
       election.log_entries << log_entry
       log_entry.save!

@@ -79,6 +79,4 @@ RSpec.describe OpenBallotBox do
       expect { subject }.to broadcast(:invalid)
     end
   end
-
-  # TODO: test race conditions
 end
