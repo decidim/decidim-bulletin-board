@@ -49,4 +49,21 @@ RSpec.describe Vote do
       expect { subject }.not_to change { Election.last.status } .from("vote")
     end
   end
+
+  context "when the client is a trustee" do
+    let(:authority) { election.trustees.first }
+
+    it "broadcast invalid" do
+      expect { subject }.to broadcast(:invalid)
+    end
+  end
+
+  context "when the message author is not a voter" do
+    let(:message_id) { "#{election.unique_id}.vote.cast+x.#{generate(:voter_id)}" }
+    let(:message) { build(:vote_message, message_id: message_id, election: election) }
+
+    it "broadcast invalid" do
+      expect { subject }.to broadcast(:invalid)
+    end
+  end
 end

@@ -26,6 +26,8 @@ class Vote < Rectify::Command
       valid_log_entry?("vote")
 
     return broadcast(:invalid, error) unless
+      valid_client?(client.authority?) &&
+      valid_author?(message_identifier.from_voter?) &&
       valid_step?(election.vote?) &&
       process_message
 

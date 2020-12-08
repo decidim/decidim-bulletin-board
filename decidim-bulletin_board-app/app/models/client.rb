@@ -11,4 +11,16 @@ class Client < ApplicationRecord
   def public_key_rsa
     @public_key_rsa ||= JWT::JWK::RSA.import(public_key.symbolize_keys).public_key
   end
+
+  def authority?
+    false
+  end
+
+  def bulletin_board?
+    false
+  end
+
+  def trustee?
+    false
+  end
 end

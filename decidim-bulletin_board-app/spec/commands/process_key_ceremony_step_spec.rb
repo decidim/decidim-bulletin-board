@@ -100,5 +100,22 @@ RSpec.describe ProcessKeyCeremonyStep do
     end
   end
 
+  context "when the client is the authority" do
+    let(:trustee) { election.authority }
+
+    it "broadcast invalid" do
+      expect { subject }.to broadcast(:invalid)
+    end
+  end
+
+  context "when the message author is not a trustee" do
+    let(:message_id) { "#{election.unique_id}.key_ceremony.trustee_election_keys+x.#{trustee.unique_id}" }
+    let(:message) { build(:key_ceremony_message, message_id: message_id, election: election, trustee: trustee) }
+
+    it "broadcast invalid" do
+      expect { subject }.to broadcast(:invalid)
+    end
+  end
+
   # TODO: test race conditions
 end
