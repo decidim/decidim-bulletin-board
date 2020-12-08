@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_12_01_141644) do
+ActiveRecord::Schema.define(version: 2020_12_07_160752) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -60,6 +60,7 @@ ActiveRecord::Schema.define(version: 2020_12_01_141644) do
     t.string "message_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.string "content_hash", null: false
     t.index ["chained_hash"], name: "index_log_entries_on_chained_hash", unique: true
     t.index ["client_id"], name: "index_log_entries_on_client_id"
     t.index ["election_id"], name: "index_log_entries_on_election_id"
