@@ -34,13 +34,18 @@ module Decidim
         private_key && server && api_key
       end
 
+      def sign_data(data)
+        JWT.encode(data, identification_private_key.keypair, "RS256")
+      end
+
       def setup_election(election_data)
         message_id = "#{election_data[:election_id]}.create_election+a.#{authority_slug}"
         Decidim::BulletinBoard::CreateElection.call(election_data, message_id)
       end
 
-      def cast_vote
-        cast_vote = Decidim::BulletinBoard::Voter::CastVote.new
+      def cast_vote(election_data, voter_data, encrypted_vote)
+        form = Decidim::BulletinBoard::Voter::VoteForm.new(self, election_data, voter_data, encrypted_vote)
+        cast_vote = Decidim::BulletinBoard::Voter::CastVote.new(form)
         cast_vote.on(:ok) { |pending_message| return pending_message }
         cast_vote.on(:error) { |error_message| raise StandardError, error_message }
         cast_vote.call

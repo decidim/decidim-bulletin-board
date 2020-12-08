@@ -72,13 +72,23 @@ module Decidim
       end
 
       describe "cast_vote" do
+        let(:election_data) do
+          { election_id: "test.1" }
+        end
+        let(:voter_data) do
+          { voter_id: "voter.1" }
+        end
+        let(:encrypted_vote) do
+          { question_1: "aNsWeR 1" }
+        end
+
         context "when everything went ok" do
           before do
             stub_wisper_publisher("Decidim::BulletinBoard::Voter::CastVote", :call, :ok, double(status: "enqueued"))
           end
 
           it "calls the CastVote command and return the result" do
-            pending_message = subject.cast_vote
+            pending_message = subject.cast_vote(election_data, voter_data, encrypted_vote)
             expect(pending_message.status).to eq("enqueued")
           end
         end
@@ -89,7 +99,7 @@ module Decidim
           end
 
           it "calls the CastVote command and throws an error" do
-            expect { subject.cast_vote }.to raise_error("something went wrong")
+            expect { subject.cast_vote(election_data, voter_data, encrypted_vote) }.to raise_error("something went wrong")
           end
         end
       end
