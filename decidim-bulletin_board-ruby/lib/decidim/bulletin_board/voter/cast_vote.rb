@@ -42,7 +42,7 @@ module Decidim
             return broadcast(:error, response.data.vote.error) if response.data.vote.error.present?
 
             broadcast(:ok, response.data.vote.pending_message)
-          rescue Graphlient::Errors::FaradayServerError => e
+          rescue Graphlient::Errors::FaradayServerError
             broadcast(:error, "something went wrong")
           end
         end

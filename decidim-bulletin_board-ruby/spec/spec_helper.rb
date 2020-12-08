@@ -4,7 +4,7 @@ require "bundler/setup"
 require "decidim/bulletin_board"
 require "byebug"
 require "webmock/rspec"
-require 'wisper/rspec/matchers'
+require "wisper/rspec/matchers"
 
 RSpec.configure do |config|
   config.color = true

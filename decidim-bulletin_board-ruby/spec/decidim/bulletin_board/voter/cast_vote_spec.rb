@@ -7,10 +7,11 @@ module Decidim
     module Voter
       describe CastVote do
         subject { described_class.new(form) }
+
         let(:form) { double(valid?: valid, errors: errors, message_id: message_id, signed_data: signed_data) }
         let(:valid) { true }
         let(:errors) { nil }
-        let(:message_id) { "test.1.vote.cast+v.voter.1"}
+        let(:message_id) { "test.1.vote.cast+v.voter.1" }
         let(:signed_data) { "123456789" }
 
         let(:vote_mutation_response) do
@@ -34,9 +35,6 @@ module Decidim
         end
 
         context "when everything is ok" do
-          before do
-          end
-
           it "broadcasts ok with the result of the graphql mutation" do
             expect { subject.call }.to broadcast(:ok)
           end
@@ -87,4 +85,3 @@ module Decidim
     end
   end
 end
-

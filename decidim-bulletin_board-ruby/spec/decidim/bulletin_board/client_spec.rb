@@ -3,7 +3,7 @@
 require "spec_helper"
 require "decidim/bulletin_board/client"
 require "decidim/bulletin_board/jwk_utils"
-require 'wisper/rspec/stub_wisper_publisher'
+require "wisper/rspec/stub_wisper_publisher"
 
 module Decidim
   module BulletinBoard

@@ -42,7 +42,7 @@ module Decidim
       def cast_vote
         cast_vote = Decidim::BulletinBoard::Voter::CastVote.new
         cast_vote.on(:ok) { |pending_message| return pending_message }
-        cast_vote.on(:error) { |error_message| raise StandardError.new error_message }
+        cast_vote.on(:error) { |error_message| raise StandardError, error_message }
         cast_vote.call
       end
 
