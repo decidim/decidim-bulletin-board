@@ -71,25 +71,25 @@ module Decidim
         it { is_expected.not_to be_configured }
       end
 
-      describe "emit_vote" do
+      describe "cast_vote" do
         context "when everything went ok" do
           before do
-            stub_wisper_publisher("Decidim::BulletinBoard::Voter::EmitVote", :call, :ok, double(status: "enqueued"))
+            stub_wisper_publisher("Decidim::BulletinBoard::Voter::CastVote", :call, :ok, double(status: "enqueued"))
           end
 
-          it "calls the EmitVote command and return the result" do
-            pending_message = subject.emit_vote
+          it "calls the CastVote command and return the result" do
+            pending_message = subject.cast_vote
             expect(pending_message.status).to eq("enqueued")
           end
         end
 
         context "when something went wrong" do
           before do
-            stub_wisper_publisher("Decidim::BulletinBoard::Voter::EmitVote", :call, :error, "something went wrong")
+            stub_wisper_publisher("Decidim::BulletinBoard::Voter::CastVote", :call, :error, "something went wrong")
           end
 
-          it "calls the EmitVote command and throws an error" do
-            expect { subject.emit_vote }.to raise_error("something went wrong")
+          it "calls the CastVote command and throws an error" do
+            expect { subject.cast_vote }.to raise_error("something went wrong")
           end
         end
       end

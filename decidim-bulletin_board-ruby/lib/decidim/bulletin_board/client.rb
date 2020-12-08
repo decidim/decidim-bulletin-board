@@ -39,11 +39,11 @@ module Decidim
         Decidim::BulletinBoard::CreateElection.call(election_data, message_id)
       end
 
-      def emit_vote
-        emit_vote = Decidim::BulletinBoard::Voter::EmitVote.new
-        emit_vote.on(:ok) { |pending_message| return pending_message }
-        emit_vote.on(:error) { |error_message| raise StandardError.new error_message }
-        emit_vote.call
+      def cast_vote
+        cast_vote = Decidim::BulletinBoard::Voter::CastVote.new
+        cast_vote.on(:ok) { |pending_message| return pending_message }
+        cast_vote.on(:error) { |error_message| raise StandardError.new error_message }
+        cast_vote.call
       end
 
       private
