@@ -50,5 +50,17 @@ module Types
         PendingMessage.find_by(id: args[:id])
       end
     end
+
+    field :log_entry,
+          Types::LogEntryType,
+          null: true,
+          description: "Returns the log entry with the given content hash for the given election" do
+      argument :election_unique_id, String, required: true
+      argument :content_hash, String, required: true
+
+      def resolve(_parent, args, _context)
+        LogEntry.find_by(election: Election.find_by(unique_id: args[:election_unique_id]), content_hash: args[:content_hash])
+      end
+    end
   end
 end
