@@ -2,10 +2,13 @@
 
 require "decidim/bulletin_board/version"
 require "graphlient"
+require "wisper"
+require "active_model"
 require "decidim/bulletin_board/jwk_utils"
 require "decidim/bulletin_board/client"
 require "decidim/bulletin_board/graphql/client"
 require "decidim/bulletin_board/create_election"
+require "decidim/bulletin_board/voter"
 require "active_support/configurable"
 require "jwt"
 
