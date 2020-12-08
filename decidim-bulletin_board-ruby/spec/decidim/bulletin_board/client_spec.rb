@@ -3,6 +3,7 @@
 require "spec_helper"
 require "decidim/bulletin_board/client"
 require "decidim/bulletin_board/jwk_utils"
+require 'wisper/rspec/stub_wisper_publisher'
 
 module Decidim
   module BulletinBoard
@@ -68,6 +69,29 @@ module Decidim
         let(:api_key) { "" }
 
         it { is_expected.not_to be_configured }
+      end
+
+      describe "emit_vote" do
+        context "when everything went ok" do
+          before do
+            stub_wisper_publisher("Decidim::BulletinBoard::Voter::EmitVote", :call, :ok, double(status: "enqueued"))
+          end
+
+          it "calls the EmitVote command and return the result" do
+            pending_message = subject.emit_vote
+            expect(pending_message.status).to eq("enqueued")
+          end
+        end
+
+        context "when something went wrong" do
+          before do
+            stub_wisper_publisher("Decidim::BulletinBoard::Voter::EmitVote", :call, :error, "something went wrong")
+          end
+
+          it "calls the EmitVote command and throws an error" do
+            expect { subject.emit_vote }.to raise_error("something went wrong")
+          end
+        end
       end
     end
   end

@@ -6,6 +6,7 @@ PATH
       byebug (~> 11.0)
       graphlient (~> 0.4.0)
       jwt
+      wisper (~> 2.0.0)
 
 GEM
   remote: https://rubygems.org/
@@ -91,6 +92,8 @@ GEM
       addressable (>= 2.3.6)
       crack (>= 0.3.2)
       hashdiff (>= 0.4.0, < 2.0.0)
+    wisper (2.0.1)
+    wisper-rspec (1.1.0)
 
 PLATFORMS
   ruby
@@ -103,6 +106,7 @@ DEPENDENCIES
   rubocop-faker
   rubocop-rspec (~> 1.21)
   webmock (~> 3.6)
+  wisper-rspec (~> 1.1.0)
 
 BUNDLED WITH
    2.1.4
