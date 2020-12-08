@@ -23,12 +23,15 @@ Gem::Specification.new do |s|
   s.executables = s.files.grep(%r{^exe/}) { |f| File.basename(f) }
   s.require_paths = ["lib"]
 
+  s.add_dependency "activemodel", "~> 5.0", ">= 5.0.0.1"
   s.add_dependency "activesupport", "~> 5.0", ">= 5.0.0.1"
   s.add_dependency "byebug", "~> 11.0"
   s.add_dependency "graphlient", "~> 0.4.0"
   s.add_dependency "jwt"
+  s.add_dependency "wisper", "~> 2.0.0"
 
   s.add_development_dependency "rake", "~> 13.0"
   s.add_development_dependency "rspec", "~> 3.7"
   s.add_development_dependency "webmock", "~> 3.6"
+  s.add_development_dependency "wisper-rspec", "~> 1.1.0"
 end
