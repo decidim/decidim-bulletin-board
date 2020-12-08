@@ -1,9 +1,12 @@
 name: "[CI] Ruby Client"
 on:
-  push:
+  pull_request:
     paths:
       - ".github/workflows/ruby-workflow.yml"
       - "decidim-bulletin_board-ruby/**"
+  push:
+    branches:
+      - master
 
 env:
   CI: "true"

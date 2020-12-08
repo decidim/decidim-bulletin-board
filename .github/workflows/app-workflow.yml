@@ -1,9 +1,12 @@
 name: "[CI] Application"
 on:
-  push:
+  pull_request:
     paths:
       - ".github/workflows/app-workflow.yml"
       - "decidim-bulletin_board-app/**"
+  push:
+    branches:
+      - master
 
 env:
   CI: "true"
