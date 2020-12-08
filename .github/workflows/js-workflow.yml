@@ -1,9 +1,12 @@
 name: "[CI] JS Client"
 on:
-  push:
+  pull_request:
     paths:
       - ".github/workflows/js-workflow.yml"
       - "decidim-bulletin_board-js/**"
+  push:
+    branches:
+      - master
 
 env:
   CI: "true"
