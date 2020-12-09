@@ -4,7 +4,7 @@ require "spec_helper"
 
 module Decidim
   module BulletinBoard
-    module Election
+    module Authority
       describe GetElectionStatus do
         subject { described_class.new(election_id) }
 

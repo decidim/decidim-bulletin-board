@@ -109,7 +109,7 @@ module Decidim
 
         context "when everything went ok" do
           before do
-            stub_wisper_publisher("Decidim::BulletinBoard::Election::GetElectionStatus", :call, :ok, "key_ceremony")
+            stub_wisper_publisher("Decidim::BulletinBoard::Authority::GetElectionStatus", :call, :ok, "key_ceremony")
           end
 
           it "calls the GetElectionStatus command and returns the result" do
@@ -120,7 +120,7 @@ module Decidim
 
         context "when something went wrong" do
           before do
-            stub_wisper_publisher("Decidim::BulletinBoard::Election::GetElectionStatus", :call, :error, "Sorry, something went wrong")
+            stub_wisper_publisher("Decidim::BulletinBoard::Authority::GetElectionStatus", :call, :error, "Sorry, something went wrong")
           end
 
           it "calls the GetElectionStatus command and throws an error" do

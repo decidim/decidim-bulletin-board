@@ -2,7 +2,7 @@
 
 module Decidim
   module BulletinBoard
-    module Election
+    module Authority
       # This command uses the GraphQL client to get the status of the election.
       class GetElectionStatus
         include Wisper::Publisher

@@ -52,8 +52,9 @@ module Decidim
       end
 
       def get_status(election_id)
-        get_status = Decidim::BulletinBoard::Election::GetElectionStatus.new(election_id)
-        get_status.on(:ok) { |election| return election }
+        unique_election_id = "#{authority_slug}.#{election_id}"
+        get_status = Decidim::BulletinBoard::Authority::GetElectionStatus.new(unique_election_id)
+        get_status.on(:ok) { |status| return status }
         get_status.on(:error) { |error_message| raise StandardError, error_message }
         get_status.call
       end
