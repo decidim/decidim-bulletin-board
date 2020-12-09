@@ -9,6 +9,7 @@ require "decidim/bulletin_board/client"
 require "decidim/bulletin_board/graphql/client"
 require "decidim/bulletin_board/create_election"
 require "decidim/bulletin_board/voter"
+require "decidim/bulletin_board/election/get_election_status"
 require "active_support/configurable"
 require "jwt"
 
