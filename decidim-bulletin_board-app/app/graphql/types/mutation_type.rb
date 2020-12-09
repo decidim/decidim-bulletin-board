@@ -6,5 +6,6 @@ module Types
     field :process_key_ceremony_step, mutation: Mutations::ProcessKeyCeremonyStepMutation
     field :open_ballot_box, mutation: Mutations::OpenBallotBoxMutation
     field :vote, mutation: Mutations::VoteMutation
+    field :close_ballot_box, mutation: Mutations::CloseBallotBoxMutation
   end
 end
