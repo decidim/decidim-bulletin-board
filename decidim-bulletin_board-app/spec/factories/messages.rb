@@ -250,5 +250,17 @@ FactoryBot.define do
       proof_zero_response { "Jtb2ECiDdfcnA1WShU1BiDjd/WC+seU18AyBgrurgIM=" }
       usage { "SelectionValue" }
     end
+
+    factory :close_ballot_box_message, parent: :message do
+      transient do
+        authority { build(:authority) }
+        election { build(:election, status: :vote) }
+        voting_scheme { :dummy }
+      end
+
+      message_id { "#{election.unique_id}.close_ballot_box+a.#{authority.unique_id}" }
+      scheme { build(:voting_scheme, name: voting_scheme) }
+      description { build(:description) }
+    end
   end
 end
