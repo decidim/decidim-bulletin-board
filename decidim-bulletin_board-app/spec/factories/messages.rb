@@ -164,6 +164,18 @@ FactoryBot.define do
       usage { "SecretValue" }
     end
 
+    factory :open_ballot_box_message, parent: :message do
+      transient do
+        authority { build(:authority) }
+        election { build(:election) }
+        voting_scheme { :dummy }
+      end
+
+      message_id { "#{election.unique_id}.open_ballot_box+a.#{authority.unique_id}" }
+      scheme { build(:voting_scheme, name: voting_scheme) }
+      description { build(:description) }
+    end
+
     factory :vote_message, parent: :message do
       transient do
         election { build(:election) }
