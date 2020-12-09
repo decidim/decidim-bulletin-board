@@ -8,6 +8,6 @@ export class VoterWrapper {
   }
 
   encrypt(data) {
-    return data;
+    return JSON.stringify(data);
   }
 }
