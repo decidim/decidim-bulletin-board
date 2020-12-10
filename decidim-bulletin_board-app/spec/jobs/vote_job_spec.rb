@@ -16,7 +16,7 @@ RSpec.describe VoteJob do
   end
 
   context "when the message is rejected" do
-    let(:message) { build(:vote_message, :invalid, election: election) }
+    let(:message) { build(:vote_message, content_traits: [:invalid], election: election) }
 
     it "rejects the message" do
       expect { subject }.to change { PendingMessage.last.status } .from("enqueued").to("rejected")
