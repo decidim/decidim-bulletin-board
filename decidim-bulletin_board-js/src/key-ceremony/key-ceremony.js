@@ -151,21 +151,13 @@ export class KeyCeremony {
    * @throws An exception is raised if there is a problem with the client.
    */
   async sendMessageToBulletinBoard({ message }) {
-    const {
-      id: electionUniqueId,
-      currentTrusteeContext,
-    } = this.electionContext;
-
-    const { id: trusteeId } = currentTrusteeContext;
-    const messageId = `${electionUniqueId}.key_ceremony+t.${trusteeId}`;
-
     const signedData = await this.currentTrustee.sign({
+      iat: Math.round(+new Date() / 1000),
       ...message,
-      message_id: messageId,
     });
 
     return this.bulletinBoardClient.processKeyCeremonyStep({
-      messageId,
+      message_id: message.message_id,
       signedData,
     });
   }
