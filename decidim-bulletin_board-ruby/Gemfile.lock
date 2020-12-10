@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    decidim-bulletin_board (0.2.0)
+    decidim-bulletin_board (0.3.0)
       activemodel (~> 5.0, >= 5.0.0.1)
       activesupport (~> 5.0, >= 5.0.0.1)
       byebug (~> 11.0)
