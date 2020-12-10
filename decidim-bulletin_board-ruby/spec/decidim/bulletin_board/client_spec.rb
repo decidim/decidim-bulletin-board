@@ -71,6 +71,14 @@ module Decidim
         it { is_expected.not_to be_configured }
       end
 
+      describe "sign_data" do
+        it "uses the private key to sign in the data as JWT" do
+          allow(JWT).to receive(:encode)
+          subject.sign_data("some-data")
+          expect(JWT).to have_received(:encode).with("some-data", instance_of(OpenSSL::PKey::RSA), "RS256")
+        end
+      end
+
       describe "cast_vote" do
         let(:election_data) do
           { election_id: "test.1" }

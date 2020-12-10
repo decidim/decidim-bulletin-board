@@ -35,7 +35,7 @@ module Decidim
       end
 
       def sign_data(data)
-        JWT.encode(data, identification_private_key.keypair, "RS256")
+        JWT.encode(data, private_key.keypair, "RS256")
       end
 
       def setup_election(election_data)
