@@ -5,7 +5,7 @@ export const WAIT_TIME_MS = 1_000; // 1s
 export const MESSAGE_RECEIVED = "[Message] Received";
 export const MESSAGE_PROCESSED = "[Message] Processed";
 
-const DEFAULT_STATE = { message: null, done: false };
+const DEFAULT_STATE = { message: null, done: false, save: false };
 
 /**
  * Handles all the key ceremony steps for a specific election and trustee.
@@ -157,7 +157,7 @@ export class KeyCeremony {
     });
 
     return this.bulletinBoardClient.processKeyCeremonyStep({
-      message_id: message.message_id,
+      messageId: message.message_id,
       signedData,
     });
   }

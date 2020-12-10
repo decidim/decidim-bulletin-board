@@ -1,8 +1,9 @@
+import { MessageIdentifier, TRUSTEE_TYPE } from "../client/message-identifier";
+
 export const CREATE_ELECTION = "create_election";
 export const KEY_CEREMONY_STEP_1 = "key_ceremony.step_1";
-export const KEY_CEREMONY_JOINT_ELECTION_KEY = "key_ceremony.joint_election_key";
-
-import { MessageIdentifier } from "../client/message-identifier";
+export const KEY_CEREMONY_JOINT_ELECTION_KEY =
+  "key_ceremony.joint_election_key";
 
 /**
  * This is just a dummy implementation of a possible `TrusteeWrapper`.
@@ -18,18 +19,18 @@ export class TrusteeWrapper {
   }
 
   backup() {
-    return JSON.stringify(this)
+    return JSON.stringify(this);
   }
 
   static restore(state) {
-    return JSON.parse(state)
+    return JSON.parse(state);
   }
 
   processMessage(messageId, message) {
-    messageIdentifier = MessageIdentifier.parse(messageId);
+    const messageIdentifier = MessageIdentifier.parse(messageId);
     switch (this.status) {
       case CREATE_ELECTION: {
-        if (message_identifier.type === CREATE_ELECTION) {
+        if (messageIdentifier.type === CREATE_ELECTION) {
           this.status = KEY_CEREMONY_STEP_1;
           this.electionId = messageIdentifier.electionId;
           this.processedMessages = [];
@@ -38,26 +39,25 @@ export class TrusteeWrapper {
             done: false,
             save: true,
             message: {
-              message_id: MessageIdentifier.format(this.electionId, KEY_CEREMONY_STEP_1, MessageIdentifier.TRUSTEE, this.trusteeId),
+              message_id: MessageIdentifier.format(
+                this.electionId,
+                KEY_CEREMONY_STEP_1,
+                TRUSTEE_TYPE,
+                this.trusteeId
+              ),
               content: JSON.stringify({
                 election_public_key: 7,
-                owner_id: this.trusteeId
-              })
+                owner_id: this.trusteeId,
+              }),
             },
           };
         }
         break;
       }
       case KEY_CEREMONY_STEP_1: {
-        if (
-          messageIdentifier.type_subtype ===
-          KEY_CEREMONY_STEP_1
-        ) {
+        if (messageIdentifier.type_subtype === KEY_CEREMONY_STEP_1) {
           this.processedMessages = [...this.processedMessages, message];
-          if (
-            this.processedMessages.length ===
-            this.electionTrusteesCount
-          ) {
+          if (this.processedMessages.length === this.electionTrusteesCount) {
             this.status = KEY_CEREMONY_JOINT_ELECTION_KEY;
             return {
               done: false,
@@ -70,8 +70,7 @@ export class TrusteeWrapper {
       }
       case KEY_CEREMONY_JOINT_ELECTION_KEY: {
         if (
-          messageIdentifier.type_subtype ===
-          KEY_CEREMONY_JOINT_ELECTION_KEY
+          messageIdentifier.type_subtype === KEY_CEREMONY_JOINT_ELECTION_KEY
         ) {
           return {
             done: true,

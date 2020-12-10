@@ -63,7 +63,7 @@ class CreateElection < Rectify::Command
   end
 
   def find_or_create_trustee(trustee)
-    Trustee.where(name: trustee[:name]).or(Trustee.where(public_key: truste[:public_key])).first ||
+    Trustee.where(name: trustee[:name]).or(Trustee.where(public_key: trustee[:public_key])).first ||
       Trustee.create!(
         name: trustee[:name],
         public_key: JSON.parse(trustee[:public_key])

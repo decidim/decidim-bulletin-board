@@ -81,7 +81,7 @@ RSpec.describe ProcessKeyCeremonyStep do
   end
 
   context "when the data is invalid" do
-    let(:extra_message_params) { { content_traits: [ :invalid ] } }
+    let(:extra_message_params) { { content_traits: [:invalid] } }
 
     it_behaves_like "key ceremony fails"
 

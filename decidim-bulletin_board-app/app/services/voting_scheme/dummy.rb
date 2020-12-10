@@ -21,13 +21,13 @@ module VotingScheme
       @response = response
     end
 
-    def process_create_election_message(message, content)
+    def process_create_election_message(message, _content)
       raise RejectedMessage, "There must be at least 2 Trustees" if message.fetch(:trustees, []).count < 2
 
       @state = { joint_election_key: 1, trustees: [] }
     end
 
-    def process_key_ceremony_message(message, content)
+    def process_key_ceremony_message(_message, content)
       election_public_key = content.fetch(:election_public_key, 0)
       raise RejectedMessage, "The trustee sent their public keys already" if state[:trustees].include?(content[:owner_id])
       raise RejectedMessage, "The election public key should be a prime number" unless Prime.prime?(election_public_key)
@@ -42,7 +42,7 @@ module VotingScheme
       end
     end
 
-    def process_vote_message(message, content)
+    def process_vote_message(_message, content)
       raise RejectedMessage, "The given ballot style is invalid" if content.fetch(:ballot_style, "invalid-style") == "invalid-style"
     end
   end
