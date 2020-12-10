@@ -33,7 +33,7 @@ module LogEntryCommand
           "Invalid signature"
         elsif decoded_error.present?
           decoded_error
-        elsif message_id != decoded_data["message_id"]
+        elsif message_id != decoded_data[:message_id]
           "The message identifier given doesn't match the signed data"
         elsif message_identifier.type != type
           "The message is not valid for this endpoint"
@@ -71,7 +71,7 @@ module LogEntryCommand
     end
 
     def invalid_timestamp?
-      iat = decoded_data.dig("iat")
+      iat = decoded_data[:iat]
       Time.zone.at(iat) < settings[:iat_expiration_minutes].minutes.ago
     end
 

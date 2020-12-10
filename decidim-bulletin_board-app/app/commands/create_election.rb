@@ -63,35 +63,35 @@ class CreateElection < Rectify::Command
   end
 
   def find_or_create_trustee(trustee)
-    Trustee.where(name: trustee["name"]).or(Trustee.where(public_key: trustee["public_key"])).first ||
+    Trustee.where(name: trustee[:name]).or(Trustee.where(public_key: truste[:public_key])).first ||
       Trustee.create!(
-        name: trustee["name"],
-        public_key: JSON.parse(trustee["public_key"])
+        name: trustee[:name],
+        public_key: JSON.parse(trustee[:public_key])
       )
   end
 
   def trustees
-    @trustees ||= decoded_data["trustees"]
+    @trustees ||= decoded_data[:trustees]
   end
 
   def title
-    @title ||= decoded_data.dig("description", "name", "text", 0, "value")
+    @title ||= decoded_data.dig(:description, :name, :text, 0, :value)
   end
 
   def start_date
     return @start_date if defined?(@start_date)
 
-    @start_date ||= Time.zone.parse(decoded_data.dig("description", "start_date") || "")
+    @start_date ||= Time.zone.parse(decoded_data.dig(:description, :start_date) || "")
   end
 
   def end_date
     return @end_date if defined?(@end_date)
 
-    @end_date ||= Time.zone.parse(decoded_data.dig("description", "end_date") || "")
+    @end_date ||= Time.zone.parse(decoded_data.dig(:description, :end_date) || "")
   end
 
   def questions
-    @questions ||= decoded_data.dig("description", "contests")
+    @questions ||= decoded_data.dig(:description, :contests)
   end
 
   def valid_election?
@@ -112,8 +112,8 @@ class CreateElection < Rectify::Command
 
   def valid_questions?
     questions.each do |quest|
-      number_elected = quest.dig("number_elected")
-      ballot_selections = quest.dig("ballot_selections")
+      number_elected = quest.dig(:number_elected)
+      ballot_selections = quest.dig(:ballot_selections)
       return false unless run_validations do
         if number_elected.blank?
           "There must be specified the number of answers to be selected"
