@@ -29,9 +29,9 @@ module Decidim
           @message_id ||= "#{election_id}.vote.cast+v.#{voter_id}"
         end
 
-        # Public: uses the bulletin board client to sign the encrypted vote merged with the `message_id`.
+        # Public: uses the bulletin board client to sign the encrypted vote merged with the metadata
         def signed_data
-          @signed_data ||= bulletin_board_client.sign_data(encrypted_vote.merge(message_id: message_id))
+          @signed_data ||= bulletin_board_client.sign_data(message)
         end
 
         private
@@ -56,6 +56,14 @@ module Decidim
           return if voter_data.blank?
 
           voter_data[:voter_id]
+        end
+
+        def message
+          {
+            iat: Time.now.to_i,
+            message_id: message_id,
+            content: encrypted_vote
+          }
         end
       end
     end

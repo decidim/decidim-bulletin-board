@@ -15,9 +15,7 @@ module Decidim
         let(:voter_data) do
           { voter_id: "voter.1" }
         end
-        let(:encrypted_vote) do
-          { question_1: "aNsWeR 1" }
-        end
+        let(:encrypted_vote) { "{ \"question_1\": \"aNsWeR 1\" }" }
 
         describe("when the election data doesn't include the election_id") do
           let(:election_data) do
