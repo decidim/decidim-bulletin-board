@@ -103,6 +103,31 @@ module Decidim
           end
         end
       end
+
+      describe "get_election_status" do
+        let(:election_id) { "decidim-test-authority.1" }
+
+        context "when everything went ok" do
+          before do
+            stub_wisper_publisher("Decidim::BulletinBoard::Authority::GetElectionStatus", :call, :ok, "key_ceremony")
+          end
+
+          it "calls the GetElectionStatus command and returns the result" do
+            election_status = subject.get_status(election_id)
+            expect(election_status).to eq("key_ceremony")
+          end
+        end
+
+        context "when something went wrong" do
+          before do
+            stub_wisper_publisher("Decidim::BulletinBoard::Authority::GetElectionStatus", :call, :error, "Sorry, something went wrong")
+          end
+
+          it "calls the GetElectionStatus command and throws an error" do
+            expect { subject.get_status(election_id) }.to raise_error("Sorry, something went wrong")
+          end
+        end
+      end
     end
   end
 end

@@ -51,6 +51,14 @@ module Decidim
         cast_vote.call
       end
 
+      def get_status(election_id)
+        unique_election_id = "#{authority_slug}.#{election_id}"
+        get_status = Decidim::BulletinBoard::Authority::GetElectionStatus.new(unique_election_id)
+        get_status.on(:ok) { |status| return status }
+        get_status.on(:error) { |error_message| raise StandardError, error_message }
+        get_status.call
+      end
+
       private
 
       attr_reader :identification_private_key, :private_key
