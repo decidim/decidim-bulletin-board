@@ -32,7 +32,7 @@ export class MessageIdentifier {
       electionId: `${authority}.${electionId}`,
       type,
       subtype,
-      type_subtype: `${type}.${subtype}`,
+      typeSubtype: `${type}.${subtype}`,
       author: {
         type: authorType,
         id: authorId,

@@ -55,7 +55,7 @@ export class TrusteeWrapper {
         break;
       }
       case KEY_CEREMONY_STEP_1: {
-        if (messageIdentifier.type_subtype === KEY_CEREMONY_STEP_1) {
+        if (messageIdentifier.typeSubtype === KEY_CEREMONY_STEP_1) {
           this.processedMessages = [...this.processedMessages, message];
           if (this.processedMessages.length === this.electionTrusteesCount) {
             this.status = KEY_CEREMONY_JOINT_ELECTION_KEY;
@@ -69,9 +69,7 @@ export class TrusteeWrapper {
         break;
       }
       case KEY_CEREMONY_JOINT_ELECTION_KEY: {
-        if (
-          messageIdentifier.type_subtype === KEY_CEREMONY_JOINT_ELECTION_KEY
-        ) {
+        if (messageIdentifier.typeSubtype === KEY_CEREMONY_JOINT_ELECTION_KEY) {
           return {
             done: true,
             save: false,

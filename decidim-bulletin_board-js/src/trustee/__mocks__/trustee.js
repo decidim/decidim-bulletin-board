@@ -8,7 +8,8 @@ export class Trustee {
         return {
           done: false,
           message: {
-            signedData,
+            message_id: messageId,
+            content: signedData,
           },
         };
       }
@@ -16,14 +17,15 @@ export class Trustee {
         return {
           done: true,
           message: {
-            signedData,
+            message_id: messageId,
+            content: signedData,
           },
         };
       }
     }
   }
 
-  sign({ signedData }) {
-    return signedData;
+  sign({ content }) {
+    return content;
   }
 }

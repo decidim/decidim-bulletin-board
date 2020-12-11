@@ -83,7 +83,9 @@ export class KeyCeremony {
   async processNextStep({ message, done }) {
     if (!done) {
       return this.waitForNextLogEntryResult().then(async (result) => {
-        await this.sendMessageToBulletinBoard(result);
+        if (result.message) {
+          await this.sendMessageToBulletinBoard(result);
+        }
         return this.processNextStep(result);
       });
     }
