@@ -4,9 +4,20 @@ export class Trustee {
       case "dummy.nothing": {
         return null;
       }
-      case "dummy.step": {
+      case "dummy.send": {
         return {
           done: false,
+          save: false,
+          message: {
+            message_id: messageId,
+            content: signedData,
+          },
+        };
+      }
+      case "dummy.save": {
+        return {
+          done: false,
+          save: true,
           message: {
             message_id: messageId,
             content: signedData,
@@ -16,10 +27,8 @@ export class Trustee {
       case "dummy.done": {
         return {
           done: true,
-          message: {
-            message_id: messageId,
-            content: signedData,
-          },
+          save: false,
+          message: null,
         };
       }
     }
