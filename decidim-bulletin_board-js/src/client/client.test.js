@@ -25,6 +25,19 @@ describe("Client", () => {
     expect(client.apiClient.wsEndpointUrl).toEqual(defaultParams.wsEndpointUrl);
   });
 
+  describe("getLogEntry", () => {
+    it("returns the log entry for the given hash", async () => {
+      const entry = await client.getLogEntry({
+        electionUniqueId: "election-1",
+        contentHash: "h1234",
+      });
+      expect(entry).toEqual({
+        signedData: "1234",
+        contentHash: "h1234",
+      });
+    });
+  });
+
   describe("getElectionLogEntries", () => {
     it("returns all the log entries from the corresponding election", async () => {
       const entries = await client.getElectionLogEntries({
