@@ -10,8 +10,11 @@ RUN apt-get update && \
     apt-get install -y git && \
     apt-get install -y curl && \
     apt-get install -y wget && \
-    apt-get install -y nodejs && \
     apt-get install -y rubygems
+
+# Install Nodejs
+RUN curl -sL https://deb.nodesource.com/setup_15.x | bash -
+RUN apt-get install -y nodejs
 
 # Install Rails
 RUN gem install bundler
