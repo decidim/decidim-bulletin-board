@@ -15,6 +15,19 @@ export class Client {
   }
 
   /**
+   * Query a log entry for the given election unique id and the given content hash.
+   *
+   * @param {Object} params - An object that include the following options.
+   *  - {String} electionUniqueId - The election's unique id.
+   *  - {String} contentHash - The log entry content hash.
+   * @returns {Promise<Array<Object>>} - A log entry.
+   * @throws Will throw an error if the request is rejected.
+   */
+  getLogEntry({ electionUniqueId, contentHash }) {
+    return this.apiClient.getLogEntry({ electionUniqueId, contentHash });
+  }
+
+  /**
    * Query all log entries for the given election id.
    *
    * @param {Object} params - An object that include the following options.
