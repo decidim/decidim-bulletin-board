@@ -10,14 +10,15 @@ RSpec.describe ProcessKeyCeremonyStepJob do
   let(:trustees_plus_keys) { generate_list(:private_key, 3).map { |key| [create(:trustee, private_key: key), key] } }
   let(:trustee) { trustees_plus_keys.first.first }
   let(:private_key) { trustees_plus_keys.first.last }
-  let(:message) { build(:key_ceremony_message, election: election) }
+  let(:message) { build(:key_ceremony_message, content_traits: content_traits, election: election) }
+  let(:content_traits) { [] }
 
   it "processes the message" do
     expect { subject }.to change { PendingMessage.last.status } .from("enqueued").to("accepted")
   end
 
   context "when the message is rejected" do
-    let(:message) { build(:key_ceremony_message, :invalid, election: election) }
+    let(:content_traits) { [:invalid] }
 
     it "rejects the message" do
       expect { subject }.to change { PendingMessage.last.status } .from("enqueued").to("rejected")
