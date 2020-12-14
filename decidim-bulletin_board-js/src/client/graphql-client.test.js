@@ -18,6 +18,34 @@ describe("GraphQLClient", () => {
     });
   });
 
+  describe("getLogEntry", () => {
+    it("return the log entry given a election id and a content hash", async () => {
+      const logEntryResult = { messageId: "dummy.1", signedData: "1234" };
+
+      fetch.mockResponseOnce(
+        JSON.stringify({ data: { logEntry: logEntryResult } })
+      );
+
+      const logEntry = await client.getLogEntry({
+        electionUniqueId: "example.1",
+        contentHash: "1234",
+      });
+
+      expect(logEntry).toEqual(logEntryResult);
+    });
+
+    it("throws an error if something went wrong", async () => {
+      fetch.mockReject(() => Promise.reject(new Error("something went wrong")));
+
+      await expect(
+        client.getLogEntry({
+          electionUniqueId: "example.1",
+          contentHash: "1234",
+        })
+      ).rejects.toThrow("something went wrong");
+    });
+  });
+
   describe("getElectionLogEntries", () => {
     it("returns all the log entries given a election id", async () => {
       const logEntriesResult = [

@@ -11,6 +11,7 @@ import ActionCable from "actioncable";
 import GET_ELECTION_LOG_ENTRIES from "./operations/get_election_log_entries";
 import SUBSCRIBE_TO_ELECTION_LOG from "./operations/subscribe_to_election_log";
 import PROCESS_KEY_CEREMONY_STEP from "./operations/process_key_ceremony_step";
+import GET_LOG_ENTRY from "./operations/get_log_entry";
 
 /**
  * This is the Bulletin Board API client that will use Apollo's client to
@@ -54,6 +55,27 @@ export class GraphQLClient {
       link: splitLink,
       cache: new InMemoryCache(),
     });
+  }
+
+  /**
+   * Query a log entry for the given election unique id and the given content hash.
+   *
+   * @param {Object} params - An object that include the following options.
+   *  - {String} electionUniqueId - The election's unique id.
+   *  - {String} contentHash - The log entry content hash.
+   * @returns {Promise<Array<Object>>} - A log entry.
+   * @throws Will throw an error if the request is rejected.
+   */
+  async getLogEntry({ electionUniqueId, contentHash }) {
+    const result = await this.apolloClient.query({
+      query: GET_LOG_ENTRY,
+      variables: {
+        electionUniqueId,
+        contentHash,
+      },
+    });
+
+    return result.data.logEntry;
   }
 
   /**

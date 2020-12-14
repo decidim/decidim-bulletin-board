@@ -7,9 +7,11 @@ const logEntriesByElection = {
         logEntries: [
           {
             signedData: "1234",
+            contentHash: "h1234",
           },
           {
             signedData: "5678",
+            contentHash: "h5678",
           },
         ],
       },
@@ -21,6 +23,7 @@ const logEntriesByElection = {
         logEntries: [
           {
             signedData: "9012",
+            contentHash: "h9012",
           },
         ],
       },
@@ -33,6 +36,16 @@ export class GraphQLClient {
     this.apiEndpointUrl = apiEndpointUrl;
     this.wsEndpointUrl = wsEndpointUrl;
     this.electionLogEntriesUpdates = new Subject();
+  }
+
+  getLogEntry({ electionUniqueId, contentHash }) {
+    return Promise.resolve(
+      logEntriesByElection[electionUniqueId].data.election.logEntries.find(
+        (logEntry) => {
+          return logEntry.contentHash === contentHash;
+        }
+      )
+    );
   }
 
   getElectionLogEntries({ electionUniqueId }) {
