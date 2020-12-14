@@ -40,7 +40,7 @@ module Decidim
 
       def setup_election(election_data)
         message_id = "#{election_data[:election_id]}.create_election+a.#{authority_slug}"
-        Decidim::BulletinBoard::CreateElection.call(election_data, message_id)
+        Decidim::BulletinBoard::Authority::CreateElection.call(election_data, message_id)
       end
 
       def cast_vote(election_data, voter_data, encrypted_vote)
