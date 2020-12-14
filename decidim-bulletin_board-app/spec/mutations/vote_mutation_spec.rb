@@ -27,7 +27,7 @@ module Mutations
       GQL
     end
 
-    let!(:election) { create(:election, authority: authority) }
+    let!(:election) { create(:election, authority: authority, authority_private_key: private_key) }
     let(:headers) { { "Authorization": authority.api_key } }
     let(:authority) { create(:authority, private_key: private_key) }
     let(:message_id) { payload["message_id"] }

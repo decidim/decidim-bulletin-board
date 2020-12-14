@@ -31,7 +31,7 @@ RSpec.describe Vote do
   end
 
   context "when the vote message is invalid" do
-    let(:extra_message_params) { { ballot_style: "invalid-style" } }
+    let(:extra_message_params) { { content_traits: [:invalid] } }
 
     it "broadcast invalid" do
       expect { subject }.to broadcast(:invalid)

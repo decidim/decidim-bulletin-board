@@ -1,6 +1,9 @@
+import { MessageIdentifier, TRUSTEE_TYPE } from "../client/message-identifier";
+
 export const CREATE_ELECTION = "create_election";
-export const KEY_CEREMONY = "key_ceremony";
-export const JOINT_ELECTION_KEY = "joint_election_key";
+export const KEY_CEREMONY_STEP_1 = "key_ceremony.step_1";
+export const KEY_CEREMONY_JOINT_ELECTION_KEY =
+  "key_ceremony.joint_election_key";
 
 /**
  * This is just a dummy implementation of a possible `TrusteeWrapper`.
@@ -9,57 +12,68 @@ export const JOINT_ELECTION_KEY = "joint_election_key";
 export class TrusteeWrapper {
   constructor({ trusteeId }) {
     this.trusteeId = trusteeId;
-    this.status = CREATE_ELECTION;
     this.electionId = null;
+    this.status = CREATE_ELECTION;
     this.electionTrusteesCount = 0;
     this.processedMessages = [];
   }
 
+  backup() {
+    return JSON.stringify(this);
+  }
+
+  static restore(state) {
+    return JSON.parse(state);
+  }
+
   processMessage(messageId, message) {
+    const messageIdentifier = MessageIdentifier.parse(messageId);
     switch (this.status) {
       case CREATE_ELECTION: {
-        if (messageId.includes(CREATE_ELECTION)) {
-          this.status = KEY_CEREMONY;
-          this.electionId = message.election_id;
+        if (messageIdentifier.type === CREATE_ELECTION) {
+          this.status = KEY_CEREMONY_STEP_1;
+          this.electionId = messageIdentifier.electionId;
           this.processedMessages = [];
           this.electionTrusteesCount = message.trustees.length;
           return {
             done: false,
+            save: true,
             message: {
-              iat: Math.round(+new Date() / 1000),
-              type: this.status,
-              election_id: this.electionId,
-              election_public_key: 7,
-              owner_id: this.trusteeId,
+              message_id: MessageIdentifier.format(
+                this.electionId,
+                KEY_CEREMONY_STEP_1,
+                TRUSTEE_TYPE,
+                this.trusteeId
+              ),
+              content: JSON.stringify({
+                election_public_key: 7,
+                owner_id: this.trusteeId,
+              }),
             },
           };
         }
         break;
       }
-      case KEY_CEREMONY: {
-        if (
-          messageId.includes(KEY_CEREMONY) &&
-          message.owner_id !== this.trusteeId
-        ) {
+      case KEY_CEREMONY_STEP_1: {
+        if (messageIdentifier.typeSubtype === KEY_CEREMONY_STEP_1) {
           this.processedMessages = [...this.processedMessages, message];
-          if (
-            this.processedMessages.length ===
-            this.electionTrusteesCount - 1
-          ) {
-            this.status = JOINT_ELECTION_KEY;
+          if (this.processedMessages.length === this.electionTrusteesCount) {
+            this.status = KEY_CEREMONY_JOINT_ELECTION_KEY;
             return {
               done: false,
-              message: {},
+              save: false,
+              message: null,
             };
           }
         }
         break;
       }
-      case JOINT_ELECTION_KEY: {
-        if (messageId.includes(JOINT_ELECTION_KEY)) {
+      case KEY_CEREMONY_JOINT_ELECTION_KEY: {
+        if (messageIdentifier.typeSubtype === KEY_CEREMONY_JOINT_ELECTION_KEY) {
           return {
             done: true,
-            message,
+            save: false,
+            message: null,
           };
         }
         break;

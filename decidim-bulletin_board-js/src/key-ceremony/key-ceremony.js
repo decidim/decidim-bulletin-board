@@ -5,7 +5,7 @@ export const WAIT_TIME_MS = 1_000; // 1s
 export const MESSAGE_RECEIVED = "[Message] Received";
 export const MESSAGE_PROCESSED = "[Message] Processed";
 
-const DEFAULT_STATE = { message: null, done: false };
+const DEFAULT_STATE = { message: null, done: false, save: false };
 
 /**
  * Handles all the key ceremony steps for a specific election and trustee.
@@ -83,7 +83,9 @@ export class KeyCeremony {
   async processNextStep({ message, done }) {
     if (!done) {
       return this.waitForNextLogEntryResult().then(async (result) => {
-        await this.sendMessageToBulletinBoard(result);
+        if (result.message) {
+          await this.sendMessageToBulletinBoard(result);
+        }
         return this.processNextStep(result);
       });
     }
@@ -151,21 +153,13 @@ export class KeyCeremony {
    * @throws An exception is raised if there is a problem with the client.
    */
   async sendMessageToBulletinBoard({ message }) {
-    const {
-      id: electionUniqueId,
-      currentTrusteeContext,
-    } = this.electionContext;
-
-    const { id: trusteeId } = currentTrusteeContext;
-    const messageId = `${electionUniqueId}.key_ceremony+t.${trusteeId}`;
-
     const signedData = await this.currentTrustee.sign({
+      iat: Math.round(+new Date() / 1000),
       ...message,
-      message_id: messageId,
     });
 
     return this.bulletinBoardClient.processKeyCeremonyStep({
-      messageId,
+      messageId: message.message_id,
       signedData,
     });
   }

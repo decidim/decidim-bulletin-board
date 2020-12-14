@@ -94,11 +94,12 @@ describe("KeyCeremony", () => {
       });
       const result = await keyCeremony.run();
       expect(bulletinBoardClient.processKeyCeremonyStep).toHaveBeenCalledWith({
-        messageId: "election-1.key_ceremony+t.trustee-1",
+        messageId: "dummy.done",
         signedData: "1234",
       });
       expect(result).toEqual({
-        signedData: "1234",
+        message_id: "dummy.done",
+        content: "1234",
       });
     });
 
@@ -113,15 +114,16 @@ describe("KeyCeremony", () => {
       });
       const result = await keyCeremony.run();
       expect(bulletinBoardClient.processKeyCeremonyStep).toHaveBeenCalledWith({
-        messageId: "election-1.key_ceremony+t.trustee-1",
+        messageId: "dummy.step",
         signedData: "1234",
       });
       expect(bulletinBoardClient.processKeyCeremonyStep).toHaveBeenCalledWith({
-        messageId: "election-1.key_ceremony+t.trustee-1",
+        messageId: "dummy.done",
         signedData: "5678",
       });
       expect(result).toEqual({
-        signedData: "5678",
+        message_id: "dummy.done",
+        content: "5678",
       });
     });
 
@@ -138,10 +140,12 @@ describe("KeyCeremony", () => {
       expect(
         bulletinBoardClient.processKeyCeremonyStep
       ).not.toHaveBeenCalledWith({
-        signedData: "1234",
+        message_id: "dummy.done",
+        content: "1234",
       });
       expect(result).toEqual({
-        signedData: "5678",
+        message_id: "dummy.done",
+        content: "5678",
       });
     });
 
@@ -191,7 +195,13 @@ describe("KeyCeremony", () => {
           messageId: "dummy.done",
           signedData: "5678",
         },
-        result: { done: true, message: { signedData: "5678" } },
+        result: {
+          done: true,
+          message: {
+            message_id: "dummy.done",
+            content: "5678",
+          },
+        },
       });
     });
   });
