@@ -1,9 +1,7 @@
 query GetElectionLogEntries($electionUniqueId: String!, $contentHash: String!) {
   logEntry(electionUniqueId: $electionUniqueId, contentHash: $contentHash) {
-    logEntry {
-      messageId
-      signedData
-      contentHash
-    }
+    messageId
+    signedData
+    contentHash
   }
 }
