@@ -9,8 +9,8 @@ module VotingScheme
   class ElectionGuard < Base
     delegate :restore, :backup, to: :state
 
-    def process_message(message_id, message)
-      state.process_message(message_id.subtype || message_id.type, PyCall::Dict.new(message))
+    def process_message(message_identifier, message)
+      state.process_message(message_identifier.subtype || message_identifier.type, PyCall::Dict.new(message))
     end
 
     private
