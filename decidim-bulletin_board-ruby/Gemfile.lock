@@ -100,6 +100,7 @@ GEM
 
 PLATFORMS
   ruby
+  x86_64-linux
 
 DEPENDENCIES
   decidim-bulletin_board!
@@ -112,4 +113,4 @@ DEPENDENCIES
   wisper-rspec (~> 1.1.0)
 
 BUNDLED WITH
-   2.1.4
+   2.2.0

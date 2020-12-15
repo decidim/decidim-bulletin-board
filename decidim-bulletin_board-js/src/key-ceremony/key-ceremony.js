@@ -5,8 +5,6 @@ export const WAIT_TIME_MS = 1_000; // 1s
 export const MESSAGE_RECEIVED = "[Message] Received";
 export const MESSAGE_PROCESSED = "[Message] Processed";
 
-const DEFAULT_STATE = { message: null, done: false, save: false };
-
 /**
  * Handles all the key ceremony steps for a specific election and trustee.
  */
@@ -27,6 +25,7 @@ export class KeyCeremony {
     this.currentTrustee = null;
     this.options = options || { bulletinBoardWaitTime: WAIT_TIME_MS };
     this.events = new Subject();
+    this.response = null;
   }
 
   /**
@@ -62,34 +61,21 @@ export class KeyCeremony {
   }
 
   /**
-   * Start the key ceremony with the default initial state. When the ceremony
-   * ends a final `Object`` is returned inside a `Promise` that contains the election key.
-   *
+   * Starts or continues with the key ceremony.
    * @returns {Promise<Object>}
    */
   async run() {
-    return this.processNextStep(DEFAULT_STATE);
-  }
-
-  /**
-   * Receives the result of a log entry processed. It the key ceremony is done
-   * it just returns the final result. Otherwise it waits until another log entry is processed
-   * and calls itself again with the result.
-   *
-   * @private
-   * @param {Object} result - The result of the previous processed log entry.
-   * @returns {Promise<Object>}
-   */
-  async processNextStep({ message, done }) {
-    if (!done) {
-      return this.waitForNextLogEntryResult().then(async (result) => {
-        if (result.message) {
-          await this.sendMessageToBulletinBoard(result);
-        }
-        return this.processNextStep(result);
-      });
+    if (this.response) {
+      await this.sendMessageToBulletinBoard(this.response);
     }
-    return message;
+    return this.waitForNextLogEntryResult().then(
+      async ({ message, done, save }) => {
+        this.response = message;
+        if (!done && !save) {
+          return this.run();
+        }
+      }
+    );
   }
 
   /**
@@ -152,7 +138,7 @@ export class KeyCeremony {
    * @returns <Promise<Object>}
    * @throws An exception is raised if there is a problem with the client.
    */
-  async sendMessageToBulletinBoard({ message }) {
+  async sendMessageToBulletinBoard(message) {
     const signedData = await this.currentTrustee.sign({
       iat: Math.round(+new Date() / 1000),
       ...message,

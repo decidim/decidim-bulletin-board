@@ -87,43 +87,64 @@ describe("KeyCeremony", () => {
       await keyCeremony.setup();
     });
 
-    it("always processes the first log entry", async () => {
+    it("processes messages until a save message, sending them in the next run call", async () => {
+      electionLogEntriesUpdates.next({
+        messageId: "dummy.send",
+        signedData: "1234",
+      });
+      electionLogEntriesUpdates.next({
+        messageId: "dummy.save",
+        signedData: "5678",
+      });
       electionLogEntriesUpdates.next({
         messageId: "dummy.done",
-        signedData: "1234",
+        signedData: "0912",
       });
-      const result = await keyCeremony.run();
+      await keyCeremony.run();
       expect(bulletinBoardClient.processKeyCeremonyStep).toHaveBeenCalledWith({
-        messageId: "dummy.done",
+        messageId: "dummy.send",
         signedData: "1234",
       });
-      expect(result).toEqual({
-        message_id: "dummy.done",
-        content: "1234",
+      expect(
+        bulletinBoardClient.processKeyCeremonyStep
+      ).not.toHaveBeenCalledWith({
+        messageId: "dummy.save",
+        signedData: "5678",
+      });
+      await keyCeremony.run();
+      expect(bulletinBoardClient.processKeyCeremonyStep).toHaveBeenCalledWith({
+        messageId: "dummy.save",
+        signedData: "5678",
       });
     });
 
-    it("processes all messages until done", async () => {
+    it("processes messages until a done message", async () => {
       electionLogEntriesUpdates.next({
-        messageId: "dummy.step",
+        messageId: "dummy.nothing",
         signedData: "1234",
       });
       electionLogEntriesUpdates.next({
-        messageId: "dummy.done",
+        messageId: "dummy.send",
         signedData: "5678",
       });
-      const result = await keyCeremony.run();
-      expect(bulletinBoardClient.processKeyCeremonyStep).toHaveBeenCalledWith({
-        messageId: "dummy.step",
+      electionLogEntriesUpdates.next({
+        messageId: "dummy.done",
+        signedData: "9012",
+      });
+      electionLogEntriesUpdates.next({
+        messageId: "dummy.send",
         signedData: "1234",
       });
+      await keyCeremony.run();
       expect(bulletinBoardClient.processKeyCeremonyStep).toHaveBeenCalledWith({
-        messageId: "dummy.done",
+        messageId: "dummy.send",
         signedData: "5678",
       });
-      expect(result).toEqual({
-        message_id: "dummy.done",
-        content: "5678",
+      expect(
+        bulletinBoardClient.processKeyCeremonyStep
+      ).not.toHaveBeenCalledWith({
+        messageId: "dummy.send",
+        signedData: "1234",
       });
     });
 
@@ -133,18 +154,24 @@ describe("KeyCeremony", () => {
         signedData: "1234",
       });
       electionLogEntriesUpdates.next({
-        messageId: "dummy.done",
+        messageId: "dummy.send",
         signedData: "5678",
       });
-      const result = await keyCeremony.run();
+      electionLogEntriesUpdates.next({
+        messageId: "dummy.done",
+        signedData: "9012",
+      });
+      await keyCeremony.run();
       expect(
         bulletinBoardClient.processKeyCeremonyStep
       ).not.toHaveBeenCalledWith({
-        message_id: "dummy.done",
+        message_id: "dummy.nothing",
         content: "1234",
       });
-      expect(result).toEqual({
-        message_id: "dummy.done",
+      expect(
+        bulletinBoardClient.processKeyCeremonyStep
+      ).not.toHaveBeenCalledWith({
+        message_id: "dummy.send",
         content: "5678",
       });
     });
@@ -157,8 +184,12 @@ describe("KeyCeremony", () => {
         signedData: "1234",
       });
       electionLogEntriesUpdates.next({
-        messageId: "dummy.done",
+        messageId: "dummy.send",
         signedData: "5678",
+      });
+      electionLogEntriesUpdates.next({
+        messageId: "dummy.done",
+        signedData: "9012",
       });
 
       keyCeremony.events.subscribe((event) => {
@@ -185,22 +216,43 @@ describe("KeyCeremony", () => {
       expect(events[2]).toEqual({
         type: MESSAGE_RECEIVED,
         message: {
-          messageId: "dummy.done",
+          messageId: "dummy.send",
           signedData: "5678",
         },
       });
       expect(events[3]).toEqual({
         type: MESSAGE_PROCESSED,
         message: {
-          messageId: "dummy.done",
+          messageId: "dummy.send",
           signedData: "5678",
         },
         result: {
-          done: true,
+          done: false,
+          save: false,
           message: {
-            message_id: "dummy.done",
+            message_id: "dummy.send",
             content: "5678",
           },
+        },
+      });
+
+      expect(events[4]).toEqual({
+        type: MESSAGE_RECEIVED,
+        message: {
+          messageId: "dummy.done",
+          signedData: "9012",
+        },
+      });
+      expect(events[5]).toEqual({
+        type: MESSAGE_PROCESSED,
+        message: {
+          messageId: "dummy.done",
+          signedData: "9012",
+        },
+        result: {
+          save: false,
+          done: true,
+          message: null,
         },
       });
     });

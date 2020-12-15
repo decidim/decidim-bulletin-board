@@ -1,4 +1,4 @@
-query GetElectionLogEntries($electionUniqueId: String!, $contentHash: String!) {
+query GetLogEntry($electionUniqueId: String!, $contentHash: String!) {
   logEntry(electionUniqueId: $electionUniqueId, contentHash: $contentHash) {
     messageId
     signedData
