@@ -23,6 +23,7 @@ export class MessageIdentifier {
     const [elements, author] = messageId.split("+");
     const [authority, electionId, type, subtype] = elements.split(".", 4);
     const [authorType, authorId] = author.split(".", 2);
+    const dotSubtype = subtype ? `.${subtype}` : "";
 
     if (!VALID_TYPES.includes(authorType)) {
       throw new Error("Invalid message identifier format");
@@ -32,7 +33,7 @@ export class MessageIdentifier {
       electionId: `${authority}.${electionId}`,
       type,
       subtype,
-      typeSubtype: `${type}.${subtype}`,
+      typeSubtype: `${type}${dotSubtype}`,
       author: {
         type: authorType,
         id: authorId,
@@ -44,3 +45,4 @@ export class MessageIdentifier {
     return `${electionId}.${typeSubtype}+${authorType}.${authorId}`;
   }
 }
+
