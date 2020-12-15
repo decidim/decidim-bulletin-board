@@ -62,10 +62,10 @@ export class KeyCeremony {
 
   /**
    * Returns the backup function of the TrusteeWrapper
-   * @returns {String}
+   * @returns {string}
    */
   backup() {
-    return this.currentTrustee.wrapper.backup()
+    return this.currentTrustee.wrapper.backup();
   }
 
   /**

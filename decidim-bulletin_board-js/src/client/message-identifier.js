@@ -45,4 +45,3 @@ export class MessageIdentifier {
     return `${electionId}.${typeSubtype}+${authorType}.${authorId}`;
   }
 }
-
