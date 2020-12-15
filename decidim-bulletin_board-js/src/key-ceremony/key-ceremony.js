@@ -61,6 +61,14 @@ export class KeyCeremony {
   }
 
   /**
+   * Returns the backup function of the TrusteeWrapper
+   * @returns {String}
+   */
+  backup() {
+    return this.currentTrustee.wrapper.backup()
+  }
+
+  /**
    * Starts or continues with the key ceremony.
    * @returns {Promise<Object>}
    */
