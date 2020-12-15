@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require "spec_helper"
-require "decidim/bulletin_board/create_election"
 
 module Decidim
   module BulletinBoard
