@@ -40,7 +40,7 @@ module Decidim
         before do
           allow(Decidim::BulletinBoard::Graphql::Client).to receive(:client).and_return(
             Graphlient::Client.new(server_url,
-                                  schema_path: "spec/fixtures/bb_schema.json")
+                                   schema_path: "spec/fixtures/bb_schema.json")
           )
 
           Decidim::BulletinBoard.configure do |config|
