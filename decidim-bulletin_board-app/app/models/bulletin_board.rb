@@ -58,10 +58,6 @@ class BulletinBoard
       @public_key_rsa ||= JWT::JWK::RSA.import(public_key.symbolize_keys).public_key
     end
 
-    def public_key_thumbprint
-      JwkUtils.thumbprint(public_key)
-    end
-
     def name
       "Bulletin Board"
     end
