@@ -61,14 +61,14 @@ export class KeyCeremony {
       }
     );
 
-    fillTrusteeSentMessageIds();
+    this.fillTrusteeSentMessageIds();
   }
 
   /**
    * Collects all the message_ids for the messages already sent by the current trustee.
    */
-  fillTrusteeSentMessageId() {
-    this.electionLogEntries.each((message) => {
+  fillTrusteeSentMessageIds() {
+    this.electionLogEntries.forEach((message) => {
       const messageIdentifier = MessageIdentifier.parse(message.message_id);
       if (
         messageIdentifier.author.type === TRUSTEE_TYPE &&
@@ -85,7 +85,7 @@ export class KeyCeremony {
    * @returns {Promise<void>}
    */
   restoreNeeded() {
-    const lastMessage = lastMessageIdSent();
+    const lastMessage = this.lastMessageIdSent();
     return lastMessage && this.currentTrustee.checkRestoreNeeded(lastMessage);
   }
 
@@ -108,17 +108,29 @@ export class KeyCeremony {
   }
 
   /**
+   * Restores the state of the wrapper to continue from a state backup.
+   *
+   * @param {string} wrapperState - As string with the wrapper state retrieved from the backup method.
+   * @returns {boolean}
+   */
+  restore(wrapperState) {
+    if (!this.restoreNeeded()) {
+      return false;
+    }
+
+    const lastMessageId = this.lastMessageIdSent();
+    return this.currentTrustee.restore(wrapperState, lastMessageId);
+  }
+
+  /**
    * Starts or continues with the key ceremony.
    *
    * @param {string} wrapperState - As string with the wrapper state retrieved from the backup method.
    * @returns {Promise<Object>}
    */
-  async run(wrapperState = null) {
+  async run() {
     if (this.restoreNeeded()) {
-      const lastMessageId = lastMessageIdSent();
-      if (!this.currentTrustee.restore(wrapperState, lastMessageId)) {
-        throw new Error("Wrong wrapper state");
-      }
+      throw new Error("You need to restore the wrapper state to continue");
     }
 
     if (this.response) {
@@ -196,7 +208,7 @@ export class KeyCeremony {
    * @throws An exception is raised if there is a problem with the client.
    */
   async sendMessageToBulletinBoard(message) {
-    if (preventDuplicatedMessages(message)) {
+    if (this.preventDuplicatedMessages(message)) {
       return;
     }
 

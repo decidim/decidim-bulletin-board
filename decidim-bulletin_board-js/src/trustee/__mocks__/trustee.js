@@ -37,4 +37,8 @@ export class Trustee {
   sign({ content }) {
     return content;
   }
+
+  checkRestoreNeeded(_messageId) {
+    return false;
+  }
 }

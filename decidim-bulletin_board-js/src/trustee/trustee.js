@@ -62,7 +62,12 @@ export class Trustee {
    * @returns {boolean} - The result of the restore operation.
    */
   restore(wrapperState, messageId) {
-    this.wrapper = TrusteeWrapper.restore(wrapperState, messageId);
-    return this.wrapper !== null;
+    const newWrapper = TrusteeWrapper.restore(wrapperState, messageId);
+    if (newWrapper) {
+      this.wrapper = newWrapper;
+      return true;
+    } else {
+      return false;
+    }
   }
 }
