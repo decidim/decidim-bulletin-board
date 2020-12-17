@@ -45,6 +45,15 @@ export class Trustee {
   }
 
   /**
+   * Returns the state of the wrapper to be able to perform future restores.
+   *
+   * @returns {string}
+   */
+  backup() {
+    return this.wrapper.backup();
+  }
+
+  /**
    * Checks if the wrapper considers that a restore is needed based on the last messageId sent by the trustee.
    *
    * @params {Object} messageId - The message_id of the last message sent by the trustee.

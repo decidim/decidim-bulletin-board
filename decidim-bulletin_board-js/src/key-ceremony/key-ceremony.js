@@ -69,12 +69,12 @@ export class KeyCeremony {
    */
   fillTrusteeSentMessageIds() {
     this.electionLogEntries.forEach((message) => {
-      const messageIdentifier = MessageIdentifier.parse(message.message_id);
+      const messageIdentifier = MessageIdentifier.parse(message.messageId);
       if (
         messageIdentifier.author.type === TRUSTEE_TYPE &&
         messageIdentifier.author.id === this.currentTrustee.id
       ) {
-        this.trusteeSentMessageIds.push(message.message_id);
+        this.trusteeSentMessageIds.push(message.messageId);
       }
     });
   }
@@ -104,7 +104,7 @@ export class KeyCeremony {
    * @returns {string}
    */
   backup() {
-    return this.currentTrustee.wrapper.backup();
+    return this.currentTrustee.backup();
   }
 
   /**

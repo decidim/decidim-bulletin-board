@@ -23,13 +23,19 @@ export class TrusteeWrapper {
   }
 
   checkRestoreNeeded(messageId) {
-    return messageId !== null;
+    return messageId && this.status === CREATE_ELECTION;
   }
 
   restore(state, messageId) {
-    const result = JSON.parse(state);
+    if (!this.checkRestoreNeeded(messageId)) {
+      return false;
+    }
 
-    if (messageId !== null && result.status === CREATE_ELECTION) {
+    const result = JSON.parse(state);
+    if (
+      result.trusteeId !== this.trusteeId ||
+      (messageId && result.status === CREATE_ELECTION)
+    ) {
       return false;
     }
 
