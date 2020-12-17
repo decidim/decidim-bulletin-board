@@ -26,14 +26,20 @@ export class TrusteeWrapper {
     return messageId !== null;
   }
 
-  static restore(state, messageId) {
+  restore(state, messageId) {
     const result = JSON.parse(state);
 
     if (messageId !== null && result.status === CREATE_ELECTION) {
-      return null;
-    } else {
-      return result;
+      return false;
     }
+
+    try {
+      Object.assign(this, result);
+    } catch (error) {
+      return false;
+    }
+
+    return true;
   }
 
   processMessage(messageId, message) {

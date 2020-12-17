@@ -55,19 +55,13 @@ export class Trustee {
   }
 
   /**
-   * Restore the wrapper from the given state string. This uses the last messageId sent to check that the state is valid.
+   * Restore the wrapper from the given state string. It uses the last messageId sent to check that the state is valid.
    *
    * @params {string} wrapperState - The state of the wrapper to recover.
    * @params {Object} messageId - The message_id of the last message sent by the trustee.
    * @returns {boolean} - The result of the restore operation.
    */
   restore(wrapperState, messageId) {
-    const newWrapper = TrusteeWrapper.restore(wrapperState, messageId);
-    if (newWrapper) {
-      this.wrapper = newWrapper;
-      return true;
-    } else {
-      return false;
-    }
+    return this.wrapper.restore(wrapperState, messageId);
   }
 }
