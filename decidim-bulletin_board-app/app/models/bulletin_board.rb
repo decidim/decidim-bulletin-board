@@ -57,7 +57,7 @@ class BulletinBoard
     end
 
     def public_key_thumbprint
-      JwkUtils.thumbprint(public_key)
+      calculate_thumbprint
     end
 
     def name
