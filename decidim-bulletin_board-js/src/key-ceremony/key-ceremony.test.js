@@ -176,6 +176,37 @@ describe("KeyCeremony", () => {
       });
     });
 
+    it("doesn't send a message already sent", async () => {
+      electionLogEntriesUpdates.next({
+        messageId: "dummy.send",
+        signedData: "5678",
+      });
+      electionLogEntriesUpdates.next({
+        messageId: "dummy.done",
+        signedData: "9012",
+      });
+      await keyCeremony.run();
+      expect(bulletinBoardClient.processKeyCeremonyStep).toHaveBeenCalledWith({
+        messageId: "dummy.send",
+        signedData: "5678",
+      });
+      electionLogEntriesUpdates.next({
+        messageId: "dummy.send",
+        signedData: "aaaa",
+      });
+      electionLogEntriesUpdates.next({
+        messageId: "dummy.done",
+        signedData: "bbbb",
+      });
+      await keyCeremony.run();
+      expect(
+        bulletinBoardClient.processKeyCeremonyStep
+      ).not.toHaveBeenCalledWith({
+        messageId: "dummy.send",
+        signedData: "aaaa",
+      });
+    });
+
     it("reports all the events", async () => {
       let events = [];
 

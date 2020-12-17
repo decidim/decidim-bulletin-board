@@ -43,4 +43,34 @@ export class Trustee {
   sign(message) {
     return this.identificationKeys.sign(message);
   }
+
+  /**
+   * Returns the state of the wrapper to be able to perform future restores.
+   *
+   * @returns {string}
+   */
+  backup() {
+    return this.wrapper.backup();
+  }
+
+  /**
+   * Checks if the wrapper considers that a restore is needed based on the last messageId sent by the trustee.
+   *
+   * @params {Object} messageId - The message_id of the last message sent by the trustee.
+   * @returns {boolean} - The answer from the wrapper.
+   */
+  checkRestoreNeeded(messageId) {
+    return this.wrapper.checkRestoreNeeded(messageId);
+  }
+
+  /**
+   * Restore the wrapper from the given state string. It uses the last messageId sent to check that the state is valid.
+   *
+   * @params {string} wrapperState - The state of the wrapper to recover.
+   * @params {Object} messageId - The message_id of the last message sent by the trustee.
+   * @returns {boolean} - The result of the restore operation.
+   */
+  restore(wrapperState, messageId) {
+    return this.wrapper.restore(wrapperState, messageId);
+  }
 }

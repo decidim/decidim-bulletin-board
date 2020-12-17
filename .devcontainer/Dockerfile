@@ -21,3 +21,6 @@ RUN gem install bundler
 
 # Install Yarn
 RUN curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version 1.22.10
+
+# Install Redis
+RUN apt-get install -y redis

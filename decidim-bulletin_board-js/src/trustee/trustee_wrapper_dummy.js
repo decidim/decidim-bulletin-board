@@ -22,8 +22,30 @@ export class TrusteeWrapper {
     return JSON.stringify(this);
   }
 
-  static restore(state) {
-    return JSON.parse(state);
+  checkRestoreNeeded(messageId) {
+    return messageId && this.status === CREATE_ELECTION;
+  }
+
+  restore(state, messageId) {
+    if (!this.checkRestoreNeeded(messageId)) {
+      return false;
+    }
+
+    const result = JSON.parse(state);
+    if (
+      result.trusteeId !== this.trusteeId ||
+      (messageId && result.status === CREATE_ELECTION)
+    ) {
+      return false;
+    }
+
+    try {
+      Object.assign(this, result);
+    } catch (error) {
+      return false;
+    }
+
+    return true;
   }
 
   processMessage(messageId, message) {
