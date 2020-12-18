@@ -14,8 +14,8 @@ module Decidim
         Decidim::BulletinBoard::MessageIdentifier.unique_election_id(authority_slug, election_id)
       end
 
-      def message_id(unique_election_id, typeSubtype, voter_id = nil)
-        Decidim::BulletinBoard::MessageIdentifier.format(unique_election_id, typeSubtype, voter_id ? :voter : :authority, voter_id || authority_slug)
+      def message_id(unique_election_id, type_subtype, voter_id = nil)
+        Decidim::BulletinBoard::MessageIdentifier.format(unique_election_id, type_subtype, voter_id ? :voter : :authority, voter_id || authority_slug)
       end
 
       def sign_message(message_id, message)
@@ -28,9 +28,9 @@ module Decidim
 
       def complete_message(message_id, message)
         message.merge({
-          iat: Time.now.to_i,
-          message_id: message_id
-        })
+                        iat: Time.now.to_i,
+                        message_id: message_id
+                      })
       end
 
       class << self

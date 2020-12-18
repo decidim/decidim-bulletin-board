@@ -14,7 +14,7 @@ module Decidim
         let(:client_options) { subject.instance_variable_get(:@options) }
 
         before do
-          #Decidim::BulletinBoard::Graphql::Client.class_variable_set(@client, nil)
+          # Decidim::BulletinBoard::Graphql::Client.class_variable_set(@client, nil)
           Decidim::BulletinBoard.configure do |config|
             config.server = server
             config.api_key = api_key

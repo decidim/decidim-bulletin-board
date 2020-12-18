@@ -5,7 +5,6 @@ module Decidim
     module Voter
       # This command uses the GraphQL client to cast the vote.
       class CastVote < Decidim::BulletinBoard::Command
-
         # Public: Initializes the command.
         #
         # form - A form object with the params.
