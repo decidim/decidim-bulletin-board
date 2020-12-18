@@ -9,11 +9,11 @@ module VotingScheme
     let(:election) { build(:election_guard_election, last_step: last_step) }
 
     describe "process_message" do
-      subject { instance.process_message(MessageIdentifier.new(log_entry.message_id), log_entry.decoded_data) }
+      subject { instance.process_message(Decidim::BulletinBoard::MessageIdentifier.new(log_entry.message_id), log_entry.decoded_data) }
 
       before do
         election.log_entries.excluding(election.log_entries.last(dont_process_count)).each do |log_entry|
-          instance.process_message(MessageIdentifier.new(log_entry.message_id), log_entry.decoded_data)
+          instance.process_message(Decidim::BulletinBoard::MessageIdentifier.new(log_entry.message_id), log_entry.decoded_data)
         end
       end
 
