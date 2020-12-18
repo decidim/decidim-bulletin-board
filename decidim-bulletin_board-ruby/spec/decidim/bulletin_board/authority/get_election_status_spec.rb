@@ -8,25 +8,16 @@ module Decidim
       describe GetElectionStatus do
         subject { described_class.new(election_id) }
 
-        let(:election_id) { "decidim-test-authority.1" }
+        include_context "with a configured bulletin board"
 
-        let(:election_query_response) do
+        let(:election_id) { 1 }
+
+        let(:bulletin_board_response) do
           {
-            "data" => {
-              "election" => {
-                "status" => "key_ceremony"
-              }
+            election: {
+              status: "key_ceremony"
             }
-          }.to_json
-        end
-
-        let(:server_url) { "https://example.org/api" }
-
-        before do
-          allow(Decidim::BulletinBoard::Graphql::Client).to receive(:client).and_return(
-            Graphlient::Client.new(server_url, schema_path: "spec/fixtures/bb_schema.json")
-          )
-          stub_request(:post, server_url).to_return(status: 200, body: election_query_response)
+          }
         end
 
         context "when everything is ok" do
@@ -43,9 +34,7 @@ module Decidim
         end
 
         context "when the graphql operation returns an unexpected error" do
-          before do
-            stub_request(:post, server_url).to_return(status: 500)
-          end
+          let(:error_response) { true }
 
           it "broadcasts error with the unexpected error" do
             expect { subject.call }.to broadcast(:error, "Sorry, something went wrong")

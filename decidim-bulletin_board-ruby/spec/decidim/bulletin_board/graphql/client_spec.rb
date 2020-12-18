@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require "spec_helper"
-require "decidim/bulletin_board/graphql/client"
 
 module Decidim
   module BulletinBoard
@@ -15,6 +14,7 @@ module Decidim
         let(:client_options) { subject.instance_variable_get(:@options) }
 
         before do
+          #Decidim::BulletinBoard::Graphql::Client.class_variable_set(@client, nil)
           Decidim::BulletinBoard.configure do |config|
             config.server = server
             config.api_key = api_key
