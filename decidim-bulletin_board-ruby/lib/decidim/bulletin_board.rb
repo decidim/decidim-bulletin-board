@@ -1,17 +1,18 @@
 # frozen_string_literal: true
 
+require "active_model"
+require "active_support/configurable"
 require "decidim/bulletin_board/version"
+require "jwt"
 require "graphlient"
 require "wisper"
-require "active_model"
+
 require "decidim/bulletin_board/jwk_utils"
 require "decidim/bulletin_board/message_identifier"
+
 require "decidim/bulletin_board/client"
-require "decidim/bulletin_board/graphql/client"
-require "decidim/bulletin_board/voter"
 require "decidim/bulletin_board/authority"
-require "active_support/configurable"
-require "jwt"
+require "decidim/bulletin_board/voter"
 
 module Decidim
   # This module holds all the logic for the Bulletin Board Ruby Client to connect

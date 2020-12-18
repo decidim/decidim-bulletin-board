@@ -4,13 +4,14 @@ module Decidim
   module BulletinBoard
     module Voter
       # This command uses the GraphQL client to cast the vote.
-      class CastVote
-        include Wisper::Publisher
+      class CastVote < Decidim::BulletinBoard::Command
         # Public: Initializes the command.
         #
         # form - A form object with the params.
-        def initialize(form)
-          @form = form
+        def initialize(election_id, voter_id, encrypted_vote)
+          @election_id = election_id
+          @voter_id = voter_id
+          @encrypted_vote = encrypted_vote
         end
 
         # Executes the command. Broadcasts these events:
@@ -20,17 +21,13 @@ module Decidim
         #
         # Returns nothing.
         def call
-          return broadcast(:error, form.errors.full_messages.join(". ")) unless form.valid?
-
-          args = {
-            message_id: form.message_id,
-            signed_data: form.signed_data
-          }
+          message_id = message_id(unique_election_id(election_id), "vote.cast", voter_id)
+          signed_data = sign_message(message_id, { content: encrypted_vote })
 
           begin
             response = client.query do
               mutation do
-                vote(messageId: args[:message_id], signedData: args[:signed_data]) do
+                vote(messageId: message_id, signedData: signed_data) do
                   pendingMessage do
                     status
                   end
@@ -49,11 +46,7 @@ module Decidim
 
         private
 
-        attr_reader :form
-
-        def client
-          @client ||= BulletinBoard::Graphql::Client.client
-        end
+        attr_reader :election_id, :voter_id, :encrypted_vote
       end
     end
   end

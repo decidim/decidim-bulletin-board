@@ -4,11 +4,10 @@ module Decidim
   module BulletinBoard
     module Authority
       # This command uses the GraphQL client to get the status of the election.
-      class GetElectionStatus
-        include Wisper::Publisher
+      class GetElectionStatus < Decidim::BulletinBoard::Command
         # Public: Initializes the command.
         #
-        # election - The election to receive the status from.
+        # election_id - The local election identifier
         def initialize(election_id)
           @election_id = election_id
         end
@@ -20,14 +19,12 @@ module Decidim
         #
         # Returns nothing.
         def call
-          args = {
-            unique_id: election_id
-          }
+          unique_id = unique_election_id(election_id)
 
           begin
             response = client.query do
               query do
-                election(uniqueId: args[:unique_id]) do
+                election(uniqueId: unique_id) do
                   status
                 end
               end
@@ -42,10 +39,6 @@ module Decidim
         private
 
         attr_reader :election_id
-
-        def client
-          @client ||= BulletinBoard::Graphql::Client.client
-        end
       end
     end
   end
