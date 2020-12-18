@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require "jwk_utils"
-
 namespace :client do
   IDENTIFICATION_PRIVATE_KEY_SIZE = 4096
 
@@ -9,7 +7,7 @@ namespace :client do
 
   task :generate_identification_private_key do
     jwk = JWT::JWK.new(OpenSSL::PKey::RSA.new(IDENTIFICATION_PRIVATE_KEY_SIZE))
-    puts JwkUtils.private_export(jwk).to_json
+    puts Decidim::BulletinBoard::JwkUtils.private_export(jwk).to_json
     puts
     puts "Above is the generated identification private key."
     puts

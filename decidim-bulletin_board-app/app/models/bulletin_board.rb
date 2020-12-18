@@ -85,7 +85,7 @@ class BulletinBoard
     def new; end
 
     def private_key
-      @private_key ||= JwkUtils.import_private_key(Rails.application.secrets.identification_private_key)
+      @private_key ||= Decidim::BulletinBoard::JwkUtils.import_private_key(Rails.application.secrets.identification_private_key)
     end
   end
 end

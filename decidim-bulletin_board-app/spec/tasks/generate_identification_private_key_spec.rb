@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require "rails_helper"
-require "jwk_utils"
 
 RSpec.describe "client:generate_identification_private_key", type: :task do
   subject { task.execute }

@@ -16,6 +16,6 @@ module HasPublicKey
   end
 
   def calculate_thumbprint
-    JwkUtils.thumbprint(public_key.symbolize_keys)
+    Decidim::BulletinBoard::JwkUtils.thumbprint(public_key.symbolize_keys)
   end
 end

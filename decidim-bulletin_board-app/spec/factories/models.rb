@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require "jwk_utils"
-
 FactoryBot.define do
   sequence(:election_id) do |n|
     n
@@ -18,7 +16,7 @@ FactoryBot.define do
 
     name { Faker::Name.unique.name }
     public_key { private_key.export }
-    public_key_thumbprint { JwkUtils.thumbprint(private_key.export) }
+    public_key_thumbprint { Decidim::BulletinBoard::JwkUtils.thumbprint(private_key.export) }
     unique_id { name.parameterize }
 
     factory :authority, class: "Authority" do
