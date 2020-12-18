@@ -43,6 +43,13 @@ module Decidim
         create_election.call
       end
 
+      def open_ballot_box(election_id)
+        open_ballot_box = Decidim::BulletinBoard::Election::OpenBallotBox.new(election_id)
+        open_ballot_box.on(:ok) { |election| return election }
+        open_ballot_box.on(:error) { |error_message| raise StandardError, error_message }
+        open_ballot_box.call
+      end
+
       def cast_vote(election_id, voter_id, encrypted_vote)
         cast_vote = Decidim::BulletinBoard::Voter::CastVote.new(election_id, voter_id, encrypted_vote)
         cast_vote.on(:ok) { |pending_message| return pending_message }
