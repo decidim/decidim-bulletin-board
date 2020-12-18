@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require "rails_helper"
-require "jwk_utils"
 
 RSpec.describe "client:add_authority", type: :task do
   subject { task.execute(name: name, public_key: public_key) }
@@ -40,7 +39,7 @@ RSpec.describe "client:add_authority", type: :task do
   end
 
   context "when receives a private key" do
-    let(:public_key) { JwkUtils.private_export(private_key).to_json }
+    let(:public_key) { Decidim::BulletinBoard::JwkUtils.private_export(private_key).to_json }
 
     it "detects the private key and warns the user" do
       subject

@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require "jwk_utils"
 require "rack/utils"
 
 namespace :client do
@@ -39,7 +38,7 @@ namespace :client do
     jwk = JWT::JWK.import(jwk)
 
     jwk.export.yield_self do |hash|
-      [hash, JwkUtils.thumbprint(hash)]
+      [hash, Decidim::BulletinBoard::JwkUtils.thumbprint(hash)]
     end
   end
 end
