@@ -1,14 +1,3 @@
-PATH
-  remote: ..
-  specs:
-    decidim-bulletin_board (0.3.2a)
-      activemodel (>= 5.0.0.1)
-      activesupport (>= 5.0.0.1)
-      byebug (~> 11.0)
-      graphlient (~> 0.4.0)
-      jwt
-      wisper (~> 2.0.0)
-
 GEM
   remote: https://rubygems.org/
   specs:
@@ -86,6 +75,13 @@ GEM
       descendants_tracker (~> 0.0.1)
     concurrent-ruby (1.1.7)
     crass (1.0.6)
+    decidim-bulletin_board (0.4.0)
+      activemodel (>= 5.0.0)
+      activesupport (>= 5.0.0)
+      byebug (~> 11.0)
+      graphlient (~> 0.4.0)
+      jwt (~> 2.2.2)
+      wisper (~> 2.0.0)
     descendants_tracker (0.0.4)
       thread_safe (~> 0.3, >= 0.3.1)
     diff-lcs (1.4.4)
@@ -311,7 +307,7 @@ PLATFORMS
 DEPENDENCIES
   bootsnap (>= 1.4.2)
   byebug
-  decidim-bulletin_board!
+  decidim-bulletin_board (~> 0.4.0)
   factory_bot_rails
   faker (~> 1.9)
   graphiql-rails
