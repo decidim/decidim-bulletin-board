@@ -2,6 +2,6 @@
 
 module Decidim
   module BulletinBoard
-    VERSION = "0.3.1"
+    VERSION = "0.3.2a"
   end
 end
