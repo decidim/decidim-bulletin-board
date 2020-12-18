@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "decidim/bulletin_board/command"
+
 module Decidim
   module BulletinBoard
     # The Bulletin Board client
@@ -34,26 +36,22 @@ module Decidim
         private_key && server && api_key
       end
 
-      def sign_data(data)
-        JWT.encode(data, private_key.keypair, "RS256")
-      end
-
       def setup_election(election_data)
-        message_id = "#{election_data[:election_id]}.create_election+a.#{authority_slug}"
-        Decidim::BulletinBoard::Authority::CreateElection.call(election_data, message_id)
+        create_election = Decidim::BulletinBoard::Authority::CreateElection.new(election_data)
+        create_election.on(:ok) { |election| return election }
+        create_election.on(:error) { |error_message| raise StandardError, error_message }
+        create_election.call
       end
 
-      def cast_vote(election_data, voter_data, encrypted_vote)
-        form = Decidim::BulletinBoard::Voter::VoteForm.new(self, election_data, voter_data, encrypted_vote)
-        cast_vote = Decidim::BulletinBoard::Voter::CastVote.new(form)
+      def cast_vote(election_id, voter_id, encrypted_vote)
+        cast_vote = Decidim::BulletinBoard::Voter::CastVote.new(election_id, voter_id, encrypted_vote)
         cast_vote.on(:ok) { |pending_message| return pending_message }
         cast_vote.on(:error) { |error_message| raise StandardError, error_message }
         cast_vote.call
       end
 
       def get_status(election_id)
-        unique_election_id = "#{authority_slug}.#{election_id}"
-        get_status = Decidim::BulletinBoard::Authority::GetElectionStatus.new(unique_election_id)
+        get_status = Decidim::BulletinBoard::Authority::GetElectionStatus.new(election_id)
         get_status.on(:ok) { |status| return status }
         get_status.on(:error) { |error_message| raise StandardError, error_message }
         get_status.call

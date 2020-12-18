@@ -4,49 +4,38 @@ module Decidim
   module BulletinBoard
     module Authority
       # This class handles the creation of an election.
-      class CreateElection
-        def initialize(election_data, message_id)
-          @client = BulletinBoard::Graphql::Client.client
+      class CreateElection < Decidim::BulletinBoard::Command
+        def initialize(election_data)
           @election_data = election_data
-          @message_id = message_id
-          @private_key = private_key
-        end
-
-        def self.call(election_data, message_id)
-          new(election_data, message_id).call
         end
 
         def call
-          args = {
-            message_id: message_id,
-            signed_data: encode_data(election_data)
-          }
+          message_id = message_id(election_data[:unique_id], "create_election")
+          signed_data = sign_message(message_id, election_data)
 
-          response = client.query do
-            mutation do
-              createElection(messageId: args[:message_id], signedData: args[:signed_data]) do
-                election do
-                  status
+          begin
+            response = client.query do
+              mutation do
+                createElection(messageId: message_id, signedData: signed_data) do
+                  election do
+                    status
+                  end
+                  error
                 end
-                error
               end
             end
-          end
 
-          response.data.create_election
+            return broadcast(:error, response.data.create_election.error) if response.data.create_election.error.present?
+
+            broadcast(:ok, response.data.create_election.election)
+          rescue Graphlient::Errors::ServerError
+            broadcast(:error, "Sorry, something went wrong")
+          end
         end
 
         private
 
-        attr_reader :client, :election_data, :message_id
-
-        def private_key
-          @private_key ||= JwkUtils.import_private_key(BulletinBoard.identification_private_key)
-        end
-
-        def encode_data(election_data)
-          JWT.encode(election_data, private_key.keypair, "RS256")
-        end
+        attr_reader :election_data
       end
     end
   end
