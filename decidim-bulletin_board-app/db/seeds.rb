@@ -19,7 +19,7 @@ dev_authority = Authority.create!(
 )
 
 dev_trustees_private_keys = PrivateKeys.dev_trustees_private_keys_json.map do |trustee_private_key_json|
-  Decidim::BulletinBoard::JwkUtils.import_private_key(trustee_private_key_json) }
+  Decidim::BulletinBoard::JwkUtils.import_private_key(trustee_private_key_json)
 end
 
 dev_trustees = dev_trustees_private_keys.each_with_index.map do |trustee_private_key, index|
