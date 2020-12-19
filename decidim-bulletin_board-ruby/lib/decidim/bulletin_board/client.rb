@@ -37,7 +37,7 @@ module Decidim
       end
 
       def create_election(election_id, election_data)
-        create_election = Decidim::BulletinBoard::Authority::CreateElection.new(election_data)
+        create_election = Decidim::BulletinBoard::Authority::CreateElection.new(election_id, election_data)
         create_election.on(:ok) { |election| return election }
         create_election.on(:error) { |error_message| raise StandardError, error_message }
         create_election.call
