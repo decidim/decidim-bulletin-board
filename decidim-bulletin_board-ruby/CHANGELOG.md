@@ -5,7 +5,29 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.5.0] - 2020-12-19
+
+### Changed
+
+- Renamed `setup_election` to `create_election` and moved `election_id` from the `election_data` to a separate argument.
+
+### Fixed
+
+- Include the missing `open_ballot_box` and `close_ballot_box` methods from the previous release.
+- Added missing namespace on the seed task
+
+## [0.4.0] - 2020-12-18
+
+### Added
+
+- `content_hash` field for the `LogEntry` records with the hash of the `content` field, if included in the message.
+- `Command` base class for all the classes representing GraphQL queries or mutations sent to the Bulletin Board.
+- `open_ballot_box` and `close_ballot_box` methods to the `Decidim::BulletinBoard::Client`.
+
+### Changed
+
+- New format for the messages: `iat`, `message_id` and Bulletin Board fields in the root message, and `content` for the Voting Scheme messages.
+- Improved consistency between methods included by `Decidim::BulletinBoard::Client`.
 
 ## [0.3.1] - 2020-12-10
 
