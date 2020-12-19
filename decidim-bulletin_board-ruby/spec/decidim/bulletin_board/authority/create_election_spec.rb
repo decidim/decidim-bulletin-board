@@ -6,14 +6,13 @@ module Decidim
   module BulletinBoard
     module Authority
       describe CreateElection do
-        subject { described_class.new(election_data) }
+        subject { described_class.new(election_id, election_data) }
 
         include_context "with a configured bulletin board"
 
+        let(:election_id) { 1 }
         let(:election_data) do
           {
-            election_id: "test_authority.1",
-            type: "create_election",
             scheme: "dummy"
           }
         end

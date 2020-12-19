@@ -5,12 +5,13 @@ module Decidim
     module Authority
       # This class handles the creation of an election.
       class CreateElection < Decidim::BulletinBoard::Command
-        def initialize(election_data)
+        def initialize(election_id, election_data)
+          @election_id = election_id
           @election_data = election_data
         end
 
         def call
-          message_id = message_id(election_data[:unique_id], "create_election")
+          message_id = message_id(unique_election_id(election_id), "create_election")
           signed_data = sign_message(message_id, election_data)
 
           begin
@@ -35,7 +36,7 @@ module Decidim
 
         private
 
-        attr_reader :election_data
+        attr_reader :election_data, :election_id
       end
     end
   end

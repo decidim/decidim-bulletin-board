@@ -18,7 +18,9 @@ dev_authority = Authority.create!(
   api_key: "89Ht70GZNcicu8WEyagz_rRae6brbqZAGuBEICYBCii-PTV3MAstAtx1aRVe5H5YfODi-JgYPvyf9ZMH7tOeZ15e3mf9B2Ymgw7eknvBFMRP213YFGo1SPn_C4uLK90G"
 )
 
-dev_trustees_private_keys = PrivateKeys.dev_trustees_private_keys_json.map { |trustee_private_key_json| JwkUtils.import_private_key(trustee_private_key_json) }
+dev_trustees_private_keys = PrivateKeys.dev_trustees_private_keys_json.map do |trustee_private_key_json|
+  Decidim::BulletinBoard::JwkUtils.import_private_key(trustee_private_key_json)
+end
 
 dev_trustees = dev_trustees_private_keys.each_with_index.map do |trustee_private_key, index|
   trustee_public_key = trustee_private_key.export
