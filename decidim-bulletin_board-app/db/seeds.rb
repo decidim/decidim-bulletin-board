@@ -32,7 +32,9 @@ dev_trustees = dev_trustees_private_keys.each_with_index.map do |trustee_private
   )
 end
 
-TEST_ELECTION_ID_OFFSET = 10000
+TEST_ELECTION_ID_OFFSET = 10_000
 [:key_ceremony, :ready, :vote, :tally, :results, :results_published].each_with_index do |status, i|
-  FactoryBot.create(:election, election_id: TEST_ELECTION_ID_OFFSET + i, status: status, authority: dev_authority, authority_private_key: dev_private_key, trustees_plus_keys: dev_trustees.zip(dev_trustees_private_keys))
+  FactoryBot.create(:election, election_id: TEST_ELECTION_ID_OFFSET + i, status: status,
+                               authority: dev_authority, authority_private_key: dev_private_key,
+                               trustees_plus_keys: dev_trustees.zip(dev_trustees_private_keys))
 end
