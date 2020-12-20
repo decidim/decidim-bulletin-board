@@ -46,7 +46,7 @@ module Decidim
             stub_wisper_publisher("Decidim::BulletinBoard::Authority::OpenBallotBox", :call, :ok, double(status: "vote"))
           end
 
-          it "calls the OpenBallotBox command and return the new status" do
+          it "calls the OpenBallotBox command and returns the new status" do
             election = subject.open_ballot_box(election_id)
             expect(election.status).to eq("vote")
           end
@@ -71,7 +71,7 @@ module Decidim
             stub_wisper_publisher("Decidim::BulletinBoard::Authority::CloseBallotBox", :call, :ok, double(status: "tally"))
           end
 
-          it "calls the CloseBallotBox command and return the new status" do
+          it "calls the CloseBallotBox command and returns the new status" do
             election = subject.close_ballot_box(election_id)
             expect(election.status).to eq("tally")
           end
