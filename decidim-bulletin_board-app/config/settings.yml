@@ -2,7 +2,7 @@ default: &default
   iat_expiration_minutes: 60
   create_election:
     hours_before: 2
-  cors_origin_allowed: "localhost:3000"
+  cors_origin_allowed: "*"
 
 development:
   <<: *default
