@@ -7,6 +7,7 @@ module Decidim
       class Client
         def self.client
           @client ||= Graphlient::Client.new(BulletinBoard.server,
+                                             schema_path: "lib/decidim/bulletin_board/graphql/bb_schema.json",
                                              headers: {
                                                "Authorization" => BulletinBoard.api_key
                                              })

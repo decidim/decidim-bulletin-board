@@ -11,10 +11,6 @@ RSpec.shared_context "with a configured bulletin board" do
       config.identification_private_key = identification_private_key
     end
 
-    allow(Decidim::BulletinBoard::Graphql::Client).to receive(:client).and_return(
-      Graphlient::Client.new(server, schema_path: "spec/fixtures/bb_schema.json")
-    )
-
     if server.present?
       if error_response
         stub_request(:post, server).to_return(status: 500)
