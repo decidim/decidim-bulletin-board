@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.1] - 2020-12-19
+
+### Fixed
+
+- Include the missing `close_ballot_box` method from the 0.4.0 release.
+- Fixes for the client methods
+
 ## [0.5.0] - 2020-12-19
 
 ### Changed
@@ -13,7 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Include the missing `open_ballot_box` and `close_ballot_box` methods from the previous release.
+- Include the missing `open_ballot_box` methods from the 0.4.0 release.
 - Added missing namespace on the seed task
 
 ## [0.4.0] - 2020-12-18

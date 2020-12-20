@@ -38,15 +38,61 @@ module Decidim
         it { is_expected.not_to be_configured }
       end
 
+      describe "open_ballot_box" do
+        let(:election_id) { "test.1" }
+
+        context "when everything went ok" do
+          before do
+            stub_wisper_publisher("Decidim::BulletinBoard::Authority::OpenBallotBox", :call, :ok, double(status: "vote"))
+          end
+
+          it "calls the OpenBallotBox command and returns the new status" do
+            election = subject.open_ballot_box(election_id)
+            expect(election.status).to eq("vote")
+          end
+        end
+
+        context "when something went wrong" do
+          before do
+            stub_wisper_publisher("Decidim::BulletinBoard::Authority::OpenBallotBox", :call, :error, "something went wrong")
+          end
+
+          it "calls the CastVote command and throws an error" do
+            expect { subject.open_ballot_box(election_id) }.to raise_error("something went wrong")
+          end
+        end
+      end
+
+      describe "close_ballot_box" do
+        let(:election_id) { "test.1" }
+
+        context "when everything went ok" do
+          before do
+            stub_wisper_publisher("Decidim::BulletinBoard::Authority::CloseBallotBox", :call, :ok, double(status: "tally"))
+          end
+
+          it "calls the CloseBallotBox command and returns the new status" do
+            election = subject.close_ballot_box(election_id)
+            expect(election.status).to eq("tally")
+          end
+        end
+
+        context "when something went wrong" do
+          before do
+            stub_wisper_publisher("Decidim::BulletinBoard::Authority::CloseBallotBox", :call, :error, "something went wrong")
+          end
+
+          it "calls the CastVote command and throws an error" do
+            expect { subject.close_ballot_box(election_id) }.to raise_error("something went wrong")
+          end
+        end
+      end
+
       describe "cast_vote" do
-        let(:election_data) do
-          { election_id: "test.1" }
-        end
-        let(:voter_data) do
-          { voter_id: "voter.1" }
-        end
+        let(:election_id) { "test.1" }
+        let(:voter_id) { "voter.1" }
         let(:encrypted_vote) do
-          { question_1: "aNsWeR 1" }
+          { question_1: "aNsWeR 1" }.to_json
         end
 
         context "when everything went ok" do
@@ -55,7 +101,7 @@ module Decidim
           end
 
           it "calls the CastVote command and return the result" do
-            pending_message = subject.cast_vote(election_data, voter_data, encrypted_vote)
+            pending_message = subject.cast_vote(election_id, voter_id, encrypted_vote)
             expect(pending_message.status).to eq("enqueued")
           end
         end
@@ -66,7 +112,7 @@ module Decidim
           end
 
           it "calls the CastVote command and throws an error" do
-            expect { subject.cast_vote(election_data, voter_data, encrypted_vote) }.to raise_error("something went wrong")
+            expect { subject.cast_vote(election_id, voter_id, encrypted_vote) }.to raise_error("something went wrong")
           end
         end
       end
