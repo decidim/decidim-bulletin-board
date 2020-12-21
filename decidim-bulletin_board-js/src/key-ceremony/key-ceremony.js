@@ -213,7 +213,7 @@ export class KeyCeremony {
     }
 
     const signedData = await this.currentTrustee.sign({
-      iat: Math.round(+new Date() / 1000),
+      iat: (new Date() / 1000) | 0,
       ...message,
     });
 
