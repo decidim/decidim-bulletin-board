@@ -59,7 +59,7 @@ export type LogEntry = {
   __typename?: 'LogEntry';
   chainedHash: Scalars['String'];
   client: Client;
-  contentHash: Scalars['String'];
+  contentHash?: Maybe<Scalars['String']>;
   election: Election;
   id: Scalars['ID'];
   messageId: Scalars['String'];
