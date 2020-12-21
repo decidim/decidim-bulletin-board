@@ -33,16 +33,13 @@ class ProcessKeyCeremonyStep < Rectify::Command
         valid_step?(election.key_ceremony?) &&
         process_message
 
-      election.log_entries << log_entry
+      log_entry.election = election
       log_entry.save!
       create_response_log_entry!
       election.save!
     end
 
-    LogEntryNotifier.new(log_entry).notify_subscribers
-    LogEntryNotifier.new(response_log_entry).notify_subscribers if response_log_entry.present?
-
-    broadcast(:ok)
+    broadcast(:ok, [log_entry, response_log_entry].compact)
   end
 
   private

@@ -31,7 +31,7 @@ class Vote < Rectify::Command
       valid_step?(election.vote?) &&
       process_message
 
-    election.log_entries << log_entry
+    log_entry.election = election
     election.with_lock { log_entry.save! }
 
     broadcast(:ok)
