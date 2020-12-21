@@ -17,6 +17,7 @@ module Decidim
       end
 
       attr_reader :server, :scheme, :api_key, :number_of_trustees, :authority_name
+
       delegate :authority_slug, to: Decidim::BulletinBoard::Command
 
       def quorum
