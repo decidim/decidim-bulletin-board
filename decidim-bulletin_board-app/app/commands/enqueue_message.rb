@@ -29,8 +29,9 @@ class EnqueueMessage < Rectify::Command
     transaction do
       create_pending_message!
       job.perform_later(pending_message.id)
-      broadcast(:ok, pending_message)
     end
+
+    broadcast(:ok, pending_message)
   end
 
   private

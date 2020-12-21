@@ -32,7 +32,7 @@ class OpenBallotBox < Rectify::Command
         valid_author?(message_identifier.from_authority?) &&
         process_message
 
-      election.log_entries << log_entry
+      log_entry.election = election
       log_entry.save!
       election.status = :vote
       election.save!

@@ -62,7 +62,7 @@ module LogEntryCommand
     end
 
     def process_message
-      @response_message = voting_scheme.process_message(message_identifier, log_entry.decoded_data)
+      @response_message = voting_scheme.process_message(message_identifier, log_entry.decoded_data.deep_dup)
       election.voting_scheme_state = voting_scheme.backup
       true
     rescue VotingScheme::RejectedMessage => e
