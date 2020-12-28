@@ -35,8 +35,8 @@ export class Client {
    * @returns {Promise<Array<Object>>} - A collection of log entries.
    * @throws Will throw an error if the request is rejected.
    */
-  getElectionLogEntries({ electionUniqueId }) {
-    return this.apiClient.getElectionLogEntries({ electionUniqueId });
+  getElectionLogEntries({ electionUniqueId, after }) {
+    return this.apiClient.getElectionLogEntries({ electionUniqueId, after });
   }
 
   /**

@@ -1,6 +1,7 @@
-query GetElectionLogEntries($electionUniqueId: String!) {
+query GetElectionLogEntries($electionUniqueId: String!, $after: String) {
   election(uniqueId: $electionUniqueId) {
-    logEntries {
+    logEntries(after: $after) {
+      id
       messageId
       signedData
     }
