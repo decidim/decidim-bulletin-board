@@ -1,23 +1,27 @@
-import { tap } from "rxjs/operators";
-import { Subject } from "rxjs";
-
 import {
   KeyCeremony,
   MESSAGE_RECEIVED,
   MESSAGE_PROCESSED,
 } from "./key-ceremony";
 
+import { buildMessageId } from "../test-utils";
+
 jest.mock("../trustee/trustee");
 
 describe("KeyCeremony", () => {
-  const electionLogEntriesUpdates = new Subject();
+  const electionLogEntriesUpdates = [];
 
   const bulletinBoardClient = {
-    getElectionLogEntries: jest.fn(() => Promise.resolve([])),
-    subscribeToElectionLogEntriesUpdates: jest.fn((_args, fn) =>
-      electionLogEntriesUpdates.pipe(tap(fn)).subscribe()
-    ),
-    processKeyCeremonyStep: jest.fn(),
+    getElectionLogEntries: jest.fn(() => {
+      const result = [];
+      for (let i = 0; i < electionLogEntriesUpdates.length; i++) {
+        result.push(electionLogEntriesUpdates.shift());
+      }
+      return Promise.resolve(result);
+    }),
+    processKeyCeremonyStep: jest.fn((logEntry) => {
+      electionLogEntriesUpdates.push(logEntry);
+    }),
   };
 
   const currentTrusteeContext = {
@@ -58,27 +62,16 @@ describe("KeyCeremony", () => {
 
   describe("setup", () => {
     beforeEach(async () => {
+      electionLogEntriesUpdates.push({ messageId: "foo", signedData: "5678" });
       await keyCeremony.setup();
     });
 
-    it("query all the log entries for the given election context", () => {
+    it("query the first log entries for the given election context", () => {
       expect(bulletinBoardClient.getElectionLogEntries).toHaveBeenCalledWith({
         electionUniqueId: electionContext.id,
+        after: null,
       });
-      expect(keyCeremony.electionLogEntries.length).toEqual(0);
-    });
-
-    it("subscribe to the log entries updates for the given election context and stores them", () => {
-      expect(
-        bulletinBoardClient.subscribeToElectionLogEntriesUpdates
-      ).toHaveBeenCalledWith(
-        { electionUniqueId: electionContext.id },
-        expect.any(Function)
-      );
-
-      electionLogEntriesUpdates.next({ messageId: "foo", signedData: "1234" });
-      electionLogEntriesUpdates.next({ messageId: "foo", signedData: "5678" });
-      expect(keyCeremony.electionLogEntries.length).toEqual(2);
+      expect(keyCeremony.electionLogEntries.length).toEqual(1);
     });
   });
 
@@ -88,121 +81,121 @@ describe("KeyCeremony", () => {
     });
 
     it("processes messages until a save message, sending them in the next run call", async () => {
-      electionLogEntriesUpdates.next({
-        messageId: "dummy.send",
+      electionLogEntriesUpdates.push({
+        messageId: buildMessageId("dummy.send"),
         signedData: "1234",
       });
-      electionLogEntriesUpdates.next({
-        messageId: "dummy.save",
+      electionLogEntriesUpdates.push({
+        messageId: buildMessageId("dummy.save"),
         signedData: "5678",
       });
-      electionLogEntriesUpdates.next({
-        messageId: "dummy.done",
+      electionLogEntriesUpdates.push({
+        messageId: buildMessageId("dummy.done"),
         signedData: "0912",
       });
       await keyCeremony.run();
       expect(bulletinBoardClient.processKeyCeremonyStep).toHaveBeenCalledWith({
-        messageId: "dummy.send",
+        messageId: buildMessageId("dummy.response_send"),
         signedData: "1234",
       });
       expect(
         bulletinBoardClient.processKeyCeremonyStep
       ).not.toHaveBeenCalledWith({
-        messageId: "dummy.save",
+        messageId: buildMessageId("dummy.response_save"),
         signedData: "5678",
       });
       await keyCeremony.run();
       expect(bulletinBoardClient.processKeyCeremonyStep).toHaveBeenCalledWith({
-        messageId: "dummy.save",
+        messageId: buildMessageId("dummy.response_save"),
         signedData: "5678",
       });
     });
 
     it("processes messages until a done message", async () => {
-      electionLogEntriesUpdates.next({
-        messageId: "dummy.nothing",
+      electionLogEntriesUpdates.push({
+        messageId: buildMessageId("dummy.nothing"),
         signedData: "1234",
       });
-      electionLogEntriesUpdates.next({
-        messageId: "dummy.send",
+      electionLogEntriesUpdates.push({
+        messageId: buildMessageId("dummy.send"),
         signedData: "5678",
       });
-      electionLogEntriesUpdates.next({
-        messageId: "dummy.done",
+      electionLogEntriesUpdates.push({
+        messageId: buildMessageId("dummy.done"),
         signedData: "9012",
       });
-      electionLogEntriesUpdates.next({
-        messageId: "dummy.send",
+      electionLogEntriesUpdates.push({
+        messageId: buildMessageId("dummy.send"),
         signedData: "1234",
       });
       await keyCeremony.run();
       expect(bulletinBoardClient.processKeyCeremonyStep).toHaveBeenCalledWith({
-        messageId: "dummy.send",
+        messageId: buildMessageId("dummy.response_send"),
         signedData: "5678",
       });
       expect(
         bulletinBoardClient.processKeyCeremonyStep
       ).not.toHaveBeenCalledWith({
-        messageId: "dummy.send",
+        messageId: buildMessageId("dummy.response_send"),
         signedData: "1234",
       });
     });
 
     it("skips the processed log entries that doesn't output a result", async () => {
-      electionLogEntriesUpdates.next({
-        messageId: "dummy.nothing",
+      electionLogEntriesUpdates.push({
+        messageId: buildMessageId("dummy.nothing"),
         signedData: "1234",
       });
-      electionLogEntriesUpdates.next({
-        messageId: "dummy.send",
+      electionLogEntriesUpdates.push({
+        messageId: buildMessageId("dummy.send"),
         signedData: "5678",
       });
-      electionLogEntriesUpdates.next({
-        messageId: "dummy.done",
+      electionLogEntriesUpdates.push({
+        messageId: buildMessageId("dummy.done"),
         signedData: "9012",
       });
       await keyCeremony.run();
       expect(
         bulletinBoardClient.processKeyCeremonyStep
       ).not.toHaveBeenCalledWith({
-        message_id: "dummy.nothing",
+        message_id: buildMessageId("dummy.nothing"),
         content: "1234",
       });
       expect(
         bulletinBoardClient.processKeyCeremonyStep
       ).not.toHaveBeenCalledWith({
-        message_id: "dummy.send",
+        message_id: buildMessageId("dummy.response_send"),
         content: "5678",
       });
     });
 
     it("doesn't send a message already sent", async () => {
-      electionLogEntriesUpdates.next({
-        messageId: "dummy.send",
+      electionLogEntriesUpdates.push({
+        messageId: buildMessageId("dummy.send"),
         signedData: "5678",
       });
-      electionLogEntriesUpdates.next({
-        messageId: "dummy.done",
+      electionLogEntriesUpdates.push({
+        messageId: buildMessageId("dummy.save"),
         signedData: "9012",
       });
       await keyCeremony.run();
       expect(bulletinBoardClient.processKeyCeremonyStep).toHaveBeenCalledWith({
-        messageId: "dummy.send",
+        messageId: buildMessageId("dummy.response_send"),
         signedData: "5678",
       });
-      electionLogEntriesUpdates.next({
-        messageId: "dummy.send",
+      electionLogEntriesUpdates.push({
+        messageId: buildMessageId("dummy.send"),
         signedData: "aaaa",
       });
-      electionLogEntriesUpdates.next({
-        messageId: "dummy.done",
+      electionLogEntriesUpdates.push({
+        messageId: buildMessageId("dummy.done"),
         signedData: "bbbb",
       });
       await keyCeremony.run();
       expect(
         bulletinBoardClient.processKeyCeremonyStep
       ).not.toHaveBeenCalledWith({
-        messageId: "dummy.send",
+        messageId: buildMessageId("dummy.response_send"),
         signedData: "aaaa",
       });
     });
@@ -210,16 +203,16 @@ describe("KeyCeremony", () => {
     it("reports all the events", async () => {
       let events = [];
 
-      electionLogEntriesUpdates.next({
-        messageId: "dummy.nothing",
+      electionLogEntriesUpdates.push({
+        messageId: buildMessageId("dummy.nothing"),
         signedData: "1234",
       });
-      electionLogEntriesUpdates.next({
-        messageId: "dummy.send",
+      electionLogEntriesUpdates.push({
+        messageId: buildMessageId("dummy.send"),
         signedData: "5678",
       });
-      electionLogEntriesUpdates.next({
-        messageId: "dummy.done",
+      electionLogEntriesUpdates.push({
+        messageId: buildMessageId("dummy.done"),
         signedData: "9012",
       });
 
@@ -232,14 +225,14 @@ describe("KeyCeremony", () => {
       expect(events[0]).toEqual({
         type: MESSAGE_RECEIVED,
         message: {
-          messageId: "dummy.nothing",
+          messageId: buildMessageId("dummy.nothing"),
           signedData: "1234",
         },
       });
       expect(events[1]).toEqual({
         type: MESSAGE_PROCESSED,
         message: {
-          messageId: "dummy.nothing",
+          messageId: buildMessageId("dummy.nothing"),
           signedData: "1234",
         },
         result: null,
@@ -247,21 +240,21 @@ describe("KeyCeremony", () => {
       expect(events[2]).toEqual({
         type: MESSAGE_RECEIVED,
         message: {
-          messageId: "dummy.send",
+          messageId: buildMessageId("dummy.send"),
           signedData: "5678",
         },
       });
       expect(events[3]).toEqual({
         type: MESSAGE_PROCESSED,
         message: {
-          messageId: "dummy.send",
+          messageId: buildMessageId("dummy.send"),
           signedData: "5678",
         },
         result: {
           done: false,
           save: false,
           message: {
-            message_id: "dummy.send",
+            message_id: buildMessageId("dummy.response_send"),
             content: "5678",
           },
         },
@@ -270,14 +263,14 @@ describe("KeyCeremony", () => {
       expect(events[4]).toEqual({
         type: MESSAGE_RECEIVED,
         message: {
-          messageId: "dummy.done",
+          messageId: buildMessageId("dummy.done"),
           signedData: "9012",
         },
       });
       expect(events[5]).toEqual({
         type: MESSAGE_PROCESSED,
         message: {
-          messageId: "dummy.done",
+          messageId: buildMessageId("dummy.done"),
           signedData: "9012",
         },
         result: {
