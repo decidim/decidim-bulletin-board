@@ -25,9 +25,10 @@ export class KeyCeremony {
     this.electionContext = electionContext;
     this.currentTrustee = null;
     this.options = options || { bulletinBoardWaitTime: WAIT_TIME_MS };
-    this.events = new Subject();
+    this.pollingIntervalId = null;
+    this.electionLogEntries = [];
     this.response = null;
-    this.trusteeSentMessageIds = [];
+    this.events = new Subject();
   }
 
   /**
@@ -37,46 +38,33 @@ export class KeyCeremony {
    * @returns {Promise<void>}
    */
   async setup() {
-    const {
-      id: electionUniqueId,
-      currentTrusteeContext,
-    } = this.electionContext;
+    const { currentTrusteeContext } = this.electionContext;
 
     this.currentTrustee = new Trustee(currentTrusteeContext);
 
-    this.electionLogEntries = await this.bulletinBoardClient.getElectionLogEntries(
-      {
-        electionUniqueId,
-      }
-    );
-
+    await this.getLogEntries();
     this.nextLogEntryIndexToProcess = 0;
-
-    this.subscription = this.bulletinBoardClient.subscribeToElectionLogEntriesUpdates(
-      {
-        electionUniqueId,
-      },
-      (logEntry) => {
-        this.electionLogEntries = [...this.electionLogEntries, logEntry];
-      }
-    );
-
-    this.fillTrusteeSentMessageIds();
   }
 
   /**
-   * Collects all the message_ids for the messages already sent by the current trustee.
+   * Retrieves all the new log entries for the elections and add them to the list with all the entries.
    */
-  fillTrusteeSentMessageIds() {
-    this.electionLogEntries.forEach((message) => {
-      const messageIdentifier = MessageIdentifier.parse(message.messageId);
-      if (
-        messageIdentifier.author.type === TRUSTEE_TYPE &&
-        messageIdentifier.author.id === this.currentTrustee.id
-      ) {
-        this.trusteeSentMessageIds.push(message.messageId);
-      }
-    });
+  async getLogEntries() {
+    const { id: electionUniqueId } = this.electionContext;
+
+    const lastLogEntry = this.electionLogEntries.slice(-1)[0];
+    const after = (lastLogEntry && lastLogEntry.id) || null;
+
+    this.bulletinBoardClient
+      .getElectionLogEntries({
+        electionUniqueId,
+        after,
+      })
+      .then((logEntries) => {
+        if (logEntries.length) {
+          this.electionLogEntries = [...this.electionLogEntries, ...logEntries];
+        }
+      });
   }
 
   /**
@@ -85,17 +73,30 @@ export class KeyCeremony {
    * @returns {Promise<void>}
    */
   restoreNeeded() {
-    const lastMessage = this.lastMessageIdSent();
-    return lastMessage && this.currentTrustee.checkRestoreNeeded(lastMessage);
+    const lastMessage = this.lastMessageSent();
+    return (
+      lastMessage &&
+      this.currentTrustee.checkRestoreNeeded(lastMessage.messageId)
+    );
   }
 
   /**
-   * Get the last message_id sent to the election log by this trustee.
+   * Get the last message sent to the election log by this trustee.
    *
    * @returns {string}
    */
-  lastMessageIdSent() {
-    return this.trusteeSentMessageIds[this.trusteeSentMessageIds.length - 1];
+  lastMessageSent() {
+    for (let i = this.electionLogEntries.length - 1; i >= 0; i--) {
+      const logEntry = this.electionLogEntries[i];
+      const messageIdentifier = MessageIdentifier.parse(logEntry.messageId);
+
+      if (
+        messageIdentifier.author.type === TRUSTEE_TYPE &&
+        messageIdentifier.author.id === this.currentTrustee.id
+      ) {
+        return logEntry;
+      }
+    }
   }
 
   /**
@@ -118,8 +119,11 @@ export class KeyCeremony {
       return false;
     }
 
-    const lastMessageId = this.lastMessageIdSent();
-    return this.currentTrustee.restore(wrapperState, lastMessageId);
+    const lastMessage = this.lastMessageSent();
+    return this.currentTrustee.restore(
+      wrapperState,
+      lastMessage && lastMessage.messageId
+    );
   }
 
   /**
@@ -133,6 +137,12 @@ export class KeyCeremony {
       throw new Error("You need to restore the wrapper state to continue");
     }
 
+    if (!this.pollingIntervalId) {
+      this.pollingIntervalId = setInterval(() => {
+        this.getLogEntries();
+      }, this.options.bulletinBoardWaitTime);
+    }
+
     if (this.response) {
       await this.sendMessageToBulletinBoard(this.response);
     }
@@ -140,7 +150,9 @@ export class KeyCeremony {
     return this.waitForNextLogEntryResult().then(
       async ({ message, done, save }) => {
         this.response = message;
-        if (!done && !save) {
+        if (done) {
+          clearInterval(this.pollingIntervalId);
+        } else if (!save) {
           return this.run();
         }
       }
@@ -208,7 +220,11 @@ export class KeyCeremony {
    * @throws An exception is raised if there is a problem with the client.
    */
   async sendMessageToBulletinBoard(message) {
-    if (this.preventDuplicatedMessages(message)) {
+    if (
+      this.electionLogEntries.find(
+        (logEntry) => logEntry.messageId === message.message_id
+      )
+    ) {
       return;
     }
 
@@ -221,21 +237,5 @@ export class KeyCeremony {
       messageId: message.message_id,
       signedData,
     });
-  }
-
-  /**
-   * Checks if the message was already sent to the Bulletin Board, and registers it for the next check.
-   *
-   * @private
-   * @param {Object} message - An object containing some data to be sent to the Bulletin Board.
-   * @returns {boolean}
-   */
-  preventDuplicatedMessages(message) {
-    if (this.trusteeSentMessageIds.includes(message.message_id)) {
-      return true;
-    } else {
-      this.trusteeSentMessageIds.push(message.message_id);
-      return false;
-    }
   }
 }
