@@ -1,7 +1,6 @@
 const path = require("path");
 
-module.exports = (env) => ({
-  mode: env.development ? "development" : "production",
+module.exports = {
   entry: "./src/index.js",
   output: {
     path: path.resolve(__dirname, "dist"),
@@ -12,7 +11,6 @@ module.exports = (env) => ({
   resolve: {
     extensions: [".js", ".gql"],
   },
-  devtool: "inline-source-map",
   module: {
     rules: [
       {
@@ -28,4 +26,4 @@ module.exports = (env) => ({
       },
     ],
   },
-});
+};
