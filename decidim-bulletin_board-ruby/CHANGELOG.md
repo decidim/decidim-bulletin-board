@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Changed
+
+- Updated the app schema definition with the partial log entries list retrieval
+
 ## [0.5.3] - 2020-12-20
 
 ### Fixed
