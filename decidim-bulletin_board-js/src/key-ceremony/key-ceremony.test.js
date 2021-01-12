@@ -13,10 +13,8 @@ describe("KeyCeremony", () => {
 
   const bulletinBoardClient = {
     getElectionLogEntries: jest.fn(() => {
-      const result = [];
-      for (let i = 0; i < electionLogEntriesUpdates.length; i++) {
-        result.push(electionLogEntriesUpdates.shift());
-      }
+      const result = [...electionLogEntriesUpdates];
+      electionLogEntriesUpdates.length = 0;
       return Promise.resolve(result);
     }),
     processKeyCeremonyStep: jest.fn((logEntry) => {

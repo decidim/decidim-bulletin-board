@@ -47,12 +47,14 @@ export class KeyCeremony {
   }
 
   /**
-   * Retrieves all the new log entries for the elections and add them to the list with all the entries.
+   * Retrieves all the new log entries for the elections and adds them to the list with all the entries.
    */
   async getLogEntries() {
     const { id: electionUniqueId } = this.electionContext;
 
-    const lastLogEntry = this.electionLogEntries.slice(-1)[0];
+    const lastLogEntry = this.electionLogEntries[
+      this.electionLogEntries.length - 1
+    ];
     const after = (lastLogEntry && lastLogEntry.id) || null;
 
     this.bulletinBoardClient
@@ -229,7 +231,7 @@ export class KeyCeremony {
     }
 
     const signedData = await this.currentTrustee.sign({
-      iat: (new Date() / 1000) | 0,
+      iat: Math.floor(new Date() / 1000),
       ...message,
     });
 
