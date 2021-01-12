@@ -54,10 +54,6 @@ export class GraphQLClient {
     );
   }
 
-  subscribeToElectionLogEntriesUpdates() {
-    return this.electionLogEntriesUpdates;
-  }
-
   processKeyCeremonyStep({ signedData }) {
     return Promise.resolve({
       signedData,

@@ -41,29 +41,6 @@ export class Client {
   }
 
   /**
-   * Subscribes to an Observable and executes a callback function with each log entry added.
-   *
-   * @param {Object} params - An object that include the following options.
-   *  - {String} electionUniqueId - The election's unique id.
-   * @param {Function} onNextLogEntryUpdate - A callback function that will be called with each log entry added the election.
-   * @returns {Subscription} - A subscription object that can be manually unsubscribed.
-   */
-  subscribeToElectionLogEntriesUpdates(
-    { electionUniqueId },
-    onNextLogEntryUpdate
-  ) {
-    const subscription = this.apiClient.subscribeToElectionLogEntriesUpdates({
-      electionUniqueId,
-    });
-
-    return subscription.subscribe((logEntry) => {
-      if (logEntry) {
-        onNextLogEntryUpdate(logEntry);
-      }
-    });
-  }
-
-  /**
    * Process a key ceremony step sending a signed message.
    *
    * @param {Object} params - An object that include the following options.
