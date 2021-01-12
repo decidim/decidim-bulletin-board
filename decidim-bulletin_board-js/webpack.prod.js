@@ -1,11 +1,19 @@
+const TerserPlugin = require("terser-webpack-plugin");
 const merge = require("webpack-merge");
-const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const common = require("./webpack.common.js");
 
 module.exports = merge(common, {
   mode: "production",
-  plugins: [new CleanWebpackPlugin()],
+  plugins: [],
   output: {
-    filename: "[name].prod.js",
+    filename: "decidim-bulletin_board.js",
+  },
+  optimization: {
+    minimize: true,
+    minimizer: [
+      new TerserPlugin({
+        extractComments: false,
+      }),
+    ],
   },
 });

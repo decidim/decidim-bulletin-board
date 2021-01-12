@@ -47,22 +47,6 @@ describe("Client", () => {
     });
   });
 
-  describe("subscribeToElectionLogEntriesUpdates", () => {
-    it("calls the given callback function when a log entry is added", (done) => {
-      const logEntryUpdate = {
-        signedData: "some-signed-data",
-      };
-      client.subscribeToElectionLogEntriesUpdates(
-        { electionUniqueId: "election-1" },
-        (logEntry) => {
-          expect(logEntry).toEqual(logEntryUpdate);
-          done();
-        }
-      );
-      client.apiClient.fakeElectionLogEntryUpdate(logEntryUpdate);
-    });
-  });
-
   describe("processKeyCeremonyStep", () => {
     it("calls the api client corresponding method with the correct arguments", async () => {
       const pendingMessage = await client.processKeyCeremonyStep({

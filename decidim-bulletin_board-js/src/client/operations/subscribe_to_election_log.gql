@@ -1,8 +1,0 @@
-subscription SubscribeToElectionLog($electionUniqueId: String!) {
-  electionLogEntryAdded(electionUniqueId: $electionUniqueId) {
-    logEntry {
-      messageId
-      signedData
-    }
-  }
-}

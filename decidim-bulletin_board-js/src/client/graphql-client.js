@@ -1,15 +1,6 @@
-import {
-  ApolloClient,
-  InMemoryCache,
-  HttpLink,
-  split,
-} from "@apollo/client/core";
-import { getMainDefinition } from "@apollo/client/utilities";
-import ActionCableLink from "graphql-ruby-client/dist/subscriptions/ActionCableLink";
-import ActionCable from "actioncable";
+import { ApolloClient, InMemoryCache, HttpLink } from "@apollo/client/core";
 
 import GET_ELECTION_LOG_ENTRIES from "./operations/get_election_log_entries";
-import SUBSCRIBE_TO_ELECTION_LOG from "./operations/subscribe_to_election_log";
 import PROCESS_KEY_CEREMONY_STEP from "./operations/process_key_ceremony_step";
 import GET_LOG_ENTRY from "./operations/get_log_entry";
 
@@ -26,33 +17,16 @@ export class GraphQLClient {
    * @constructor
    * @param {Object} params - An object that include the following options.
    *  - {String} apiEndpointUrl - The http endpoint used to perform queries and mutations.
-   *  - {String} wsEndpointUrl - The ws endpoint used to perform subscriptions.
    *  - {Object?} headers - An optional object of headers to be included on http requests.
    */
-  constructor({ apiEndpointUrl, wsEndpointUrl, headers }) {
-    const wsLink = new ActionCableLink({
-      cable: ActionCable.createConsumer(wsEndpointUrl),
-    });
-
+  constructor({ apiEndpointUrl, headers }) {
     const httpLink = new HttpLink({
       uri: apiEndpointUrl,
       headers,
     });
 
-    const splitLink = split(
-      ({ query }) => {
-        const definition = getMainDefinition(query);
-        return (
-          definition.kind === "OperationDefinition" &&
-          definition.operation === "subscription"
-        );
-      },
-      wsLink,
-      httpLink
-    );
-
     this.apolloClient = new ApolloClient({
-      link: splitLink,
+      link: httpLink,
       cache: new InMemoryCache(),
     });
   }
@@ -98,30 +72,6 @@ export class GraphQLClient {
     });
 
     return result.data.election.logEntries;
-  }
-
-  /**
-   * Returns an observable that needs to be manually subscribed and unsubscribed.
-   * When a new log entry is added it maps the GraphQL result to a log entry.
-   *
-   * @param {Object} params - An object that include the following options.
-   *  - {String} electionUniqueId - The election's unique id.
-   * @returns {Observable<Object>} - An observable that returns every log entry added.
-   */
-  subscribeToElectionLogEntriesUpdates({ electionUniqueId }) {
-    return this.apolloClient
-      .subscribe({
-        query: SUBSCRIBE_TO_ELECTION_LOG,
-        variables: {
-          electionUniqueId,
-        },
-      })
-      .map(
-        ({ data }) =>
-          data &&
-          data.electionLogEntryAdded &&
-          data.electionLogEntryAdded.logEntry
-      );
   }
 
   /**
