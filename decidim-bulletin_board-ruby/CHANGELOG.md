@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## [0.6.1] - 2021-01-12
+
+### Changed
+
+- Production file now is called `decidim-bulletin_board.js` and development file is called `decidim-bulletin_board.dev.js`.
+
+### Removed
+
+- The GraphQL client doesn't use subscriptions anymore.
+
 ## [0.6.0] - 2021-01-12
 
 ### Changed

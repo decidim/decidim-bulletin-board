@@ -7,4 +7,7 @@ module.exports = merge(common, {
   devServer: {
     contentBase: "./dist",
   },
+  output: {
+    filename: "decidim-bulletin_board.dev.js",
+  },
 });

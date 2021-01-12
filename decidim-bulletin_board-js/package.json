@@ -1,12 +1,13 @@
 {
   "name": "decidim-bulletin_board",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "",
   "main": "dist/main.js",
   "scripts": {
-    "build": "webpack --progress --config webpack.dev.js",
+    "build": "npm run build:dev && npm run build:prod",
     "build:watch": "npm run build -- --watch --config webpack.dev.js",
-    "dist": "webpack --progress --config webpack.prod.js",
+    "build:dev": "webpack --progress --config webpack.dev.js",
+    "build:prod": "webpack --progress --config webpack.prod.js",
     "format": "prettier -c src/**/*.js",
     "lint": "eslint src/**/*.js",
     "test": "jest --detectOpenHandles --forceExit",
@@ -16,7 +17,6 @@
   "license": "AGPL-3.0",
   "dependencies": {
     "@apollo/client": "^3.2.7",
-    "actioncable": "^5.2.4-4",
     "graphql": "^15.4.0",
     "graphql-ruby-client": "^1.8.1"
   },
