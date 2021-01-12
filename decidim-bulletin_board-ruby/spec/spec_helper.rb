@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require "rails"
 require "bundler/setup"
 require "decidim/bulletin_board"
 require "byebug"

@@ -4,7 +4,7 @@ module.exports = {
   entry: "./src/index.js",
   output: {
     path: path.resolve(__dirname, "..", "decidim-bulletin_board-ruby", "app", "assets","javascripts", "decidim", "bulletin_board"),
-    filename: "decidim-bulletin_board-s.js",
+    filename: "decidim-bulletin_board.js",
     library: "decidimBulletinBoard",
     libraryTarget: "window",
   },

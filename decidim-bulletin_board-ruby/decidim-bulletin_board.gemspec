@@ -5,8 +5,8 @@ require_relative "lib/decidim/bulletin_board/version"
 Gem::Specification.new do |s|
   s.name = "decidim-bulletin_board"
   s.version = Decidim::BulletinBoard::VERSION
-  s.authors = ["David Morcillo", "Svenja Schäfer"]
-  s.email = ["david@codegram.com", "svenja@codegram.com"]
+  s.authors = ["David Morcillo", "Svenja Schäfer", "Leonardo Diez", "Agustí B.R."]
+  s.email = ["david@codegram.com", "svenja@codegram.com", "leo@codegram.com", "agusti@codegram.com"]
 
   s.summary = ""
   s.description = ""
@@ -23,8 +23,8 @@ Gem::Specification.new do |s|
   s.executables = s.files.grep(%r{^exe/}) { |f| File.basename(f) }
   s.require_paths = ["lib"]
 
-  s.add_dependency "activemodel", ">= 5.0.0"
-  s.add_dependency "activesupport", ">= 5.0.0"
+  s.add_dependency "rails", ">= 5.0.0"
+
   s.add_dependency "byebug", "~> 11.0"
   s.add_dependency "graphlient", "~> 0.4.0"
   s.add_dependency "jwt", "~> 2.2.2"
