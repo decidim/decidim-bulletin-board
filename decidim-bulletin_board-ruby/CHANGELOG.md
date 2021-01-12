@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Updated the app schema definition with the partial log entries list retrieval
+- Gem is an engine, the js assets can be imported in Decidim.
 
 ## [0.5.3] - 2020-12-20
 

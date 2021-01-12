@@ -38,10 +38,16 @@ Also, install the wrappers python package:
 bundle exec rubocop
 ```
 
-
 * How to run the test suite
 ```
 bundle exec rspec
+```
+
+* How to update the GraphQL schema definition run:
+
+```
+bundle exec rake schema:generate
+npm run schema:generate
 ```
 
 ## License
