@@ -1,6 +1,9 @@
+import { buildMessageId, parseMessageId } from "../../test-utils";
+
 export class Trustee {
   processLogEntry({ messageId, signedData }) {
-    switch (messageId) {
+    const typeSubtype = parseMessageId(messageId);
+    switch (typeSubtype) {
       case "dummy.nothing": {
         return null;
       }
@@ -9,7 +12,7 @@ export class Trustee {
           done: false,
           save: false,
           message: {
-            message_id: messageId,
+            message_id: buildMessageId("dummy.response_send"),
             content: signedData,
           },
         };
@@ -19,7 +22,7 @@ export class Trustee {
           done: false,
           save: true,
           message: {
-            message_id: messageId,
+            message_id: buildMessageId("dummy.response_save"),
             content: signedData,
           },
         };

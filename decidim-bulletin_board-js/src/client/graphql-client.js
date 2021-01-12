@@ -83,15 +83,18 @@ export class GraphQLClient {
    *
    * @param {Object} params - An object that include the following options.
    *  - {String} electionUniqueId - The election's unique id.
+   *  - {String} after - The last log entry id received, to avoid including those entries again.
    * @returns {Promise<Array<Object>>} - A collection of log entries.
    * @throws Will throw an error if the request is rejected.
    */
-  async getElectionLogEntries({ electionUniqueId }) {
+  async getElectionLogEntries({ electionUniqueId, after }) {
     const result = await this.apolloClient.query({
       query: GET_ELECTION_LOG_ENTRIES,
       variables: {
         electionUniqueId,
+        after,
       },
+      fetchPolicy: "no-cache",
     });
 
     return result.data.election.logEntries;
