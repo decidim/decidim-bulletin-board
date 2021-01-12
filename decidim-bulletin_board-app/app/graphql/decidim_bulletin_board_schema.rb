@@ -3,7 +3,6 @@
 class DecidimBulletinBoardSchema < GraphQL::Schema
   mutation(Types::MutationType)
   query(Types::QueryType)
-  subscription(Types::SubscriptionType)
 
   # Opt in to the new runtime (default in future graphql-ruby versions)
   use GraphQL::Execution::Interpreter

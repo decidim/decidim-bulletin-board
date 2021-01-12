@@ -39,7 +39,7 @@ class ProcessKeyCeremonyStep < Rectify::Command
       election.save!
     end
 
-    broadcast(:ok, [log_entry, response_log_entry].compact)
+    broadcast(:ok)
   end
 
   private
