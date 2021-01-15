@@ -18,7 +18,7 @@ RSpec.describe OpenBallotBox do
     expect { subject }.to broadcast(:ok, election)
   end
 
-  it "creates the log entry for the election activation" do
+  it "creates the log entry for the ballot box opening" do
     expect { subject }.to change(LogEntry, :count).by(1)
   end
 
