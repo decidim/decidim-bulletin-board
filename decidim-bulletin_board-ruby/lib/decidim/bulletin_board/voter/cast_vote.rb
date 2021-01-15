@@ -21,7 +21,7 @@ module Decidim
         #
         # Returns nothing.
         def call
-          message_id = message_id(unique_election_id(election_id), "vote.cast", voter_id)
+          message_id = cast_vote_message_id(election_id, voter_id)
           signed_data = sign_message(message_id, { content: encrypted_vote })
 
           begin
@@ -44,7 +44,13 @@ module Decidim
           end
         end
 
+        def self.cast_vote_message_id(election_id, voter_id)
+          message_id(unique_election_id(election_id), "vote.cast", voter_id)
+        end
+
         private
+
+        delegate :cast_vote_message_id, to: :class
 
         attr_reader :election_id, :voter_id, :encrypted_vote
       end
