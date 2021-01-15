@@ -18,6 +18,7 @@ require "rspec/rails"
 # Add additional requires below this line. Rails is not loaded until this point!
 require "support/active_job"
 require "support/rake_tasks"
+require "support/seeds"
 require "support/wisper"
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
