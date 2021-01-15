@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# A job to process pending key ceremony messages
 class ProcessKeyCeremonyStepJob < ApplicationJob
   queue_as :key_ceremony
 

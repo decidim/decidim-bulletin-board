@@ -28,7 +28,7 @@ class CloseBallotBox < Rectify::Command
     election.with_lock do
       return broadcast(:invalid, error) unless
         valid_step?(election.vote?) &&
-        valid_client?(authority.authority?) &&
+        valid_client?(authority.authority? && election.authority == authority) &&
         valid_author?(message_identifier.from_authority?) &&
         process_message
 
