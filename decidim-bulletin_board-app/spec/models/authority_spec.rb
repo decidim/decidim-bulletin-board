@@ -26,4 +26,12 @@ RSpec.describe Authority do
       expect(subject.trustee?).to be false
     end
   end
+
+  context "when saving the authority" do
+    subject { authority.save }
+
+    it "calculates the key thumbprint" do
+      expect { subject } .to change(authority, :public_key_thumbprint).from(nil)
+    end
+  end
 end

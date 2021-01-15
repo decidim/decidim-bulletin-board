@@ -16,7 +16,6 @@ FactoryBot.define do
 
     name { Faker::Name.unique.name }
     public_key { private_key.export }
-    public_key_thumbprint { Decidim::BulletinBoard::JwkUtils.thumbprint(private_key.export) }
     unique_id { name.parameterize }
 
     factory :authority, class: "Authority" do
