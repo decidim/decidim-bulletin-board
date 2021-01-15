@@ -20,14 +20,12 @@ module Mutations
       GQL
     end
 
-    let!(:election) { create(:election, authority: authority, authority_private_key: private_key, status: :ready, voting_scheme_state: nil) }
+    let!(:election) { create(:election, status: :ready) }
+    let(:authority) { Authority.first }
     let(:headers) { { "Authorization": authority.api_key } }
-    let(:authority) { create(:authority, private_key: private_key) }
-    let(:private_key) { generate(:private_key) }
-    let(:signature_key) { private_key.keypair }
+    let(:signed_data) { JWT.encode(payload.as_json, DevPrivateKeys.authority_private_key.keypair, "RS256") }
+    let(:payload) { build(:open_ballot_box_message, election: election) }
     let(:message_id) { payload["message_id"] }
-    let(:signed_data) { JWT.encode(payload.as_json, signature_key, "RS256") }
-    let(:payload) { build(:open_ballot_box_message, election: election, authority: authority) }
 
     it "changes the election status" do
       expect { subject }.to change { Election.last.status } .from("ready") .to("vote")

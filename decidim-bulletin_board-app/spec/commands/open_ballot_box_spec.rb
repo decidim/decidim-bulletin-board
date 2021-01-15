@@ -4,21 +4,15 @@ require "rails_helper"
 require "./spec/commands/shared/log_entry_validations"
 
 RSpec.describe OpenBallotBox do
-  subject { described_class.call(authority, message_id, signed_data) }
+  subject { described_class.call(client, message_id, signed_data) }
 
   include_context "with a signed message"
 
-  let(:authority) { create(:authority, private_key: private_key) }
-  let(:private_key) { generate(:private_key) }
-  let!(:election) do
-    create(:election, status: election_status,
-                      voting_scheme_state: voting_scheme_state)
-  end
-
+  let!(:election) { create(:election, status: election_status) }
   let(:election_status) { :ready }
-  let(:voting_scheme_state) { nil }
+  let(:client) { Authority.first }
   let(:message_type) { :open_ballot_box_message }
-  let(:message_params) { { election: election, authority: authority } }
+  let(:message_params) { { election: election } }
 
   it "opens the ballot box" do
     expect { subject }.to broadcast(:ok, election)
@@ -62,21 +56,29 @@ RSpec.describe OpenBallotBox do
     end
   end
 
-  context "when the client is a trustee" do
-    let(:authority) { election.trustees.first }
+  context "when the client is not the election authority" do
+    let(:client) { create(:authority, private_key: private_key) }
+    let(:private_key) { generate(:private_key) }
 
     it "broadcast invalid" do
-      expect { subject }.to broadcast(:invalid)
+      expect { subject }.to broadcast(:invalid, "Invalid client")
+    end
+  end
+
+  context "when the client is a trustee" do
+    let(:client) { Trustee.first }
+    let(:private_key) { DevPrivateKeys.trustees_private_keys.first }
+
+    it "broadcast invalid" do
+      expect { subject }.to broadcast(:invalid, "Invalid client")
     end
   end
 
   context "when the message author is not the authority" do
-    let(:trustee) { election.trustees.first }
-    let(:message_id) { "#{election.unique_id}.open_ballot_box+t.#{trustee.unique_id}" }
-    let(:message) { build(:open_ballot_box_message, message_id: message_id, election: election, trustee: trustee) }
+    let(:extra_message_params) { { authority: create(:authority) } }
 
     it "broadcast invalid" do
-      expect { subject }.to broadcast(:invalid)
+      expect { subject }.to broadcast(:invalid, "Invalid message author")
     end
   end
 end

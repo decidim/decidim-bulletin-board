@@ -1,9 +1,8 @@
 # frozen_string_literal: true
 
 RSpec.shared_context "with a signed message" do
-  let(:private_key) { generate(:private_key) }
-  let(:signature_key) { private_key.keypair }
-  let(:signed_data) { JWT.encode(payload.as_json, signature_key, "RS256") }
+  let(:private_key) { DevPrivateKeys.authority_private_key }
+  let(:signed_data) { JWT.encode(payload.as_json, private_key.keypair, "RS256") }
   let(:payload) { build(message_type, **message_params.merge(extra_message_params)) }
   let(:message_id) { payload["message_id"] }
   let(:message_params) { {} }
@@ -22,7 +21,7 @@ RSpec.shared_examples_for "with an invalid signed data" do |examples|
   end
 
   context "when the signature is not right" do
-    let(:signature_key) { generate(:private_key).keypair }
+    let(:private_key) { generate(:private_key) }
 
     it_behaves_like examples
 

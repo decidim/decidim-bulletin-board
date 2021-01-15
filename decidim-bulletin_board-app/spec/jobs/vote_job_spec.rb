@@ -5,10 +5,8 @@ require "rails_helper"
 RSpec.describe VoteJob do
   subject { described_class.perform_now(pending_message.id) }
 
-  let!(:pending_message) { create(:pending_message, election: election, message: message, client: authority, private_key: private_key) }
-  let(:election) { create(:election, status: :vote, authority: authority, authority_private_key: private_key) }
-  let(:authority) { create(:authority, private_key: private_key) }
-  let(:private_key) { generate(:private_key) }
+  let!(:pending_message) { create(:pending_message, election: election, message: message) }
+  let(:election) { create(:election, status: :vote) }
   let(:message) { build(:vote_message, election: election) }
 
   it "processes the message" do

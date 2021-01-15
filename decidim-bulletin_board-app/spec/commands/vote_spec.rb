@@ -4,15 +4,15 @@ require "rails_helper"
 require "./spec/commands/shared/log_entry_validations"
 
 RSpec.describe Vote do
-  subject { described_class.call(authority, message_id, signed_data) }
+  subject { described_class.call(client, message_id, signed_data) }
 
   include_context "with a signed message"
 
   let!(:election) { create(:election, status: election_status) }
   let(:election_status) { :vote }
-  let(:authority) { create(:authority, private_key: private_key) }
+  let(:client) { Authority.first }
   let(:message_type) { :vote_message }
-  let(:message_params) { { election: election, authority: authority } }
+  let(:message_params) { { election: election } }
 
   it "broadcast ok" do
     expect { subject }.to broadcast(:ok)
@@ -50,20 +50,30 @@ RSpec.describe Vote do
     end
   end
 
-  context "when the client is a trustee" do
-    let(:authority) { election.trustees.first }
+  context "when the client is not the election authority" do
+    let(:client) { create(:authority, private_key: private_key) }
+    let(:private_key) { generate(:private_key) }
 
     it "broadcast invalid" do
-      expect { subject }.to broadcast(:invalid)
+      expect { subject }.to broadcast(:invalid, "Invalid client")
+    end
+  end
+
+  context "when the client is a trustee" do
+    let(:client) { Trustee.first }
+    let(:private_key) { DevPrivateKeys.trustees_private_keys.first }
+
+    it "broadcast invalid" do
+      expect { subject }.to broadcast(:invalid, "Invalid client")
     end
   end
 
   context "when the message author is not a voter" do
     let(:message_id) { "#{election.unique_id}.vote.cast+x.#{generate(:voter_id)}" }
-    let(:message) { build(:vote_message, message_id: message_id, election: election) }
+    let(:extra_message_params) { { message_id: message_id } }
 
     it "broadcast invalid" do
-      expect { subject }.to broadcast(:invalid)
+      expect { subject }.to broadcast(:invalid, "Invalid message author")
     end
   end
 end
