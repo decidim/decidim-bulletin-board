@@ -40,7 +40,7 @@ class EnqueueMessage < Rectify::Command
 
   def valid?
     client && election && message_id && signed_data && job &&
-      election.authority == client || election.trustees.member?(client)
+      (election.authority == client || election.trustees.member?(client))
   end
 
   def create_pending_message!
