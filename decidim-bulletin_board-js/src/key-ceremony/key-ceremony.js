@@ -1,6 +1,4 @@
 import { Subject } from "rxjs";
-import { Trustee } from "../trustee/trustee";
-import { MessageIdentifier, TRUSTEE_TYPE } from "../client/message-identifier";
 
 export const WAIT_TIME_MS = 1_000; // 1s
 export const MESSAGE_RECEIVED = "[Message] Received";
@@ -16,149 +14,94 @@ export class KeyCeremony {
    * @constructor
    * @param {Object} params - An object that contains the initialization params.
    *  - {Client} bulletinBoardClient - An instance of the Bulletin Board Client
-   *  - {Object} electionContext - An object that contains some necessary attributes
-   *                               of the election to perform the key ceremony.
-   *  - {Object?} options - An optional object with some options to configure the key ceremony.
+   *  - {Object} election - An object that interacts with a specific election
+   *                        to get some data and perform the key ceremony.
+   *  - {Object} trustee - An object that handles the trustee state and uses the
+   *                       corresponding wrapper to process messages.
+   *  - {Object?} options - An optional object with some extra options.
    */
-  constructor({ bulletinBoardClient, electionContext, options }) {
+  constructor({ bulletinBoardClient, election, trustee, options }) {
     this.bulletinBoardClient = bulletinBoardClient;
-    this.electionContext = electionContext;
-    this.currentTrustee = null;
-    this.options = options || { bulletinBoardWaitTime: WAIT_TIME_MS };
-    this.pollingIntervalId = null;
-    this.electionLogEntries = [];
+    this.election = election;
+    this.trustee = trustee;
+    this.options = options || { waitUntilNextCheck: WAIT_TIME_MS };
     this.response = null;
     this.events = new Subject();
-  }
-
-  /**
-   * Performs some operations to setup the key ceremony. Initializes the trustee
-   * object based on the given election context and subscribe to log entries updates.
-   *
-   * @returns {Promise<void>}
-   */
-  async setup() {
-    const { currentTrusteeContext } = this.electionContext;
-
-    this.currentTrustee = new Trustee(currentTrusteeContext);
-
-    await this.getLogEntries();
     this.nextLogEntryIndexToProcess = 0;
   }
 
   /**
-   * Retrieves all the new log entries for the elections and adds them to the list with all the entries.
-   */
-  async getLogEntries() {
-    const { id: electionUniqueId } = this.electionContext;
-
-    const lastLogEntry = this.electionLogEntries[
-      this.electionLogEntries.length - 1
-    ];
-    const after = (lastLogEntry && lastLogEntry.id) || null;
-
-    this.bulletinBoardClient
-      .getElectionLogEntries({
-        electionUniqueId,
-        after,
-      })
-      .then((logEntries) => {
-        if (logEntries.length) {
-          this.electionLogEntries = [...this.electionLogEntries, ...logEntries];
-        }
-      });
-  }
-
-  /**
-   * Checks if a restore state operation is needed before starting processing new messages.
+   * Performs some operations to setup the key ceremony.
    *
-   * @returns {Promise<void>}
-   */
-  restoreNeeded() {
-    const lastMessage = this.lastMessageSent();
-    return (
-      lastMessage &&
-      this.currentTrustee.checkRestoreNeeded(lastMessage.messageId)
-    );
-  }
-
-  /**
-   * Get the last message sent to the election log by this trustee.
+   * Initializes a subscription to store new log entries for the given election.
    *
-   * @returns {string}
+   * @returns {undefined}
    */
-  lastMessageSent() {
-    for (let i = this.electionLogEntries.length - 1; i >= 0; i--) {
-      const logEntry = this.electionLogEntries[i];
-      const messageIdentifier = MessageIdentifier.parse(logEntry.messageId);
-
-      if (
-        messageIdentifier.author.type === TRUSTEE_TYPE &&
-        messageIdentifier.author.id === this.currentTrustee.id
-      ) {
-        return logEntry;
-      }
-    }
-  }
-
-  /**
-   * Returns the state of the wrapper to be able to perform future restores.
-   *
-   * @returns {string}
-   */
-  backup() {
-    return this.currentTrustee.backup();
-  }
-
-  /**
-   * Restores the state of the wrapper to continue from a state backup.
-   *
-   * @param {string} wrapperState - As string with the wrapper state retrieved from the backup method.
-   * @returns {boolean}
-   */
-  restore(wrapperState) {
-    if (!this.restoreNeeded()) {
-      return false;
-    }
-
-    const lastMessage = this.lastMessageSent();
-    return this.currentTrustee.restore(
-      wrapperState,
-      lastMessage && lastMessage.messageId
-    );
+  setup() {
+    this.election.subscribeToLogEntriesChanges();
   }
 
   /**
    * Starts or continues with the key ceremony.
    *
-   * @param {string} wrapperState - As string with the wrapper state retrieved from the backup method.
-   * @returns {Promise<Object>}
+   *
+   * @returns {Promise<Object|undefined>}
+   * @throws An exception is raised if the trustee needs to be restored.
    */
   async run() {
-    if (this.restoreNeeded()) {
+    if (this.trustee.needsToBeRestored()) {
       throw new Error("You need to restore the wrapper state to continue");
-    }
-
-    if (!this.pollingIntervalId) {
-      this.pollingIntervalId = setInterval(() => {
-        this.getLogEntries();
-      }, this.options.bulletinBoardWaitTime);
     }
 
     if (this.response) {
       await this.sendMessageToBulletinBoard(this.response);
     }
 
-    return this.waitForNextLogEntryResult().then(
-      async ({ message, done, save }) => {
-        this.response = message;
-        if (done) {
-          clearInterval(this.pollingIntervalId);
-        } else if (!save) {
-          return this.run();
-        }
+    return this.waitForNextLogEntryResult().then(({ message, done, save }) => {
+      this.response = message;
+      if (done) {
+        this.tearDown();
+      } else if (!save) {
+        return this.run();
       }
-    );
+    });
+  }
+
+  /**
+   * Performs some operations to clean up after the key ceremony is done.
+   *
+   * @returns {undefined}
+   */
+  tearDown() {
+    this.election.unsubscribeToLogEntriesChanges();
+  }
+
+  /**
+   * Sign a message using the `Trustee` identification keys and send it to the Bulletin Board.
+   *
+   * @private
+   * @param {Object} message - An object containing some data to be sent to the Bulletin Board.
+   * @returns {Promise<Object>}
+   * @throws An exception is raised if there is a problem with the client.
+   */
+  async sendMessageToBulletinBoard(message) {
+    const { logEntries } = this.election;
+
+    if (
+      logEntries.find((logEntry) => logEntry.messageId === message.message_id)
+    ) {
+      return;
+    }
+
+    const signedData = await this.trustee.sign({
+      iat: Math.floor(new Date() / 1000),
+      ...message,
+    });
+
+    return this.bulletinBoardClient.processKeyCeremonyStep({
+      messageId: message.message_id,
+      signedData,
+    });
   }
 
   /**
@@ -172,9 +115,10 @@ export class KeyCeremony {
   waitForNextLogEntryResult() {
     return new Promise((resolve) => {
       const intervalId = setInterval(async () => {
+        const { logEntries } = this.election;
         let result;
 
-        if (this.electionLogEntries.length > this.nextLogEntryIndexToProcess) {
+        if (logEntries.length > this.nextLogEntryIndexToProcess) {
           result = await this.processNextLogEntry();
         }
 
@@ -182,7 +126,7 @@ export class KeyCeremony {
           clearInterval(intervalId);
           resolve(result);
         }
-      }, this.options.bulletinBoardWaitTime);
+      }, this.options.waitUntilNextCheck);
     });
   }
 
@@ -190,17 +134,18 @@ export class KeyCeremony {
    * Uses the `Trustee` object to process the next log entry and outputs the result.
    *
    * @private
-   * @returns {Promise<Object|null>}
+   * @returns {Promise<Object|null|undefined>}
    */
   async processNextLogEntry() {
-    const message = this.electionLogEntries[this.nextLogEntryIndexToProcess];
+    const { logEntries } = this.election;
+    const message = logEntries[this.nextLogEntryIndexToProcess];
 
     this.events.next({
       type: MESSAGE_RECEIVED,
       message,
     });
 
-    const result = await this.currentTrustee.processLogEntry(message);
+    const result = await this.trustee.processLogEntry(message);
 
     this.events.next({
       type: MESSAGE_PROCESSED,
@@ -211,33 +156,5 @@ export class KeyCeremony {
     this.nextLogEntryIndexToProcess += 1;
 
     return result;
-  }
-
-  /**
-   * Sign a message using the `Trustee` identification keys and send it to the Bulletin Board.
-   *
-   * @private
-   * @param {Object} message - An object containing some data to be sent to the Bulletin Board.
-   * @returns {Promise<Object>}
-   * @throws An exception is raised if there is a problem with the client.
-   */
-  async sendMessageToBulletinBoard(message) {
-    if (
-      this.electionLogEntries.find(
-        (logEntry) => logEntry.messageId === message.message_id
-      )
-    ) {
-      return;
-    }
-
-    const signedData = await this.currentTrustee.sign({
-      iat: Math.floor(new Date() / 1000),
-      ...message,
-    });
-
-    return this.bulletinBoardClient.processKeyCeremonyStep({
-      messageId: message.message_id,
-      signedData,
-    });
   }
 }
