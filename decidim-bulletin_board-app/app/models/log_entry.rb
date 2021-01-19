@@ -2,6 +2,7 @@
 
 class LogEntry < ApplicationRecord
   prepend ClientOrBulletinBoard
+  include Message
 
   belongs_to :election
   belongs_to :client, optional: true
@@ -28,11 +29,5 @@ class LogEntry < ApplicationRecord
 
   def previous_hash
     election.log_entries.last&.chained_hash || election.unique_id
-  end
-
-  private
-
-  def message_identifier
-    @message_identifier ||= Decidim::BulletinBoard::MessageIdentifier.new(message_id)
   end
 end

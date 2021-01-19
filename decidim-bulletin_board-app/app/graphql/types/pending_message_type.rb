@@ -2,11 +2,8 @@
 
 module Types
   class PendingMessageType < Types::BaseObject
-    field :id, ID, null: false
-    field :election, Types::ElectionType, null: true
-    field :client, Types::ClientType, null: false
-    field :signed_data, String, null: false
+    implements MessageInterface
+
     field :status, String, null: false
-    field :message_id, String, null: false
   end
 end
