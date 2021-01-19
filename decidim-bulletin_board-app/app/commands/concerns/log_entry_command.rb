@@ -9,7 +9,6 @@ module LogEntryCommand
     include HasMessageIdentifier
 
     attr_accessor :client, :signed_data, :error, :response_message
-    delegate :voting_scheme, to: :election
     delegate :decoded_data, to: :log_entry
 
     private
@@ -81,6 +80,14 @@ module LogEntryCommand
 
     def decoded_error
       @decoded_error ||= decoded_data[:error]
+    end
+
+    def voting_scheme
+      @voting_scheme ||= voting_scheme_class.new(election)
+    end
+
+    def voting_scheme_class
+      VotingScheme.from_name(election.manifest["scheme"]["name"])
     end
   end
 end

@@ -96,7 +96,7 @@ class CreateElection < Rectify::Command
 
   def valid_election?
     run_validations do
-      if election.voting_scheme_class.blank?
+      if voting_scheme_class.blank?
         "A valid Voting Scheme must be specified"
       elsif title.blank?
         "Missing title"

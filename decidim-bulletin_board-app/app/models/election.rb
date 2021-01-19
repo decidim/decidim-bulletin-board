@@ -8,14 +8,6 @@ class Election < ApplicationRecord
 
   enum status: [:key_ceremony, :ready, :vote, :tally, :results, :results_published].map { |status| [status, status.to_s] }.to_h
 
-  def voting_scheme
-    @voting_scheme ||= voting_scheme_class.new(self)
-  end
-
-  def voting_scheme_class
-    VotingScheme.from_name(manifest["scheme"]["name"])
-  end
-
   def manifest
     @manifest ||= log_entries.first.decoded_data
   end
