@@ -14,7 +14,7 @@ RSpec.describe ProcessKeyCeremonyStep do
   let(:public_keys_already_sent) { [] }
   let(:trustee) { Trustee.first }
   let(:client) { trustee }
-  let(:private_key) { DevPrivateKeys.trustees_private_keys.first }
+  let(:private_key) { Test::PrivateKeys.trustees_private_keys.first }
   let(:message_type) { :key_ceremony_message }
   let(:message_params) { { election: election, trustee: trustee } }
 
@@ -109,7 +109,7 @@ RSpec.describe ProcessKeyCeremonyStep do
 
   context "when the client is the election authority" do
     let(:client) { election.authority }
-    let(:private_key) { DevPrivateKeys.authority_private_key }
+    let(:private_key) { Test::PrivateKeys.authority_private_key }
 
     it_behaves_like "key ceremony fails"
 

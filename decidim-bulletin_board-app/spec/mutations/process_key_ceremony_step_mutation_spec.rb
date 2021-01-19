@@ -29,7 +29,7 @@ module Mutations
 
     let!(:election) { create(:election) }
     let(:trustee) { Trustee.first }
-    let(:signed_data) { JWT.encode(payload.as_json, DevPrivateKeys.trustees_private_keys.first.keypair, "RS256") }
+    let(:signed_data) { JWT.encode(payload.as_json, Test::PrivateKeys.trustees_private_keys.first.keypair, "RS256") }
     let(:payload) { build(:key_ceremony_message, trustee: trustee, election: election) }
     let(:message_id) { payload["message_id"] }
 

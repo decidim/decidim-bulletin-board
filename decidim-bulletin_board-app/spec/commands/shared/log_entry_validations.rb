@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.shared_context "with a signed message" do
-  let(:private_key) { DevPrivateKeys.authority_private_key }
+  let(:private_key) { Test::PrivateKeys.authority_private_key }
   let(:signed_data) { JWT.encode(payload.as_json, private_key.keypair, "RS256") }
   let(:payload) { build(message_type, **message_params.merge(extra_message_params)) }
   let(:message_id) { payload["message_id"] }

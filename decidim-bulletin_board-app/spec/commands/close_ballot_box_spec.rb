@@ -67,7 +67,7 @@ RSpec.describe CloseBallotBox do
 
   context "when the client is a trustee" do
     let(:client) { Trustee.first }
-    let(:private_key) { DevPrivateKeys.trustees_private_keys.first }
+    let(:private_key) { Test::PrivateKeys.trustees_private_keys.first }
 
     it "broadcast invalid" do
       expect { subject }.to broadcast(:invalid, "Invalid client")

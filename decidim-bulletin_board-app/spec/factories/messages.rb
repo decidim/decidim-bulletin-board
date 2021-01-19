@@ -40,7 +40,7 @@ FactoryBot.define do
       transient do
         authority { Authority.first }
         start_date { 1.week.from_now }
-        trustees_plus_keys { Trustee.first(3).zip(DevPrivateKeys.trustees_private_keys) }
+        trustees_plus_keys { Trustee.first(3).zip(Test::PrivateKeys.trustees_private_keys) }
         voting_scheme { :dummy }
         election_id { "#{authority.unique_id}.#{generate(:election_id)}" }
         number_of_questions { 2 }
@@ -65,7 +65,7 @@ FactoryBot.define do
     factory :json_trustee do
       transient do
         trustee { Trustee.first }
-        private_key { DevPrivateKeys.trustees_private_keys.first }
+        private_key { Test::PrivateKeys.trustees_private_keys.first }
       end
 
       name { trustee.name }

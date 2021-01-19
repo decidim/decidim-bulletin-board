@@ -25,7 +25,7 @@ module Mutations
     end
     let(:authority) { Authority.first }
     let(:headers) { { "Authorization": authority.api_key } }
-    let(:signed_data) { JWT.encode(payload.as_json, DevPrivateKeys.authority_private_key.keypair, "RS256") }
+    let(:signed_data) { JWT.encode(payload.as_json, Test::PrivateKeys.authority_private_key.keypair, "RS256") }
     let(:payload) { build(:create_election_message) }
     let(:message_id) { payload["message_id"] }
 

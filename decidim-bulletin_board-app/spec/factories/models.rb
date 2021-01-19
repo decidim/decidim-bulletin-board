@@ -26,8 +26,8 @@ FactoryBot.define do
 
   factory :election do
     transient do
-      authority_private_key { DevPrivateKeys.authority_private_key }
-      trustees_plus_keys { Trustee.first(3).zip(DevPrivateKeys.trustees_private_keys) }
+      authority_private_key { Test::PrivateKeys.authority_private_key }
+      trustees_plus_keys { Trustee.first(3).zip(Test::PrivateKeys.trustees_private_keys) }
       election_id { generate(:election_id) }
     end
 
@@ -49,7 +49,7 @@ FactoryBot.define do
 
   trait :message_model do
     transient do
-      private_key { DevPrivateKeys.authority_private_key }
+      private_key { Test::PrivateKeys.authority_private_key }
       message { {} }
     end
 
