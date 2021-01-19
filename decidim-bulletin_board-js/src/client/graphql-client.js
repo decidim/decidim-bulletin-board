@@ -78,6 +78,7 @@ export class GraphQLClient {
    * Process a key ceremony step sending a signed message.
    *
    * @param {Object} params - An object that include the following options.
+   *  - {String} messageId - The message id.
    *  - {String} signedData - The signed data to be processed.
    * @returns {Promise<Object>} - A pending message created.
    * @throws Will throw an error if the request is rejected or the data contains an error.
@@ -86,8 +87,8 @@ export class GraphQLClient {
     const result = await this.apolloClient.mutate({
       mutation: PROCESS_KEY_CEREMONY_STEP,
       variables: {
-        signedData,
         messageId,
+        signedData,
       },
     });
 
