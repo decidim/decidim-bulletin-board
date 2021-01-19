@@ -1,0 +1,26 @@
+<h1>Elections</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Unique ID</th>
+      <th>Title</th>
+      <th>Status</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% elections.each do |election| %>
+      <tr>
+        <td><%= election.unique_id %></td>
+        <td><%= election.title %></td>
+        <td><%= election.status %></td>
+        <td>
+          <% if election.key_ceremony? %>
+            <%= link_to "Perform key ceremony", key_ceremony_sandbox_election_path(election) %>
+          <% end %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

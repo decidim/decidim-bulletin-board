@@ -4,3 +4,4 @@
 //= link graphiql/rails/application.js
 //= link api/docs.js
 //= link api/docs.css
+//= link sandbox/key_ceremony.js
