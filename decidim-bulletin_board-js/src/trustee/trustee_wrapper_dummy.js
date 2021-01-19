@@ -10,6 +10,13 @@ export const KEY_CEREMONY_JOINT_ELECTION_KEY =
  * It is based on the dummy voting schema that we are using in the Bulletin Board.
  */
 export class TrusteeWrapper {
+  /**
+   * Initializes the class with the given params.
+   *
+   * @constructor
+   * @param {Object} params - An object that contains the initialization params.
+   * - {String} trusteeId - The unique id of a trustee.
+   */
   constructor({ trusteeId }) {
     this.trusteeId = trusteeId;
     this.electionId = null;
@@ -18,36 +25,11 @@ export class TrusteeWrapper {
     this.processedMessages = [];
   }
 
-  backup() {
-    return JSON.stringify(this);
-  }
-
-  checkRestoreNeeded(messageId) {
-    return messageId && this.status === CREATE_ELECTION;
-  }
-
-  restore(state, messageId) {
-    if (!this.checkRestoreNeeded(messageId)) {
-      return false;
-    }
-
-    const result = JSON.parse(state);
-    if (
-      result.trusteeId !== this.trusteeId ||
-      (messageId && result.status === CREATE_ELECTION)
-    ) {
-      return false;
-    }
-
-    try {
-      Object.assign(this, result);
-    } catch (error) {
-      return false;
-    }
-
-    return true;
-  }
-
+  /**
+   * Process the message and update the wrapper status.
+   *
+   * @returns {Object|undefined}
+   */
   processMessage(messageId, message) {
     const messageIdentifier = MessageIdentifier.parse(messageId);
     switch (this.status) {
@@ -101,5 +83,53 @@ export class TrusteeWrapper {
         break;
       }
     }
+  }
+
+  /**
+   * Whether the trustee wrapper state needs to be restored or not.
+   *
+   * @param {String} messageId - The unique identifier of a message.
+   * @returns {boolean}
+   */
+  needsToBeRestored(messageId) {
+    return messageId && this.status === CREATE_ELECTION;
+  }
+
+  /**
+   * Returns the wrapper state in a string format.
+   *
+   * @returns {String}
+   */
+  backup() {
+    return JSON.stringify(this);
+  }
+
+  /**
+   * Restore the trustee state from the given state string. It uses the last message sent to check that the state is valid.
+   *
+   * @param {string} state - As string with the wrapper state retrieved from the backup method.
+   * @param {messageId} messageId - The unique id of the last message sent by the trustee.
+   * @returns {boolean}
+   */
+  restore(state, messageId) {
+    if (!this.needsToBeRestored(messageId)) {
+      return false;
+    }
+
+    const result = JSON.parse(state);
+    if (
+      result.trusteeId !== this.trusteeId ||
+      (messageId && result.status === CREATE_ELECTION)
+    ) {
+      return false;
+    }
+
+    try {
+      Object.assign(this, result);
+    } catch (error) {
+      return false;
+    }
+
+    return true;
   }
 }
