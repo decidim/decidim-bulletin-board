@@ -23,13 +23,11 @@ module Mutations
         }
       GQL
     end
+    let(:authority) { Authority.first }
     let(:headers) { { "Authorization": authority.api_key } }
-    let(:authority) { create(:authority, private_key: private_key) }
+    let(:signed_data) { JWT.encode(payload.as_json, Test::PrivateKeys.authority_private_key.keypair, "RS256") }
+    let(:payload) { build(:create_election_message) }
     let(:message_id) { payload["message_id"] }
-    let(:signed_data) { JWT.encode(payload.as_json, signature_key, "RS256") }
-    let(:private_key) { generate(:private_key) }
-    let(:signature_key) { private_key.keypair }
-    let(:payload) { build(:create_election_message, authority: authority) }
 
     it "setup an election" do
       expect { subject }.to change(Election, :count).by(1)

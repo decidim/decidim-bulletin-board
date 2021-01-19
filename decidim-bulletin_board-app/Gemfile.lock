@@ -75,6 +75,10 @@ GEM
       descendants_tracker (~> 0.0.1)
     concurrent-ruby (1.1.7)
     crass (1.0.6)
+    database_cleaner (1.8.5)
+    database_cleaner-active_record (1.8.0)
+      activerecord
+      database_cleaner (~> 1.8.0)
     decidim-bulletin_board (0.6.0)
       byebug (~> 11.0)
       graphlient (~> 0.4.0)
@@ -309,6 +313,7 @@ PLATFORMS
 DEPENDENCIES
   bootsnap (>= 1.4.2)
   byebug
+  database_cleaner-active_record
   decidim-bulletin_board (~> 0.6.0)
   factory_bot_rails
   faker (~> 1.9)

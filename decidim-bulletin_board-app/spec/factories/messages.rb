@@ -38,9 +38,9 @@ FactoryBot.define do
 
     factory :create_election_message, parent: :message do
       transient do
-        authority { build(:authority) }
+        authority { Authority.first }
         start_date { 1.week.from_now }
-        trustees_plus_keys { build_list(:trustee, 3).zip(generate_list(:private_key, 3)) }
+        trustees_plus_keys { Trustee.first(3).zip(Test::PrivateKeys.trustees_private_keys) }
         voting_scheme { :dummy }
         election_id { "#{authority.unique_id}.#{generate(:election_id)}" }
         number_of_questions { 2 }
@@ -64,8 +64,8 @@ FactoryBot.define do
 
     factory :json_trustee do
       transient do
-        trustee { build(:trustee, private_key: private_key) }
-        private_key { generate(:private_key) }
+        trustee { Trustee.first }
+        private_key { Test::PrivateKeys.trustees_private_keys.first }
       end
 
       name { trustee.name }
@@ -143,8 +143,8 @@ FactoryBot.define do
 
     factory :key_ceremony_message, parent: :message do
       transient do
-        election { build(:election) }
-        trustee { election.trustees.first }
+        election { create(:election) }
+        trustee { Trustee.first }
       end
 
       message_id { "#{election.unique_id}.key_ceremony.trustee_election_keys+t.#{trustee.unique_id}" }
@@ -153,8 +153,8 @@ FactoryBot.define do
 
     factory :key_ceremony_message_content do
       transient do
-        election { build(:election) }
-        trustee { election.trustees.first }
+        election { create(:election) }
+        trustee { Trustee.first }
       end
 
       owner_id { trustee.unique_id }
@@ -168,8 +168,8 @@ FactoryBot.define do
 
     factory :open_ballot_box_message, parent: :message do
       transient do
-        authority { build(:authority) }
-        election { build(:election) }
+        election { create(:election, status: :vote) }
+        authority { Authority.first }
       end
 
       message_id { "#{election.unique_id}.open_ballot_box+a.#{authority.unique_id}" }
@@ -177,7 +177,7 @@ FactoryBot.define do
 
     factory :vote_message, parent: :message do
       transient do
-        election { build(:election) }
+        election { create(:election, status: :vote) }
         number_of_questions { 2 }
         voter_id { generate(:voter_id) }
       end
@@ -188,7 +188,7 @@ FactoryBot.define do
 
     factory :vote_message_content do
       transient do
-        election { build(:election) }
+        election { create(:election, status: :vote) }
         number_of_questions { 2 }
       end
 
@@ -215,14 +215,11 @@ FactoryBot.define do
 
     factory :close_ballot_box_message, parent: :message do
       transient do
-        authority { build(:authority) }
-        election { build(:election, status: :vote) }
-        voting_scheme { :dummy }
+        election { create(:election, status: :vote) }
+        authority { Authority.first }
       end
 
       message_id { "#{election.unique_id}.close_ballot_box+a.#{authority.unique_id}" }
-      scheme { build(:voting_scheme, name: voting_scheme) }
-      description { build(:description) }
     end
   end
 end

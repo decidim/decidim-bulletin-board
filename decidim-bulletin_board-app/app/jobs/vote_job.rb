@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# A job to process pending vote messages
 class VoteJob < ApplicationJob
   queue_as :vote
 

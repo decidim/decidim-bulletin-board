@@ -4,7 +4,7 @@ require "rails_helper"
 
 module Mutations
   RSpec.describe ProcessKeyCeremonyStepMutation, type: :request do
-    subject { post "/api", params: { query: query, variables: { messageId: message_id, signedData: signed_data } }, headers: headers }
+    subject { post "/api", params: { query: query, variables: { messageId: message_id, signedData: signed_data } } }
 
     let(:query) do
       <<~GQL
@@ -27,14 +27,11 @@ module Mutations
       GQL
     end
 
-    let!(:election) { create(:election, trustees_plus_keys: trustees_plus_keys) }
-    let(:trustee) { trustees_plus_keys.first.first }
-    let(:message_id) { payload["message_id"] }
-    let(:signed_data) { JWT.encode(payload.as_json, signature_key, "RS256") }
-    let(:trustees_plus_keys) { generate_list(:private_key, 3).map { |key| [create(:trustee, private_key: key), key] } }
-    let(:private_key) { trustees_plus_keys.first.last }
-    let(:signature_key) { private_key.keypair }
+    let!(:election) { create(:election) }
+    let(:trustee) { Trustee.first }
+    let(:signed_data) { JWT.encode(payload.as_json, Test::PrivateKeys.trustees_private_keys.first.keypair, "RS256") }
     let(:payload) { build(:key_ceremony_message, trustee: trustee, election: election) }
+    let(:message_id) { payload["message_id"] }
 
     it "adds the message to the pending messages table" do
       expect { subject }.to change(PendingMessage, :count).by(1)

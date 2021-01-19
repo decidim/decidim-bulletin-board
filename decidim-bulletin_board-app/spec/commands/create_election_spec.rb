@@ -4,13 +4,12 @@ require "rails_helper"
 require "./spec/commands/shared/log_entry_validations"
 
 RSpec.describe CreateElection do
-  subject { described_class.call(authority, message_id, signed_data) }
+  subject { described_class.call(client, message_id, signed_data) }
 
   include_context "with a signed message"
 
-  let(:authority) { create(:authority, private_key: private_key) }
+  let(:client) { Authority.first }
   let(:message_type) { :create_election_message }
-  let(:message_params) { { authority: authority } }
 
   it "creates the election" do
     expect { subject }.to change(Election, :count).by(1)
@@ -37,7 +36,7 @@ RSpec.describe CreateElection do
   it_behaves_like "with an invalid signed data", "create election fails"
 
   context "when the election already exists" do
-    let!(:existing_election) { create(:election, authority: authority) }
+    let!(:existing_election) { create(:election) }
     let(:extra_message_params) { { election_id: existing_election.unique_id } }
 
     it_behaves_like "create election fails"
@@ -98,19 +97,19 @@ RSpec.describe CreateElection do
   end
 
   context "when the client is a trustee" do
-    let(:authority) { create(:trustee, private_key: private_key) }
+    let(:client) { Trustee.first }
+    let(:private_key) { Test::PrivateKeys.trustees_private_keys.first }
 
     it "broadcast invalid" do
-      expect { subject }.to broadcast(:invalid)
+      expect { subject }.to broadcast(:invalid, "Invalid client")
     end
   end
 
-  context "when the message author is not the authority" do
-    let(:message_id) { "#{authority.unique_id}.26.create_election+x.#{authority.unique_id}" }
-    let(:message) { build(:create_election_message, message_id: message_id) }
+  context "when the message author is not the same authority" do
+    let(:extra_message_params) { { authority: create(:authority) } }
 
     it "broadcast invalid" do
-      expect { subject }.to broadcast(:invalid)
+      expect { subject }.to broadcast(:invalid, "Invalid message author")
     end
   end
 end

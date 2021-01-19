@@ -6,10 +6,9 @@ RSpec.describe ProcessKeyCeremonyStepJob do
   subject { described_class.perform_now(pending_message.id) }
 
   let!(:pending_message) { create(:pending_message, election: election, message: message, client: trustee, private_key: private_key) }
-  let(:election) { create(:election, trustees_plus_keys: trustees_plus_keys) }
-  let(:trustees_plus_keys) { generate_list(:private_key, 3).map { |key| [create(:trustee, private_key: key), key] } }
-  let(:trustee) { trustees_plus_keys.first.first }
-  let(:private_key) { trustees_plus_keys.first.last }
+  let(:election) { create(:election) }
+  let(:trustee) { Trustee.first }
+  let(:private_key) { Test::PrivateKeys.trustees_private_keys.first }
   let(:message) { build(:key_ceremony_message, content_traits: content_traits, election: election) }
   let(:content_traits) { [] }
 

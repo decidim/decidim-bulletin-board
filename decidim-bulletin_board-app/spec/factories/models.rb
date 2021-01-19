@@ -16,7 +16,6 @@ FactoryBot.define do
 
     name { Faker::Name.unique.name }
     public_key { private_key.export }
-    public_key_thumbprint { Decidim::BulletinBoard::JwkUtils.thumbprint(private_key.export) }
     unique_id { name.parameterize }
 
     factory :authority, class: "Authority" do
@@ -27,13 +26,13 @@ FactoryBot.define do
 
   factory :election do
     transient do
-      authority_private_key { generate(:private_key) }
-      trustees_plus_keys { build_list(:trustee, 3).zip(generate_list(:private_key, 3)) }
+      authority_private_key { Test::PrivateKeys.authority_private_key }
+      trustees_plus_keys { Trustee.first(3).zip(Test::PrivateKeys.trustees_private_keys) }
       election_id { generate(:election_id) }
     end
 
     title { Faker::Name.name }
-    authority { build(:authority, private_key: authority_private_key) }
+    authority { Authority.first }
     status { "key_ceremony" }
     unique_id { [authority.unique_id, election_id].join(".") }
     voting_scheme_state { Marshal.dump(joint_election_key: 1, trustees: []) }
@@ -50,18 +49,18 @@ FactoryBot.define do
 
   trait :message_model do
     transient do
-      private_key { generate(:private_key) }
+      private_key { Test::PrivateKeys.authority_private_key }
       message { {} }
     end
 
-    election { build(:election, authority_private_key: private_key) }
+    election { build(:election) }
     client { election.authority }
     message_id { message["message_id"] }
     signed_data { JWT.encode(message, private_key.keypair, "RS256") }
   end
 
   factory :log_entry, traits: [:message_model] do
-    content_hash { Digest::SHA256.hexdigest(signed_data) }
+    content_hash { Digest::SHA256.hexdigest(message["content"]) if message["content"] }
   end
 
   factory :pending_message, traits: [:message_model] do
