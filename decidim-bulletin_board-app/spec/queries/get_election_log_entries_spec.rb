@@ -3,13 +3,12 @@
 require "rails_helper"
 
 RSpec.describe "GetElectionLogEntries" do
-  let(:result) do
-    result = DecidimBulletinBoardSchema.execute(query, context: context)
-    raise result["errors"][0]["message"] if result["errors"].present?
+  subject { DecidimBulletinBoardSchema.execute(query, context: context) }
 
-    result
-  end
+  let!(:election) { create(:election) }
   let(:context) { {} }
+  let(:first_log_entry) { election.log_entries.first }
+  let(:election_unique_id) { election.unique_id }
   let(:query) do
     <<~GQL
       query GetElectionLogEntries {
@@ -22,23 +21,116 @@ RSpec.describe "GetElectionLogEntries" do
       }
     GQL
   end
-  let(:election) { create(:election) }
 
-  describe "when the election exists" do
-    let(:election_unique_id) { election.unique_id }
-
-    it "returns the election's log entries" do
-      log_entries = result.dig("data", "election", "logEntries")
-      expect(log_entries.length).to eq(1)
-    end
+  it "returns the election's log entries" do
+    expect(subject.deep_symbolize_keys).to include(
+      data: {
+        election: {
+          logEntries: [
+            {
+              messageId: first_log_entry.message_id,
+              signedData: first_log_entry.signed_data
+            }
+          ]
+        }
+      }
+    )
   end
 
-  describe "when the election doesn't exist" do
+  context "when the election doesn't exist" do
     let(:election_unique_id) { "foo.bar.1" }
 
     it "returns nil" do
-      election = result.dig("data", "election")
-      expect(election).to be_nil
+      expect(subject.deep_symbolize_keys).to include(
+        data: {
+          election: nil
+        }
+      )
+    end
+  end
+
+  describe "log entries with temporary hidden data" do
+    let!(:election) { create(:election, :tally) }
+    let(:tally_cast) { create(:log_entry, :by_bulletin_board, election: election, message: build(:tally_cast_message, election: election)) }
+    let(:tally_share) { create(:log_entry, :by_trustee, election: election, message: build(:tally_share_message, election: election)) }
+
+    before { tally_cast && tally_share }
+
+    it "hides the signed data" do
+      expect(subject.deep_symbolize_keys).to include(
+        data: {
+          election: {
+            logEntries: [
+              {
+                messageId: first_log_entry.message_id,
+                signedData: first_log_entry.signed_data
+              },
+              {
+                messageId: tally_cast.message_id,
+                signedData: nil
+              },
+              {
+                messageId: tally_share.message_id,
+                signedData: nil
+              }
+            ]
+          }
+        }
+      )
+    end
+
+    context "when the client is an authority" do
+      let(:context) { { api_key: election.authority.api_key } }
+
+      it "shows the signed data" do
+        expect(subject.deep_symbolize_keys).to include(
+          data: {
+            election: {
+              logEntries: [
+                {
+                  messageId: first_log_entry.message_id,
+                  signedData: first_log_entry.signed_data
+                },
+                {
+                  messageId: tally_cast.message_id,
+                  signedData: tally_cast.signed_data
+                },
+                {
+                  messageId: tally_share.message_id,
+                  signedData: tally_share.signed_data
+                }
+              ]
+            }
+          }
+        )
+      end
+    end
+
+    context "when the results are published" do
+      let(:election) { create(:election, :results_published) }
+
+      it "shows the signed data" do
+        expect(subject.deep_symbolize_keys).to include(
+          data: {
+            election: {
+              logEntries: [
+                {
+                  messageId: first_log_entry.message_id,
+                  signedData: first_log_entry.signed_data
+                },
+                {
+                  messageId: tally_cast.message_id,
+                  signedData: tally_cast.signed_data
+                },
+                {
+                  messageId: tally_share.message_id,
+                  signedData: tally_share.signed_data
+                }
+              ]
+            }
+          }
+        )
+      end
     end
   end
 end

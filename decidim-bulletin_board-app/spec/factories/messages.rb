@@ -231,6 +231,24 @@ FactoryBot.define do
       message_id { "#{election.unique_id}.tally.start+a.#{authority.unique_id}" }
     end
 
+    factory :tally_cast_message, parent: :message do
+      transient do
+        election { create(:election, status: :tally) }
+      end
+
+      message_id { "#{election.unique_id}.tally.cast+b.#{BulletinBoard.unique_id}" }
+      content do
+        election.manifest[:description][:contests].map do |contest|
+          [
+            contest[:object_id],
+            contest[:ballot_selections].map do |ballot_selection|
+              [ballot_selection[:candidate_id], Faker::Number.number(2)]
+            end.to_h
+          ]
+        end.to_h.to_json
+      end
+    end
+
     factory :tally_share_message, parent: :message do
       transient do
         election { create(:election, status: :tally) }

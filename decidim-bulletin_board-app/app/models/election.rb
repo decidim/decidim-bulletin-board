@@ -4,7 +4,7 @@ class Election < ApplicationRecord
   belongs_to :authority
   has_many :election_trustees
   has_many :trustees, through: :election_trustees
-  has_many :log_entries
+  has_many :log_entries, -> { order(id: :asc) }
 
   enum status: [:key_ceremony, :ready, :vote, :tally, :results, :results_published].map { |status| [status, status.to_s] }.to_h
 
