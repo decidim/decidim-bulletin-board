@@ -9,6 +9,9 @@ class LogEntry < ApplicationRecord
   before_create do
     self.content_hash = Digest::SHA256.hexdigest(content) if content
     self.chained_hash = Digest::SHA256.hexdigest([previous_hash, decoded_data].join("."))
+    self.iat = decoded_data[:iat]
+    self.message_type = message_identifier.type
+    self.author_unique_id = message_identifier.author_id
   end
 
   def decoded_data
@@ -25,5 +28,11 @@ class LogEntry < ApplicationRecord
 
   def previous_hash
     election.log_entries.last&.chained_hash || election.unique_id
+  end
+
+  private
+
+  def message_identifier
+    @message_identifier ||= Decidim::BulletinBoard::MessageIdentifier.new(message_id)
   end
 end

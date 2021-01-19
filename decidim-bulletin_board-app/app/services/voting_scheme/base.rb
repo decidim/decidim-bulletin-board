@@ -2,12 +2,13 @@
 
 module VotingScheme
   class Base
-    def initialize(election)
+    def initialize(election, votes = nil)
       @election = election
+      @votes = votes
       @state = restore(election.voting_scheme_state) if election.voting_scheme_state
     end
 
-    attr_reader :election, :state
+    attr_reader :election, :state, :votes
 
     def restore(data)
       Marshal.load(data) # rubocop:disable Security/MarshalLoad
