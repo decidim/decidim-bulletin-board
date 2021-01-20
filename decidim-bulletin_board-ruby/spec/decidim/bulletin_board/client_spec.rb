@@ -166,6 +166,31 @@ module Decidim
           end
         end
       end
+
+      describe "publish_results" do
+        let(:election_id) { "decidim-test-authority.1" }
+
+        context "when everything went ok" do
+          before do
+            stub_wisper_publisher("Decidim::BulletinBoard::Authority::PublishResults", :call, :ok, "results_published")
+          end
+
+          it "calls the PublishResults command and returns the result" do
+            election_status = subject.publish_results(election_id)
+            expect(election_status).to eq("results_published")
+          end
+        end
+
+        context "when something went wrong" do
+          before do
+            stub_wisper_publisher("Decidim::BulletinBoard::Authority::PublishResults", :call, :error, "Sorry, something went wrong")
+          end
+
+          it "calls the PublishResults command and throws an error" do
+            expect { subject.publish_results(election_id) }.to raise_error("Sorry, something went wrong")
+          end
+        end
+      end
     end
   end
 end
