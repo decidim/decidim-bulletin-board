@@ -35,10 +35,10 @@ export class KeyCeremony {
    *
    * Initializes a subscription to store new log entries for the given election.
    *
-   * @returns {undefined}
+   * @returns {Promise<undefined>}
    */
   setup() {
-    this.election.subscribeToLogEntriesChanges();
+    return this.election.subscribeToLogEntriesChanges();
   }
 
   /**

@@ -26,12 +26,13 @@ export class Election {
   /**
    * Store the election log entries and periodically check if there are new entries.
    *
-   * @returns {undefined}
+   * @returns {Promise<undefined>}
    */
-  subscribeToLogEntriesChanges() {
+  async subscribeToLogEntriesChanges() {
     this.unsubscribeToLogEntriesChanges();
 
-    this.getLogEntries();
+    // Ensure that we get the current log entries before starting the subscription.
+    await this.getLogEntries();
 
     this.subscriptionId = setInterval(() => {
       this.getLogEntries();
@@ -76,21 +77,24 @@ export class Election {
    * last log entry stored in the election's state.
    *
    * @private
-   * @returns {nothing}
+   * @returns {Promise<nothing>}
    */
   getLogEntries() {
     const lastLogEntry = this.logEntries[this.logEntries.length - 1];
     const after = (lastLogEntry && lastLogEntry.id) || null;
 
-    this.bulletinBoardClient
-      .getElectionLogEntries({
-        electionUniqueId: this.uniqueId,
-        after,
-      })
-      .then((logEntries) => {
-        if (logEntries.length) {
-          this.logEntries = [...this.logEntries, ...logEntries];
-        }
-      });
+    return new Promise((resolve) => {
+      this.bulletinBoardClient
+        .getElectionLogEntries({
+          electionUniqueId: this.uniqueId,
+          after,
+        })
+        .then((logEntries) => {
+          if (logEntries.length) {
+            this.logEntries = [...this.logEntries, ...logEntries];
+          }
+          resolve();
+        });
+    });
   }
 }
