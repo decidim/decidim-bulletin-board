@@ -69,6 +69,13 @@ module Decidim
         get_status.call
       end
 
+      def start_tally(election_id)
+        start_tally = Decidim::BulletinBoard::Authority::StartTally.new(election_id)
+        start_tally.on(:ok) { |pending_message| return pending_message }
+        start_tally.on(:error) { |error_message| raise StandardError, error_message }
+        start_tally.call
+      end
+
       private
 
       attr_reader :identification_private_key, :private_key
