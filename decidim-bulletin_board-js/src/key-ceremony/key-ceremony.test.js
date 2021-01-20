@@ -55,8 +55,8 @@ describe("KeyCeremony", () => {
   });
 
   describe("setup", () => {
-    beforeEach(() => {
-      keyCeremony.setup();
+    beforeEach(async () => {
+      await keyCeremony.setup();
     });
 
     it("uses the election object to subscribe to log entries changes", () => {
@@ -75,8 +75,8 @@ describe("KeyCeremony", () => {
   });
 
   describe("run", () => {
-    beforeEach(() => {
-      keyCeremony.setup();
+    beforeEach(async () => {
+      await keyCeremony.setup();
       jest.spyOn(keyCeremony, "tearDown");
     });
 

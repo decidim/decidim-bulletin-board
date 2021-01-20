@@ -39,8 +39,8 @@ describe("Tally", () => {
   });
 
   describe("setup", () => {
-    beforeEach(() => {
-      tally.setup();
+    beforeEach(async () => {
+      await tally.setup();
     });
 
     it("uses the election object to subscribe to log entries changes", () => {
@@ -59,8 +59,8 @@ describe("Tally", () => {
   });
 
   describe("run", () => {
-    beforeEach(() => {
-      tally.setup();
+    beforeEach(async () => {
+      await tally.setup();
       jest.spyOn(tally, "tearDown");
     });
 

@@ -18,14 +18,14 @@ export class Tally {
   }
 
   /**
-   * TODO
-   * Performs some operations to setup the key ceremony. Initializes the trustee
-   * object based on the given election context and subscribe to log entries updates.
+   * Performs some operations to setup the tally.
    *
-   * @returns {Promise<void>}
+   * Initializes a subscription to store new log entries for the given election.
+   *
+   * @returns {Promise<undefined>}
    */
   setup() {
-    this.election.subscribeToLogEntriesChanges();
+    return this.election.subscribeToLogEntriesChanges();
   }
 
   /**
