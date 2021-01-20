@@ -6,7 +6,7 @@ class OpenBallotBox < Rectify::Command
 
   # Public: Initializes the command.
   #
-  # authority - The authority sender of the vote message
+  # authority - The authority sender of the open request
   # message_id - The message identifier
   # signed_data - The signed message received
   def initialize(authority, message_id, signed_data)
@@ -34,8 +34,7 @@ class OpenBallotBox < Rectify::Command
 
       log_entry.election = election
       log_entry.save!
-      election.status = :vote
-      election.save!
+      election.vote!
     end
 
     broadcast(:ok, election)

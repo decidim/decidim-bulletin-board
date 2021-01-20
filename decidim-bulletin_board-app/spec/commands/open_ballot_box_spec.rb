@@ -14,7 +14,7 @@ RSpec.describe OpenBallotBox do
   let(:message_type) { :open_ballot_box_message }
   let(:message_params) { { election: election } }
 
-  it "opens the ballot box" do
+  it "broadcasts ok" do
     expect { subject }.to broadcast(:ok, election)
   end
 
@@ -60,6 +60,8 @@ RSpec.describe OpenBallotBox do
     let(:client) { create(:authority, private_key: private_key) }
     let(:private_key) { generate(:private_key) }
 
+    it_behaves_like "opening the ballot box fails"
+
     it "broadcast invalid" do
       expect { subject }.to broadcast(:invalid, "Invalid client")
     end
@@ -69,6 +71,8 @@ RSpec.describe OpenBallotBox do
     let(:client) { Trustee.first }
     let(:private_key) { Test::PrivateKeys.trustees_private_keys.first }
 
+    it_behaves_like "opening the ballot box fails"
+
     it "broadcast invalid" do
       expect { subject }.to broadcast(:invalid, "Invalid client")
     end
@@ -76,6 +80,8 @@ RSpec.describe OpenBallotBox do
 
   context "when the message author is not the authority" do
     let(:extra_message_params) { { authority: create(:authority) } }
+
+    it_behaves_like "opening the ballot box fails"
 
     it "broadcast invalid" do
       expect { subject }.to broadcast(:invalid, "Invalid message author")
