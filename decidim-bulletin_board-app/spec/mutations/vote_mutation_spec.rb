@@ -27,7 +27,7 @@ module Mutations
       GQL
     end
 
-    let!(:election) { create(:election, status: :vote) }
+    let!(:election) { create(:election, :vote) }
     let(:authority) { Authority.first }
     let(:headers) { { "Authorization": authority.api_key } }
     let(:signed_data) { JWT.encode(payload.as_json, Test::PrivateKeys.authority_private_key.keypair, "RS256") }

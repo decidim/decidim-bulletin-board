@@ -6,7 +6,7 @@ RSpec.describe StartTallyJob do
   subject { described_class.perform_now(pending_message.id) }
 
   let!(:pending_message) { create(:pending_message, election: election, message: message) }
-  let(:election) { create(:election, status: :vote_ended) }
+  let(:election) { create(:election, :vote_ended) }
   let(:message) { build(:start_tally_message, election: election) }
 
   it "processes the message" do

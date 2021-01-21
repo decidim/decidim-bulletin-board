@@ -193,7 +193,7 @@ FactoryBot.define do
 
     factory :open_ballot_box_message, parent: :message do
       transient do
-        election { create(:election, status: :vote) }
+        election { create(:election, :vote) }
         authority { Authority.first }
       end
 
@@ -202,7 +202,7 @@ FactoryBot.define do
 
     factory :vote_message, parent: :message do
       transient do
-        election { create(:election, status: :vote) }
+        election { create(:election, :vote) }
         number_of_questions { 2 }
         voter_id { generate(:voter_id) }
       end
@@ -213,7 +213,7 @@ FactoryBot.define do
 
     factory :vote_message_content do
       transient do
-        election { create(:election, status: :vote) }
+        election { create(:election, :vote) }
         number_of_questions { 2 }
       end
 
@@ -240,7 +240,7 @@ FactoryBot.define do
 
     factory :close_ballot_box_message, parent: :message do
       transient do
-        election { create(:election, status: :vote) }
+        election { create(:election, :vote) }
         authority { Authority.first }
       end
 
@@ -249,7 +249,7 @@ FactoryBot.define do
 
     factory :start_tally_message, parent: :message do
       transient do
-        election { create(:election, status: :vote_ended) }
+        election { create(:election, :vote_ended) }
         authority { Authority.first }
       end
 
@@ -258,7 +258,7 @@ FactoryBot.define do
 
     factory :tally_cast_message, parent: :message do
       transient do
-        election { create(:election, status: :tally) }
+        election { create(:election, :tally) }
       end
 
       message_id { "#{election.unique_id}.tally.cast+b.#{BulletinBoard.unique_id}" }
@@ -279,7 +279,7 @@ FactoryBot.define do
 
     factory :tally_share_message, parent: :message do
       transient do
-        election { create(:election, status: :tally) }
+        election { create(:election, :tally) }
         trustee { Trustee.first }
       end
 
@@ -289,7 +289,7 @@ FactoryBot.define do
 
     factory :tally_share_message_content do
       transient do
-        election { create(:election, status: :tally) }
+        election { create(:election, :tally) }
         trustee { Trustee.first }
       end
 
@@ -302,7 +302,7 @@ FactoryBot.define do
 
     factory :end_tally_message, parent: :message do
       transient do
-        election { create(:election, status: :tally_ended) }
+        election { create(:election, :tally_ended) }
         authority { Authority.first }
       end
 
@@ -327,7 +327,7 @@ FactoryBot.define do
 
     factory :publish_results_message, parent: :message do
       transient do
-        election { create(:election, status: :results_published) }
+        election { create(:election, :results_published) }
         authority { Authority.first }
       end
 

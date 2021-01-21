@@ -27,7 +27,7 @@ module Mutations
       GQL
     end
 
-    let!(:election) { create(:election, status: :tally) }
+    let!(:election) { create(:election, :tally) }
     let(:trustee) { Trustee.first }
     let(:signed_data) { JWT.encode(payload.as_json, Test::PrivateKeys.trustees_private_keys.first.keypair, "RS256") }
     let(:payload) { build(:tally_share_message, trustee: trustee, election: election) }

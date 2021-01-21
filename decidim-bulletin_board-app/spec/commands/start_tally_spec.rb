@@ -8,9 +8,8 @@ RSpec.describe StartTally do
 
   include_context "with a signed message"
 
-  let!(:election) { create(:election, status: election_status, voting_scheme_state: voting_scheme_state) }
+  let!(:election) { create(:election, election_status) }
   let(:election_status) { :vote_ended }
-  let(:voting_scheme_state) { Marshal.dump(joint_election_key: 1, trustees: Trustee.first(3).map(&:unique_id)) }
   let(:client) { Authority.first }
   let(:message_type) { :start_tally_message }
   let(:message_params) { { election: election } }

@@ -6,7 +6,7 @@ RSpec.describe VoteJob do
   subject { described_class.perform_now(pending_message.id) }
 
   let!(:pending_message) { create(:pending_message, election: election, message: message) }
-  let(:election) { create(:election, status: :vote) }
+  let(:election) { create(:election, :vote) }
   let(:message) { build(:vote_message, election: election) }
 
   it "processes the message" do

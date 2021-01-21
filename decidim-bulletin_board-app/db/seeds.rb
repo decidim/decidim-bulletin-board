@@ -99,7 +99,7 @@ end
 
 TEST_ELECTION_ID_OFFSET = 10_000
 [:key_ceremony, :ready, :vote, :vote_ended, :tally, :tally_ended, :results_published].each_with_index do |status, i|
-  election = FactoryBot.create(:election, election_id: TEST_ELECTION_ID_OFFSET + i, status: status)
+  election = FactoryBot.create(:election, status, election_id: TEST_ELECTION_ID_OFFSET + i)
 
   case status
   when :ready
