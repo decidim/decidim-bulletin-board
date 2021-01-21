@@ -145,9 +145,17 @@ FactoryBot.define do
       transient do
         election { create(:election) }
         trustee { Trustee.first }
+        voting_scheme { :dummy }
       end
 
-      message_id { "#{election.unique_id}.key_ceremony.trustee_election_keys+t.#{trustee.unique_id}" }
+      message_id do
+        case voting_scheme
+        when :dummy
+          "#{election.unique_id}.key_ceremony.step_1+t.#{trustee.unique_id}"
+        else
+          "#{election.unique_id}.key_ceremony.trustee_election_keys+t.#{trustee.unique_id}"
+        end
+      end
       content { build(:key_ceremony_message_content, *content_traits, election: election, trustee: trustee).to_json }
     end
 
@@ -164,6 +172,23 @@ FactoryBot.define do
       trait :invalid do
         owner_id { "wrong_trustee" }
       end
+    end
+
+    factory :key_ceremony_message_joint_election_message, parent: :message do
+      transient do
+        election { create(:election) }
+      end
+
+      message_id { "#{election.unique_id}.key_ceremony.joint_election_key+b.bulletin-board" }
+      content { build(:key_ceremony_message_joint_election_message_content, *content_traits, election: election).to_json }
+    end
+
+    factory :key_ceremony_message_joint_election_message_content do
+      transient do
+        election { create(:election) }
+      end
+
+      joint_election_key { 3.pow(election.manifest["trustees"].length) }
     end
 
     factory :open_ballot_box_message, parent: :message do
