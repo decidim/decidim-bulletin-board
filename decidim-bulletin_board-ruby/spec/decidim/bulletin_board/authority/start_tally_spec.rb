@@ -14,7 +14,7 @@ module Decidim
 
         let(:bulletin_board_response) do
           {
-            processTallyStep: {
+            startTally: {
               pendingMessage: {
                 status: "enqueued"
               }
