@@ -54,7 +54,7 @@ $(() => {
         tally.events.subscribe((event) => {
           console.log(event);
           if (event.type === "[Message] Processed" && event.result) {
-            if (event.result.done) {
+            if (event.result.cast) {
               $doneMessage.show();
             }
           }

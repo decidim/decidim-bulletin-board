@@ -4,6 +4,8 @@ export const CREATE_ELECTION = "create_election";
 export const KEY_CEREMONY_STEP_1 = "key_ceremony.step_1";
 export const KEY_CEREMONY_JOINT_ELECTION_KEY =
   "key_ceremony.joint_election_key";
+export const TALLY_CAST = "tally.cast";
+export const TALLY_SHARE = "tally.share";
 
 /**
  * This is just a dummy implementation of a possible `TrusteeWrapper`.
@@ -41,6 +43,7 @@ export class TrusteeWrapper {
           this.electionTrusteesCount = message.trustees.length;
           return {
             done: false,
+            cast: false,
             save: true,
             message: {
               message_id: MessageIdentifier.format(
@@ -65,6 +68,7 @@ export class TrusteeWrapper {
             this.status = KEY_CEREMONY_JOINT_ELECTION_KEY;
             return {
               done: false,
+              cast: false,
               save: false,
               message: null,
             };
@@ -74,10 +78,34 @@ export class TrusteeWrapper {
       }
       case KEY_CEREMONY_JOINT_ELECTION_KEY: {
         if (messageIdentifier.typeSubtype === KEY_CEREMONY_JOINT_ELECTION_KEY) {
+          this.status = TALLY_CAST;
           return {
             done: true,
+            cast: false,
             save: false,
             message: null,
+          };
+        }
+        break;
+      }
+      case TALLY_CAST: {
+        if (messageIdentifier.typeSubtype === TALLY_CAST) {
+          this.status = TALLY_SHARE;
+          return {
+            done: true,
+            cast: true,
+            save: false,
+            message: {
+              message_id: MessageIdentifier.format(
+                this.electionId,
+                TALLY_SHARE,
+                TRUSTEE_TYPE,
+                this.trusteeId
+              ),
+              content: JSON.stringify({
+                owner_id: this.trusteeId,
+              }),
+            },
           };
         }
         break;
