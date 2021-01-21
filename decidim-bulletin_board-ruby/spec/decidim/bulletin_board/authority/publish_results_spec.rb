@@ -27,7 +27,7 @@ module Decidim
             expect { subject.call }.to broadcast(:ok)
           end
 
-          it "uses the graphql client to publish the election results and return its result" do
+          it "uses the graphql client to publish the election results and returns its result" do
             subject.on(:ok) do |election|
               expect(election.status).to eq("results_published")
             end

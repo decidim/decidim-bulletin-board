@@ -28,7 +28,7 @@ module Mutations
     let(:message_id) { payload["message_id"] }
 
     it "changes the election status" do
-      expect { subject }.to change { Election.last.status } .from("results") .to("results_published")
+      expect { subject }.to change { Election.last.status } .from("results").to("results_published")
     end
 
     it "returns an election status" do

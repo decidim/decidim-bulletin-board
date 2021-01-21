@@ -62,7 +62,7 @@ RSpec.describe PublishResults do
 
     it_behaves_like "publishing results fails"
 
-    it "broadcast invalid" do
+    it "broadcasts invalid" do
       expect { subject }.to broadcast(:invalid, "Invalid client")
     end
   end
@@ -73,7 +73,7 @@ RSpec.describe PublishResults do
 
     it_behaves_like "publishing results fails"
 
-    it "broadcast invalid" do
+    it "broadcasts invalid" do
       expect { subject }.to broadcast(:invalid, "Invalid client")
     end
   end
@@ -83,7 +83,7 @@ RSpec.describe PublishResults do
 
     it_behaves_like "publishing results fails"
 
-    it "broadcast invalid" do
+    it "broadcasts invalid" do
       expect { subject }.to broadcast(:invalid, "Invalid message author")
     end
   end
