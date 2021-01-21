@@ -11,7 +11,10 @@ module Message
     end
 
     def visible_for_all?
-      message_identifier.type != "tally" || election.results_published?
+      !VotingScheme.results_message?(
+        election.voting_scheme_name,
+        [message_identifier.type, message_identifier.subtype].compact.join(".")
+      ) || election.results_published?
     end
   end
 end

@@ -11,4 +11,8 @@ class Election < ApplicationRecord
   def manifest
     @manifest ||= log_entries.first.decoded_data
   end
+
+  def voting_scheme_name
+    @voting_scheme_name ||= manifest["scheme"]["name"]
+  end
 end
