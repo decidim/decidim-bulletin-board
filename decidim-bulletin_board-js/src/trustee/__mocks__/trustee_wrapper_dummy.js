@@ -4,4 +4,10 @@ export class TrusteeWrapper {
   }
 
   processMessage() {}
+
+  needsToBeRestored() {}
+
+  backup() {}
+
+  restore() {}
 }

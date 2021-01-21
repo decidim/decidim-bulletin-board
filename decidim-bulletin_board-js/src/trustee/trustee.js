@@ -14,12 +14,15 @@ export class Trustee {
    *  - {String} id - The trustee identifier.
    *  - {Object} identificationKeys - A object that contains both the public and private key for
    *                                  the corresponding trustee.
+   *  - {Object} election - An object that interacts with a specific election
+   *                        to get some data and perform the key ceremony.
    */
-  constructor({ id, identificationKeys }) {
+  constructor({ id, identificationKeys, election }) {
     this.id = id;
+    this.identificationKeys = identificationKeys;
+    this.election = election;
     this.wrapper = new TrusteeWrapper({ trusteeId: id });
     this.parser = new JWTParser();
-    this.identificationKeys = identificationKeys;
   }
 
   /**
@@ -45,7 +48,23 @@ export class Trustee {
   }
 
   /**
-   * Returns the state of the wrapper to be able to perform future restores.
+   * Whether the trustee state needs to be restored or not.
+   *
+   * @returns {boolean}
+   */
+  needsToBeRestored() {
+    const lastMessageFromTrustee = this.election.getLastMessageFromTrustee(
+      this.id
+    );
+
+    return (
+      lastMessageFromTrustee &&
+      this.wrapper.needsToBeRestored(lastMessageFromTrustee.messageId)
+    );
+  }
+
+  /**
+   * Returns the state of the trustee to be able to perform future restores.
    *
    * @returns {string}
    */
@@ -54,23 +73,19 @@ export class Trustee {
   }
 
   /**
-   * Checks if the wrapper considers that a restore is needed based on the last messageId sent by the trustee.
+   * Restore the trustee state from the given state string. It uses the last message sent to check that the state is valid.
    *
-   * @params {Object} messageId - The message_id of the last message sent by the trustee.
-   * @returns {boolean} - The answer from the wrapper.
+   * @param {string} wrapperState - As string with the trustee state retrieved from the backup method.
+   * @returns {boolean}
    */
-  checkRestoreNeeded(messageId) {
-    return this.wrapper.checkRestoreNeeded(messageId);
-  }
+  restore(wrapperState) {
+    const lastMessageFromTrustee = this.election.getLastMessageFromTrustee(
+      this.id
+    );
 
-  /**
-   * Restore the wrapper from the given state string. It uses the last messageId sent to check that the state is valid.
-   *
-   * @params {string} wrapperState - The state of the wrapper to recover.
-   * @params {Object} messageId - The message_id of the last message sent by the trustee.
-   * @returns {boolean} - The result of the restore operation.
-   */
-  restore(wrapperState, messageId) {
-    return this.wrapper.restore(wrapperState, messageId);
+    return (
+      lastMessageFromTrustee &&
+      this.wrapper.restore(wrapperState, lastMessageFromTrustee.messageId)
+    );
   }
 }

@@ -41,7 +41,7 @@ export class Trustee {
     return content;
   }
 
-  checkRestoreNeeded(_messageId) {
-    return false;
+  needsToBeRestored() {
+    return true;
   }
 }
