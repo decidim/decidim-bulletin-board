@@ -1,6 +1,8 @@
 import { Tally } from "./tally";
 import { Trustee } from "../trustee/trustee";
 
+import { buildMessageId } from "../test-utils";
+
 jest.mock("../trustee/trustee");
 
 describe("Tally", () => {
@@ -10,7 +12,11 @@ describe("Tally", () => {
     logEntries: [],
   };
 
-  const bulletinBoardClient = {};
+  const bulletinBoardClient = {
+    processTallyStep: jest.fn((logEntry) => {
+      election.logEntries = [...election.logEntries, logEntry];
+    }),
+  };
 
   const trustee = new Trustee();
 
@@ -18,6 +24,9 @@ describe("Tally", () => {
     bulletinBoardClient,
     election,
     trustee,
+    options: {
+      bulletinBoardWaitTime: 0,
+    },
   };
 
   const buildTally = (params = defaultParams) => {
@@ -69,6 +78,54 @@ describe("Tally", () => {
         jest
           .spyOn(trustee, "needsToBeRestored")
           .mockImplementation(() => false);
+      });
+
+      it("processes all the log entries in the election using the given trustee until the tally cast", async () => {
+        election.logEntries = [
+          {
+            messageId: buildMessageId("dummy.send"),
+            signedData: "1234",
+          },
+          {
+            messageId: buildMessageId("dummy.send"),
+            signedData: "5678",
+          },
+          {
+            messageId: buildMessageId("dummy.cast"),
+            signedData: "0912",
+          },
+        ];
+        jest.spyOn(trustee, "processLogEntry");
+        await tally.run();
+        expect(trustee.processLogEntry).toHaveBeenCalledWith({
+          messageId: buildMessageId("dummy.send"),
+          signedData: "1234",
+        });
+        expect(trustee.processLogEntry).toHaveBeenCalledWith({
+          messageId: buildMessageId("dummy.send"),
+          signedData: "5678",
+        });
+        expect(trustee.processLogEntry).toHaveBeenCalledWith({
+          messageId: buildMessageId("dummy.cast"),
+          signedData: "0912",
+        });
+      });
+
+      it("sends the result of processing the tally cast back to the bulletin board", async () => {
+        election.logEntries = [
+          {
+            messageId: buildMessageId("dummy.cast"),
+            signedData: "0912",
+          },
+        ];
+        jest.spyOn(tally.bulletinBoardClient, "processTallyStep");
+        await tally.run();
+        expect(tally.bulletinBoardClient.processTallyStep).toHaveBeenCalledWith(
+          {
+            messageId: buildMessageId("dummy.response_cast"),
+            signedData: "0912",
+          }
+        );
       });
 
       afterEach(() => {
