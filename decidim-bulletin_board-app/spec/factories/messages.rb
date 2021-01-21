@@ -179,7 +179,7 @@ FactoryBot.define do
         election { create(:election) }
       end
 
-      message_id { "#{election.unique_id}.key_ceremony.joint_election_key+b.bulletin-board" }
+      message_id { "#{election.unique_id}.key_ceremony.joint_election_key+b.#{BulletinBoard.unique_id}" }
       content { build(:key_ceremony_message_joint_election_message_content, *content_traits, election: election).to_json }
     end
 
@@ -247,13 +247,13 @@ FactoryBot.define do
       message_id { "#{election.unique_id}.close_ballot_box+a.#{authority.unique_id}" }
     end
 
-    factory :tally_start_message, parent: :message do
+    factory :start_tally_message, parent: :message do
       transient do
-        election { create(:election, status: :tally) }
+        election { create(:election, status: :vote_ended) }
         authority { Authority.first }
       end
 
-      message_id { "#{election.unique_id}.tally.start+a.#{authority.unique_id}" }
+      message_id { "#{election.unique_id}.start_tally+a.#{authority.unique_id}" }
     end
 
     factory :tally_cast_message, parent: :message do
@@ -267,7 +267,10 @@ FactoryBot.define do
           [
             contest[:object_id],
             contest[:ballot_selections].map do |ballot_selection|
-              [ballot_selection[:candidate_id], Faker::Number.number(2)]
+              [
+                ballot_selection[:candidate_id],
+                Random.random_number(99)
+              ]
             end.to_h
           ]
         end.to_h.to_json
@@ -297,9 +300,34 @@ FactoryBot.define do
       end
     end
 
+    factory :end_tally_message, parent: :message do
+      transient do
+        election { create(:election, status: :tally_ended) }
+        authority { Authority.first }
+      end
+
+      message_id { "#{election.unique_id}.end_tally+b.#{BulletinBoard.unique_id}" }
+
+      after(:build) do |message, evaluator|
+        message[:results] = Hash[
+          evaluator.election.manifest[:description][:contests].map do |contest|
+            [
+              contest[:object_id],
+              contest[:ballot_selections].map do |ballot_selection|
+                [
+                  ballot_selection[:candidate_id],
+                  Random.random_number(99)
+                ]
+              end.to_h
+            ]
+          end
+        ]
+      end
+    end
+
     factory :publish_results_message, parent: :message do
       transient do
-        election { create(:election, status: :results) }
+        election { create(:election, status: :results_published) }
         authority { Authority.first }
       end
 

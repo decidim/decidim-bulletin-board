@@ -28,7 +28,7 @@ module Mutations
     let(:message_id) { payload["message_id"] }
 
     it "changes the election status" do
-      expect { subject }.to change { Election.last.status } .from("vote") .to("tally")
+      expect { subject }.to change { Election.last.status } .from("vote") .to("vote_ended")
     end
 
     it "returns an election status" do
@@ -40,7 +40,7 @@ module Mutations
       expect(data).to include(
         election: {
           id: election.unique_id,
-          status: "tally"
+          status: "vote_ended"
         },
         error: nil
       )

@@ -38,7 +38,7 @@ module Mutations
       expect { subject }.to change(PendingMessage, :count).by(1)
     end
 
-    it "enqueues a key ceremony job to process the message", :jobs do
+    it "enqueues a vote job to process the message", :jobs do
       subject
       expect(VoteJob).to have_been_enqueued
     end

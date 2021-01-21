@@ -27,7 +27,7 @@ RSpec.describe CloseBallotBox do
   end
 
   it "changes the election status" do
-    expect { subject }.to change { Election.last.status } .from("vote") .to("tally")
+    expect { subject }.to change { Election.last.status } .from("vote") .to("vote_ended")
   end
 
   shared_examples "closing the ballot box fails" do

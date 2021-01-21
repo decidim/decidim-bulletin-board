@@ -20,7 +20,7 @@ module Mutations
       GQL
     end
 
-    let!(:election) { create(:election, status: :results) }
+    let!(:election) { create(:election, status: :tally_ended) }
     let(:authority) { Authority.first }
     let(:headers) { { "Authorization": authority.api_key } }
     let(:signed_data) { JWT.encode(payload.as_json, Test::PrivateKeys.authority_private_key.keypair, "RS256") }
@@ -28,7 +28,7 @@ module Mutations
     let(:message_id) { payload["message_id"] }
 
     it "changes the election status" do
-      expect { subject }.to change { Election.last.status } .from("results").to("results_published")
+      expect { subject }.to change { Election.last.status } .from("tally_ended").to("results_published")
     end
 
     it "returns an election status" do

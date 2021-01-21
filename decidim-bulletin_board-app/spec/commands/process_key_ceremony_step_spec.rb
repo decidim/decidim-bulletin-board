@@ -18,7 +18,7 @@ RSpec.describe ProcessKeyCeremonyStep do
   let(:message_type) { :key_ceremony_message }
   let(:message_params) { { election: election, trustee: trustee } }
 
-  it "broadcast ok" do
+  it "broadcasts ok" do
     expect { subject }.to broadcast(:ok)
   end
 
@@ -37,7 +37,7 @@ RSpec.describe ProcessKeyCeremonyStep do
   context "when the voting scheme generates an answer" do
     let(:public_keys_already_sent) { Trustee.first(3).excluding(trustee) }
 
-    it "broadcast ok" do
+    it "broadcasts ok" do
       expect { subject }.to broadcast(:ok)
     end
 
