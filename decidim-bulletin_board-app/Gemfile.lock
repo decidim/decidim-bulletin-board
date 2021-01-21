@@ -195,7 +195,7 @@ GEM
       activesupport (>= 4.1.0)
       virtus (~> 1.0.5)
       wisper (>= 1.6.1)
-    redcarpet (3.5.0)
+    redcarpet (3.5.1)
     redis (4.2.2)
     rspec-core (3.9.3)
       rspec-support (~> 3.9.3)
