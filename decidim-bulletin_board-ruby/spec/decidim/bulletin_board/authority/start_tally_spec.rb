@@ -27,7 +27,7 @@ module Decidim
             expect { subject.call }.to broadcast(:ok)
           end
 
-          it "uses the graphql client to start the tally and return its result" do
+          it "uses the graphql client to start the tally and returns its result" do
             subject.on(:ok) do |pending_message|
               expect(pending_message.status).to eq("enqueued")
             end

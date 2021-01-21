@@ -27,7 +27,7 @@ RSpec.describe ProcessTallyStep do
     let(:message_type) { :tally_start_message }
     let(:message_params) { { election: election } }
 
-    it "broadcast ok" do
+    it "broadcasts ok" do
       expect { subject }.to broadcast(:ok)
     end
 
@@ -60,7 +60,7 @@ RSpec.describe ProcessTallyStep do
 
       it_behaves_like "tally fails"
 
-      it "broadcast invalid" do
+      it "broadcasts invalid" do
         expect { subject }.to broadcast(:invalid, "Invalid message author")
       end
     end
@@ -69,7 +69,7 @@ RSpec.describe ProcessTallyStep do
       let(:client) { create(:authority, private_key: private_key) }
       let(:private_key) { generate(:private_key) }
 
-      it "broadcast invalid" do
+      it "broadcasts invalid" do
         expect { subject }.to broadcast(:invalid, "Invalid client")
       end
     end
@@ -84,7 +84,7 @@ RSpec.describe ProcessTallyStep do
     let(:message_type) { :tally_share_message }
     let(:message_params) { { election: election, trustee: trustee } }
 
-    it "broadcast ok" do
+    it "broadcasts ok" do
       expect { subject }.to broadcast(:ok)
     end
 
@@ -103,7 +103,7 @@ RSpec.describe ProcessTallyStep do
     context "when the voting scheme generates an answer" do
       let(:shares_already_sent) { Trustee.first(3).excluding(trustee) }
 
-      it "broadcast ok" do
+      it "broadcasts ok" do
         expect { subject }.to broadcast(:ok)
       end
 
@@ -157,7 +157,7 @@ RSpec.describe ProcessTallyStep do
 
       it_behaves_like "tally fails"
 
-      it "broadcast invalid" do
+      it "broadcasts invalid" do
         expect { subject }.to broadcast(:invalid, "Invalid message author")
       end
     end
