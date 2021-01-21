@@ -85,7 +85,6 @@ RSpec.describe "GetElectionLogEntries" do
     end
 
     shared_examples "showing the signed data" do
-
       it "shows the signed data" do
         expect(subject.deep_symbolize_keys).to include(
           data: {

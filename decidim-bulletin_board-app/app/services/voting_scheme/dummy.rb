@@ -61,7 +61,7 @@ module VotingScheme
       raise RejectedMessage, "The given ballot style is invalid" if content.fetch(:ballot_style, "invalid-style") == "invalid-style"
     end
 
-    def process_start_tally_message(message_identifier, _message, _content)
+    def process_start_tally_message(_message_identifier, _message, _content)
       results = Hash.new { |h, k| h[k] = [] }
       votes.each do |log_entry|
         vote = parse_content(log_entry.decoded_data)
@@ -81,19 +81,20 @@ module VotingScheme
       raise RejectedMessage, "The trustee already sent their share" if state[:shares].include?(content[:owner_id])
 
       state[:shares] << content[:owner_id]
-      if state[:shares].count == election.trustees.count
-        results = Hash.new { |h, k| h[k] = [] }
-        votes.each do |log_entry|
-          vote = parse_content(log_entry.decoded_data)
-          vote.each do |question, answers|
-            results[question] << answers
-          end
+
+      return unless state[:shares].count == election.trustees.count
+
+      results = Hash.new { |h, k| h[k] = [] }
+      votes.each do |log_entry|
+        vote = parse_content(log_entry.decoded_data)
+        vote.each do |question, answers|
+          results[question] << answers
         end
-
-        election.status = :tally_ended
-
-        emit_response "end_tally", results: results
       end
+
+      election.status = :tally_ended
+
+      emit_response "end_tally", results: results
     end
   end
 end

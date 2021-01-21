@@ -20,7 +20,7 @@ RSpec.describe StartTally do
     end
 
     it "desn't change the election status" do
-      expect { subject }.not_to change { Election.last.status }
+      expect { subject }.not_to(change { Election.last.status })
     end
   end
 
