@@ -51,4 +51,17 @@ export class Client {
   processKeyCeremonyStep({ messageId, signedData }) {
     return this.apiClient.processKeyCeremonyStep({ messageId, signedData });
   }
+
+  /**
+   * TODO
+   * Process a key ceremony step sending a signed message.
+   *
+   * @param {Object} params - An object that include the following options.
+   *  - {String} signedData - The signed data to be processed.
+   * @returns {Promise<Object>} - A pending message created.
+   * @throws Will throw an error if the request is rejected or the data contains an error.
+   */
+  processTallyStep({ messageId, signedData }) {
+    return this.apiClient.processTallyStep({ messageId, signedData });
+  }
 }

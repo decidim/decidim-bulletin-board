@@ -284,6 +284,7 @@ describe("KeyCeremony", () => {
           },
           result: {
             done: false,
+            cast: false,
             save: false,
             message: {
               message_id: buildMessageId("dummy.response_send"),
@@ -307,6 +308,7 @@ describe("KeyCeremony", () => {
           },
           result: {
             save: false,
+            cast: false,
             done: true,
             message: null,
           },
