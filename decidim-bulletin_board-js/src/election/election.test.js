@@ -30,7 +30,7 @@ describe("Election", () => {
     jest.clearAllMocks();
   });
 
-  it("initialize the election with the correct params", () => {
+  it("initializes the election with the correct params", () => {
     expect(election.bulletinBoardClient).toEqual(
       defaultParams.bulletinBoardClient
     );
@@ -46,7 +46,7 @@ describe("Election", () => {
     });
 
     describe("when the time has not passed", () => {
-      it("get the last log entries from the bulletin board", () => {
+      it("gets the last log entries from the bulletin board", () => {
         expect(bulletinBoardClient.getElectionLogEntries).toHaveBeenCalledWith({
           electionUniqueId: defaultParams.uniqueId,
           after: null,
@@ -63,7 +63,7 @@ describe("Election", () => {
         jest.advanceTimersByTime(WAIT_TIME_MS);
       });
 
-      it("get the last log entries from the bulletin board", () => {
+      it("gets the last log entries from the bulletin board", () => {
         expect(bulletinBoardClient.getElectionLogEntries).toHaveBeenCalledWith({
           electionUniqueId: defaultParams.uniqueId,
           after: null,
@@ -79,7 +79,7 @@ describe("Election", () => {
       jest.clearAllMocks();
     });
 
-    it("clear the interval so stops the log entries subscription", () => {
+    it("clears the interval so stops the log entries subscription", () => {
       election.unsubscribeToLogEntriesChanges();
       jest.advanceTimersByTime(WAIT_TIME_MS);
       expect(bulletinBoardClient.getElectionLogEntries).not.toHaveBeenCalled();

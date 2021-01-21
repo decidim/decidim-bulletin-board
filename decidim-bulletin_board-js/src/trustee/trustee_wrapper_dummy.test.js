@@ -22,7 +22,7 @@ describe("TrusteeWrapper", () => {
     wrapper = buildTrusteeWrapper();
   });
 
-  it("initialise the trustee wrapper with the given params", () => {
+  it("initialises the trustee wrapper with the given params", () => {
     expect(wrapper.trusteeId).toEqual(defaultParams.trusteeId);
     expect(wrapper.electionId).toEqual(null);
     expect(wrapper.status).toEqual(CREATE_ELECTION);
@@ -37,7 +37,7 @@ describe("TrusteeWrapper", () => {
       });
 
       describe("when the message to be processed is the correct one", () => {
-        it("changes the wrapper status and store some data", () => {
+        it("changes the wrapper status and stores some data", () => {
           const { done, save } = wrapper.processMessage(
             MessageIdentifier.format(
               "some-authority.some-id",
@@ -80,7 +80,7 @@ describe("TrusteeWrapper", () => {
       });
 
       describe("when the message to be processed is the correct one", () => {
-        describe("when there is not enough trustees", () => {
+        describe("when there are not enough trustees", () => {
           it("stores the message", () => {
             wrapper.electionTrusteesCount = 2;
             wrapper.processMessage(
@@ -103,8 +103,8 @@ describe("TrusteeWrapper", () => {
           });
         });
 
-        describe("when there is enough trustees", () => {
-          it("changes the wrapper status and store some data", () => {
+        describe("when there are enough trustees", () => {
+          it("changes the wrapper status and stores some data", () => {
             wrapper.electionTrusteesCount = 1;
             const { done, save } = wrapper.processMessage(
               MessageIdentifier.format(
