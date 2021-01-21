@@ -6,7 +6,7 @@ class CloseBallotBox < Rectify::Command
 
   # Public: Initializes the command.
   #
-  # authority - The authority sender of the vote message
+  # authority - The authority sender of the close request
   # message_id - The message identifier
   # signed_data - The signed message received
   def initialize(authority, message_id, signed_data)
@@ -34,8 +34,7 @@ class CloseBallotBox < Rectify::Command
 
       election.log_entries << log_entry
       log_entry.save!
-      election.status = :tally
-      election.save!
+      election.tally!
     end
 
     broadcast(:ok, election)

@@ -8,5 +8,6 @@ module Types
     field :vote, mutation: Mutations::VoteMutation
     field :close_ballot_box, mutation: Mutations::CloseBallotBoxMutation
     field :process_tally_step, mutation: Mutations::ProcessTallyStepMutation
+    field :publish_results, mutation: Mutations::PublishResultsMutation
   end
 end

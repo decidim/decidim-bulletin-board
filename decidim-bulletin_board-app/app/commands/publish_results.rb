@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
-# A command with all the business logic to open the election's ballot box
-class OpenBallotBox < Rectify::Command
+# A command with all the business logic to publish the election's results
+class PublishResults < Rectify::Command
   include LogEntryCommand
 
   # Public: Initializes the command.
   #
-  # authority - The authority sender of the open request
+  # authority - The authority sender of the publish results request
   # message_id - The message identifier
   # signed_data - The signed message received
   def initialize(authority, message_id, signed_data)
@@ -23,18 +23,18 @@ class OpenBallotBox < Rectify::Command
   # Returns nothing.
   def call
     return broadcast(:invalid, error) unless
-      valid_log_entry?("open_ballot_box")
+      valid_log_entry?("publish_results")
 
     election.with_lock do
       return broadcast(:invalid, error) unless
-        valid_step?(election.ready?) &&
+        valid_step?(election.results?) &&
         valid_client?(authority.authority? && election.authority == authority) &&
         valid_author?(message_identifier.from_authority?) &&
         process_message
 
       log_entry.election = election
       log_entry.save!
-      election.vote!
+      election.results_published!
     end
 
     broadcast(:ok, election)

@@ -76,6 +76,13 @@ module Decidim
         start_tally.call
       end
 
+      def publish_results(election_id)
+        publish_results = Decidim::BulletinBoard::Authority::PublishResults.new(election_id)
+        publish_results.on(:ok) { |status| return status }
+        publish_results.on(:error) { |error_message| raise StandardError, error_message }
+        publish_results.call
+      end
+
       private
 
       attr_reader :identification_private_key, :private_key

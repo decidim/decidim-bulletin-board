@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_01_13_121302) do
+ActiveRecord::Schema.define(version: 2021_01_18_165807) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -43,11 +43,11 @@ ActiveRecord::Schema.define(version: 2021_01_13_121302) do
   create_table "elections", force: :cascade do |t|
     t.bigint "authority_id", null: false
     t.string "title", null: false
-    t.string "status", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.string "unique_id", null: false
     t.binary "voting_scheme_state"
+    t.integer "status", default: 0, null: false
     t.index ["authority_id"], name: "index_elections_on_authority_id"
     t.index ["unique_id"], name: "index_elections_on_unique_id", unique: true
   end
@@ -74,10 +74,10 @@ ActiveRecord::Schema.define(version: 2021_01_13_121302) do
     t.bigint "election_id", null: false
     t.bigint "client_id", null: false
     t.text "signed_data", null: false
-    t.string "status", default: "0", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.string "message_id", null: false
+    t.integer "status", default: 0, null: false
     t.index ["client_id"], name: "index_pending_messages_on_client_id"
     t.index ["election_id"], name: "index_pending_messages_on_election_id"
   end

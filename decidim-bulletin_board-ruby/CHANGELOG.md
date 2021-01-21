@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - `start_tally` method to the `Decidim::BulletinBoard::Client`.
+- `publish_results` method to the `Decidim::BulletinBoard::Client`.
 
 ## [0.6.1] - 2021-01-12
 

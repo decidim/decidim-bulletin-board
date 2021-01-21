@@ -271,5 +271,14 @@ FactoryBot.define do
         owner_id { "wrong_trustee" }
       end
     end
+
+    factory :publish_results_message, parent: :message do
+      transient do
+        election { create(:election, status: :results) }
+        authority { Authority.first }
+      end
+
+      message_id { "#{election.unique_id}.publish_results+a.#{authority.unique_id}" }
+    end
   end
 end
