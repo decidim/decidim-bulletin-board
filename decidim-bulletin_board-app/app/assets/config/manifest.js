@@ -5,4 +5,5 @@
 //= link api/docs.js
 //= link api/docs.css
 //= link sandbox/key_ceremony.js
+//= link sandbox/tally.js
 //= link sandbox/identification_keys.js

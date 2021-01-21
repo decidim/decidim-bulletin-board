@@ -8,6 +8,9 @@ module Sandbox
     def key_ceremony
     end
 
+    def tally
+    end
+
     private
 
     def elections

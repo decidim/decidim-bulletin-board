@@ -19,6 +19,9 @@
           <% if election.key_ceremony? %>
             <%= link_to "Perform key ceremony", key_ceremony_sandbox_election_path(election) %>
           <% end %>
+          <% if election.tally? %>
+            <%= link_to "Perform tally", tally_sandbox_election_path(election) %>
+          <% end %>
         </td>
       </tr>
     <% end %>

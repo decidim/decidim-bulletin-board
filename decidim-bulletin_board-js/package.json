@@ -5,7 +5,7 @@
   "main": "dist/main.js",
   "scripts": {
     "build": "npm run build:dev && npm run build:prod",
-    "build:watch": "npm run build -- --watch --config webpack.dev.js",
+    "build:watch": "npm run build:dev -- --watch",
     "build:dev": "webpack --progress --config webpack.dev.js",
     "build:prod": "webpack --progress --config webpack.prod.js",
     "format": "prettier -c src/**/*.js",

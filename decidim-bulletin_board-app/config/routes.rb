@@ -15,6 +15,7 @@ Rails.application.routes.draw do
       resources :elections, only: [:index] do
         member do
           get :key_ceremony
+          get :tally
         end
       end
     end
