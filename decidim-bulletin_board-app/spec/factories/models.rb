@@ -61,6 +61,16 @@ FactoryBot.define do
 
   factory :log_entry, traits: [:message_model] do
     content_hash { Digest::SHA256.hexdigest(message["content"]) if message["content"] }
+
+    trait :by_trustee do
+      client { Trustee.first }
+      private_key { Test::PrivateKeys.trustees_private_keys.first }
+    end
+
+    trait :by_bulletin_board do
+      bulletin_board { true }
+      signed_data { BulletinBoard.sign(message) }
+    end
   end
 
   factory :pending_message, traits: [:message_model] do
@@ -72,6 +82,11 @@ FactoryBot.define do
 
     trait :rejected do
       status { :rejected }
+    end
+
+    trait :by_trustee do
+      client { Trustee.first }
+      private_key { Test::PrivateKeys.trustees_private_keys.first }
     end
   end
 end

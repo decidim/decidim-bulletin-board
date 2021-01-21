@@ -478,6 +478,91 @@
 
               ],
               "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+            {
+              "kind": "INTERFACE",
+              "name": "MessageInterface",
+              "ofType": null
+            }
+          ],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "INTERFACE",
+          "name": "MessageInterface",
+          "description": null,
+          "fields": [
+            {
+              "name": "client",
+              "description": null,
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "Client",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "election",
+              "description": null,
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "Election",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "id",
+              "description": null,
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "messageId",
+              "description": null,
+              "args": [
+
+              ],
+              "type": {
                 "kind": "NON_NULL",
                 "name": null,
                 "ofType": {
@@ -488,14 +573,37 @@
               },
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "signedData",
+              "description": null,
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
             }
           ],
           "inputFields": null,
-          "interfaces": [
-
-          ],
+          "interfaces": null,
           "enumValues": null,
-          "possibleTypes": null
+          "possibleTypes": [
+            {
+              "kind": "OBJECT",
+              "name": "LogEntry",
+              "ofType": null
+            },
+            {
+              "kind": "OBJECT",
+              "name": "PendingMessage",
+              "ofType": null
+            }
+          ]
         },
         {
           "kind": "OBJECT",
@@ -667,6 +775,47 @@
               "deprecationReason": null
             },
             {
+              "name": "processTallyStep",
+              "description": null,
+              "args": [
+                {
+                  "name": "messageId",
+                  "description": null,
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "signedData",
+                  "description": null,
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "ProcessTallyStepMutationPayload",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "vote",
               "description": null,
               "args": [
@@ -786,9 +935,13 @@
 
               ],
               "type": {
-                "kind": "OBJECT",
-                "name": "Election",
-                "ofType": null
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "Election",
+                  "ofType": null
+                }
               },
               "isDeprecated": false,
               "deprecationReason": null
@@ -836,13 +989,9 @@
 
               ],
               "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
               },
               "isDeprecated": false,
               "deprecationReason": null
@@ -868,7 +1017,11 @@
           ],
           "inputFields": null,
           "interfaces": [
-
+            {
+              "kind": "INTERFACE",
+              "name": "MessageInterface",
+              "ofType": null
+            }
           ],
           "enumValues": null,
           "possibleTypes": null
@@ -877,6 +1030,47 @@
           "kind": "OBJECT",
           "name": "ProcessKeyCeremonyStepMutationPayload",
           "description": "Autogenerated return type of ProcessKeyCeremonyStepMutation",
+          "fields": [
+            {
+              "name": "error",
+              "description": null,
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "pendingMessage",
+              "description": null,
+              "args": [
+
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "PendingMessage",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+
+          ],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "ProcessTallyStepMutationPayload",
+          "description": "Autogenerated return type of ProcessTallyStepMutation",
           "fields": [
             {
               "name": "error",

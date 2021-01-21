@@ -141,6 +141,31 @@ module Decidim
           end
         end
       end
+
+      describe "start_tally" do
+        let(:election_id) { "test.1" }
+
+        context "when everything went ok" do
+          before do
+            stub_wisper_publisher("Decidim::BulletinBoard::Authority::StartTally", :call, :ok, double(status: "tally"))
+          end
+
+          it "calls the StartTally command and returns the new status" do
+            election = subject.start_tally(election_id)
+            expect(election.status).to eq("tally")
+          end
+        end
+
+        context "when something went wrong" do
+          before do
+            stub_wisper_publisher("Decidim::BulletinBoard::Authority::StartTally", :call, :error, "something went wrong")
+          end
+
+          it "calls the StartTally command and throws an error" do
+            expect { subject.start_tally(election_id) }.to raise_error("something went wrong")
+          end
+        end
+      end
     end
   end
 end

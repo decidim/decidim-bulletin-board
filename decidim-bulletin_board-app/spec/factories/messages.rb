@@ -162,7 +162,7 @@ FactoryBot.define do
       election_public_key { 3 }
 
       trait :invalid do
-        election_public_key { 4 }
+        owner_id { "wrong_trustee" }
       end
     end
 
@@ -220,6 +220,56 @@ FactoryBot.define do
       end
 
       message_id { "#{election.unique_id}.close_ballot_box+a.#{authority.unique_id}" }
+    end
+
+    factory :tally_start_message, parent: :message do
+      transient do
+        election { create(:election, status: :tally) }
+        authority { Authority.first }
+      end
+
+      message_id { "#{election.unique_id}.tally.start+a.#{authority.unique_id}" }
+    end
+
+    factory :tally_cast_message, parent: :message do
+      transient do
+        election { create(:election, status: :tally) }
+      end
+
+      message_id { "#{election.unique_id}.tally.cast+b.#{BulletinBoard.unique_id}" }
+      content do
+        election.manifest[:description][:contests].map do |contest|
+          [
+            contest[:object_id],
+            contest[:ballot_selections].map do |ballot_selection|
+              [ballot_selection[:candidate_id], Faker::Number.number(2)]
+            end.to_h
+          ]
+        end.to_h.to_json
+      end
+    end
+
+    factory :tally_share_message, parent: :message do
+      transient do
+        election { create(:election, status: :tally) }
+        trustee { Trustee.first }
+      end
+
+      message_id { "#{election.unique_id}.tally.share+t.#{trustee.unique_id}" }
+      content { build(:tally_share_message_content, *content_traits, election: election, trustee: trustee).to_json }
+    end
+
+    factory :tally_share_message_content do
+      transient do
+        election { create(:election, status: :tally) }
+        trustee { Trustee.first }
+      end
+
+      owner_id { trustee.unique_id }
+
+      trait :invalid do
+        owner_id { "wrong_trustee" }
+      end
     end
   end
 end

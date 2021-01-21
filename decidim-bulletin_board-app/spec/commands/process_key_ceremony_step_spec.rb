@@ -66,23 +66,23 @@ RSpec.describe ProcessKeyCeremonyStep do
 
   it_behaves_like "with an invalid signed data", "key ceremony fails"
 
-  context "when the trustee already sent the message" do
-    let(:public_keys_already_sent) { [trustee] }
-
-    it_behaves_like "key ceremony fails"
-
-    it "broadcasts invalid" do
-      expect { subject }.to broadcast(:invalid, "The trustee sent their public keys already")
-    end
-  end
-
   context "when the data is invalid" do
     let(:extra_message_params) { { content_traits: [:invalid] } }
 
     it_behaves_like "key ceremony fails"
 
     it "broadcasts invalid" do
-      expect { subject }.to broadcast(:invalid, "The election public key should be a prime number")
+      expect { subject }.to broadcast(:invalid, "The owner_id doesn't match the sender trustee")
+    end
+  end
+
+  context "when the trustee already sent the message" do
+    let(:public_keys_already_sent) { [trustee] }
+
+    it_behaves_like "key ceremony fails"
+
+    it "broadcasts invalid" do
+      expect { subject }.to broadcast(:invalid, "The trustee already sent their public key")
     end
   end
 
