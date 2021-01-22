@@ -54,8 +54,16 @@ export class GraphQLClient {
     );
   }
 
-  processKeyCeremonyStep({ signedData }) {
+  processKeyCeremonyStep({ messageId, signedData }) {
     return Promise.resolve({
+      messageId,
+      signedData,
+    });
+  }
+
+  processTallyStep({ messageId, signedData }) {
+    return Promise.resolve({
+      messageId,
       signedData,
     });
   }

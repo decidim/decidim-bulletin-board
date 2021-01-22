@@ -2,6 +2,7 @@ import { ApolloClient, InMemoryCache, HttpLink } from "@apollo/client/core";
 
 import GET_ELECTION_LOG_ENTRIES from "./operations/get_election_log_entries";
 import PROCESS_KEY_CEREMONY_STEP from "./operations/process_key_ceremony_step";
+import PROCESS_TALLY_STEP from "./operations/process_tally_step";
 import GET_LOG_ENTRY from "./operations/get_log_entry";
 
 /**
@@ -97,5 +98,30 @@ export class GraphQLClient {
     }
 
     return result.data.processKeyCeremonyStep.pendingMessage;
+  }
+
+  /**
+   * Process a tally step sending a signed message.
+   *
+   * @param {Object} params - An object that include the following options.
+   *  - {String} messageId - The message id.
+   *  - {String} signedData - The signed data to be processed.
+   * @returns {Promise<Object>} - A pending message created.
+   * @throws Will throw an error if the request is rejected or the data contains an error.
+   */
+  async processTallyStep({ messageId, signedData }) {
+    const result = await this.apolloClient.mutate({
+      mutation: PROCESS_TALLY_STEP,
+      variables: {
+        messageId,
+        signedData,
+      },
+    });
+
+    if (result.data.processTallyStep.error) {
+      throw new Error(result.data.processTallyStep.error);
+    }
+
+    return result.data.processTallyStep.pendingMessage;
   }
 }

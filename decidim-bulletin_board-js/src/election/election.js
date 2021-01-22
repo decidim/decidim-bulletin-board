@@ -11,11 +11,11 @@ export class Election {
    *
    * @constructor
    * @param {Object} params - An object that contains the initialization params.
-   *  - {Client} bulletinBoardClient - An instance of the Bulletin Board Client
    *  - {String} uniqueId - The unique identifier of an election.
+   *  - {Client} bulletinBoardClient - An instance of the Bulletin Board Client
    *  - {Object?} options - An optional object with some extra options.
    */
-  constructor({ bulletinBoardClient, uniqueId, options }) {
+  constructor({ uniqueId, bulletinBoardClient, options }) {
     this.uniqueId = uniqueId;
     this.bulletinBoardClient = bulletinBoardClient;
     this.logEntries = [];

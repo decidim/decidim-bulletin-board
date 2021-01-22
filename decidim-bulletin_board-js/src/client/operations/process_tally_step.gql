@@ -1,0 +1,8 @@
+mutation ProcessTallyStep($messageId: String!, $signedData: String!) {
+  processTallyStep(messageId: $messageId, signedData: $signedData) {
+    pendingMessage {
+      signedData
+    }
+    error
+  }
+}
