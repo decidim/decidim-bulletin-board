@@ -3,13 +3,13 @@
 require "rails_helper"
 
 module Mutations
-  RSpec.describe ProcessKeyCeremonyStepMutation, type: :request do
-    subject { post "/api", params: { query: query, variables: { messageId: message_id, signedData: signed_data } } }
+  RSpec.describe StartTallyMutation, type: :request do
+    subject { post "/api", params: { query: query, variables: { messageId: message_id, signedData: signed_data } }, headers: headers }
 
     let(:query) do
       <<~GQL
         mutation($messageId: String!, $signedData: String!) {
-          processKeyCeremonyStep(messageId: $messageId, signedData: $signedData) {
+          startTally(messageId: $messageId, signedData: $signedData) {
             pendingMessage {
               id
               client {
@@ -27,31 +27,32 @@ module Mutations
       GQL
     end
 
-    let!(:election) { create(:election) }
-    let(:trustee) { Trustee.first }
-    let(:signed_data) { JWT.encode(payload.as_json, Test::PrivateKeys.trustees_private_keys.first.keypair, "RS256") }
-    let(:payload) { build(:key_ceremony_message, trustee: trustee, election: election) }
+    let!(:election) { create(:election, :vote_ended) }
+    let(:authority) { Authority.first }
+    let(:headers) { { "Authorization": authority.api_key } }
+    let(:signed_data) { JWT.encode(payload.as_json, Test::PrivateKeys.authority_private_key.keypair, "RS256") }
+    let(:payload) { build(:start_tally_message, election: election) }
     let(:message_id) { payload["message_id"] }
 
     it "adds the message to the pending messages table" do
       expect { subject }.to change(PendingMessage, :count).by(1)
     end
 
-    it "enqueues a key ceremony job to process the message", :jobs do
+    it "enqueues a tally job to process the message", :jobs do
       subject
-      expect(ProcessKeyCeremonyStepJob).to have_been_enqueued
+      expect(StartTallyJob).to have_been_enqueued
     end
 
     it "returns a pending message" do
       subject
       json = JSON.parse(response.body, symbolize_names: true)
-      data = json.dig(:data, :processKeyCeremonyStep)
+      data = json.dig(:data, :startTally)
 
       expect(data).to include(
         pendingMessage: {
           id: be_present,
           client: {
-            id: trustee.unique_id
+            id: authority.unique_id
           },
           election: {
             id: election.unique_id
@@ -63,9 +64,8 @@ module Mutations
       )
     end
 
-    context "when the trustee is not authorized" do
-      let(:trustee) { build(:trustee, private_key: private_key) }
-      let(:private_key) { generate(:private_key) }
+    context "when the authority is not authorized" do
+      let(:headers) { {} }
 
       it "doesn't create a pending message" do
         expect { subject }.not_to change(PendingMessage, :count)
@@ -74,11 +74,11 @@ module Mutations
       it "returns an error message" do
         subject
         json = JSON.parse(response.body, symbolize_names: true)
-        data = json.dig(:data, :processKeyCeremonyStep)
+        data = json.dig(:data, :startTally)
 
         expect(data).to include(
           pendingMessage: nil,
-          error: "Trustee not found"
+          error: "Authority not found"
         )
       end
     end

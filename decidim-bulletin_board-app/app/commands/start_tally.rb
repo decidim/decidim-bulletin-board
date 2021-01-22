@@ -1,16 +1,16 @@
 # frozen_string_literal: true
 
-# A command with all the business logic to perform a step of the tally
-class ProcessTallyStep < Rectify::Command
+# A command with all the business logic to start the tally proceess
+class StartTally < Rectify::Command
   include LogEntryCommand
 
   # Public: Initializes the command.
   #
-  # trustee - The trustee sender of the tally message
+  # authority - The authority or trustee sender of the start tally request
   # message_id - The message identifier
   # signed_data - The signed message received
-  def initialize(trustee, message_id, signed_data)
-    @client = @trustee = trustee
+  def initialize(authority, message_id, signed_data)
+    @client = @authority = authority
     @message_id = message_id
     @signed_data = signed_data
   end
@@ -23,19 +23,19 @@ class ProcessTallyStep < Rectify::Command
   # Returns nothing.
   def call
     return broadcast(:invalid, error) unless
-      valid_log_entry?("tally")
+      valid_log_entry?("start_tally")
 
     election.with_lock do
       return broadcast(:invalid, error) unless
-        valid_client?(client.trustee? && election.trustees.member?(client)) &&
-        valid_author?(message_identifier.from_trustee?) &&
-        valid_step?(election.tally?) &&
+        valid_client?(authority.authority? && election.authority == authority) &&
+        valid_author?(message_identifier.from_authority?) &&
+        valid_step?(election.vote_ended?) &&
         process_message
 
       log_entry.election = election
       log_entry.save!
       create_response_log_entry!
-      election.save!
+      election.tally!
     end
 
     broadcast(:ok)
@@ -43,16 +43,16 @@ class ProcessTallyStep < Rectify::Command
 
   private
 
+  attr_accessor :authority
+
   def voting_scheme
     @voting_scheme ||= voting_scheme_class.new(election, ElectionUniqueVotes.new(election))
   end
 
-  attr_accessor :trustee
-
   def create_response_log_entry!
     return unless response_message
 
-    LogEntry.create!(
+    @response_log_entry = LogEntry.create!(
       election: election,
       message_id: response_message["message_id"],
       signed_data: BulletinBoard.sign(response_message),

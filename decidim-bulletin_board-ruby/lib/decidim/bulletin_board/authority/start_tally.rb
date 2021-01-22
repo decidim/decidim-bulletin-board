@@ -19,13 +19,13 @@ module Decidim
         #
         # Returns nothing.
         def call
-          message_id = message_id(unique_election_id(election_id), "tally.start")
+          message_id = message_id(unique_election_id(election_id), "start_tally")
           signed_data = sign_message(message_id, {})
 
           begin
             response = client.query do
               mutation do
-                processTallyStep(messageId: message_id, signedData: signed_data) do
+                startTally(messageId: message_id, signedData: signed_data) do
                   pendingMessage do
                     status
                   end
@@ -34,9 +34,9 @@ module Decidim
               end
             end
 
-            return broadcast(:error, response.data.process_tally_step.error) if response.data.process_tally_step.error.present?
+            return broadcast(:error, response.data.start_tally.error) if response.data.start_tally.error.present?
 
-            broadcast(:ok, response.data.process_tally_step.pending_message)
+            broadcast(:ok, response.data.start_tally.pending_message)
           rescue Graphlient::Errors::ServerError
             broadcast(:error, "Sorry, something went wrong")
           end

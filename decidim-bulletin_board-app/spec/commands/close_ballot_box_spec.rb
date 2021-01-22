@@ -8,7 +8,7 @@ RSpec.describe CloseBallotBox do
 
   include_context "with a signed message"
 
-  let!(:election) { create(:election, status: election_status) }
+  let!(:election) { create(:election, election_status) }
   let(:election_status) { :vote }
   let(:client) { Authority.first }
   let(:message_type) { :close_ballot_box_message }
@@ -27,7 +27,7 @@ RSpec.describe CloseBallotBox do
   end
 
   it "changes the election status" do
-    expect { subject }.to change { Election.last.status } .from("vote") .to("tally")
+    expect { subject }.to change { Election.last.status } .from("vote") .to("vote_ended")
   end
 
   shared_examples "closing the ballot box fails" do

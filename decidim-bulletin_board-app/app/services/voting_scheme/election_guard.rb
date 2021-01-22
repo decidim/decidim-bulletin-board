@@ -7,10 +7,12 @@ EGBB = PyCall.import_module("decidim.electionguard.bulletin_board")
 module VotingScheme
   # An implementation of the ElectionGuard voting scheme, using PyCall to execute the ElectionGuard python code
   class ElectionGuard < Base
+    RESULTS = ["tally.trustee_share", "end_tally"].freeze
+
     delegate :restore, :backup, to: :state
 
     def process_message(message_identifier, message)
-      return tally_cast if tally_start?(message_identifier)
+      return tally_cast if message_identifier.type == "start_tally"
 
       state.process_message(message_identifier.subtype || message_identifier.type, PyCall::Dict.new(message))
     end
@@ -19,10 +21,6 @@ module VotingScheme
 
     def state
       @state ||= EGBB.BulletinBoard.new
-    end
-
-    def tally_start?(message_identifier)
-      message_identifier.type == "tally" && message_identifier.subtype == "start"
     end
 
     def tally_cast

@@ -2,23 +2,15 @@
 
 require "rails_helper"
 
-RSpec.describe VoteJob do
+RSpec.describe StartTallyJob do
   subject { described_class.perform_now(pending_message.id) }
 
   let!(:pending_message) { create(:pending_message, election: election, message: message) }
-  let(:election) { create(:election, :vote) }
-  let(:message) { build(:vote_message, election: election) }
+  let(:election) { create(:election, :vote_ended) }
+  let(:message) { build(:start_tally_message, election: election) }
 
   it "processes the message" do
     expect { subject }.to change { PendingMessage.last.status } .from("enqueued").to("accepted")
-  end
-
-  context "when the message is rejected" do
-    let(:message) { build(:vote_message, content_traits: [:invalid], election: election) }
-
-    it "rejects the message" do
-      expect { subject }.to change { PendingMessage.last.status } .from("enqueued").to("rejected")
-    end
   end
 
   context "when the message was already processed" do

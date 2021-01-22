@@ -6,9 +6,13 @@ class Election < ApplicationRecord
   has_many :trustees, through: :election_trustees
   has_many :log_entries, -> { order(id: :asc) }
 
-  enum status: [:key_ceremony, :ready, :vote, :tally, :results, :results_published]
+  enum status: [:key_ceremony, :ready, :vote, :vote_ended, :tally, :tally_ended, :results_published]
 
   def manifest
     @manifest ||= log_entries.first.decoded_data
+  end
+
+  def voting_scheme_name
+    @voting_scheme_name ||= manifest["scheme"]["name"]
   end
 end

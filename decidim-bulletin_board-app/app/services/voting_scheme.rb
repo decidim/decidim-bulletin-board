@@ -13,4 +13,8 @@ module VotingScheme
   def self.from_name(name)
     VOTING_SCHEME[name.to_sym]
   end
+
+  def self.results_message?(voting_scheme_name, type_subtype)
+    from_name(voting_scheme_name)::RESULTS.include?(type_subtype)
+  end
 end

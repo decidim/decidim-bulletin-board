@@ -27,7 +27,7 @@ module Mutations
       GQL
     end
 
-    let!(:election) { create(:election, status: :vote) }
+    let!(:election) { create(:election, :vote) }
     let(:authority) { Authority.first }
     let(:headers) { { "Authorization": authority.api_key } }
     let(:signed_data) { JWT.encode(payload.as_json, Test::PrivateKeys.authority_private_key.keypair, "RS256") }
@@ -38,7 +38,7 @@ module Mutations
       expect { subject }.to change(PendingMessage, :count).by(1)
     end
 
-    it "enqueues a key ceremony job to process the message", :jobs do
+    it "enqueues a vote job to process the message", :jobs do
       subject
       expect(VoteJob).to have_been_enqueued
     end

@@ -8,8 +8,8 @@ RSpec.describe PublishResults do
 
   include_context "with a signed message"
 
-  let!(:election) { create(:election, status: election_status) }
-  let(:election_status) { :results }
+  let!(:election) { create(:election, election_status) }
+  let(:election_status) { :tally_ended }
   let(:client) { Authority.first }
   let(:message_type) { :publish_results_message }
   let(:message_params) { { election: election } }
@@ -27,7 +27,7 @@ RSpec.describe PublishResults do
   end
 
   it "changes the election status" do
-    expect { subject }.to change { Election.last.status } .from("results") .to("results_published")
+    expect { subject }.to change { Election.last.status } .from("tally_ended") .to("results_published")
   end
 
   shared_examples "publishing results fails" do

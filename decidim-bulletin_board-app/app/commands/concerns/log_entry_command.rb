@@ -87,7 +87,7 @@ module LogEntryCommand
     end
 
     def voting_scheme_class
-      VotingScheme.from_name(election.manifest["scheme"]["name"])
+      VotingScheme.from_name(election.voting_scheme_name)
     end
   end
 end

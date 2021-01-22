@@ -33,9 +33,9 @@ FactoryBot.define do
 
     title { Faker::Name.name }
     authority { Authority.first }
-    status { "key_ceremony" }
+    status { :key_ceremony }
     unique_id { [authority.unique_id, election_id].join(".") }
-    voting_scheme_state { Marshal.dump(joint_election_key: 1, trustees: []) }
+    voting_scheme_state { nil }
 
     after(:build) do |election, evaluator|
       election.trustees << evaluator.trustees_plus_keys.map(&:first)
@@ -44,6 +44,50 @@ FactoryBot.define do
                                                                                          authority: election.authority,
                                                                                          voting_scheme: :dummy,
                                                                                          trustees_plus_keys: evaluator.trustees_plus_keys))
+    end
+
+    trait :key_ceremony do
+      transient do
+        trustees_done { [] }
+      end
+
+      status { :key_ceremony }
+      voting_scheme_state { Marshal.dump(joint_election_key: 1, trustees: trustees_done.map(&:unique_id)) }
+    end
+
+    trait :ready do
+      status { :ready }
+      voting_scheme_state { Marshal.dump(joint_election_key: 1, trustees: trustees_plus_keys.map(&:first).map(&:unique_id)) }
+    end
+
+    trait :vote do
+      ready
+      status { :vote }
+    end
+
+    trait :vote_ended do
+      vote
+      status { :vote_ended }
+    end
+
+    trait :tally do
+      transient do
+        trustees_done { [] }
+      end
+
+      vote_ended
+      status { :tally }
+      voting_scheme_state { Marshal.dump(joint_election_key: 1, trustees: trustees_plus_keys.map(&:first).map(&:unique_id), shares: trustees_done.map(&:unique_id)) }
+    end
+
+    trait :tally_ended do
+      status { :tally_ended }
+      voting_scheme_state { Marshal.dump(joint_election_key: 1, trustees: trustees_plus_keys.map(&:first).map(&:unique_id), shares: trustees_plus_keys.map(&:first).map(&:unique_id)) }
+    end
+
+    trait :results_published do
+      tally_ended
+      status { :results_published }
     end
   end
 

@@ -27,7 +27,7 @@ class PublishResults < Rectify::Command
 
     election.with_lock do
       return broadcast(:invalid, error) unless
-        valid_step?(election.results?) &&
+        valid_step?(election.tally_ended?) &&
         valid_client?(authority.authority? && election.authority == authority) &&
         valid_author?(message_identifier.from_authority?) &&
         process_message

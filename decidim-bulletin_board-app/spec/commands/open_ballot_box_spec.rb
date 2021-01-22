@@ -8,7 +8,7 @@ RSpec.describe OpenBallotBox do
 
   include_context "with a signed message"
 
-  let!(:election) { create(:election, status: election_status) }
+  let!(:election) { create(:election, election_status) }
   let(:election_status) { :ready }
   let(:client) { Authority.first }
   let(:message_type) { :open_ballot_box_message }

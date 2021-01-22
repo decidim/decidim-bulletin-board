@@ -6,8 +6,7 @@ RSpec.describe ProcessTallyStepJob do
   subject { described_class.perform_now(pending_message.id) }
 
   let!(:pending_message) { create(:pending_message, election: election, message: message, client: trustee, private_key: private_key) }
-  let(:election) { create(:election, status: :tally, voting_scheme_state: voting_scheme_state) }
-  let(:voting_scheme_state) { Marshal.dump(joint_election_key: 1, trustees: Trustee.first(3).map(&:unique_id), shares: []) }
+  let(:election) { create(:election, :tally) }
   let(:trustee) { Trustee.first }
   let(:private_key) { Test::PrivateKeys.trustees_private_keys.first }
   let(:message) { build(:tally_share_message, content_traits: content_traits, election: election, trustee: trustee) }

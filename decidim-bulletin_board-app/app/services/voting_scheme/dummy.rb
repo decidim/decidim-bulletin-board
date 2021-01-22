@@ -5,6 +5,8 @@ require "prime"
 module VotingScheme
   # A dummy implementation of a voting scheme, only for tests purposes
   class Dummy < Base
+    RESULTS = ["tally.share", "end_tally"].freeze
+
     def process_message(message_identifier, message)
       method_name = :"process_#{message_identifier.type}_message"
       content = parse_content(message)
@@ -59,39 +61,40 @@ module VotingScheme
       raise RejectedMessage, "The given ballot style is invalid" if content.fetch(:ballot_style, "invalid-style") == "invalid-style"
     end
 
-    def process_tally_message(message_identifier, _message, content)
-      if message_identifier.subtype == "start"
-        results = Hash.new { |h, k| h[k] = [] }
-        votes.each do |log_entry|
-          vote = parse_content(log_entry.decoded_data)
-          vote.each do |question, answers|
-            results[question] << answers
-          end
-        end
-
-        state[:shares] = []
-
-        emit_response "tally.cast"
-        append_content results
-      elsif message_identifier.subtype == "share"
-        raise RejectedMessage, "The owner_id doesn't match the sender trustee" if content[:owner_id] != message_identifier.author_id
-        raise RejectedMessage, "The trustee already sent their share" if state[:shares].include?(content[:owner_id])
-
-        state[:shares] << content[:owner_id]
-        if state[:shares].count == election.trustees.count
-          results = Hash.new { |h, k| h[k] = [] }
-          votes.each do |log_entry|
-            vote = parse_content(log_entry.decoded_data)
-            vote.each do |question, answers|
-              results[question] << answers
-            end
-          end
-
-          election.status = :results
-
-          emit_response "tally.results", results: results
+    def process_start_tally_message(_message_identifier, _message, _content)
+      results = Hash.new { |h, k| h[k] = [] }
+      votes.each do |log_entry|
+        vote = parse_content(log_entry.decoded_data)
+        vote.each do |question, answers|
+          results[question] << answers
         end
       end
+
+      state[:shares] = []
+
+      emit_response "tally.cast"
+      append_content results
+    end
+
+    def process_tally_message(message_identifier, _message, content)
+      raise RejectedMessage, "The owner_id doesn't match the sender trustee" if content[:owner_id] != message_identifier.author_id
+      raise RejectedMessage, "The trustee already sent their share" if state[:shares].include?(content[:owner_id])
+
+      state[:shares] << content[:owner_id]
+
+      return unless state[:shares].count == election.trustees.count
+
+      results = Hash.new { |h, k| h[k] = [] }
+      votes.each do |log_entry|
+        vote = parse_content(log_entry.decoded_data)
+        vote.each do |question, answers|
+          results[question] << answers
+        end
+      end
+
+      election.status = :tally_ended
+
+      emit_response "end_tally", results: results
     end
   end
 end

@@ -8,17 +8,15 @@ RSpec.describe ProcessKeyCeremonyStep do
 
   include_context "with a signed message"
 
-  let!(:election) { create(:election, status: election_status, voting_scheme_state: voting_scheme_state) }
-  let(:election_status) { :key_ceremony }
-  let(:voting_scheme_state) { Marshal.dump(joint_election_key: 1, trustees: public_keys_already_sent.map(&:unique_id)) }
-  let(:public_keys_already_sent) { [] }
+  let!(:election) { create(:election, :key_ceremony, trustees_done: trustees_done) }
+  let(:trustees_done) { [] }
   let(:trustee) { Trustee.first }
   let(:client) { trustee }
   let(:private_key) { Test::PrivateKeys.trustees_private_keys.first }
   let(:message_type) { :key_ceremony_message }
   let(:message_params) { { election: election, trustee: trustee } }
 
-  it "broadcast ok" do
+  it "broadcasts ok" do
     expect { subject }.to broadcast(:ok)
   end
 
@@ -35,9 +33,9 @@ RSpec.describe ProcessKeyCeremonyStep do
   end
 
   context "when the voting scheme generates an answer" do
-    let(:public_keys_already_sent) { Trustee.first(3).excluding(trustee) }
+    let(:trustees_done) { Trustee.first(3).excluding(trustee) }
 
-    it "broadcast ok" do
+    it "broadcasts ok" do
       expect { subject }.to broadcast(:ok)
     end
 
@@ -77,7 +75,7 @@ RSpec.describe ProcessKeyCeremonyStep do
   end
 
   context "when the trustee already sent the message" do
-    let(:public_keys_already_sent) { [trustee] }
+    let(:trustees_done) { [trustee] }
 
     it_behaves_like "key ceremony fails"
 
@@ -87,7 +85,7 @@ RSpec.describe ProcessKeyCeremonyStep do
   end
 
   context "when the election status is not key_ceremony" do
-    let(:election_status) { :ready }
+    let!(:election) { create(:election, :ready) }
 
     it_behaves_like "key ceremony fails"
 

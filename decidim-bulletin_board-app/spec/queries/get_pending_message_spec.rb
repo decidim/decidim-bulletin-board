@@ -39,7 +39,7 @@ RSpec.describe "GetPendingMessage" do
     it { expect(subject.dig("data", "pendingMessage")).to be_nil }
   end
 
-  describe "pending messages with temporary hidden data" do
+  describe "pending messages with results data" do
     let!(:election) { create(:election, :tally) }
     let!(:pending_message) { create(:pending_message, :by_trustee, election: election, message: build(:tally_share_message, election: election)) }
 

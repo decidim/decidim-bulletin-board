@@ -53,8 +53,9 @@ RSpec.describe "GetElectionLogEntries" do
     let!(:election) { create(:election, :tally) }
     let(:tally_cast) { create(:log_entry, :by_bulletin_board, election: election, message: build(:tally_cast_message, election: election)) }
     let(:tally_share) { create(:log_entry, :by_trustee, election: election, message: build(:tally_share_message, election: election)) }
+    let(:end_tally) { create(:log_entry, :by_bulletin_board, election: election, message: build(:end_tally_message, election: election)) }
 
-    before { tally_cast && tally_share }
+    before { tally_cast && tally_share && end_tally }
 
     it "hides the signed data" do
       expect(subject.deep_symbolize_keys).to include(
@@ -67,10 +68,14 @@ RSpec.describe "GetElectionLogEntries" do
               },
               {
                 messageId: tally_cast.message_id,
-                signedData: nil
+                signedData: tally_cast.signed_data
               },
               {
                 messageId: tally_share.message_id,
+                signedData: nil
+              },
+              {
+                messageId: end_tally.message_id,
                 signedData: nil
               }
             ]
@@ -79,9 +84,7 @@ RSpec.describe "GetElectionLogEntries" do
       )
     end
 
-    context "when the client is an authority" do
-      let(:context) { { api_key: election.authority.api_key } }
-
+    shared_examples "showing the signed data" do
       it "shows the signed data" do
         expect(subject.deep_symbolize_keys).to include(
           data: {
@@ -98,6 +101,10 @@ RSpec.describe "GetElectionLogEntries" do
                 {
                   messageId: tally_share.message_id,
                   signedData: tally_share.signed_data
+                },
+                {
+                  messageId: end_tally.message_id,
+                  signedData: end_tally.signed_data
                 }
               ]
             }
@@ -106,31 +113,16 @@ RSpec.describe "GetElectionLogEntries" do
       end
     end
 
+    context "when the client is an authority" do
+      let(:context) { { api_key: election.authority.api_key } }
+
+      it_behaves_like "showing the signed data"
+    end
+
     context "when the results are published" do
       let(:election) { create(:election, :results_published) }
 
-      it "shows the signed data" do
-        expect(subject.deep_symbolize_keys).to include(
-          data: {
-            election: {
-              logEntries: [
-                {
-                  messageId: first_log_entry.message_id,
-                  signedData: first_log_entry.signed_data
-                },
-                {
-                  messageId: tally_cast.message_id,
-                  signedData: tally_cast.signed_data
-                },
-                {
-                  messageId: tally_share.message_id,
-                  signedData: tally_share.signed_data
-                }
-              ]
-            }
-          }
-        )
-      end
+      it_behaves_like "showing the signed data"
     end
   end
 end

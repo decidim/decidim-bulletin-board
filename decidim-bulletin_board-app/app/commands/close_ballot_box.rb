@@ -34,7 +34,7 @@ class CloseBallotBox < Rectify::Command
 
       election.log_entries << log_entry
       log_entry.save!
-      election.tally!
+      election.vote_ended!
     end
 
     broadcast(:ok, election)
