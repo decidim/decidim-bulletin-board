@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
-# A command with all the business logic to close the election's ballot box
-class CloseBallotBox < Rectify::Command
+# A command with all the business logic to start the key ceremony proceess
+class StartKeyCeremony < Rectify::Command
   include LogEntryCommand
 
   # Public: Initializes the command.
   #
-  # authority - The authority sender of the close request
+  # authority - The authority sender of the start key ceremony request
   # message_id - The message identifier
   # signed_data - The signed message received
   def initialize(authority, message_id, signed_data)
@@ -17,30 +17,42 @@ class CloseBallotBox < Rectify::Command
 
   # Executes the command. Broadcasts these events:
   #
-  # - :ok when everything is valid.
+  # - :processed when everything is valid.
   # - :invalid if the received data wasn't valid.
   #
   # Returns nothing.
   def call
     return broadcast(:invalid, error) unless
-      valid_log_entry?("close_ballot_box")
+      valid_log_entry?("start_key_ceremony")
 
     election.with_lock do
       return broadcast(:invalid, error) unless
-        valid_step?(election.vote?) &&
         valid_client?(authority.authority? && election.authority == authority) &&
         valid_author?(message_identifier.from_authority?) &&
+        valid_step?(election.created?) &&
         process_message
 
-      election.log_entries << log_entry
+      log_entry.election = election
       log_entry.save!
-      election.vote_ended!
+      create_response_log_entry!
+      election.key_ceremony!
     end
 
-    broadcast(:ok, election)
+    broadcast(:ok)
   end
 
   private
 
   attr_accessor :authority
+
+  def create_response_log_entry!
+    return unless response_message
+
+    @response_log_entry = LogEntry.create!(
+      election: election,
+      message_id: response_message["message_id"],
+      signed_data: BulletinBoard.sign(response_message),
+      bulletin_board: true
+    )
+  end
 end

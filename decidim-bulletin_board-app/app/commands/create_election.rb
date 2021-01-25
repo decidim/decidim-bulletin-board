@@ -50,7 +50,7 @@ class CreateElection < Rectify::Command
     @election ||= log_entry.election = Election.new(
       unique_id: message_identifier.election_id,
       title: title,
-      status: "key_ceremony",
+      status: :created,
       authority: authority,
       log_entries: [log_entry]
     )
