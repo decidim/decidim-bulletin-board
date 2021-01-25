@@ -3,10 +3,11 @@
 module Types
   class MutationType < Types::BaseObject
     field :create_election, mutation: Mutations::CreateElectionMutation
+    field :start_key_ceremony, mutation: Mutations::StartKeyCeremonyMutation
     field :process_key_ceremony_step, mutation: Mutations::ProcessKeyCeremonyStepMutation
-    field :open_ballot_box, mutation: Mutations::OpenBallotBoxMutation
+    field :start_vote, mutation: Mutations::StartVoteMutation
     field :vote, mutation: Mutations::VoteMutation
-    field :close_ballot_box, mutation: Mutations::CloseBallotBoxMutation
+    field :end_vote, mutation: Mutations::EndVoteMutation
     field :start_tally, mutation: Mutations::StartTallyMutation
     field :process_tally_step, mutation: Mutations::ProcessTallyStepMutation
     field :publish_results, mutation: Mutations::PublishResultsMutation
