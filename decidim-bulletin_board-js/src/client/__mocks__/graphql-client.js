@@ -31,6 +31,23 @@ const logEntriesByElection = {
   },
 };
 
+const pendingMessageByMessageId = {
+  "dummy.1": {
+    data: {
+      pendingMessage: {
+        status: 'accepted'
+      }
+    }
+  },
+  "dummy.2": {
+    data: {
+      pendingMessage: {
+        status: "rejected"
+      }
+    }
+  }
+};
+
 export class GraphQLClient {
   constructor({ apiEndpointUrl, wsEndpointUrl }) {
     this.apiEndpointUrl = apiEndpointUrl;
@@ -51,6 +68,12 @@ export class GraphQLClient {
   getElectionLogEntries({ electionUniqueId }) {
     return Promise.resolve(
       logEntriesByElection[electionUniqueId].data.election.logEntries
+    );
+  }
+
+  getPendingMessageByMessageId({ messageId }) {
+    return Promise.resolve(
+      pendingMessageByMessageId[messageId].data.pendingMessage
     );
   }
 

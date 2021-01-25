@@ -4,6 +4,7 @@ import GET_ELECTION_LOG_ENTRIES from "./operations/get_election_log_entries";
 import PROCESS_KEY_CEREMONY_STEP from "./operations/process_key_ceremony_step";
 import PROCESS_TALLY_STEP from "./operations/process_tally_step";
 import GET_LOG_ENTRY from "./operations/get_log_entry";
+import GET_PENDING_MESSAGE_BY_MESSAGE_ID from "./operations/get_pending_message_by_message_id";
 
 /**
  * This is the Bulletin Board API client that will use Apollo's client to
@@ -49,7 +50,6 @@ export class GraphQLClient {
         contentHash,
       },
     });
-
     return result.data.logEntry;
   }
 
@@ -98,6 +98,25 @@ export class GraphQLClient {
     }
 
     return result.data.processKeyCeremonyStep.pendingMessage;
+  }
+
+  /**
+   * Query PendingMessages for a given messageId
+   *
+   * @param {Object} params - An object that include the following options.
+   *  - {String} messageId - The messageId
+   * @returns {Promise<Object>} - The status of a pendingMessage.
+   * @throws Will throw an error if the request is rejected.
+   */
+  async getPendingMessageByMessageId({ messageId }) {
+    const result = await this.apolloClient.query({
+      query: GET_PENDING_MESSAGE_BY_MESSAGE_ID,
+      variables: {
+        messageId
+      }
+    });
+
+    return result.data.pendingMessage;
   }
 
   /**

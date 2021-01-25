@@ -19,7 +19,7 @@ describe("GraphQLClient", () => {
   });
 
   describe("getLogEntry", () => {
-    it("return the log entry given a election id and a content hash", async () => {
+    it("returns the log entry given a election id and a content hash", async () => {
       const logEntryResult = { messageId: "dummy.1", signedData: "1234" };
 
       fetch.mockResponseOnce(
@@ -70,6 +70,32 @@ describe("GraphQLClient", () => {
       await expect(
         client.getElectionLogEntries({
           electionUniqueId: "example.1",
+        })
+      ).rejects.toThrow("something went wrong");
+    });
+  });
+
+  describe("getPendingMessageByMessageId", () => {
+    it("returns the pending message given a messageId", async () => {
+      const pendingMessageResult = { status: "accepted" };
+
+      fetch.mockResponseOnce(
+        JSON.stringify({ data: { pendingMessage: pendingMessageResult } })
+      );
+
+      const pendingMessage = await client.getPendingMessageByMessageId({
+        messageId: "dummy.1"
+      });
+
+      expect(pendingMessage).toEqual(pendingMessageResult);
+    });
+
+    it("throws an error if something went wrong", async () => {
+      fetch.mockReject(() => Promise.reject(new Error("something went wrong")));
+
+      await expect(
+        client.getPendingMessageByMessageId({
+          messageId: "dummy.1"
         })
       ).rejects.toThrow("something went wrong");
     });
