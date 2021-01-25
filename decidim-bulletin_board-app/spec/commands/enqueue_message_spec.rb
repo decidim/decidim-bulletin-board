@@ -43,4 +43,41 @@ RSpec.describe EnqueueMessage do
     subject
     expect(job).to have_been_enqueued
   end
+
+  describe "broadcasting invalid" do
+    context "with pending messages" do
+      let!(:pending_message) { create(:pending_message, :message_model, election: election, client: client, message_id: message_id) }
+
+      it "is not valid" do
+        expect { subject }.to broadcast(:invalid)
+      end
+    end
+
+    context "without client" do
+      let(:client) { nil }
+      let(:message_id) { nil }
+
+      it "is not valid" do
+        expect { subject }.to broadcast(:invalid)
+      end
+    end
+
+    context "without election" do
+      let(:client) { nil }
+      let(:election) { nil }
+      let(:message_id) { nil }
+
+      it "is not valid" do
+        expect { subject }.to broadcast(:invalid)
+      end
+    end
+
+    context "without signed data" do
+      let(:signed_data) { nil }
+
+      it "is not valid" do
+        expect { subject }.to broadcast(:invalid)
+      end
+    end
+  end
 end
