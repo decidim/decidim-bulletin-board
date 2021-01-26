@@ -3,53 +3,34 @@ import { buildMessageId, parseMessageId } from "../../test-utils";
 export class TrusteeWrapper {
   constructor({ trusteeId }) {
     this.trusteeId = trusteeId;
+    this.keyCeremonyDone = false;
+    this.tallyDone = false;
   }
 
   processMessage(messageId, signedData) {
     const typeSubtype = parseMessageId(messageId);
     switch (typeSubtype) {
-      case "dummy.nothing": {
-        return null;
-      }
       case "dummy.send": {
         return {
-          done: false,
-          cast: false,
-          save: false,
-          message: {
-            message_id: buildMessageId("dummy.response_send"),
-            content: signedData,
-          },
+          message_id: buildMessageId("dummy.response_send"),
+          content: signedData,
         };
       }
       case "dummy.save": {
         return {
-          done: false,
-          cast: false,
-          save: true,
-          message: {
-            message_id: buildMessageId("dummy.response_save"),
-            content: signedData,
-          },
-        };
-      }
-      case "dummy.cast": {
-        return {
-          done: true,
-          cast: true,
-          save: false,
-          message: {
-            message_id: buildMessageId("dummy.response_cast"),
-            content: signedData,
-          },
+          message_id: buildMessageId("dummy.response_save"),
+          content: signedData,
         };
       }
       case "dummy.done": {
+        this.keyCeremonyDone = true;
+        break;
+      }
+      case "dummy.cast": {
+        this.tallyDone = true;
         return {
-          done: true,
-          cast: false,
-          save: false,
-          message: null,
+          message_id: buildMessageId("dummy.response_cast"),
+          content: signedData,
         };
       }
     }
@@ -60,4 +41,12 @@ export class TrusteeWrapper {
   backup() {}
 
   restore() {}
+
+  isKeyCeremonyDone() {
+    return this.keyCeremonyDone;
+  }
+
+  isTallyDone() {
+    return this.tallyDone;
+  }
 }

@@ -3,6 +3,8 @@ import {
   CREATE_ELECTION,
   KEY_CEREMONY_STEP_1,
   KEY_CEREMONY_JOINT_ELECTION_KEY,
+  TALLY_CAST,
+  TALLY_SHARE,
 } from "./trustee_wrapper_dummy";
 
 import { MessageIdentifier, TRUSTEE_TYPE } from "../client/message-identifier";
@@ -38,7 +40,7 @@ describe("TrusteeWrapper", () => {
 
       describe("when the message to be processed is the correct one", () => {
         it("changes the wrapper status and stores some data", () => {
-          const { done, save } = wrapper.processMessage(
+          wrapper.processMessage(
             MessageIdentifier.format(
               "some-authority.some-id",
               CREATE_ELECTION,
@@ -53,8 +55,6 @@ describe("TrusteeWrapper", () => {
           expect(wrapper.electionId).toEqual("some-authority.some-id");
           expect(wrapper.processedMessages).toEqual([]);
           expect(wrapper.electionTrusteesCount).toEqual(2);
-          expect(done).toBeFalsy();
-          expect(save).toBeTruthy();
         });
       });
 
@@ -106,7 +106,7 @@ describe("TrusteeWrapper", () => {
         describe("when there are enough trustees", () => {
           it("changes the wrapper status and stores some data", () => {
             wrapper.electionTrusteesCount = 1;
-            const { done, save } = wrapper.processMessage(
+            wrapper.processMessage(
               MessageIdentifier.format(
                 "some-authority.some-id",
                 KEY_CEREMONY_STEP_1,
@@ -118,8 +118,6 @@ describe("TrusteeWrapper", () => {
               }
             );
             expect(wrapper.status).toEqual(KEY_CEREMONY_JOINT_ELECTION_KEY);
-            expect(done).toBeFalsy();
-            expect(save).toBeFalsy();
           });
         });
       });
@@ -147,7 +145,7 @@ describe("TrusteeWrapper", () => {
 
       describe("when the message to be processed is the correct one", () => {
         it("returns some data", () => {
-          const { done, save } = wrapper.processMessage(
+          wrapper.processMessage(
             MessageIdentifier.format(
               "some-authority.some-id",
               KEY_CEREMONY_JOINT_ELECTION_KEY,
@@ -156,8 +154,7 @@ describe("TrusteeWrapper", () => {
             ),
             {}
           );
-          expect(done).toBeTruthy();
-          expect(save).toBeFalsy();
+          expect(wrapper.status).toEqual(TALLY_CAST);
         });
       });
 
@@ -173,6 +170,42 @@ describe("TrusteeWrapper", () => {
             {}
           );
           expect(wrapper.status).toEqual(KEY_CEREMONY_JOINT_ELECTION_KEY);
+        });
+      });
+    });
+
+    describe("when the status is TALLY_CAST", () => {
+      beforeEach(() => {
+        wrapper.status = TALLY_CAST;
+      });
+
+      describe("when the message to be processed is the correct one", () => {
+        it("returns some data", () => {
+          wrapper.processMessage(
+            MessageIdentifier.format(
+              "some-authority.some-id",
+              TALLY_CAST,
+              TRUSTEE_TYPE,
+              "some-author-id"
+            ),
+            {}
+          );
+          expect(wrapper.status).toEqual(TALLY_SHARE);
+        });
+      });
+
+      describe("when the message to be processes is not the correct one", () => {
+        it("doesn't do anything", () => {
+          wrapper.processMessage(
+            MessageIdentifier.format(
+              "some-authority.some-id",
+              "some-type",
+              TRUSTEE_TYPE,
+              "some-author-id"
+            ),
+            {}
+          );
+          expect(wrapper.status).toEqual(TALLY_CAST);
         });
       });
     });
