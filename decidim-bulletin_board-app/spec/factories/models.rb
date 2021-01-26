@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "test/elections"
+
 FactoryBot.define do
   sequence(:election_id) do |n|
     n
@@ -33,7 +35,7 @@ FactoryBot.define do
 
     title { Faker::Name.name }
     authority { Authority.first }
-    status { :key_ceremony }
+    status { :created }
     unique_id { [authority.unique_id, election_id].join(".") }
     voting_scheme_state { nil }
 
@@ -55,13 +57,13 @@ FactoryBot.define do
       voting_scheme_state { Marshal.dump(joint_election_key: 1, trustees: trustees_done.map(&:unique_id)) }
     end
 
-    trait :ready do
-      status { :ready }
+    trait :key_ceremony_ended do
+      status { :key_ceremony_ended }
       voting_scheme_state { Marshal.dump(joint_election_key: 1, trustees: trustees_plus_keys.map(&:first).map(&:unique_id)) }
     end
 
     trait :vote do
-      ready
+      key_ceremony_ended
       status { :vote }
     end
 
@@ -77,12 +79,26 @@ FactoryBot.define do
 
       vote_ended
       status { :tally }
-      voting_scheme_state { Marshal.dump(joint_election_key: 1, trustees: trustees_plus_keys.map(&:first).map(&:unique_id), shares: trustees_done.map(&:unique_id)) }
+
+      after(:build) do |election, evaluator|
+        joint_shares = Test::Elections.build_cast(election) { 1 }
+        election.voting_scheme_state = Marshal.dump(joint_election_key: Test::Elections.joint_election_key,
+                                                    trustees: evaluator.trustees_plus_keys.map(&:first).map(&:unique_id),
+                                                    joint_shares: joint_shares,
+                                                    shares: evaluator.trustees_done.map(&:unique_id))
+      end
     end
 
     trait :tally_ended do
       status { :tally_ended }
-      voting_scheme_state { Marshal.dump(joint_election_key: 1, trustees: trustees_plus_keys.map(&:first).map(&:unique_id), shares: trustees_plus_keys.map(&:first).map(&:unique_id)) }
+
+      after(:build) do |election, evaluator|
+        joint_shares = Test::Elections.build_cast(election) { Random.random_number(99) + Random.random_number(13) * Test::Elections.joint_election_key }
+        election.voting_scheme_state = Marshal.dump(joint_election_key: Test::Elections.joint_election_key,
+                                                    trustees: evaluator.trustees_plus_keys.map(&:first).map(&:unique_id),
+                                                    joint_shares: joint_shares,
+                                                    shares: evaluator.trustees_plus_keys.map(&:first).map(&:unique_id))
+      end
     end
 
     trait :results_published do
