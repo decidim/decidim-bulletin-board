@@ -23,6 +23,11 @@ RSpec.describe CreateElection do
     expect { subject }.to broadcast(:ok)
   end
 
+  it "sets the election status" do
+    subject
+    expect(Election.last.status).to eq("created")
+  end
+
   shared_examples "create election fails" do
     it "doesn't create the election" do
       expect { subject }.not_to change(Election, :count)

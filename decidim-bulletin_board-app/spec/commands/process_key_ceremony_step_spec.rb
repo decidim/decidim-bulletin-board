@@ -48,7 +48,7 @@ RSpec.describe ProcessKeyCeremonyStep do
     end
 
     it "changes the election status" do
-      expect { subject }.to change { Election.last.status } .from("key_ceremony").to("ready")
+      expect { subject }.to change { Election.last.status } .from("key_ceremony").to("key_ceremony_ended")
     end
   end
 
@@ -85,7 +85,7 @@ RSpec.describe ProcessKeyCeremonyStep do
   end
 
   context "when the election status is not key_ceremony" do
-    let!(:election) { create(:election, :ready) }
+    let!(:election) { create(:election, :created) }
 
     it_behaves_like "key ceremony fails"
 
