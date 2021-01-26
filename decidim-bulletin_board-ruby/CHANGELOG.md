@@ -9,8 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Changed
 
-- The `Trustee` class now uses the `Election` class to interact with the log entries
+- The `Trustee` class now uses the `Election` class to interact with the log entries.
 - The `Trustee` class handles everything now when performing both the key ceremony and the tally process.
+- The `Trustee` class now includes a `setupKeyCeremony` generator function that must be called before starting the key ceremony process.
 - `checkRestoreNeeded` method has been renamed to `needsToBeRestored` for both the `Trustee` and the `TrusteeWrapper`.
 
 ## Added
@@ -24,6 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Removed
 
 - The `KeyCeremony` class has been removed.
+- The `Trustee` backup method has been removed because it doesn't belong to the public API anymore.
 
 ## [0.6.1] - 2021-01-12
 
