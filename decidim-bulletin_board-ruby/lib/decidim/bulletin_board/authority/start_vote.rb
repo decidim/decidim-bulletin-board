@@ -3,8 +3,8 @@
 module Decidim
   module BulletinBoard
     module Authority
-      # This command uses the GraphQL client to request the closing of the ballot box.
-      class CloseBallotBox < Decidim::BulletinBoard::Command
+      # This command uses the GraphQL client to request the starting of the voting period.
+      class StartVote < Decidim::BulletinBoard::Command
         # Public: Initializes the command.
         #
         # election_id - The local election identifier
@@ -19,27 +19,27 @@ module Decidim
         #
         # Returns nothing.
         def call
-          message_id = message_id(unique_election_id(election_id), "close_ballot_box")
+          message_id = message_id(unique_election_id(election_id), "start_vote")
           signed_data = sign_message(message_id, {})
 
           begin
             response = client.query do
               mutation do
-                closeBallotBox(messageId: message_id, signedData: signed_data) do
-                  election do
+                startVote(messageId: message_id, signedData: signed_data) do
+                  pendingMessage do
                     status
                   end
                   error
                 end
               end
             end
-
-            return broadcast(:error, response.data.close_ballot_box.error) if response.data.close_ballot_box.error.present?
-
-            broadcast(:ok, response.data.close_ballot_box.election)
-          rescue Graphlient::Errors::ServerError
-            broadcast(:error, "Sorry, something went wrong")
           end
+
+          return broadcast(:error, response.data.start_vote.error) if response.data.start_vote.error.present?
+
+          broadcast(:ok, response.data.start_vote.pending_message)
+        rescue Graphlient::Errors::FaradayServerError
+          broadcast(:error, "Sorry, something went wrong")
         end
 
         private

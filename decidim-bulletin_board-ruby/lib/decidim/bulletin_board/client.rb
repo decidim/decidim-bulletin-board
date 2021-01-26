@@ -21,9 +21,7 @@ module Decidim
       delegate :authority_slug, to: Decidim::BulletinBoard::Command
 
       def quorum
-        return 0 if @scheme.dig(:parameters, :quorum).blank?
-
-        @scheme.dig(:parameters, :quorum)
+        @scheme.dig(:parameters, :quorum) || number_of_trustees
       end
 
       def public_key
@@ -41,18 +39,18 @@ module Decidim
         create_election.call
       end
 
-      def open_ballot_box(election_id)
-        open_ballot_box = Decidim::BulletinBoard::Authority::OpenBallotBox.new(election_id)
-        open_ballot_box.on(:ok) { |election| return election }
-        open_ballot_box.on(:error) { |error_message| raise StandardError, error_message }
-        open_ballot_box.call
+      def start_key_ceremony(election_id)
+        start_key_ceremony = Decidim::BulletinBoard::Authority::StartKeyCeremony.new(election_id)
+        start_key_ceremony.on(:ok) { |pending_message| return pending_message }
+        start_key_ceremony.on(:error) { |error_message| raise StandardError, error_message }
+        start_key_ceremony.call
       end
 
-      def close_ballot_box(election_id)
-        close_ballot_box = Decidim::BulletinBoard::Authority::CloseBallotBox.new(election_id)
-        close_ballot_box.on(:ok) { |election| return election }
-        close_ballot_box.on(:error) { |error_message| raise StandardError, error_message }
-        close_ballot_box.call
+      def start_vote(election_id)
+        start_vote = Decidim::BulletinBoard::Authority::StartVote.new(election_id)
+        start_vote.on(:ok) { |pending_message| return pending_message }
+        start_vote.on(:error) { |error_message| raise StandardError, error_message }
+        start_vote.call
       end
 
       def cast_vote_message_id(election_id, voter_id)
@@ -71,6 +69,13 @@ module Decidim
         get_pending_message_status.on(:ok) { |status| return status }
         get_pending_message_status.on(:error) { |error_message| raise StandardError, error_message }
         get_pending_message_status.call
+      end
+
+      def end_vote(election_id)
+        end_vote = Decidim::BulletinBoard::Authority::EndVote.new(election_id)
+        end_vote.on(:ok) { |pending_message| return pending_message }
+        end_vote.on(:error) { |error_message| raise StandardError, error_message }
+        end_vote.call
       end
 
       def get_election_status(election_id)
@@ -92,6 +97,13 @@ module Decidim
         publish_results.on(:ok) { |status| return status }
         publish_results.on(:error) { |error_message| raise StandardError, error_message }
         publish_results.call
+      end
+
+      def get_status(election_id)
+        get_status = Decidim::BulletinBoard::Authority::GetElectionStatus.new(election_id)
+        get_status.on(:ok) { |status| return status }
+        get_status.on(:error) { |error_message| raise StandardError, error_message }
+        get_status.call
       end
 
       private

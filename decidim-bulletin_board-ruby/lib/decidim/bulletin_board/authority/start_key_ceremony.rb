@@ -3,8 +3,8 @@
 module Decidim
   module BulletinBoard
     module Authority
-      # This command uses the GraphQL client to request the opening of the ballot box.
-      class OpenBallotBox < Decidim::BulletinBoard::Command
+      # This command uses the GraphQL client to request the starting of the key ceremony.
+      class StartKeyCeremony < Decidim::BulletinBoard::Command
         # Public: Initializes the command.
         #
         # election_id - The local election identifier
@@ -19,27 +19,27 @@ module Decidim
         #
         # Returns nothing.
         def call
-          message_id = message_id(unique_election_id(election_id), "open_ballot_box")
+          message_id = message_id(unique_election_id(election_id), "start_key_ceremony")
           signed_data = sign_message(message_id, {})
 
           begin
             response = client.query do
               mutation do
-                openBallotBox(messageId: message_id, signedData: signed_data) do
-                  election do
+                startKeyCeremony(messageId: message_id, signedData: signed_data) do
+                  pendingMessage do
                     status
                   end
                   error
                 end
               end
             end
-
-            return broadcast(:error, response.data.open_ballot_box.error) if response.data.open_ballot_box.error.present?
-
-            broadcast(:ok, response.data.open_ballot_box.election)
-          rescue Graphlient::Errors::ServerError
-            broadcast(:error, "Sorry, something went wrong")
           end
+
+          return broadcast(:error, response.data.start_key_ceremony.error) if response.data.start_key_ceremony.error.present?
+
+          broadcast(:ok, response.data.start_key_ceremony.pending_message)
+        rescue Graphlient::Errors::FaradayServerError
+          broadcast(:error, "Sorry, something went wrong")
         end
 
         private

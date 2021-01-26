@@ -5,23 +5,18 @@ require "spec_helper"
 module Decidim
   module BulletinBoard
     module Authority
-      describe CreateElection do
-        subject { described_class.new(election_id, election_data) }
+      describe EndVote do
+        subject { described_class.new(election_id) }
 
         include_context "with a configured bulletin board"
 
-        let(:election_id) { 1 }
-        let(:election_data) do
-          {
-            scheme: "dummy"
-          }
-        end
+        let(:election_id) { "decidim-test-authority.1" }
 
         let(:bulletin_board_response) do
           {
-            createElection: {
-              election: {
-                status: "created"
+            endVote: {
+              pendingMessage: {
+                status: "enqueued"
               }
             }
           }
@@ -32,9 +27,9 @@ module Decidim
             expect { subject.call }.to broadcast(:ok)
           end
 
-          it "uses the graphql client to open the ballot box and return the election" do
-            subject.on(:ok) do |election|
-              expect(election.status).to eq("created")
+          it "uses the graphql client to end the voting period and returns its result" do
+            subject.on(:ok) do |pending_message|
+              expect(pending_message.status).to eq("enqueued")
             end
             subject.call
           end
