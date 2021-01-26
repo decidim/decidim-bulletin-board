@@ -34,6 +34,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Changed
 
+- The `open_ballot_box` and `close_ballot_box` are now called `start_vote` and `end_vote` and return a pending message.
 - The `Trustee` class now uses the `Election` class to interact with the log entries.
 - The `Trustee` class handles everything now when performing both the key ceremony and the tally process.
 - The `Trustee` class now includes a `setupKeyCeremony` generator function that must be called before starting the key ceremony process.
@@ -41,6 +42,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Added
 
+- `start_key_ceremony` method to the `Decidim::BulletinBoard::Client`.
 - `start_tally` method to the `Decidim::BulletinBoard::Client`.
 - `publish_results` method to the `Decidim::BulletinBoard::Client`.
 - `Election` class in the JS package to handle the election state. An instance of this class will be used by the key ceremony and the trustee to check anything related to log entries.
