@@ -53,6 +53,10 @@ def create_start_tally_log_entry(election)
                     election: election,
                     message: FactoryBot.build(:start_tally_message,
                                               election: election))
+  FactoryBot.create(:log_entry,
+                    election: election,
+                    message: FactoryBot.build(:tally_cast_message,
+                                              election: election))
 end
 
 def create_tally_log_entries(election)

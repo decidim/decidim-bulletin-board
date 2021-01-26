@@ -9,4 +9,15 @@ Rails.application.routes.draw do
   end
 
   mount ActionCable.server, at: "/cable"
+
+  if Rails.env.development?
+    scope "/sandbox", module: :sandbox, as: :sandbox do
+      resources :elections, only: [:index] do
+        member do
+          get :key_ceremony
+          get :tally
+        end
+      end
+    end
+  end
 end

@@ -1,0 +1,34 @@
+<%= link_to "Back", sandbox_elections_path %>
+
+<h1>Tally for <%= election.title %></h1>
+
+<h2>Trustees</h2>
+
+<table class="trustee-table" data-election-unique-id="<%= election.unique_id %>">
+  <thead>
+    <tr>
+      <th>Unique ID</th>
+      <th>Name</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% election.trustees.each do |trustee| %>
+      <tr data-unique-id="<%= trustee.unique_id %>" data-public-key="<%= trustee.public_key.to_json %>">
+        <td><%= trustee.unique_id %></td>
+        <td><%= trustee.name %></td>
+        <td>
+          <%= link_to "Start", "#", class: "start-button" %>
+          <%= link_to "Generate backup", "#", class: "generate-backup-button" %>
+          <label class="restore-button">
+            <span>Restore</span>
+            <input class="restore-button-input" style="display: none" type="file" />
+          </label>
+          <span class="done-message">Done</span>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<%= javascript_include_tag "sandbox/tally" %>
