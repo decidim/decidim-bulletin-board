@@ -4,6 +4,8 @@ export const CREATE_ELECTION = "create_election";
 export const KEY_CEREMONY_STEP_1 = "key_ceremony.step_1";
 export const KEY_CEREMONY_JOINT_ELECTION_KEY =
   "key_ceremony.joint_election_key";
+export const TALLY_CAST = "tally.cast";
+export const TALLY_SHARE = "tally.share";
 
 /**
  * This is just a dummy implementation of a possible `TrusteeWrapper`.
@@ -40,20 +42,16 @@ export class TrusteeWrapper {
           this.processedMessages = [];
           this.electionTrusteesCount = message.trustees.length;
           return {
-            done: false,
-            save: true,
-            message: {
-              message_id: MessageIdentifier.format(
-                this.electionId,
-                KEY_CEREMONY_STEP_1,
-                TRUSTEE_TYPE,
-                this.trusteeId
-              ),
-              content: JSON.stringify({
-                election_public_key: 7,
-                owner_id: this.trusteeId,
-              }),
-            },
+            message_id: MessageIdentifier.format(
+              this.electionId,
+              KEY_CEREMONY_STEP_1,
+              TRUSTEE_TYPE,
+              this.trusteeId
+            ),
+            content: JSON.stringify({
+              election_public_key: 7,
+              owner_id: this.trusteeId,
+            }),
           };
         }
         break;
@@ -63,21 +61,29 @@ export class TrusteeWrapper {
           this.processedMessages = [...this.processedMessages, message];
           if (this.processedMessages.length === this.electionTrusteesCount) {
             this.status = KEY_CEREMONY_JOINT_ELECTION_KEY;
-            return {
-              done: false,
-              save: false,
-              message: null,
-            };
           }
         }
         break;
       }
       case KEY_CEREMONY_JOINT_ELECTION_KEY: {
         if (messageIdentifier.typeSubtype === KEY_CEREMONY_JOINT_ELECTION_KEY) {
+          this.status = TALLY_CAST;
+        }
+        break;
+      }
+      case TALLY_CAST: {
+        if (messageIdentifier.typeSubtype === TALLY_CAST) {
+          this.status = TALLY_SHARE;
           return {
-            done: true,
-            save: false,
-            message: null,
+            message_id: MessageIdentifier.format(
+              this.electionId,
+              TALLY_SHARE,
+              TRUSTEE_TYPE,
+              this.trusteeId
+            ),
+            content: JSON.stringify({
+              owner_id: this.trusteeId,
+            }),
           };
         }
         break;
@@ -131,5 +137,21 @@ export class TrusteeWrapper {
     }
 
     return true;
+  }
+
+  /**
+   * Whether the key ceremony process is done or not.
+   * @returns {Boolean}
+   */
+  isKeyCeremonyDone() {
+    return this.status === KEY_CEREMONY_JOINT_ELECTION_KEY;
+  }
+
+  /**
+   * Whether the tally process is done or not.
+   * @returns {Boolean}
+   */
+  isTallyDone() {
+    return this.status === TALLY_SHARE;
   }
 }

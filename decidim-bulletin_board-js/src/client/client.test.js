@@ -50,9 +50,24 @@ describe("Client", () => {
   describe("processKeyCeremonyStep", () => {
     it("calls the api client corresponding method with the correct arguments", async () => {
       const pendingMessage = await client.processKeyCeremonyStep({
+        messageId: "key-ceremony-step",
         signedData: "1234",
       });
       expect(pendingMessage).toEqual({
+        messageId: "key-ceremony-step",
+        signedData: "1234",
+      });
+    });
+  });
+
+  describe("processTallyStep", () => {
+    it("calls the api client corresponding method with the correct arguments", async () => {
+      const pendingMessage = await client.processTallyStep({
+        messageId: "tally-step",
+        signedData: "1234",
+      });
+      expect(pendingMessage).toEqual({
+        messageId: "tally-step",
         signedData: "1234",
       });
     });

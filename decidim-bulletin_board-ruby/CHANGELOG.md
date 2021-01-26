@@ -9,21 +9,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Changed
 
-- The `KeyCeremony` class no longer receives an `electionContext` but an `election` object.
-- The `KeyCeremony` class now receives a `trustee` object.
-- `checkRestoreNeeded` method has been renamed to `needsToBeRestored` for both the `Trustee` and the `TrusteeWrapper`.
 - The `Trustee` class now uses the `Election` class to interact with the log entries.
+- The `Trustee` class handles everything now when performing both the key ceremony and the tally process.
+- The `Trustee` class now includes a `setupKeyCeremony` generator function that must be called before starting the key ceremony process.
+- `checkRestoreNeeded` method has been renamed to `needsToBeRestored` for both the `Trustee` and the `TrusteeWrapper`.
 
 ## Added
 
-- `Election` class in the JS package to handle the election state. An instance of this class will be used by the key ceremony and the trustee to check anything related to log entries.
-- The `KeyCeremony` class now have a `teardown` method that is called automatically to clean a few things. It can be called early to avoid memory leaks if needed.
 - `start_tally` method to the `Decidim::BulletinBoard::Client`.
 - `publish_results` method to the `Decidim::BulletinBoard::Client`.
+- `Election` class in the JS package to handle the election state. An instance of this class will be used by the key ceremony and the trustee to check anything related to log entries.
+- The `Trustee` class now have a `teardown` method that is called automatically to clean a few things. It can be called early to avoid memory leaks if needed.
+- The `EventManager` class now handles the `events` stream and exports some useful constants.
 
 ## Removed
 
-- The `KeyCeremony` class no longer have methods related to backup or restore. Use the `Trustee` class to perform these operations.
+- The `KeyCeremony` class has been removed.
+- The `Trustee` backup method has been removed because it doesn't belong to the public API anymore.
 
 ## [0.6.1] - 2021-01-12
 

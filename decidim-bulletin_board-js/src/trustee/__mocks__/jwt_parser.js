@@ -1,5 +1,5 @@
 export class JWTParser {
   parse(signedData) {
-    return `${signedData} parsed`;
+    return signedData;
   }
 }

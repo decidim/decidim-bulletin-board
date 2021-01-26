@@ -1,8 +1,17 @@
 import { Client } from "./client/client";
 import { Election } from "./election/election";
 import { Trustee } from "./trustee/trustee";
-import { KeyCeremony } from "./key-ceremony/key-ceremony";
-import { MessageIdentifier } from "./client/message-identifier";
 import { Voter } from "./voter/voter";
 
-export { Client, Election, Trustee, KeyCeremony, MessageIdentifier, Voter };
+import { MessageIdentifier } from "./client/message-identifier";
+import { MESSAGE_RECEIVED, MESSAGE_PROCESSED } from "./trustee/event_manager";
+
+export {
+  Client,
+  Election,
+  Trustee,
+  Voter,
+  MessageIdentifier,
+  MESSAGE_PROCESSED,
+  MESSAGE_RECEIVED,
+};
