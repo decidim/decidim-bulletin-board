@@ -17681,40 +17681,42 @@ class Voter {
   /**
    * Confirms if a vote was processed
    *
-   * @param {Object} params - An object that include the following options.
+   * @param {Object} params - An object that includes the following options.
    *  - {String} messageId - The messageId
-   * @returns {Promise<Boolean>} - Whether the pendingMessage.status is accepted or not
+   * @returns {Promise<Object>} - Returns the PendingMessage
    */
-  isVoteConfirmed(messageId) {
+  waitForPendingMessageToBeProcessed(messageId) {
     return new Promise((resolve, reject) => {
-      this.bulletinBoardClient
+      const intervalId = setInterval(() => {
+        this.bulletinBoardClient
         .getPendingMessageByMessageId({
           messageId
         })
         .then((pendingMessage) => {
-          resolve(pendingMessage.status === 'accepted');
+          if (pendingMessage.status !== 'enqueued') {
+            clearInterval(intervalId);
+            resolve(pendingMessage);
+          }
         })
+      }, this.options.bulletinBoardWaitTime)
     })
   }
 
-  async verifyVote(voteHash) {
+  /**
+   * Verifies a vote
+   *
+   * @param {Object} params - An object that includes the following options.
+   *  - {String} voteHash - the voteHash of a vote
+   * @returns {Promise<Object>} - Returns a logEntry
+   */
+  verifyVote(voteHash) {
     const { id: electionUniqueId } = this.electionContext;
-
-    return new Promise((resolve) => {
-      const intervalId = setInterval(() => {
-        this.bulletinBoardClient
-          .getLogEntry({
-            electionUniqueId,
-            contentHash: voteHash,
-          })
-          .then((logEntry) => {
-            if (logEntry) {
-              clearInterval(intervalId);
-              resolve();
-            }
-          });
-      }, this.options.bulletinBoardWaitTime);
-    });
+ 
+    return this.bulletinBoardClient
+      .getLogEntry({
+        electionUniqueId,
+        contentHash: voteHash,
+      })
   }
 }
 

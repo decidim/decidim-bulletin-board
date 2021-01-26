@@ -84,7 +84,7 @@ describe("GraphQLClient", () => {
       );
 
       const pendingMessage = await client.getPendingMessageByMessageId({
-        messageId: "dummy.1"
+        messageId: "dummy.1",
       });
 
       expect(pendingMessage).toEqual(pendingMessageResult);
@@ -95,7 +95,7 @@ describe("GraphQLClient", () => {
 
       await expect(
         client.getPendingMessageByMessageId({
-          messageId: "dummy.1"
+          messageId: "dummy.1",
         })
       ).rejects.toThrow("something went wrong");
     });

@@ -35,17 +35,17 @@ const pendingMessageByMessageId = {
   "dummy.1": {
     data: {
       pendingMessage: {
-        status: 'accepted'
-      }
-    }
+        status: "accepted",
+      },
+    },
   },
   "dummy.2": {
     data: {
       pendingMessage: {
-        status: "rejected"
-      }
-    }
-  }
+        status: "rejected",
+      },
+    },
+  },
 };
 
 export class GraphQLClient {

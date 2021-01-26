@@ -112,8 +112,8 @@ export class GraphQLClient {
     const result = await this.apolloClient.query({
       query: GET_PENDING_MESSAGE_BY_MESSAGE_ID,
       variables: {
-        messageId
-      }
+        messageId,
+      },
     });
 
     return result.data.pendingMessage;
