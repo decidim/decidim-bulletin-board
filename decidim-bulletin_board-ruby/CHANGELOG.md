@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## [0.7.0] - 2021-01-26
+
 ## Changed
 
 - The `Trustee` class now uses the `Election` class to interact with the log entries.
