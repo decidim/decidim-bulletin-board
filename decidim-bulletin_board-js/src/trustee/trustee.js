@@ -163,7 +163,7 @@ export class Trustee {
   }
 
   /**
-   * Creates a interval that will check periodically if there are new log entries
+   * Creates an interval that will check periodically if there are new log entries
    * to process. The interval is done when a new log entry is processed and it has
    * a result.
    *
@@ -185,7 +185,7 @@ export class Trustee {
   }
 
   /**
-   * Process the next log entry and outputs the result. It broadcasts an event
+   * Processes the next log entry and outputs the result. It broadcasts an event
    * when the message is received and another one when it is processed.
    *
    * @private
@@ -256,7 +256,7 @@ export class Trustee {
   }
 
   /**
-   * Sign a message using the trustee identification keys.
+   * Signs a message using the trustee identification keys.
    *
    * @private
    * @param {Object} message - The message to be signed.

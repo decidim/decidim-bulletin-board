@@ -46,7 +46,7 @@ describe("Trustee", () => {
     trustee = buildTrustee();
   });
 
-  it("initialise the trustee with the given params", () => {
+  it("initialises the trustee with the given params", () => {
     expect(trustee.uniqueId).toEqual(defaultParams.uniqueId);
     expect(trustee.bulletinBoardClient).toEqual(
       defaultParams.bulletinBoardClient
@@ -59,7 +59,7 @@ describe("Trustee", () => {
     expect(trustee.lastMessageProcessedWithResult).toBeNull();
   });
 
-  it("initialise the trustee wrapper with the given params", () => {
+  it("initialises the trustee wrapper with the given params", () => {
     expect(trustee.wrapper.trusteeId).toEqual(defaultParams.uniqueId);
   });
 

@@ -18,7 +18,7 @@ export class EventManager {
   }
 
   /**
-   * Receives a callback function and create a new stream that will call
+   * Receives a callback function and creates a new stream that will call
    * that function whenever a new event is emitted.
    *
    * @param {fn} Function - A callback function.
@@ -29,7 +29,7 @@ export class EventManager {
   }
 
   /**
-   * Emits a new message received event through the stream.
+   * Emits a new "message received" event through the stream.
    *
    * @returns {undefined}
    */
@@ -41,7 +41,7 @@ export class EventManager {
   }
 
   /**
-   * Emits a new message processed event through the stream.
+   * Emits a new "message processed" event through the stream.
    *
    * @returns {undefined}
    */
