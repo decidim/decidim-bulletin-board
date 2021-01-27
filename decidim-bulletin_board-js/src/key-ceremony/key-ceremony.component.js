@@ -12,7 +12,7 @@ export class KeyCeremonyComponent {
    *  - {Object} bulletinBoardClientParams - An object to configure the bulletin board client.
    *  - {String} electionUniqueId - The unique identifier of an election.
    *  - {String} trusteeUniqueId - The unique identifier of a trustee.
-   *  - {Object} trusteeIdentificationKeys - A object that contains both the public and private key for
+   *  - {Object} trusteeIdentificationKeys - An object that contains both the public and private key for
    *                                         the corresponding trustee.
    * @constructor
    */
@@ -40,7 +40,8 @@ export class KeyCeremonyComponent {
   /**
    * Bind UI events to the key ceremony process.
    *
-   * @param {Object} eventCallbacks - An object that contains event callbacks functions.
+   * @method bindEvents
+   * @param {Object} eventCallbacks - An object that contains event callback functions.
    * - {Function} onSetup - a function that is called when the trustee is set up.
    * - {Function} onEvent - a function that is called when an event is emitted from the trustee.
    * - {Function} onBindRestoreButton - a function that receives a callback function that will be called when
