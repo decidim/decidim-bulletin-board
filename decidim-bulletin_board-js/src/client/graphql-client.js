@@ -105,7 +105,7 @@ export class GraphQLClient {
    *
    * @param {Object} params - An object that include the following options.
    *  - {String} messageId - The messageId
-   * @returns {Promise<Object>} - The status of a pendingMessage.
+   * @returns {Promise<Object>} - The pending message received.
    * @throws Will throw an error if the request is rejected.
    */
   async getPendingMessageByMessageId({ messageId }) {

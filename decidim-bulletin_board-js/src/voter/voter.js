@@ -36,7 +36,7 @@ export class Voter {
    * Confirms if a vote was processed
    *
    * @param {Object} messageId - An object that includes the following options.
-   *  - {String} messageId - The messageId
+   *  - {String} messageId - the unique identifier of a message
    * @returns {Promise<Object>} - Returns the PendingMessage
    */
   waitForPendingMessageToBeProcessed(messageId) {
@@ -59,16 +59,16 @@ export class Voter {
   /**
    * Verifies a vote
    *
-   * @param {Object} voteHash - An object that includes the following options.
-   *  - {String} voteHash - the voteHash of a vote
+   * @param {String} contentHash - An object that includes the following options.
+   *  - {String} contentHash - the contentHash of a vote
    * @returns {Promise<Object>} - Returns a logEntry
    */
-  verifyVote(voteHash) {
+  verifyVote(contentHash) {
     const { id: electionUniqueId } = this.electionContext;
 
     return this.bulletinBoardClient.getLogEntry({
       electionUniqueId,
-      contentHash: voteHash,
+      contentHash,
     });
   }
 }
