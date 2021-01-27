@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - `getPendingMessageStatus` method to the `Decidim::BulletinBoard::Client`.
 - `waitForPendingMessageToBeProcessed` method to the Voter class.
+- The `KeyCeremonyComponent` has been added. It will be used as a glue code between the key ceremony process and the UI.
 
 ## [0.7.0] - 2021-01-26
 
