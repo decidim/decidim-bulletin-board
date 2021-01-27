@@ -3,23 +3,16 @@
 // = require jquery
 
 $(() => {
-  const {
-    Client,
-    Election,
-    Trustee,
-    MESSAGE_PROCESSED,
-  } = window.decidimBulletinBoard;
+  const { KeyCeremonyComponent } = window.decidimBulletinBoard;
 
+  // UI Elements
   const $trusteeTable = $(".trustee-table");
 
-  const bulletinBoardClient = new Client({
+  // Data
+  const bulletinBoardClientParams = {
     apiEndpointUrl: "http://localhost:8000/api",
-  });
-
-  const election = new Election({
-    uniqueId: $trusteeTable.data("electionUniqueId"),
-    bulletinBoardClient,
-  });
+  };
+  const electionUniqueId = $trusteeTable.data("electionUniqueId");
 
   $trusteeTable.find("tbody tr").each((_index, row) => {
     const $trustee = $(row);
@@ -29,85 +22,83 @@ $(() => {
       publicKeyJSON: JSON.stringify($trustee.data("publicKey")),
     };
 
-    const identificationKeys = new window.Decidim.IdentificationKeys(
+    const trusteeIdentificationKeys = new window.Decidim.IdentificationKeys(
       trusteeContext.uniqueId,
       trusteeContext.publicKeyJSON
     );
 
-    identificationKeys.present((exists) => {
-      const $startButton = $trustee.find(".start-button");
-      const $backupButton = $trustee.find(".backup-button");
-      const $restoreButton = $trustee.find(".restore-button");
-      const $doneMessage = $trustee.find(".done-message");
+    const $startButton = $trustee.find(".start-button");
+    const $backupButton = $trustee.find(".backup-button");
+    const $restoreButton = $trustee.find(".restore-button");
+    const $doneMessage = $trustee.find(".done-message");
 
-      $startButton.hide();
-      $backupButton.hide();
-      $restoreButton.hide();
-      $doneMessage.hide();
+    $startButton.hide();
+    $backupButton.hide();
+    $restoreButton.hide();
+    $doneMessage.hide();
 
-      function setupKeyCeremony() {
-        const trustee = new Trustee({
-          uniqueId: trusteeContext.uniqueId,
-          bulletinBoardClient,
-          identificationKeys,
-          election,
-        });
+    // Use the key ceremony controller and bind all UI events
+    const controller = new KeyCeremonyComponent({
+      bulletinBoardClientParams,
+      electionUniqueId,
+      trusteeUniqueId: trusteeContext.uniqueId,
+      trusteeIdentificationKeys,
+    });
 
-        $trustee.find(".private-key").hide();
+    const bindControllerEvents = async () => {
+      $trustee.find(".private-key").hide();
 
-        $startButton.on("click", async (event) => {
-          event.preventDefault();
+      await controller.bindEvents({
+        onBindRestoreButton(onEventTriggered) {
+          $restoreButton.on(
+            "change",
+            ".restore-button-input",
+            onEventTriggered
+          );
+        },
+        onBindStartButton(onEventTriggered) {
+          $startButton.on("click", onEventTriggered);
+        },
+        onBindBackupButton(backupData, backupFilename, onEventTriggered) {
+          $backupButton.attr(
+            "href",
+            `data:text/plain;charset=utf-8,${backupData}`
+          );
+          $backupButton.attr("download", backupFilename);
+          $backupButton.on("click", onEventTriggered);
+        },
+        onSetup() {
+          $startButton.show();
+        },
+        onEvent(_event) {},
+        onRestore() {
+          $restoreButton.hide();
+        },
+        onComplete() {
+          $doneMessage.show();
+        },
+        onStart() {
           $startButton.hide();
+        },
+        onTrusteeNeedsToBeRestored() {
+          $restoreButton.show();
+        },
+        onBackupNeeded() {
+          $backupButton.show();
+        },
+        onBackupStarted() {
+          $backupButton.hide();
+        },
+      });
+    };
 
-          await trustee.setup();
-
-          if (trustee.needsToBeRestored()) {
-            $restoreButton.show();
-          } else {
-            const keyCeremonySetup = trustee.setupKeyCeremony();
-            const { value: backupData } = await keyCeremonySetup.next();
-
-            $backupButton.on("click", async () => {
-              $backupButton.hide();
-              $backupButton.attr(
-                "href",
-                `data:text/plain;charset=utf-8,${backupData}`
-              );
-              $backupButton.attr(
-                "download",
-                `${trustee.uniqueId}-election-${election.uniqueId}.bak`
-              );
-              await keyCeremonySetup.next();
-              await trustee.runKeyCeremony();
-              $doneMessage.show();
-            });
-
-            $backupButton.show();
-          }
-        });
-
-        $restoreButton.on("change", ".restore-button-input", (event) => {
-          let file = event.target.files[0];
-          const reader = new FileReader();
-          reader.onload = function ({ target }) {
-            let content = target.result;
-            if (trustee.restore(content)) {
-              $restoreButton.hide();
-              trustee.runKeyCeremony();
-            }
-          };
-          reader.readAsText(file);
-        });
-
-        $startButton.show();
-      }
-
+    trusteeIdentificationKeys.present(async (exists) => {
       if (exists) {
-        setupKeyCeremony();
+        await bindControllerEvents();
       } else {
         $trustee.on("change", ".private-key-input", async (event) => {
-          await identificationKeys.upload(event, true);
-          setupKeyCeremony();
+          await trusteeIdentificationKeys.upload(event, true);
+          await bindControllerEvents();
         });
       }
     });
