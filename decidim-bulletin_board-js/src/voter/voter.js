@@ -32,23 +32,43 @@ export class Voter {
     return this.wrapper.encrypt(data);
   }
 
-  async verifyVote(voteHash) {
-    const { id: electionUniqueId } = this.electionContext;
-
-    return new Promise((resolve) => {
+  /**
+   * Confirms if a vote was processed
+   *
+   * @param {Object} messageId - An object that includes the following options.
+   *  - {String} messageId - the unique identifier of a message
+   * @returns {Promise<Object>} - Returns the PendingMessage
+   */
+  waitForPendingMessageToBeProcessed(messageId) {
+    return new Promise((resolve, reject) => {
       const intervalId = setInterval(() => {
         this.bulletinBoardClient
-          .getLogEntry({
-            electionUniqueId,
-            contentHash: voteHash,
+          .getPendingMessageByMessageId({
+            messageId,
           })
-          .then((logEntry) => {
-            if (logEntry) {
+          .then((pendingMessage) => {
+            if (pendingMessage.status !== "enqueued") {
               clearInterval(intervalId);
-              resolve();
+              resolve(pendingMessage);
             }
           });
       }, this.options.bulletinBoardWaitTime);
+    });
+  }
+
+  /**
+   * Verifies a vote
+   *
+   * @param {String} contentHash - An object that includes the following options.
+   *  - {String} contentHash - the contentHash of a vote
+   * @returns {Promise<Object>} - Returns a logEntry
+   */
+  verifyVote(contentHash) {
+    const { id: electionUniqueId } = this.electionContext;
+
+    return this.bulletinBoardClient.getLogEntry({
+      electionUniqueId,
+      contentHash,
     });
   }
 }

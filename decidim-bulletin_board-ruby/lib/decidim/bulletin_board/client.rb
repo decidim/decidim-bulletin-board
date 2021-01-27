@@ -55,6 +55,10 @@ module Decidim
         close_ballot_box.call
       end
 
+      def cast_vote_message_id(election_id, voter_id)
+        Decidim::BulletinBoard::Voter::CastVote.cast_vote_message_id(election_id, voter_id)
+      end
+
       def cast_vote(election_id, voter_id, encrypted_vote)
         cast_vote = Decidim::BulletinBoard::Voter::CastVote.new(election_id, voter_id, encrypted_vote)
         cast_vote.on(:ok) { |pending_message| return pending_message }
@@ -62,11 +66,18 @@ module Decidim
         cast_vote.call
       end
 
-      def get_status(election_id)
-        get_status = Decidim::BulletinBoard::Authority::GetElectionStatus.new(election_id)
-        get_status.on(:ok) { |status| return status }
-        get_status.on(:error) { |error_message| raise StandardError, error_message }
-        get_status.call
+      def get_pending_message_status(message_id)
+        get_pending_message_status = Decidim::BulletinBoard::Voter::GetPendingMessageStatus.new(message_id)
+        get_pending_message_status.on(:ok) { |status| return status }
+        get_pending_message_status.on(:error) { |error_message| raise StandardError, error_message }
+        get_pending_message_status.call
+      end
+
+      def get_election_status(election_id)
+        get_election_status = Decidim::BulletinBoard::Authority::GetElectionStatus.new(election_id)
+        get_election_status.on(:ok) { |status| return status }
+        get_election_status.on(:error) { |error_message| raise StandardError, error_message }
+        get_election_status.call
       end
 
       def start_tally(election_id)

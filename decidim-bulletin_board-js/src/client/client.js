@@ -61,4 +61,16 @@ export class Client {
   processTallyStep(params) {
     return this.apiClient.processTallyStep(params);
   }
+
+  /**
+   * Query PendingMessages for a given messageId
+   *
+   * @param {Object} params - An object that include the following options.
+   *  - {String} messageId - The messageId
+   * @returns {Promise<Object>} - The pending message received.
+   * @throws Will throw an error if the request is rejected.
+   */
+  getPendingMessageByMessageId({ messageId }) {
+    return this.apiClient.getPendingMessageByMessageId({ messageId });
+  }
 }

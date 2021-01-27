@@ -33,7 +33,33 @@ RSpec.describe "GetPendingMessage" do
     )
   end
 
-  context "when the pending message doesn't exist" do
+  describe "when using message_id as argument" do
+    let(:query) do
+      <<~GQL
+        query GetPendingMessage {
+          pendingMessage(messageId: "#{pending_message.message_id}") {
+            messageId
+            signedData
+            status
+          }
+        }
+      GQL
+    end
+
+    it "returns the pending message information" do
+      expect(subject.deep_symbolize_keys).to include(
+        data: {
+          pendingMessage: {
+            messageId: pending_message.message_id,
+            signedData: pending_message.signed_data,
+            status: pending_message.status
+          }
+        }
+      )
+    end
+  end
+
+  describe "when the pending message doesn't exist" do
     let(:pending_message_id) { "test" }
 
     it { expect(subject.dig("data", "pendingMessage")).to be_nil }

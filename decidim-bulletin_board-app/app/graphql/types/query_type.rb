@@ -44,10 +44,15 @@ module Types
           Types::PendingMessageType,
           null: true,
           description: "Returns the information for a given message" do
-      argument :id, ID, required: true
+      argument :id, ID, required: false
+      argument :message_id, String, required: false
 
       def resolve(_parent, args, _context)
-        PendingMessage.find_by(id: args[:id])
+        if args[:id]
+          PendingMessage.find_by(id: args[:id])
+        elsif args[:message_id]
+          PendingMessage.order(created_at: :desc).find_by(message_id: args[:message_id])
+        end
       end
     end
 

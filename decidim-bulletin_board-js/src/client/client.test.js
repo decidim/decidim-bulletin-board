@@ -47,6 +47,17 @@ describe("Client", () => {
     });
   });
 
+  describe("getPendingMessageByMessageId", () => {
+    it("returns the pending message for the given messageId", async () => {
+      const pendingMessage = await client.getPendingMessageByMessageId({
+        messageId: "dummy.1",
+      });
+      expect(pendingMessage).toEqual({
+        status: "accepted",
+      });
+    });
+  });
+
   describe("processKeyCeremonyStep", () => {
     it("calls the api client corresponding method with the correct arguments", async () => {
       const pendingMessage = await client.processKeyCeremonyStep({

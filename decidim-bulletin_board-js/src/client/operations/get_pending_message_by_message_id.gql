@@ -1,0 +1,5 @@
+query GetPendingMessageByMessageId($messageId: String!) {
+  pendingMessage(messageId: $messageId) {
+    status
+  }
+}

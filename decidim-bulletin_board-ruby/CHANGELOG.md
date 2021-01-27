@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## Changed
+
+- `getPendingMessage` can get queried by `messageId` and by `id`.
+- `get_status` renamed to `get_election_status` in the `Decidim::BulletinBoard::Client`.
+
+## Added
+
+- `getPendingMessageStatus` method to the `Decidim::BulletinBoard::Client`.
+- `waitForPendingMessageToBeProcessed` method to the Voter class.
+
 ## [0.7.0] - 2021-01-26
 
 ## Changed
@@ -21,7 +31,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `start_tally` method to the `Decidim::BulletinBoard::Client`.
 - `publish_results` method to the `Decidim::BulletinBoard::Client`.
 - `Election` class in the JS package to handle the election state. An instance of this class will be used by the key ceremony and the trustee to check anything related to log entries.
-- The `Trustee` class now have a `teardown` method that is called automatically to clean a few things. It can be called early to avoid memory leaks if needed.
+- The `Trustee` class now has a `teardown` method that is called automatically to clean a few things. It can be called early to avoid memory leaks if needed.
 - The `EventManager` class now handles the `events` stream and exports some useful constants.
 
 ## Removed
