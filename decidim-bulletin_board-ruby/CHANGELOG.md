@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Changed
 
 - `getPendingMessage` can get queried by `messageId` and by `id`.
+- `get_status` renamed to `get_election_status` in the `Decidim::BulletinBoard::Client`.
 
 ## Added
 
