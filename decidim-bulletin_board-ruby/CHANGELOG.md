@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - `start_key_ceremony` method to the `Decidim::BulletinBoard::Client`.
 - The `IdentificationKeys` class has been added to the JS library.
+- The `TallyComponent` has been added. It will be used as a glue code between the tally and the UI.
 
 ## [0.8.2] - 2021-01-28
 
