@@ -1,6 +1,6 @@
 import { MessageIdentifier, TRUSTEE_TYPE } from "../client/message-identifier";
 
-export const WAIT_TIME_MS = 1_000; // 1s
+export const WAIT_TIME_MS = 2_000; // 2s
 
 /**
  * Handles the election state and includes some methods to interact with the election log.
