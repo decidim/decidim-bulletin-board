@@ -282,18 +282,7 @@ FactoryBot.define do
       end
 
       message_id { "#{election.unique_id}.tally.cast+b.#{BulletinBoard.unique_id}" }
-      content { build(:tally_cast_message_content, *content_traits, election: election, joint_election_key: joint_election_key).to_json }
-    end
-
-    factory :tally_cast_message_content do
-      transient do
-        election { create(:election, :tally) }
-        joint_election_key { Test::Elections.joint_election_key }
-      end
-
-      after(:build) do |content, evaluator|
-        content[:contests] = Test::Elections.build_cast(evaluator.election) { Random.random_number(99) + Random.random_number(13) * evaluator.joint_election_key }
-      end
+      content { Test::Elections.build_cast(election) { Random.random_number(99) + Random.random_number(13) * joint_election_key }.to_json }
     end
 
     factory :tally_share_message, parent: :message do
@@ -333,7 +322,7 @@ FactoryBot.define do
       end
 
       after(:build) do |content, evaluator|
-        content[:share] = evaluator.tally_cast.map do |question, answers|
+        content[:contests] = evaluator.tally_cast.map do |question, answers|
           [
             question,
             answers.map do |answer, votes_sum|

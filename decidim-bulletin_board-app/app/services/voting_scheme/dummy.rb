@@ -47,7 +47,9 @@ module VotingScheme
 
     def process_create_election_message(_message_identifier, message, _content)
       raise RejectedMessage, "There must be at least 2 Trustees" if message.fetch(:trustees, []).count < 2
+    end
 
+    def process_start_key_ceremony_message(_message_identifier, _message, _content)
       @state = { joint_election_key: 1, trustees: [] }
     end
 
@@ -71,9 +73,13 @@ module VotingScheme
 
     def process_vote_message(_message_identifier, _message, content)
       raise RejectedMessage, "The given ballot style is invalid" if content.fetch(:ballot_style, "invalid-style") == "invalid-style"
+      raise RejectedMessage, "Invalid ballot format" unless content[:contests]
 
       content[:contests].each do |contest|
+        raise RejectedMessage, "Invalid ballot format" unless contest[:object_id] && contest[:ballot_selections]
+
         contest[:ballot_selections].each do |ballot_selection|
+          raise RejectedMessage, "Invalid ballot format" unless ballot_selection[:object_id] && ballot_selection[:ciphertext]
           raise RejectedMessage, "The encrypted ballot is invalid" if ballot_selection[:ciphertext] % state[:joint_election_key] > 1
         end
       end
@@ -103,10 +109,9 @@ module VotingScheme
 
       state[:shares] << content[:owner_id]
 
-      content[:share].each do |question, answers|
+      content[:contests].each do |question, answers|
         answers.each do |answer, share|
           state[:joint_shares][question][answer] *= share
-          state[:joint_shares][question][answer] %= state[:joint_election_key] * 13
         end
       end
 
@@ -115,7 +120,7 @@ module VotingScheme
       results = build_questions_struct(0)
       state[:joint_shares].each do |question, answers|
         answers.each do |answer, joint_share|
-          results[question][answer] = (joint_share / state[:joint_election_key])**(1 / state[:trustees].count)
+          results[question][answer] = (joint_share / state[:joint_election_key])**(1.0 / state[:trustees].count)
         end
       end
 
