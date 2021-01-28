@@ -10,7 +10,7 @@ Rails.application.routes.draw do
 
   mount ActionCable.server, at: "/cable"
 
-  if Rails.env.development?
+  if Rails.env.development? || Rails.env.test?
     scope "/sandbox", module: :sandbox, as: :sandbox do
       resources :elections, only: [:index] do
         member do

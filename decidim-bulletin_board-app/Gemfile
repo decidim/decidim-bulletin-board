@@ -54,6 +54,8 @@ group :development, :test do
   gem "rubocop", "~> 0.71.0"
   gem "rubocop-rails", "~> 2.0"
   gem "rubocop-rspec", "~> 1.21"
+  gem 'cypress-on-rails', '~> 1.0'
+  gem 'database_cleaner-active_record'
 end
 
 group :development do

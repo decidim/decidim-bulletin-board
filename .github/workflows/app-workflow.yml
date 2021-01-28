@@ -123,3 +123,71 @@ jobs:
         uses: codecov/codecov-action@v1
         with:
           directory: ./decidim-bulletin_board-app/coverage
+  e2e-test:
+    name: E2E tests
+    needs: rspec-test
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:11
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        env:
+          POSTGRES_PASSWORD: postgres
+    env:
+      DATABASE_USERNAME: postgres
+      DATABASE_PASSWORD: postgres
+      DATABASE_HOST: localhost
+    steps:
+      - uses: actions/checkout@v2.0.0
+        with:
+          fetch-depth: 1
+      - uses: ruby/setup-ruby@master
+        with:
+          ruby-version: ${{ env.RUBY_VERSION }}
+      - uses: actions/setup-python@v2
+        with:
+          python-version: "3.8.2"
+      - name: Recover dependency cache
+        uses: actions/cache@v1
+        with:
+          path: ./decidim-bulletin_board-app/vendor/bundle
+          key: ${{ runner.OS }}-decidim-bulletin_board-app-deps-${{ hashFiles('decidim-bulletin_board-app/Gemfile.lock') }}
+          restore-keys: |
+            ${{ runner.OS }}-decidim-bulletin_board-app-deps-${{ env.cache-name }}-
+            ${{ runner.OS }}-decidim-bulletin_board-app-deps-
+            ${{ runner.OS }}-decidim-bulletin_board-app-
+      - name: Install postgres client
+        run: sudo apt-get install libpq-dev
+      - name: Install Ruby deps
+        uses: nick-invision/retry@v1
+        with:
+          timeout_minutes: 10
+          max_attempts: 3
+          command: cd decidim-bulletin_board-app && bundle install --path vendor/bundle --jobs 4 --retry 3
+      - name: Install Javascript deps
+        uses: nick-invision/retry@v1
+        with:
+          timeout_minutes: 10
+          max_attempts: 3
+          command: cd decidim-bulletin_board-app && npm ci
+      - name: Install ElectionGuard wrappers
+        run: ./install_eg_wrappers.sh
+      - name: Create database
+        env:
+          RAILS_ENV: test
+        run: |
+          bundler exec rails db:create
+          bundler exec rails db:migrate
+      - name: Start Rails server
+        env:
+          RAILS_ENV: test
+        run: |
+          bundle exec rails server -e test -p 5017 &
+          sleep 5
+      - name: Run tests
+        run: npm run e2e:tests
