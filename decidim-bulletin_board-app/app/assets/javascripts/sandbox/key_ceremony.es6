@@ -46,6 +46,7 @@ $(() => {
       trusteeUniqueId: trusteeContext.uniqueId,
       trusteeIdentificationKeys,
     });
+    window.components[trusteeContext.uniqueId] = component;
 
     const bindComponentEvents = async () => {
       $trustee.find(".private-key").hide();
