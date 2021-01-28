@@ -38,14 +38,15 @@ export class VoterWrapper {
   }
 
   async encrypt(vote) {
-    return new Promise((resolve) => setTimeout(resolve, WAIT_TIME_MS)).then(() => {
-      if (!this.jointElectionKey) {
-        console.warn("Invalid election status.");
-        return;
+    return new Promise((resolve) => setTimeout(resolve, WAIT_TIME_MS)).then(
+      () => {
+        if (!this.jointElectionKey) {
+          console.warn("Invalid election status.");
+          return;
+        }
+        return JSON.stringify(this.createBallot(vote));
       }
-
-      const ballot = JSON.stringify(this.createBallot(vote));
-    });
+    );
   }
 
   createBallot(vote) {

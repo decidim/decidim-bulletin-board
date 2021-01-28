@@ -77,14 +77,13 @@ export class TrusteeWrapper {
       }
       case TALLY: {
         if (messageIdentifier.typeSubtype === TALLY_CAST) {
-          let contests = JSON.parse(message.content);
+          const contests = JSON.parse(message.content);
           for (const [question, answers] of Object.entries(contests)) {
             for (const [answer, value] of Object.entries(answers)) {
               contests[question][answer] =
                 (value % this.electionPublicKey) * this.electionPublicKey;
             }
           }
-          console.log(contests);
 
           return {
             message_id: MessageIdentifier.format(
@@ -141,6 +140,7 @@ export class TrusteeWrapper {
     const result = JSON.parse(state);
     if (result.trusteeId !== this.trusteeId) {
       console.warn("Invalid trustee id");
+      return false;
     }
 
     if (messageId && result.status === CREATED) {
@@ -151,7 +151,7 @@ export class TrusteeWrapper {
     try {
       Object.assign(this, result);
     } catch (error) {
-      console.warn(error);
+      console.error(error);
       return false;
     }
 

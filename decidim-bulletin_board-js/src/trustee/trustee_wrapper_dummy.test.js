@@ -1,13 +1,26 @@
 import {
   TrusteeWrapper,
+  CREATED,
+  KEY_CEREMONY,
+  KEY_CEREMONY_ENDED,
+  TALLY,
+  TALLY_ENDED,
   CREATE_ELECTION,
+  START_KEY_CEREMONY,
   KEY_CEREMONY_STEP_1,
-  KEY_CEREMONY_JOINT_ELECTION_KEY,
+  END_KEY_CEREMONY,
+  START_TALLY,
   TALLY_CAST,
   TALLY_SHARE,
+  END_TALLY,
 } from "./trustee_wrapper_dummy";
 
-import { MessageIdentifier, TRUSTEE_TYPE } from "../client/message-identifier";
+import {
+  MessageIdentifier,
+  AUTHORITY_TYPE,
+  TRUSTEE_TYPE,
+  BULLETIN_BOARD_TYPE,
+} from "../client/message-identifier";
 
 describe("TrusteeWrapper", () => {
   const defaultParams = {
@@ -27,102 +40,35 @@ describe("TrusteeWrapper", () => {
   it("initialises the trustee wrapper with the given params", () => {
     expect(wrapper.trusteeId).toEqual(defaultParams.trusteeId);
     expect(wrapper.electionId).toEqual(null);
-    expect(wrapper.status).toEqual(CREATE_ELECTION);
-    expect(wrapper.electionTrusteesCount).toEqual(0);
-    expect(wrapper.processedMessages).toEqual([]);
+    expect(wrapper.status).toEqual(CREATED);
+    expect(wrapper.electionPublicKey).toEqual(0);
   });
 
   describe("processMessage", () => {
-    describe("when the status is CREATE_ELECTION", () => {
-      beforeEach(() => {
-        wrapper.status = CREATE_ELECTION;
-      });
-
-      describe("when the message to be processed is the correct one", () => {
+    describe("when the status is CREATED", () => {
+      describe("when it receives the START_KEY_CEREMONY message", () => {
         it("changes the wrapper status and stores some data", () => {
-          wrapper.processMessage(
+          const response = wrapper.processMessage(
             MessageIdentifier.format(
               "some-authority.some-id",
-              CREATE_ELECTION,
-              TRUSTEE_TYPE,
-              "some-author-id"
+              START_KEY_CEREMONY,
+              AUTHORITY_TYPE,
+              "some-authority-id"
             ),
-            {
-              trustees: ["trustee-1", "trustee-2"],
-            }
+            {}
           );
-          expect(wrapper.status).toEqual(KEY_CEREMONY_STEP_1);
+          expect(wrapper.status).toEqual(KEY_CEREMONY);
           expect(wrapper.electionId).toEqual("some-authority.some-id");
-          expect(wrapper.processedMessages).toEqual([]);
-          expect(wrapper.electionTrusteesCount).toEqual(2);
-        });
-      });
-
-      describe("when the message to be processes is not the correct one", () => {
-        it("doesn't do anything", () => {
-          wrapper.processMessage(
-            MessageIdentifier.format(
-              "some-authority.some-id",
-              "some-type",
-              TRUSTEE_TYPE,
-              "some-author-id"
-            ),
-            {}
-          );
-          expect(wrapper.status).toEqual(CREATE_ELECTION);
-        });
-      });
-    });
-
-    describe("when the status is KEY_CEREMONY_STEP_1", () => {
-      beforeEach(() => {
-        wrapper.status = KEY_CEREMONY_STEP_1;
-      });
-
-      describe("when the message to be processed is the correct one", () => {
-        describe("when there are not enough trustees", () => {
-          it("stores the message", () => {
-            wrapper.electionTrusteesCount = 2;
-            wrapper.processMessage(
-              MessageIdentifier.format(
-                "some-authority.some-id",
-                KEY_CEREMONY_STEP_1,
-                TRUSTEE_TYPE,
-                "some-author-id"
-              ),
-              {
-                trustee: "first-trustee",
-              }
-            );
-            expect(wrapper.status).toEqual(KEY_CEREMONY_STEP_1);
-            expect(wrapper.processedMessages).toEqual([
-              {
-                trustee: "first-trustee",
-              },
-            ]);
-          });
-        });
-
-        describe("when there are enough trustees", () => {
-          it("changes the wrapper status and stores some data", () => {
-            wrapper.electionTrusteesCount = 1;
-            wrapper.processMessage(
-              MessageIdentifier.format(
-                "some-authority.some-id",
-                KEY_CEREMONY_STEP_1,
-                TRUSTEE_TYPE,
-                "some-author-id"
-              ),
-              {
-                trustee: "first-trustee",
-              }
-            );
-            expect(wrapper.status).toEqual(KEY_CEREMONY_JOINT_ELECTION_KEY);
+          expect(wrapper.electionPublicKey).not.toEqual(0);
+          expect(response).toEqual({
+            content: `{"election_public_key":${wrapper.electionPublicKey},"owner_id":"trustee-1"}`,
+            message_id:
+              "some-authority.some-id.key_ceremony.step_1+t.trustee-1",
           });
         });
       });
 
-      describe("when the message to be processes is not the correct one", () => {
+      describe("when it receives any other message", () => {
         it("doesn't do anything", () => {
           wrapper.processMessage(
             MessageIdentifier.format(
@@ -133,32 +79,32 @@ describe("TrusteeWrapper", () => {
             ),
             {}
           );
-          expect(wrapper.status).toEqual(KEY_CEREMONY_STEP_1);
+          expect(wrapper.status).toEqual(CREATED);
         });
       });
     });
 
-    describe("when the status is KEY_CEREMONY_JOINT_ELECTION_KEY", () => {
+    describe("when the status is KEY_CEREMONY", () => {
       beforeEach(() => {
-        wrapper.status = KEY_CEREMONY_JOINT_ELECTION_KEY;
+        wrapper.status = KEY_CEREMONY;
       });
 
-      describe("when the message to be processed is the correct one", () => {
-        it("returns some data", () => {
+      describe("when it receives the END_KEY_CEREMONY message", () => {
+        it("changes the wrapper status", () => {
           wrapper.processMessage(
             MessageIdentifier.format(
               "some-authority.some-id",
-              KEY_CEREMONY_JOINT_ELECTION_KEY,
-              TRUSTEE_TYPE,
-              "some-author-id"
+              END_KEY_CEREMONY,
+              BULLETIN_BOARD_TYPE,
+              "some-bb-id"
             ),
             {}
           );
-          expect(wrapper.status).toEqual(TALLY_CAST);
+          expect(wrapper.status).toEqual(KEY_CEREMONY_ENDED);
         });
       });
 
-      describe("when the message to be processes is not the correct one", () => {
+      describe("when it receives any other message", () => {
         it("doesn't do anything", () => {
           wrapper.processMessage(
             MessageIdentifier.format(
@@ -169,43 +115,99 @@ describe("TrusteeWrapper", () => {
             ),
             {}
           );
-          expect(wrapper.status).toEqual(KEY_CEREMONY_JOINT_ELECTION_KEY);
+          expect(wrapper.status).toEqual(KEY_CEREMONY);
         });
       });
     });
 
-    describe("when the status is TALLY_CAST", () => {
+    describe("when the status is KEY_CEREMONY_ENDED", () => {
       beforeEach(() => {
-        wrapper.status = TALLY_CAST;
+        wrapper.status = KEY_CEREMONY_ENDED;
       });
 
-      describe("when the message to be processed is the correct one", () => {
-        it("returns some data", () => {
+      describe("when it receives the START_TALLY message", () => {
+        it("changes the wrapper status", () => {
           wrapper.processMessage(
+            MessageIdentifier.format(
+              "some-authority.some-id",
+              START_TALLY,
+              AUTHORITY_TYPE,
+              "some-authority-id"
+            ),
+            {}
+          );
+          expect(wrapper.status).toEqual(TALLY);
+        });
+      });
+
+      describe("when it receives any other message", () => {
+        it("doesn't do anything", () => {
+          wrapper.processMessage(
+            MessageIdentifier.format(
+              "some-authority.some-id",
+              "some-type",
+              TRUSTEE_TYPE,
+              "some-author-id"
+            ),
+            {}
+          );
+          expect(wrapper.status).toEqual(KEY_CEREMONY_ENDED);
+        });
+      });
+    });
+
+    describe("when the status is TALLY", () => {
+      beforeEach(() => {
+        wrapper.status = TALLY;
+        wrapper.electionPublicKey = 123;
+        wrapper.electionId = "some-authority.some-id";
+      });
+
+      describe("when it receives the TALLY_CAST message", () => {
+        it("returns some data", () => {
+          const response = wrapper.processMessage(
             MessageIdentifier.format(
               "some-authority.some-id",
               TALLY_CAST,
-              TRUSTEE_TYPE,
-              "some-author-id"
+              BULLETIN_BOARD_TYPE,
+              "some-bb-id"
             ),
-            {}
+            {
+              content: JSON.stringify({
+                "question-1": {
+                  "q1-answer-1": 123 * 456 * 789 + 2,
+                  "q1-answer-2": 123 * 456 * 789 + 4,
+                },
+                "question-2": {
+                  "q2-answer-1": 123 * 456 * 789 + 3,
+                  "q2-answer-2": 123 * 456 * 789 + 5,
+                },
+              }),
+            }
           );
-          expect(wrapper.status).toEqual(TALLY_SHARE);
+          expect(response).toEqual({
+            content: `{"owner_id":"trustee-1","contests":{"question-1":{"q1-answer-1":${
+              123 * 2
+            },"q1-answer-2":${123 * 4}},"question-2":{"q2-answer-1":${
+              123 * 3
+            },"q2-answer-2":${123 * 5}}}}`,
+            message_id: "some-authority.some-id.tally.share+t.trustee-1",
+          });
         });
       });
 
-      describe("when the message to be processes is not the correct one", () => {
-        it("doesn't do anything", () => {
-          wrapper.processMessage(
+      describe("when it receives the END_TALLY message", () => {
+        it("returns some data", () => {
+          const response = wrapper.processMessage(
             MessageIdentifier.format(
               "some-authority.some-id",
-              "some-type",
-              TRUSTEE_TYPE,
-              "some-author-id"
+              END_TALLY,
+              BULLETIN_BOARD_TYPE,
+              "some-bb-id"
             ),
             {}
           );
-          expect(wrapper.status).toEqual(TALLY_CAST);
+          expect(wrapper.status).toEqual(TALLY_ENDED);
         });
       });
     });
@@ -217,40 +219,60 @@ describe("TrusteeWrapper", () => {
     });
 
     it("returns false when the wrapper status is not the initial state", () => {
-      wrapper.status = "key_ceremony.step_1";
-      expect(wrapper.needsToBeRestored("key_ceremony.step_1")).toBeFalsy();
+      wrapper.status = KEY_CEREMONY;
+      expect(wrapper.needsToBeRestored(KEY_CEREMONY_STEP_1)).toBeFalsy();
     });
 
     it("returns true when the wrapper status is the initial state and there are messages sent by the Trustee", () => {
-      expect(wrapper.needsToBeRestored("key_ceremony.step_1")).toBeTruthy();
+      expect(wrapper.needsToBeRestored(KEY_CEREMONY_STEP_1)).toBeTruthy();
     });
   });
 
   describe("backup", () => {
     it("returns a JSON representation of the wrapper", () => {
       expect(wrapper.backup()).toEqual(
-        '{"trusteeId":"trustee-1","electionId":null,"status":"create_election","electionTrusteesCount":0,"processedMessages":[]}'
+        `{"trusteeId":"trustee-1","electionId":null,"status":${CREATED},"electionPublicKey":0}`
       );
+    });
+
+    describe("after creating the election keys", () => {
+      beforeEach(() => {
+        const response = wrapper.processMessage(
+          MessageIdentifier.format(
+            "some-authority.some-id",
+            START_KEY_CEREMONY,
+            AUTHORITY_TYPE,
+            "some-authority-id"
+          ),
+          {}
+        );
+      });
+
+      it("returns a JSON representation of the wrapper in the KEY_CEREMONY status", () => {
+        expect(wrapper.backup()).toEqual(
+          `{"trusteeId":"trustee-1","electionId":"some-authority.some-id","status":${KEY_CEREMONY},"electionPublicKey":${wrapper.electionPublicKey}}`
+        );
+      });
     });
   });
 
   describe("restore", () => {
     it("restore the state of the wrapper from a backup", () => {
-      wrapper.status = "key_ceremony.step_1";
+      wrapper.status = KEY_CEREMONY;
       const backup = wrapper.backup();
 
       wrapper = buildTrusteeWrapper();
-      expect(wrapper.status).toEqual("create_election");
-      expect(wrapper.restore(backup, "key_ceremony.step_1")).toBeTruthy();
-      expect(wrapper.status).toEqual("key_ceremony.step_1");
+      expect(wrapper.status).toEqual(CREATED);
+      expect(wrapper.restore(backup, KEY_CEREMONY_STEP_1)).toBeTruthy();
+      expect(wrapper.status).toEqual(KEY_CEREMONY);
     });
 
     it("doesn't restore the state of the wrapper from a backup if it's not right", () => {
       const backup = wrapper.backup();
 
-      wrapper.status = "key_ceremony.step_1";
-      expect(wrapper.restore(backup, "key_ceremony.step_1")).toBeFalsy();
-      expect(wrapper.status).toEqual("key_ceremony.step_1");
+      wrapper.status = TALLY;
+      expect(wrapper.restore(backup, KEY_CEREMONY_STEP_1)).toBeFalsy();
+      expect(wrapper.status).toEqual(TALLY);
     });
 
     it("doesn't restore the state from another Trustee", () => {
