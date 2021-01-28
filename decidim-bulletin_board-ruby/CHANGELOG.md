@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## Added
+
+- The `IdentificationKeys` class has been added to the JS library.
+
 ## [0.8.2] - 2021-01-28
 
 ## Changed

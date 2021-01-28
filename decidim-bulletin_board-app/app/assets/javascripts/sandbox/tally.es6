@@ -1,4 +1,3 @@
-// = require sandbox/identification_keys
 // = require decidim/bulletin_board/decidim-bulletin_board.dev
 // = require jquery
 
@@ -7,7 +6,7 @@ $(() => {
     Client,
     Election,
     Trustee,
-    MESSAGE_PROCESSED,
+    IdentificationKeys,
   } = window.decidimBulletinBoard;
 
   const $trusteeTable = $(".trustee-table");
@@ -29,7 +28,7 @@ $(() => {
       publicKeyJSON: JSON.stringify($trustee.data("publicKey")),
     };
 
-    const identificationKeys = new window.Decidim.IdentificationKeys(
+    const identificationKeys = new IdentificationKeys(
       trusteeContext.uniqueId,
       trusteeContext.publicKeyJSON
     );
