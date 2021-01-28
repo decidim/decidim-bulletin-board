@@ -1,11 +1,19 @@
 import { MessageIdentifier, TRUSTEE_TYPE } from "../client/message-identifier";
 
+export const CREATED = 0;
+export const KEY_CEREMONY = 1;
+export const KEY_CEREMONY_ENDED = 2;
+export const TALLY = 3;
+export const TALLY_ENDED = 4;
+
 export const CREATE_ELECTION = "create_election";
+export const START_KEY_CEREMONY = "start_key_ceremony";
 export const KEY_CEREMONY_STEP_1 = "key_ceremony.step_1";
-export const KEY_CEREMONY_JOINT_ELECTION_KEY =
-  "key_ceremony.joint_election_key";
+export const END_KEY_CEREMONY = "end_key_ceremony";
+export const START_TALLY = "start_tally";
 export const TALLY_CAST = "tally.cast";
 export const TALLY_SHARE = "tally.share";
+export const END_TALLY = "end_tally";
 
 /**
  * This is just a dummy implementation of a possible `TrusteeWrapper`.
@@ -22,9 +30,8 @@ export class TrusteeWrapper {
   constructor({ trusteeId }) {
     this.trusteeId = trusteeId;
     this.electionId = null;
-    this.status = CREATE_ELECTION;
-    this.electionTrusteesCount = 0;
-    this.processedMessages = [];
+    this.status = CREATED;
+    this.electionPublicKey = 0;
   }
 
   /**
@@ -35,12 +42,12 @@ export class TrusteeWrapper {
   processMessage(messageId, message) {
     const messageIdentifier = MessageIdentifier.parse(messageId);
     switch (this.status) {
-      case CREATE_ELECTION: {
-        if (messageIdentifier.type === CREATE_ELECTION) {
-          this.status = KEY_CEREMONY_STEP_1;
+      case CREATED: {
+        if (messageIdentifier.type === START_KEY_CEREMONY) {
+          this.status = KEY_CEREMONY;
           this.electionId = messageIdentifier.electionId;
-          this.processedMessages = [];
-          this.electionTrusteesCount = message.trustees.length;
+          this.electionPublicKey = Math.floor(50 + Math.random() * 200) * 2 + 1;
+
           return {
             message_id: MessageIdentifier.format(
               this.electionId,
@@ -49,31 +56,36 @@ export class TrusteeWrapper {
               this.trusteeId
             ),
             content: JSON.stringify({
-              election_public_key: 7,
+              election_public_key: this.electionPublicKey,
               owner_id: this.trusteeId,
             }),
           };
         }
         break;
       }
-      case KEY_CEREMONY_STEP_1: {
-        if (messageIdentifier.typeSubtype === KEY_CEREMONY_STEP_1) {
-          this.processedMessages = [...this.processedMessages, message];
-          if (this.processedMessages.length === this.electionTrusteesCount) {
-            this.status = KEY_CEREMONY_JOINT_ELECTION_KEY;
-          }
+      case KEY_CEREMONY: {
+        if (messageIdentifier.type === END_KEY_CEREMONY) {
+          this.status = KEY_CEREMONY_ENDED;
         }
         break;
       }
-      case KEY_CEREMONY_JOINT_ELECTION_KEY: {
-        if (messageIdentifier.typeSubtype === KEY_CEREMONY_JOINT_ELECTION_KEY) {
-          this.status = TALLY_CAST;
+      case KEY_CEREMONY_ENDED: {
+        if (messageIdentifier.type === START_TALLY) {
+          this.status = TALLY;
         }
         break;
       }
-      case TALLY_CAST: {
+      case TALLY: {
         if (messageIdentifier.typeSubtype === TALLY_CAST) {
-          this.status = TALLY_SHARE;
+          let contests = JSON.parse(message.content);
+          for (const [question, answers] of Object.entries(contests)) {
+            for (const [answer, value] of Object.entries(answers)) {
+              contests[question][answer] =
+                (value % this.electionPublicKey) * this.electionPublicKey;
+            }
+          }
+          console.log(contests);
+
           return {
             message_id: MessageIdentifier.format(
               this.electionId,
@@ -83,8 +95,11 @@ export class TrusteeWrapper {
             ),
             content: JSON.stringify({
               owner_id: this.trusteeId,
+              contests,
             }),
           };
+        } else if (messageIdentifier.type === END_TALLY) {
+          this.status = TALLY_ENDED;
         }
         break;
       }
@@ -98,7 +113,7 @@ export class TrusteeWrapper {
    * @returns {boolean}
    */
   needsToBeRestored(messageId) {
-    return messageId && this.status === CREATE_ELECTION;
+    return messageId && this.status === CREATED;
   }
 
   /**
@@ -119,20 +134,24 @@ export class TrusteeWrapper {
    */
   restore(state, messageId) {
     if (!this.needsToBeRestored(messageId)) {
+      console.warn("Restore not needed");
       return false;
     }
 
     const result = JSON.parse(state);
-    if (
-      result.trusteeId !== this.trusteeId ||
-      (messageId && result.status === CREATE_ELECTION)
-    ) {
+    if (result.trusteeId !== this.trusteeId) {
+      console.warn("Invalid trustee id");
+    }
+
+    if (messageId && result.status === CREATED) {
+      console.warn("Invalid restored status");
       return false;
     }
 
     try {
       Object.assign(this, result);
     } catch (error) {
+      console.warn(error);
       return false;
     }
 
@@ -144,7 +163,7 @@ export class TrusteeWrapper {
    * @returns {Boolean}
    */
   isKeyCeremonyDone() {
-    return this.status === KEY_CEREMONY_JOINT_ELECTION_KEY;
+    return this.status >= KEY_CEREMONY_ENDED;
   }
 
   /**
@@ -152,6 +171,6 @@ export class TrusteeWrapper {
    * @returns {Boolean}
    */
   isTallyDone() {
-    return this.status === TALLY_SHARE;
+    return this.status >= TALLY_ENDED;
   }
 }

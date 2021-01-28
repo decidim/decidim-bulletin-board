@@ -1,4 +1,5 @@
 import { VoterWrapper } from "./voter_wrapper_dummy";
+import { JWTParser } from "../jwt_parser";
 
 export const WAIT_TIME_MS = 1_000; // 1s
 
@@ -14,12 +15,33 @@ export class Voter {
    * @param {Object} params - An object that contains the initialization params.
    *  - {String} id - The voter identifier.
    */
-  constructor({ id, bulletinBoardClient, electionContext, options }) {
+  constructor({ id, electionContext, bulletinBoardClient, options }) {
     this.id = id;
-    this.wrapper = new VoterWrapper({ voterId: id });
-    this.bulletinBoardClient = bulletinBoardClient;
     this.electionContext = electionContext;
+    this.bulletinBoardClient = bulletinBoardClient;
+    this.wrapper = new VoterWrapper({ voterId: id });
+    this.parser = new JWTParser();
     this.options = options || { bulletinBoardWaitTime: WAIT_TIME_MS };
+  }
+
+  /**
+   * Performs some operations to setup the voter.
+   *
+   * Retrieves the key ceremony messages needed to cast a vote in the given election.
+   *
+   * @returns {Promise<undefined>}
+   */
+  setup() {
+    return this.bulletinBoardClient
+      .getElectionLogEntries({
+        electionUniqueId: this.electionContext.id,
+      })
+      .then(async (logEntries) => {
+        for (const logEntry of logEntries) {
+          const message = await this.parser.parse(logEntry.signedData);
+          this.wrapper.processMessage(logEntry.messageId, message);
+        }
+      });
   }
 
   /**
@@ -29,7 +51,7 @@ export class Voter {
    * @returns {Object} - The data encrypted.
    */
   async encrypt(data) {
-    return this.wrapper.encrypt(data);
+    return await this.wrapper.encrypt(data);
   }
 
   /**
