@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    decidim-bulletin_board (0.8.1)
+    decidim-bulletin_board (0.8.2)
       byebug (~> 11.0)
       graphlient (~> 0.4.0)
       jwt (~> 2.2.2)
