@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## Changed
+
+- `encrypt` in `VoterWrapperDummy` has a TimeOut of 500ms.
+
 ## [0.8.0] - 2021-01-27
 
 ## Changed
