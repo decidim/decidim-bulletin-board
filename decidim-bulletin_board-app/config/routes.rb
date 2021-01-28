@@ -14,8 +14,15 @@ Rails.application.routes.draw do
     scope "/sandbox", module: :sandbox, as: :sandbox do
       resources :elections, only: [:index] do
         member do
+          get :start_key_ceremony
           get :key_ceremony
+          get :start_vote
+          get :vote
+          post :vote
+          get :end_vote
+          get :start_tally
           get :tally
+          get :publish_results
         end
       end
     end
