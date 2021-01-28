@@ -54,6 +54,8 @@ group :development, :test do
   gem "rubocop", "~> 0.71.0"
   gem "rubocop-rails", "~> 2.0"
   gem "rubocop-rspec", "~> 1.21"
+
+  # gem "decidim-bulletin_board", path: "../decidim-bulletin_board-ruby"
 end
 
 group :development do
