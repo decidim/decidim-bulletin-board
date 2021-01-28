@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "test/private_keys"
 
 Authority.create!(
