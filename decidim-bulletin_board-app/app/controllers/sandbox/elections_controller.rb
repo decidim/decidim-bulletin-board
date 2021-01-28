@@ -82,11 +82,11 @@ module Sandbox
 
     def base_vote
       @base_vote ||= election.manifest[:description][:contests].map do |contest|
-                    [
-                      contest[:object_id],
-                      contest[:ballot_selections].sample(contest[:number_elected]).map {|ballot_selection| ballot_selection[:object_id]}
-                    ]
-                  end.to_h.to_json
+        [
+          contest[:object_id],
+          contest[:ballot_selections].sample(contest[:number_elected]).map { |ballot_selection| ballot_selection[:object_id] }
+        ]
+      end.to_h.to_json
     end
 
     def random_voter_id

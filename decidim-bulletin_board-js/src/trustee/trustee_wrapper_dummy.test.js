@@ -5,7 +5,6 @@ import {
   KEY_CEREMONY_ENDED,
   TALLY,
   TALLY_ENDED,
-  CREATE_ELECTION,
   START_KEY_CEREMONY,
   KEY_CEREMONY_STEP_1,
   END_KEY_CEREMONY,
@@ -191,14 +190,14 @@ describe("TrusteeWrapper", () => {
             },"q1-answer-2":${123 * 4}},"question-2":{"q2-answer-1":${
               123 * 3
             },"q2-answer-2":${123 * 5}}}}`,
-            message_id: "some-authority.some-id.tally.share+t.trustee-1",
+            message_id: `some-authority.some-id.${TALLY_SHARE}+t.trustee-1`,
           });
         });
       });
 
       describe("when it receives the END_TALLY message", () => {
         it("returns some data", () => {
-          const response = wrapper.processMessage(
+          wrapper.processMessage(
             MessageIdentifier.format(
               "some-authority.some-id",
               END_TALLY,
@@ -237,7 +236,7 @@ describe("TrusteeWrapper", () => {
 
     describe("after creating the election keys", () => {
       beforeEach(() => {
-        const response = wrapper.processMessage(
+        wrapper.processMessage(
           MessageIdentifier.format(
             "some-authority.some-id",
             START_KEY_CEREMONY,
