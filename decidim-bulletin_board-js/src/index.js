@@ -6,6 +6,7 @@ import { MessageIdentifier } from "./client/message-identifier";
 import { MESSAGE_RECEIVED, MESSAGE_PROCESSED } from "./trustee/event_manager";
 import { IdentificationKeys } from "./trustee/identification_keys";
 import { KeyCeremonyComponent } from "./key-ceremony/key-ceremony.component";
+import { TallyComponent } from "./tally/tally.component";
 
 export {
   Client,
@@ -17,4 +18,5 @@ export {
   MESSAGE_RECEIVED,
   IdentificationKeys,
   KeyCeremonyComponent,
+  TallyComponent,
 };

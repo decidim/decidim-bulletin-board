@@ -39,18 +39,19 @@ $(() => {
     $restoreButton.hide();
     $doneMessage.hide();
 
-    // Use the key ceremony controller and bind all UI events
-    const controller = new KeyCeremonyComponent({
+    // Use the key ceremony component and bind all UI events
+    const component = new KeyCeremonyComponent({
       bulletinBoardClientParams,
       electionUniqueId,
       trusteeUniqueId: trusteeContext.uniqueId,
       trusteeIdentificationKeys,
     });
 
-    const bindControllerEvents = async () => {
+    const bindComponentEvents = async () => {
       $trustee.find(".private-key").hide();
 
-      await controller.bindEvents({
+      await component.bindEvents({
+        onEvent(_event) {},
         onBindRestoreButton(onEventTriggered) {
           $restoreButton.on(
             "change",
@@ -72,7 +73,6 @@ $(() => {
         onSetup() {
           $startButton.show();
         },
-        onEvent(_event) {},
         onRestore() {
           $restoreButton.hide();
         },
@@ -96,11 +96,11 @@ $(() => {
 
     trusteeIdentificationKeys.present(async (exists) => {
       if (exists) {
-        await bindControllerEvents();
+        await bindComponentEvents();
       } else {
         $trustee.on("change", ".private-key-input", async (event) => {
           await trusteeIdentificationKeys.upload(event, true);
-          await bindControllerEvents();
+          await bindComponentEvents();
         });
       }
     });
