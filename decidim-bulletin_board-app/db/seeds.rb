@@ -5,6 +5,13 @@ exit if Rails.env.production? && !ENV["SEED"]
 require "factory_bot_rails"
 require "test/private_keys"
 
+def create_start_key_ceremony_log_entry(election)
+  FactoryBot.create(:log_entry,
+                    election: election,
+                    message: FactoryBot.build(:start_key_ceremony_message,
+                                              election: election))
+end
+
 def create_key_ceremony_log_entries(election)
   Trustee.first(3).zip(Test::PrivateKeys.trustees_private_keys).each do |trustee, private_key|
     FactoryBot.create(:log_entry,
@@ -17,18 +24,18 @@ def create_key_ceremony_log_entries(election)
   end
 end
 
-def create_joint_election_key_log_entry(election)
+def create_end_key_ceremony_log_entry(election)
   FactoryBot.create(:log_entry,
                     :by_bulletin_board,
                     election: election,
-                    message: FactoryBot.build(:key_ceremony_message_joint_election_message,
+                    message: FactoryBot.build(:end_key_ceremony_message,
                                               election: election))
 end
 
-def create_open_ballot_box_log_entry(election)
+def create_start_vote_log_entry(election)
   FactoryBot.create(:log_entry,
                     election: election,
-                    message: FactoryBot.build(:open_ballot_box_message,
+                    message: FactoryBot.build(:start_vote_message,
                                               election: election))
 end
 
@@ -41,14 +48,14 @@ def create_vote_log_entries(election, amount = 3)
   end
 end
 
-def create_close_ballot_box_log_entry(election)
+def create_end_vote_log_entry(election)
   FactoryBot.create(:log_entry,
                     election: election,
-                    message: FactoryBot.build(:close_ballot_box_message,
+                    message: FactoryBot.build(:end_vote_message,
                                               election: election))
 end
 
-def create_start_tally_log_entry(election)
+def create_start_tally_log_entries(election)
   FactoryBot.create(:log_entry,
                     election: election,
                     message: FactoryBot.build(:start_tally_message,
@@ -102,48 +109,31 @@ Test::PrivateKeys.trustees_public_keys.each_with_index.map do |trustee_public_ke
 end
 
 TEST_ELECTION_ID_OFFSET = 10_000
-[:key_ceremony, :ready, :vote, :vote_ended, :tally, :tally_ended, :results_published].each_with_index do |status, i|
+[:created, :key_ceremony, :key_ceremony_ended, :vote, :vote_ended, :tally, :tally_ended, :results_published].each_with_index do |status, i|
   election = FactoryBot.create(:election, status, election_id: TEST_ELECTION_ID_OFFSET + i)
 
-  case status
-  when :ready
-    create_key_ceremony_log_entries(election)
-    create_joint_election_key_log_entry(election)
-  when :vote
-    create_key_ceremony_log_entries(election)
-    create_joint_election_key_log_entry(election)
-    create_open_ballot_box_log_entry(election)
-  when :vote_ended
-    create_key_ceremony_log_entries(election)
-    create_joint_election_key_log_entry(election)
-    create_open_ballot_box_log_entry(election)
-    create_vote_log_entries(election)
-    create_close_ballot_box_log_entry(election)
-  when :tally
-    create_key_ceremony_log_entries(election)
-    create_joint_election_key_log_entry(election)
-    create_open_ballot_box_log_entry(election)
-    create_vote_log_entries(election)
-    create_close_ballot_box_log_entry(election)
-    create_start_tally_log_entry(election)
-  when :tally_ended
-    create_key_ceremony_log_entries(election)
-    create_joint_election_key_log_entry(election)
-    create_open_ballot_box_log_entry(election)
-    create_vote_log_entries(election)
-    create_close_ballot_box_log_entry(election)
-    create_start_tally_log_entry(election)
-    create_tally_log_entries(election)
-    create_end_tally_log_entry(election)
-  when :results_published
-    create_key_ceremony_log_entries(election)
-    create_joint_election_key_log_entry(election)
-    create_open_ballot_box_log_entry(election)
-    create_vote_log_entries(election)
-    create_close_ballot_box_log_entry(election)
-    create_start_tally_log_entry(election)
-    create_tally_log_entries(election)
-    create_end_tally_log_entry(election)
-    create_publish_results_log_entry(election)
-  end
+  next if status == :created
+
+  create_start_key_ceremony_log_entry(election)
+  next if status == :key_ceremony
+
+  create_key_ceremony_log_entries(election)
+  create_end_key_ceremony_log_entry(election)
+  next if status == :key_ceremony_ended
+
+  create_start_vote_log_entry(election)
+  next if status == :vote
+
+  create_vote_log_entries(election)
+  create_end_vote_log_entry(election)
+  next if status == :vote_ended
+
+  create_start_tally_log_entries(election)
+  next if status == :tally
+
+  create_tally_log_entries(election)
+  create_end_tally_log_entry(election)
+  next if status == :tally_ended
+
+  create_publish_results_log_entry(election)
 end

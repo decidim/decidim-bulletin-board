@@ -6,7 +6,7 @@ require "wisper/rspec/stub_wisper_publisher"
 module Decidim
   module BulletinBoard
     describe Client do
-      subject { described_class.new }
+      subject(:instance) { described_class.new }
 
       include_context "with a configured bulletin board"
 
@@ -38,52 +38,54 @@ module Decidim
         it { is_expected.not_to be_configured }
       end
 
-      describe "open_ballot_box" do
+      describe "start_key_ceremony" do
+        subject { instance.start_key_ceremony(election_id) }
+
         let(:election_id) { "test.1" }
 
         context "when everything went ok" do
           before do
-            stub_wisper_publisher("Decidim::BulletinBoard::Authority::OpenBallotBox", :call, :ok, double(status: "vote"))
+            stub_wisper_publisher("Decidim::BulletinBoard::Authority::StartKeyCeremony", :call, :ok, double(status: "enqueued"))
           end
 
-          it "calls the OpenBallotBox command and returns the new status" do
-            election = subject.open_ballot_box(election_id)
-            expect(election.status).to eq("vote")
+          it "calls the StartKeyCeremony command and returns the result" do
+            expect(subject.status).to eq("enqueued")
           end
         end
 
         context "when something went wrong" do
           before do
-            stub_wisper_publisher("Decidim::BulletinBoard::Authority::OpenBallotBox", :call, :error, "something went wrong")
+            stub_wisper_publisher("Decidim::BulletinBoard::Authority::StartKeyCeremony", :call, :error, "something went wrong")
           end
 
-          it "calls the CastVote command and throws an error" do
-            expect { subject.open_ballot_box(election_id) }.to raise_error("something went wrong")
+          it "calls the StartKeyCeremony command and throws an error" do
+            expect { subject }.to raise_error("something went wrong")
           end
         end
       end
 
-      describe "close_ballot_box" do
+      describe "start_vote" do
+        subject { instance.start_vote(election_id) }
+
         let(:election_id) { "test.1" }
 
         context "when everything went ok" do
           before do
-            stub_wisper_publisher("Decidim::BulletinBoard::Authority::CloseBallotBox", :call, :ok, double(status: "tally"))
+            stub_wisper_publisher("Decidim::BulletinBoard::Authority::StartVote", :call, :ok, double(status: "enqueued"))
           end
 
-          it "calls the CloseBallotBox command and returns the new status" do
-            election = subject.close_ballot_box(election_id)
-            expect(election.status).to eq("tally")
+          it "calls the StartVote command and return the result" do
+            expect(subject.status).to eq("enqueued")
           end
         end
 
         context "when something went wrong" do
           before do
-            stub_wisper_publisher("Decidim::BulletinBoard::Authority::CloseBallotBox", :call, :error, "something went wrong")
+            stub_wisper_publisher("Decidim::BulletinBoard::Authority::StartVote", :call, :error, "something went wrong")
           end
 
-          it "calls the CastVote command and throws an error" do
-            expect { subject.close_ballot_box(election_id) }.to raise_error("something went wrong")
+          it "calls the StartVote command and throws an error" do
+            expect { subject }.to raise_error("something went wrong")
           end
         end
       end
@@ -101,6 +103,8 @@ module Decidim
       end
 
       describe "cast_vote" do
+        subject { instance.cast_vote(election_id, voter_id, encrypted_vote) }
+
         let(:election_id) { "test.1" }
         let(:voter_id) { "voter.1" }
         let(:encrypted_vote) do
@@ -113,8 +117,7 @@ module Decidim
           end
 
           it "calls the CastVote command and return the result" do
-            pending_message = subject.cast_vote(election_id, voter_id, encrypted_vote)
-            expect(pending_message.status).to eq("enqueued")
+            expect(subject.status).to eq("enqueued")
           end
         end
 
@@ -124,7 +127,33 @@ module Decidim
           end
 
           it "calls the CastVote command and throws an error" do
-            expect { subject.cast_vote(election_id, voter_id, encrypted_vote) }.to raise_error("something went wrong")
+            expect { subject }.to raise_error("something went wrong")
+          end
+        end
+      end
+
+      describe "end_vote" do
+        subject { instance.end_vote(election_id) }
+
+        let(:election_id) { "test.1" }
+
+        context "when everything went ok" do
+          before do
+            stub_wisper_publisher("Decidim::BulletinBoard::Authority::EndVote", :call, :ok, double(status: "enqueued"))
+          end
+
+          it "calls the EndVote command and returns the result" do
+            expect(subject.status).to eq("enqueued")
+          end
+        end
+
+        context "when something went wrong" do
+          before do
+            stub_wisper_publisher("Decidim::BulletinBoard::Authority::EndVote", :call, :error, "something went wrong")
+          end
+
+          it "calls the EndVote command and throws an error" do
+            expect { subject }.to raise_error("something went wrong")
           end
         end
       end
@@ -155,6 +184,8 @@ module Decidim
       end
 
       describe "get_election_status" do
+        subject { instance.get_election_status(election_id) }
+
         let(:election_id) { "decidim-test-authority.1" }
 
         context "when everything went ok" do
@@ -163,8 +194,7 @@ module Decidim
           end
 
           it "calls the GetElectionStatus command and returns the result" do
-            election_status = subject.get_election_status(election_id)
-            expect(election_status).to eq("key_ceremony")
+            expect(subject).to eq("key_ceremony")
           end
         end
 
@@ -174,22 +204,23 @@ module Decidim
           end
 
           it "calls the GetElectionStatus command and throws an error" do
-            expect { subject.get_election_status(election_id) }.to raise_error("Sorry, something went wrong")
+            expect { subject }.to raise_error("Sorry, something went wrong")
           end
         end
       end
 
       describe "start_tally" do
+        subject { instance.start_tally(election_id) }
+
         let(:election_id) { "test.1" }
 
         context "when everything went ok" do
           before do
-            stub_wisper_publisher("Decidim::BulletinBoard::Authority::StartTally", :call, :ok, double(status: "tally"))
+            stub_wisper_publisher("Decidim::BulletinBoard::Authority::StartTally", :call, :ok, double(status: "enqueued"))
           end
 
-          it "calls the StartTally command and returns the new status" do
-            election = subject.start_tally(election_id)
-            expect(election.status).to eq("tally")
+          it "calls the StartTally command and returns the result" do
+            expect(subject.status).to eq("enqueued")
           end
         end
 
@@ -199,12 +230,14 @@ module Decidim
           end
 
           it "calls the StartTally command and throws an error" do
-            expect { subject.start_tally(election_id) }.to raise_error("something went wrong")
+            expect { subject }.to raise_error("something went wrong")
           end
         end
       end
 
       describe "publish_results" do
+        subject { instance.publish_results(election_id) }
+
         let(:election_id) { "decidim-test-authority.1" }
 
         context "when everything went ok" do
@@ -213,8 +246,7 @@ module Decidim
           end
 
           it "calls the PublishResults command and returns the result" do
-            election_status = subject.publish_results(election_id)
-            expect(election_status).to eq("results_published")
+            expect(subject).to eq("results_published")
           end
         end
 
@@ -224,7 +256,7 @@ module Decidim
           end
 
           it "calls the PublishResults command and throws an error" do
-            expect { subject.publish_results(election_id) }.to raise_error("Sorry, something went wrong")
+            expect { subject }.to raise_error("Sorry, something went wrong")
           end
         end
       end

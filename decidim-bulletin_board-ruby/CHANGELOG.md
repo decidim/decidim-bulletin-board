@@ -7,8 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## Changed
+
+- The `open_ballot_box` and `close_ballot_box` are now called `start_vote` and `end_vote` and return a pending message.
+
 ## Added
 
+- `start_key_ceremony` method to the `Decidim::BulletinBoard::Client`.
 - The `IdentificationKeys` class has been added to the JS library.
 
 ## [0.8.2] - 2021-01-28

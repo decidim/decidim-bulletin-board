@@ -3,49 +3,62 @@
 require "rails_helper"
 
 module Mutations
-  RSpec.describe CreateElectionMutation, type: :request do
+  RSpec.describe StartKeyCeremonyMutation, type: :request do
     subject { post "/api", params: { query: query, variables: { messageId: message_id, signedData: signed_data } }, headers: headers }
 
     let(:query) do
       <<~GQL
         mutation($messageId: String!, $signedData: String!) {
-          createElection(messageId: $messageId, signedData: $signedData) {
-            election {
+          startKeyCeremony(messageId: $messageId, signedData: $signedData) {
+            pendingMessage {
               id
-              status
-              title
-              authority {
+              client {
                 id
               }
+              election {
+                id
+              }
+              signedData
+              status
             }
             error
           }
         }
       GQL
     end
+
+    let!(:election) { create(:election) }
     let(:authority) { Authority.first }
     let(:headers) { { "Authorization": authority.api_key } }
     let(:signed_data) { JWT.encode(payload.as_json, Test::PrivateKeys.authority_private_key.keypair, "RS256") }
-    let(:payload) { build(:create_election_message) }
+    let(:payload) { build(:start_key_ceremony_message, election: election) }
     let(:message_id) { payload["message_id"] }
 
-    it "setup an election" do
-      expect { subject }.to change(Election, :count).by(1)
+    it "adds the message to the pending messages table" do
+      expect { subject }.to change(PendingMessage, :count).by(1)
     end
 
-    it "returns an election" do
+    it "enqueues a tally job to process the message", :jobs do
+      subject
+      expect(StartKeyCeremonyJob).to have_been_enqueued
+    end
+
+    it "returns a pending message" do
       subject
       json = JSON.parse(response.body, symbolize_names: true)
-      data = json.dig(:data, :createElection)
+      data = json.dig(:data, :startKeyCeremony)
 
       expect(data).to include(
-        election: {
+        pendingMessage: {
           id: be_present,
-          status: "created",
-          title: payload[:description][:name][:text][0][:value],
-          authority: {
+          client: {
             id: authority.unique_id
-          }
+          },
+          election: {
+            id: election.unique_id
+          },
+          signedData: signed_data,
+          status: "enqueued"
         },
         error: nil
       )
@@ -54,17 +67,17 @@ module Mutations
     context "when the authority is not authorized" do
       let(:headers) { {} }
 
-      it "doesn't create an election" do
-        expect { subject }.not_to change(Election, :count)
+      it "doesn't create a pending message" do
+        expect { subject }.not_to change(PendingMessage, :count)
       end
 
       it "returns an error message" do
         subject
         json = JSON.parse(response.body, symbolize_names: true)
-        data = json.dig(:data, :createElection)
+        data = json.dig(:data, :startKeyCeremony)
 
         expect(data).to include(
-          election: nil,
+          pendingMessage: nil,
           error: "Authority not found"
         )
       end

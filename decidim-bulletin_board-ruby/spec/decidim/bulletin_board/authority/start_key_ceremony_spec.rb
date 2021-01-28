@@ -5,7 +5,7 @@ require "spec_helper"
 module Decidim
   module BulletinBoard
     module Authority
-      describe OpenBallotBox do
+      describe StartKeyCeremony do
         subject { described_class.new(election_id) }
 
         include_context "with a configured bulletin board"
@@ -14,9 +14,9 @@ module Decidim
 
         let(:bulletin_board_response) do
           {
-            openBallotBox: {
-              election: {
-                status: "vote"
+            startKeyCeremony: {
+              pendingMessage: {
+                status: "enqueued"
               }
             }
           }
@@ -27,9 +27,9 @@ module Decidim
             expect { subject.call }.to broadcast(:ok)
           end
 
-          it "uses the graphql client to open the ballot box and return its result" do
-            subject.on(:ok) do |election|
-              expect(election.status).to eq("vote")
+          it "uses the graphql client to start the key ceremony and returns its result" do
+            subject.on(:ok) do |pending_message|
+              expect(pending_message.status).to eq("enqueued")
             end
             subject.call
           end

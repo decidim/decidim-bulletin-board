@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-# A command with all the business logic to open the election's ballot box
-class OpenBallotBox < Rectify::Command
+# A command with all the business logic to start the election's voting period
+class StartVote < Rectify::Command
   include LogEntryCommand
 
   # Public: Initializes the command.
@@ -23,11 +23,11 @@ class OpenBallotBox < Rectify::Command
   # Returns nothing.
   def call
     return broadcast(:invalid, error) unless
-      valid_log_entry?("open_ballot_box")
+      valid_log_entry?("start_vote")
 
     election.with_lock do
       return broadcast(:invalid, error) unless
-        valid_step?(election.ready?) &&
+        valid_step?(election.key_ceremony_ended?) &&
         valid_client?(authority.authority? && election.authority == authority) &&
         valid_author?(message_identifier.from_authority?) &&
         process_message

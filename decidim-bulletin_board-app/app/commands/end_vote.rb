@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
-# A command with all the business logic to start the tally proceess
-class StartTally < Rectify::Command
+# A command with all the business logic to end the election's voting period
+class EndVote < Rectify::Command
   include LogEntryCommand
 
   # Public: Initializes the command.
   #
-  # authority - The authority sender of the start tally request
+  # authority - The authority sender of the close request
   # message_id - The message identifier
   # signed_data - The signed message received
   def initialize(authority, message_id, signed_data)
@@ -17,46 +17,30 @@ class StartTally < Rectify::Command
 
   # Executes the command. Broadcasts these events:
   #
-  # - :processed when everything is valid.
+  # - :ok when everything is valid.
   # - :invalid if the received data wasn't valid.
   #
   # Returns nothing.
   def call
     return broadcast(:invalid, error) unless
-      valid_log_entry?("start_tally")
+      valid_log_entry?("end_vote")
 
     election.with_lock do
       return broadcast(:invalid, error) unless
+        valid_step?(election.vote?) &&
         valid_client?(authority.authority? && election.authority == authority) &&
         valid_author?(message_identifier.from_authority?) &&
-        valid_step?(election.vote_ended?) &&
         process_message
 
-      log_entry.election = election
+      election.log_entries << log_entry
       log_entry.save!
-      create_response_log_entry!
-      election.tally!
+      election.vote_ended!
     end
 
-    broadcast(:ok)
+    broadcast(:ok, election)
   end
 
   private
 
   attr_accessor :authority
-
-  def voting_scheme
-    @voting_scheme ||= voting_scheme_class.new(election, ElectionUniqueVotes.new(election))
-  end
-
-  def create_response_log_entry!
-    return unless response_message
-
-    @response_log_entry = LogEntry.create!(
-      election: election,
-      message_id: response_message["message_id"],
-      signed_data: BulletinBoard.sign(response_message),
-      bulletin_board: true
-    )
-  end
 end
