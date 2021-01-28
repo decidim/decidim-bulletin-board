@@ -14,10 +14,10 @@ RSpec.describe StartKeyCeremonyJob do
   end
 
   context "when the message was already processed" do
-    before { described_class.perform_now(pending_message.id) }
+    let!(:pending_message) { create(:pending_message, election: election, message: message, status: :accepted) }
 
     it "doesn't change the message status" do
-      expect { subject }.not_to change { PendingMessage.last.status } .from("accepted")
+      expect { subject }.not_to(change { PendingMessage.last.status })
     end
   end
 end

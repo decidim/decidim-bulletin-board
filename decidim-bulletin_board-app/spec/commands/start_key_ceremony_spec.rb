@@ -36,7 +36,7 @@ RSpec.describe StartKeyCeremony do
     expect { subject }.not_to(change(election, :voting_scheme_state))
   end
 
-  it "change the election status to key_ceremony" do
+  it "changes the election status to key_ceremony" do
     expect { subject }.to change { Election.last.status } .from("created").to("key_ceremony")
   end
 
@@ -58,7 +58,7 @@ RSpec.describe StartKeyCeremony do
 
     it_behaves_like "starting the key ceremony fails"
 
-    it "broadcast invalid" do
+    it "broadcasts invalid" do
       expect { subject }.to broadcast(:invalid, "Invalid client")
     end
   end
@@ -69,7 +69,7 @@ RSpec.describe StartKeyCeremony do
 
     it_behaves_like "starting the key ceremony fails"
 
-    it "broadcast invalid" do
+    it "broadcasts invalid" do
       expect { subject }.to broadcast(:invalid, "Invalid client")
     end
   end
@@ -79,7 +79,7 @@ RSpec.describe StartKeyCeremony do
 
     it_behaves_like "starting the key ceremony fails"
 
-    it "broadcast invalid" do
+    it "broadcasts invalid" do
       expect { subject }.to broadcast(:invalid, "Invalid message author")
     end
   end

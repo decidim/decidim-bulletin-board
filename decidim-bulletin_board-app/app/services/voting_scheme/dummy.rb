@@ -4,7 +4,7 @@ module VotingScheme
   # A dummy implementation of a voting scheme, only for tests purposes.
   # It uses a very basic math to perform simple but unsecure encryption operations,
   # similar to a real voting scheme implementation. It works like this:
-  # - every Trustee choose a random number as their public election key: Ki = rand(50, 249) * 2 + 1
+  # - every Trustee chooses a random number as their public election key: Ki = rand(50, 249) * 2 + 1
   #  - these keys should be odd numbers between 100 and 500
   # - the joint key is the product of those keys: JK = K1 * K2 * ... * Kn
   # - voters encrypt each answer multiplying the joint election key by a random number and summing 0 or 1 to that: Aj = JK * rand(100, 500) + (0 | 1)

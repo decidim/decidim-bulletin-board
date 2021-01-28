@@ -48,7 +48,7 @@ module Decidim
             stub_wisper_publisher("Decidim::BulletinBoard::Authority::StartKeyCeremony", :call, :ok, double(status: "enqueued"))
           end
 
-          it "calls the StartKeyCeremony command and return the result" do
+          it "calls the StartKeyCeremony command and returns the result" do
             expect(subject.status).to eq("enqueued")
           end
         end
@@ -142,7 +142,7 @@ module Decidim
             stub_wisper_publisher("Decidim::BulletinBoard::Authority::EndVote", :call, :ok, double(status: "enqueued"))
           end
 
-          it "calls the EndVote command and return the result" do
+          it "calls the EndVote command and returns the result" do
             expect(subject.status).to eq("enqueued")
           end
         end
@@ -219,7 +219,7 @@ module Decidim
             stub_wisper_publisher("Decidim::BulletinBoard::Authority::StartTally", :call, :ok, double(status: "enqueued"))
           end
 
-          it "calls the StartTally command and return the result" do
+          it "calls the StartTally command and returns the result" do
             expect(subject.status).to eq("enqueued")
           end
         end
