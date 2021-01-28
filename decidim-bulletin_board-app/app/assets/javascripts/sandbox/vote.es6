@@ -1,4 +1,3 @@
-// = require sandbox/identification_keys
 // = require decidim/bulletin_board/decidim-bulletin_board.dev
 // = require jquery
 
