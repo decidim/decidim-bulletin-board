@@ -50,8 +50,8 @@ export class Voter {
    * @param {Object} data - The data to be.
    * @returns {Object} - The data encrypted.
    */
-  async encrypt(data) {
-    return await this.wrapper.encrypt(data);
+  encrypt(data) {
+    return this.wrapper.encrypt(data);
   }
 
   /**

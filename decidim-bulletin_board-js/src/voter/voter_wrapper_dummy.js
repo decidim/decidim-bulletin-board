@@ -20,6 +20,9 @@ export class VoterWrapper {
   /**
    * Process the message and update the wrapper status.
    *
+   * @param {String} messageId - The identifier of the message.
+   * @param {Object} message - An object with the message to process.
+   *
    * @returns {Object|undefined}
    */
   processMessage(messageId, message) {
@@ -37,6 +40,15 @@ export class VoterWrapper {
     }
   }
 
+  /**
+   * Converts the given vote into an encrypted ballot JSON. As the process is very fast,
+   * it simulates the delay of the encryption process.
+   *
+   * @param {Object} vote - An object with the choosen answers for each question.
+   *
+   * @private
+   * @returns {Promise<Object|undefined>}
+   */
   async encrypt(vote) {
     return new Promise((resolve) => setTimeout(resolve, WAIT_TIME_MS)).then(
       () => {
@@ -49,28 +61,39 @@ export class VoterWrapper {
     );
   }
 
+  /**
+   * Encrypts the given vote into an object with the format expected by the Dummy voting scheme,
+   * using the silly encryption defined by the scheme for each answer ((1|0) + random * jointElectionKey).
+   *
+   * @param {Object} vote - An object with the choosen answers for each question.
+   *
+   * @private
+   * @returns {<Object>}
+   */
   createBallot(vote) {
-    const ballot = { ballot_style: "ballot-style", contests: [] };
-    for (const contestDescription of this.contests) {
-      const contest = {
-        object_id: contestDescription.object_id,
-        ballot_selections: [],
-      };
-      for (const ballotSelection of contestDescription.ballot_selections) {
-        const voted = vote[contestDescription.object_id].includes(
-          ballotSelection.object_id
-        )
-          ? 1
-          : 0;
-        contest.ballot_selections.push({
-          object_id: ballotSelection.object_id,
-          ciphertext:
-            voted + Math.floor(Math.random() * 500) * this.jointElectionKey,
-        });
-      }
-      ballot.contests.push(contest);
-    }
+    return {
+      ballot_style: "ballot-style",
+      contests: this.contests.map((contestDescription) => {
+        return {
+          object_id: contestDescription.object_id,
+          ballot_selections: contestDescription.ballot_selections.map(
+            (ballotSelection) => {
+              const voted = vote[contestDescription.object_id].includes(
+                ballotSelection.object_id
+              )
+                ? 1
+                : 0;
 
-    return ballot;
+              return {
+                object_id: ballotSelection.object_id,
+                ciphertext:
+                  voted +
+                  Math.floor(Math.random() * 500) * this.jointElectionKey,
+              };
+            }
+          ),
+        };
+      }),
+    };
   }
 }

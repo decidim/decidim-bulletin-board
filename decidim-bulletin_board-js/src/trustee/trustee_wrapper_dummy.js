@@ -37,6 +37,9 @@ export class TrusteeWrapper {
   /**
    * Process the message and update the wrapper status.
    *
+   * @param {String} messageId - The identifier of the message.
+   * @param {Object} message - An object with the message to process.
+   *
    * @returns {Object|undefined}
    */
   processMessage(messageId, message) {

@@ -3,7 +3,7 @@ import { TrusteeWrapper } from "./trustee_wrapper_dummy";
 import { EventManager } from "./event_manager";
 import { JWTParser } from "../jwt_parser";
 
-export const WAIT_TIME_MS = 100; // 1s
+export const WAIT_TIME_MS = 100; // 0.1s
 
 /**
  * This class encapsulates all the behavior that is needed to interact with the evoting

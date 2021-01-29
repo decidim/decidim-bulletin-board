@@ -43,7 +43,6 @@ $(() => {
       trusteeUniqueId: trusteeContext.uniqueId,
       trusteeIdentificationKeys,
     });
-    window.components[trusteeContext.uniqueId] = component;
 
     const bindComponentEvents = async () => {
       await component.bindEvents({
