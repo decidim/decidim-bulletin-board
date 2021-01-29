@@ -46,6 +46,8 @@ $(() => {
       trusteeUniqueId: trusteeContext.uniqueId,
       trusteeIdentificationKeys,
     });
+
+    window.components = window.components || {};
     window.components[trusteeContext.uniqueId] = component;
 
     const bindComponentEvents = async () => {
