@@ -57,10 +57,11 @@ export class VoterWrapper {
         ballot_selections: [],
       };
       for (const ballotSelection of contestDescription.ballot_selections) {
-        const voted =
-          ballotSelection.object_id in vote[contestDescription.object_id]
-            ? 1
-            : 0;
+        const voted = vote[contestDescription.object_id].includes(
+          ballotSelection.object_id
+        )
+          ? 1
+          : 0;
         contest.ballot_selections.push({
           object_id: ballotSelection.object_id,
           ciphertext:
