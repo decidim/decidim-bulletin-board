@@ -19,6 +19,8 @@ $(async () => {
   });
 
   $castVote.on("click", async (event) => {
+    $vote.css("background", "");
+
     const voter = new Voter({
       id: $voterId.val(),
       bulletinBoardClient,
@@ -36,18 +38,23 @@ $(async () => {
       return;
     }
 
-    voter.encrypt(vote).then(async (encryptedVote) => {
-      return $.ajax({
-        method: "POST",
-        contentType: "application/json",
-        data: JSON.stringify({
-          voter_id: $voterId.val(),
-          encrypted_vote: encryptedVote,
-        }), // eslint-disable-line camelcase
-        headers: {
-          "X-CSRF-Token": $("meta[name=csrf-token]").attr("content"),
-        },
+    voter
+      .encrypt(vote)
+      .then(async (encryptedVote) => {
+        return $.ajax({
+          method: "POST",
+          contentType: "application/json",
+          data: JSON.stringify({
+            voter_id: $voterId.val(),
+            encrypted_vote: encryptedVote,
+          }), // eslint-disable-line camelcase
+          headers: {
+            "X-CSRF-Token": $("meta[name=csrf-token]").attr("content"),
+          },
+        });
+      })
+      .then(() => {
+        $vote.css("background", "green");
       });
-    });
   });
 });
