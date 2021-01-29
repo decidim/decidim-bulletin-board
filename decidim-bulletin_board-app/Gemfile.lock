@@ -75,6 +75,8 @@ GEM
       descendants_tracker (~> 0.0.1)
     concurrent-ruby (1.1.8)
     crass (1.0.6)
+    cypress-on-rails (1.8.0)
+      rack
     database_cleaner (1.8.5)
     database_cleaner-active_record (1.8.0)
       activerecord
@@ -319,6 +321,7 @@ PLATFORMS
 DEPENDENCIES
   bootsnap (>= 1.4.2)
   byebug
+  cypress-on-rails (~> 1.0)
   database_cleaner-active_record
   decidim-bulletin_board (~> 0.8.0)
   factory_bot_rails

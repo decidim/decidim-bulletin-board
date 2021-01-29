@@ -10,13 +10,16 @@
     "turbolinks": "^5.2.0"
   },
   "scripts": {
-    "schema:generate": "graphql-codegen"
+    "schema:generate": "graphql-codegen",
+    "e2e:open": "cypress open --project ./spec",
+    "e2e:tests": "cypress run --project ./spec"
   },
   "version": "0.1.0",
   "devDependencies": {
     "@babel/polyfill": "^7.12.1",
     "@graphql-codegen/cli": "^1.19.4",
     "@graphql-codegen/typescript": "^1.19.0",
+    "cypress": "^6.3.0",
     "webpack-dev-server": "^3.11.0"
   }
 }
