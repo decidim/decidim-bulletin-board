@@ -7,6 +7,7 @@ require "byebug"
 require "webmock/rspec"
 require "wisper/rspec/matchers"
 
+require "support/command_stub"
 require "shared/client_context"
 
 RSpec.configure do |config|

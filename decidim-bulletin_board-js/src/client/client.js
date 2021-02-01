@@ -1,5 +1,7 @@
 import { GraphQLClient } from "./graphql-client";
 
+export const WAIT_TIME_MS = 1_000; // 1s
+
 /**
  * This is a facade over the API client specific implementation.
  */
@@ -63,14 +65,26 @@ export class Client {
   }
 
   /**
-   * Query PendingMessages for a given messageId
+   * Wait until a pending message is processed
    *
-   * @param {Object} params - An object that include the following options.
-   *  - {String} messageId - The messageId
-   * @returns {Promise<Object>} - The pending message received.
-   * @throws Will throw an error if the request is rejected.
+   * @param {String} messageId - the unique identifier of a message
+   * @param {Integer} [waitTime=WAIT_TIME_MS] - the interval to wait for the pending message to be processed
+   * @returns {Promise<Object>} - Returns the PendingMessage
    */
-  getPendingMessageByMessageId({ messageId }) {
-    return this.apiClient.getPendingMessageByMessageId({ messageId });
+  waitForPendingMessageToBeProcessed(messageId, waitTime = WAIT_TIME_MS) {
+    return new Promise((resolve) => {
+      const intervalId = setInterval(() => {
+        this.apiClient
+          .getPendingMessageByMessageId({
+            messageId,
+          })
+          .then((pendingMessage) => {
+            if (pendingMessage.status !== "enqueued") {
+              clearInterval(intervalId);
+              resolve(pendingMessage);
+            }
+          });
+      }, waitTime);
+    });
   }
 }

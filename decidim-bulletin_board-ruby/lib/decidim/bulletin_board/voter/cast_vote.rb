@@ -14,6 +14,11 @@ module Decidim
           @encrypted_vote = encrypted_vote
         end
 
+        # Returns the message_id related to the operation
+        def message_id
+          @message_id ||= build_message_id(unique_election_id(election_id), "vote.cast", voter_id)
+        end
+
         # Executes the command. Broadcasts these events:
         #
         # - :ok when everything is valid and the mutation operation is successful.
@@ -21,14 +26,18 @@ module Decidim
         #
         # Returns nothing.
         def call
-          message_id = cast_vote_message_id(election_id, voter_id)
-          signed_data = sign_message(message_id, { content: encrypted_vote })
+          # arguments used inside the graphql operation
+          args = {
+            message_id: message_id,
+            signed_data: sign_message(message_id, { content: encrypted_vote })
+          }
 
           begin
             response = client.query do
               mutation do
-                vote(messageId: message_id, signedData: signed_data) do
+                vote(messageId: args[:message_id], signedData: args[:signed_data]) do
                   pendingMessage do
+                    messageId
                     status
                   end
                   error
@@ -42,10 +51,6 @@ module Decidim
           rescue Graphlient::Errors::FaradayServerError
             broadcast(:error, "something went wrong")
           end
-        end
-
-        def self.cast_vote_message_id(election_id, voter_id)
-          message_id(unique_election_id(election_id), "vote.cast", voter_id)
         end
 
         private

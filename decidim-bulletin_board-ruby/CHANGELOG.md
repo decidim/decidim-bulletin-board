@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Changed
 
 - The `open_ballot_box` and `close_ballot_box` are now called `start_vote` and `end_vote` and return a pending message.
+- All the client operations yield the `message_id` before sending the request to the Bulletin Board.
 
 ## Added
 

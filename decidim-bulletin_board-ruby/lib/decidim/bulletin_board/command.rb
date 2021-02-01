@@ -8,7 +8,7 @@ module Decidim
     class Command
       include Wisper::Publisher
 
-      delegate :authority_slug, :private_key, :unique_election_id, :message_id, to: :class
+      delegate :authority_slug, :private_key, :unique_election_id, :build_message_id, to: :class
 
       def sign_message(message_id, message)
         JWT.encode(complete_message(message_id, message), private_key.keypair, "RS256")
@@ -42,7 +42,7 @@ module Decidim
           Decidim::BulletinBoard::MessageIdentifier.unique_election_id(authority_slug, election_id)
         end
 
-        def message_id(unique_election_id, type_subtype, voter_id = nil)
+        def build_message_id(unique_election_id, type_subtype, voter_id = nil)
           Decidim::BulletinBoard::MessageIdentifier.format(unique_election_id, type_subtype, voter_id ? :voter : :authority, voter_id || authority_slug)
         end
       end

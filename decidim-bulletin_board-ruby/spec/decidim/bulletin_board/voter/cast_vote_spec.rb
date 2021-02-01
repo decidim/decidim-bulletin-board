@@ -29,6 +29,10 @@ module Decidim
             expect { subject.call }.to broadcast(:ok)
           end
 
+          it "build the right message_id" do
+            expect(subject.message_id).to eq("decidim-test-authority.1.vote.cast+v.asdasdafdsaasdq")
+          end
+
           it "uses the graphql client to perform a Vote mutation and return its result" do
             subject.on(:ok) do |pending_message|
               expect(pending_message.status).to eq("enqueued")

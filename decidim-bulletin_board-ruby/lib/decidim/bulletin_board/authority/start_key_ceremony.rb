@@ -12,6 +12,11 @@ module Decidim
           @election_id = election_id
         end
 
+        # Returns the message_id related to the operation
+        def message_id
+          @message_id ||= build_message_id(unique_election_id(election_id), "start_key_ceremony")
+        end
+
         # Executes the command. Broadcasts these events:
         #
         # - :ok when everything is valid and the query operation is successful.
@@ -19,18 +24,19 @@ module Decidim
         #
         # Returns nothing.
         def call
-          message_id = message_id(unique_election_id(election_id), "start_key_ceremony")
-          signed_data = sign_message(message_id, {})
+          # arguments used inside the graphql operation
+          args = {
+            message_id: message_id,
+            signed_data: sign_message(message_id, {})
+          }
 
-          begin
-            response = client.query do
-              mutation do
-                startKeyCeremony(messageId: message_id, signedData: signed_data) do
-                  pendingMessage do
-                    status
-                  end
-                  error
+          response = client.query do
+            mutation do
+              startKeyCeremony(messageId: args[:message_id], signedData: args[:signed_data]) do
+                pendingMessage do
+                  status
                 end
+                error
               end
             end
           end

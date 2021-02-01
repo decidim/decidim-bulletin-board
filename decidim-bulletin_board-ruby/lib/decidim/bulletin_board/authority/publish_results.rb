@@ -12,6 +12,11 @@ module Decidim
           @election_id = election_id
         end
 
+        # Returns the message_id related to the operation
+        def message_id
+          @message_id ||= build_message_id(unique_election_id(election_id), "publish_results")
+        end
+
         # Executes the command. Broadcasts these events:
         #
         # - :ok when everything is valid and the query operation is successful.
@@ -19,27 +24,28 @@ module Decidim
         #
         # Returns nothing.
         def call
-          message_id = message_id(unique_election_id(election_id), "publish_results")
-          signed_data = sign_message(message_id, {})
+          # arguments used inside the graphql operation
+          args = {
+            message_id: message_id,
+            signed_data: sign_message(message_id, {})
+          }
 
-          begin
-            response = client.query do
-              mutation do
-                publishResults(messageId: message_id, signedData: signed_data) do
-                  election do
-                    status
-                  end
-                  error
+          response = client.query do
+            mutation do
+              publishResults(messageId: args[:message_id], signedData: args[:signed_data]) do
+                election do
+                  status
                 end
+                error
               end
             end
-
-            return broadcast(:error, response.data.publish_results.error) if response.data.publish_results.error.present?
-
-            broadcast(:ok, response.data.publish_results.election)
-          rescue Graphlient::Errors::ServerError
-            broadcast(:error, "Sorry, something went wrong")
           end
+
+          return broadcast(:error, response.data.publish_results.error) if response.data.publish_results.error.present?
+
+          broadcast(:ok, response.data.publish_results.election)
+        rescue Graphlient::Errors::ServerError
+          broadcast(:error, "Sorry, something went wrong")
         end
 
         private

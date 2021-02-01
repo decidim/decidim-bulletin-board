@@ -34,6 +34,7 @@ module Decidim
 
       def create_election(election_id, election_data)
         create_election = Decidim::BulletinBoard::Authority::CreateElection.new(election_id, election_data)
+        yield create_election.message_id if block_given?
         create_election.on(:ok) { |election| return election }
         create_election.on(:error) { |error_message| raise StandardError, error_message }
         create_election.call
@@ -41,6 +42,7 @@ module Decidim
 
       def start_key_ceremony(election_id)
         start_key_ceremony = Decidim::BulletinBoard::Authority::StartKeyCeremony.new(election_id)
+        yield start_key_ceremony.message_id if block_given?
         start_key_ceremony.on(:ok) { |pending_message| return pending_message }
         start_key_ceremony.on(:error) { |error_message| raise StandardError, error_message }
         start_key_ceremony.call
@@ -48,17 +50,15 @@ module Decidim
 
       def start_vote(election_id)
         start_vote = Decidim::BulletinBoard::Authority::StartVote.new(election_id)
+        yield start_vote.message_id if block_given?
         start_vote.on(:ok) { |pending_message| return pending_message }
         start_vote.on(:error) { |error_message| raise StandardError, error_message }
         start_vote.call
       end
 
-      def cast_vote_message_id(election_id, voter_id)
-        Decidim::BulletinBoard::Voter::CastVote.cast_vote_message_id(election_id, voter_id)
-      end
-
       def cast_vote(election_id, voter_id, encrypted_vote)
         cast_vote = Decidim::BulletinBoard::Voter::CastVote.new(election_id, voter_id, encrypted_vote)
+        yield cast_vote.message_id if block_given?
         cast_vote.on(:ok) { |pending_message| return pending_message }
         cast_vote.on(:error) { |error_message| raise StandardError, error_message }
         cast_vote.call
@@ -73,6 +73,7 @@ module Decidim
 
       def end_vote(election_id)
         end_vote = Decidim::BulletinBoard::Authority::EndVote.new(election_id)
+        yield end_vote.message_id if block_given?
         end_vote.on(:ok) { |pending_message| return pending_message }
         end_vote.on(:error) { |error_message| raise StandardError, error_message }
         end_vote.call
@@ -87,6 +88,7 @@ module Decidim
 
       def start_tally(election_id)
         start_tally = Decidim::BulletinBoard::Authority::StartTally.new(election_id)
+        yield start_tally.message_id if block_given?
         start_tally.on(:ok) { |pending_message| return pending_message }
         start_tally.on(:error) { |error_message| raise StandardError, error_message }
         start_tally.call
@@ -94,6 +96,7 @@ module Decidim
 
       def publish_results(election_id)
         publish_results = Decidim::BulletinBoard::Authority::PublishResults.new(election_id)
+        yield publish_results.message_id if block_given?
         publish_results.on(:ok) { |status| return status }
         publish_results.on(:error) { |error_message| raise StandardError, error_message }
         publish_results.call

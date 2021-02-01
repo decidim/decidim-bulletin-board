@@ -27,6 +27,10 @@ module Decidim
             expect { subject.call }.to broadcast(:ok)
           end
 
+          it "build the right message_id" do
+            expect(subject.message_id).to eq("decidim-test-authority.decidim-test-authority.1.start_tally+a.decidim-test-authority")
+          end
+
           it "uses the graphql client to start the tally and returns its result" do
             subject.on(:ok) do |pending_message|
               expect(pending_message.status).to eq("enqueued")

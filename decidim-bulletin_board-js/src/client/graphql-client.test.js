@@ -14,7 +14,6 @@ describe("GraphQLClient", () => {
   beforeEach(() => {
     client = new GraphQLClient({
       apiEndpointUrl: "https://example.org/api",
-      wsEndpointUrl: "wss://example.org/cable",
     });
   });
 

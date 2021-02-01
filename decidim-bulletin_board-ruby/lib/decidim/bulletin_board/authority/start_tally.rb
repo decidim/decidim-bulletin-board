@@ -12,6 +12,11 @@ module Decidim
           @election_id = election_id
         end
 
+        # Returns the message_id related to the operation
+        def message_id
+          @message_id ||= build_message_id(unique_election_id(election_id), "start_tally")
+        end
+
         # Executes the command. Broadcasts these events:
         #
         # - :ok when everything is valid and the query operation is successful.
@@ -19,27 +24,28 @@ module Decidim
         #
         # Returns nothing.
         def call
-          message_id = message_id(unique_election_id(election_id), "start_tally")
-          signed_data = sign_message(message_id, {})
+          # arguments used inside the graphql operation
+          args = {
+            message_id: message_id,
+            signed_data: sign_message(message_id, {})
+          }
 
-          begin
-            response = client.query do
-              mutation do
-                startTally(messageId: message_id, signedData: signed_data) do
-                  pendingMessage do
-                    status
-                  end
-                  error
+          response = client.query do
+            mutation do
+              startTally(messageId: args[:message_id], signedData: args[:signed_data]) do
+                pendingMessage do
+                  status
                 end
+                error
               end
             end
-
-            return broadcast(:error, response.data.start_tally.error) if response.data.start_tally.error.present?
-
-            broadcast(:ok, response.data.start_tally.pending_message)
-          rescue Graphlient::Errors::ServerError
-            broadcast(:error, "Sorry, something went wrong")
           end
+
+          return broadcast(:error, response.data.start_tally.error) if response.data.start_tally.error.present?
+
+          broadcast(:ok, response.data.start_tally.pending_message)
+        rescue Graphlient::Errors::ServerError
+          broadcast(:error, "Sorry, something went wrong")
         end
 
         private

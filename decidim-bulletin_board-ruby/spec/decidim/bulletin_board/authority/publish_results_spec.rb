@@ -27,6 +27,10 @@ module Decidim
             expect { subject.call }.to broadcast(:ok)
           end
 
+          it "build the right message_id" do
+            expect(subject.message_id).to eq("decidim-test-authority.decidim-test-authority.1.publish_results+a.decidim-test-authority")
+          end
+
           it "uses the graphql client to publish the election results and returns its result" do
             subject.on(:ok) do |election|
               expect(election.status).to eq("results_published")
