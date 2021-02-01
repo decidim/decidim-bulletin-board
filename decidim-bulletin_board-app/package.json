@@ -16,7 +16,6 @@
   },
   "version": "0.1.0",
   "devDependencies": {
-    "@babel/polyfill": "^7.12.1",
     "@graphql-codegen/cli": "^1.19.4",
     "@graphql-codegen/typescript": "^1.19.0",
     "cypress": "^6.3.0",
