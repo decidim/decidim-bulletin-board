@@ -16,7 +16,7 @@ module Decidim
 
         # Returns the message_id related to the operation
         def message_id
-          @message_id ||= message_id(unique_election_id(election_id), "vote.cast", voter_id)
+          @message_id ||= build_message_id(unique_election_id(election_id), "vote.cast", voter_id)
         end
 
         # Executes the command. Broadcasts these events:
@@ -26,12 +26,13 @@ module Decidim
         #
         # Returns nothing.
         def call
-          signed_data = sign_message(message_id, { content: encrypted_vote })
+          mid = message_id
+          signed_data = sign_message(mid, { content: encrypted_vote })
 
           begin
             response = client.query do
               mutation do
-                vote(messageId: message_id, signedData: signed_data) do
+                vote(messageId: mid, signedData: signed_data) do
                   pendingMessage do
                     messageId
                     status

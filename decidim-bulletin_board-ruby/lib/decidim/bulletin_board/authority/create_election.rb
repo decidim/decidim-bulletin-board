@@ -12,30 +12,32 @@ module Decidim
 
         # Returns the message_id related to the operation
         def message_id
-          @message_id ||= message_id(unique_election_id(election_id), "create_election")
+          @message_id ||= build_message_id(unique_election_id(election_id), "create_election")
         end
 
         def call
-          signed_data = sign_message(message_id, election_data)
+          # arguments used inside the graphql operation
+          args = {
+            message_id: message_id,
+            signed_data: sign_message(message_id, election_data)
+          }
 
-          begin
-            response = client.query do
-              mutation do
-                createElection(messageId: message_id, signedData: signed_data) do
-                  election do
-                    status
-                  end
-                  error
+          response = client.query do
+            mutation do
+              createElection(messageId: args[:message_id], signedData: args[:signed_data]) do
+                election do
+                  status
                 end
+                error
               end
             end
-
-            return broadcast(:error, response.data.create_election.error) if response.data.create_election.error.present?
-
-            broadcast(:ok, response.data.create_election.election)
-          rescue Graphlient::Errors::ServerError
-            broadcast(:error, "Sorry, something went wrong")
           end
+
+          return broadcast(:error, response.data.create_election.error) if response.data.create_election.error.present?
+
+          broadcast(:ok, response.data.create_election.election)
+        rescue Graphlient::Errors::ServerError
+          broadcast(:error, "Sorry, something went wrong")
         end
 
         private

@@ -14,7 +14,7 @@ module Decidim
 
         # Returns the message_id related to the operation
         def message_id
-          @message_id ||= message_id(unique_election_id(election_id), "end_vote")
+          @message_id ||= build_message_id(unique_election_id(election_id), "end_vote")
         end
 
         # Executes the command. Broadcasts these events:
@@ -24,17 +24,19 @@ module Decidim
         #
         # Returns nothing.
         def call
-          signed_data = sign_message(message_id, {})
+          # arguments used inside the graphql operation
+          args = {
+            message_id: message_id,
+            signed_data: sign_message(message_id, {})
+          }
 
-          begin
-            response = client.query do
-              mutation do
-                endVote(messageId: message_id, signedData: signed_data) do
-                  pendingMessage do
-                    status
-                  end
-                  error
+          response = client.query do
+            mutation do
+              endVote(messageId: args[:message_id], signedData: args[:signed_data]) do
+                pendingMessage do
+                  status
                 end
+                error
               end
             end
           end

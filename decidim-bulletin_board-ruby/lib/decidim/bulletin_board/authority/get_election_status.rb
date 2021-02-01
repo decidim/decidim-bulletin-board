@@ -19,21 +19,22 @@ module Decidim
         #
         # Returns nothing.
         def call
-          unique_id = unique_election_id(election_id)
+          # arguments used inside the graphql operation
+          args = {
+            unique_id: unique_election_id(election_id)
+          }
 
-          begin
-            response = client.query do
-              query do
-                election(uniqueId: unique_id) do
-                  status
-                end
+          response = client.query do
+            query do
+              election(uniqueId: args[:unique_id]) do
+                status
               end
             end
-
-            broadcast(:ok, response.data.election.status)
-          rescue Graphlient::Errors::ServerError
-            broadcast(:error, "Sorry, something went wrong")
           end
+
+          broadcast(:ok, response.data.election.status)
+        rescue Graphlient::Errors::ServerError
+          broadcast(:error, "Sorry, something went wrong")
         end
 
         private
