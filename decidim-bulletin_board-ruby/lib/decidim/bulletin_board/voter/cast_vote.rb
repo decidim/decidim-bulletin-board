@@ -25,7 +25,8 @@ module Decidim
         # - :error if the form wasn't valid or the mutation operation was not successful.
         #
         # Returns nothing.
-        def call          # arguments used inside the graphql operation
+        def call
+          # arguments used inside the graphql operation
           args = {
             message_id: message_id,
             signed_data: sign_message(message_id, { content: encrypted_vote })
