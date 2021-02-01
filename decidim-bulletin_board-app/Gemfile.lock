@@ -81,7 +81,7 @@ GEM
     database_cleaner-active_record (1.8.0)
       activerecord
       database_cleaner (~> 1.8.0)
-    decidim-bulletin_board (0.8.2)
+    decidim-bulletin_board (0.9.0)
       byebug (~> 11.0)
       graphlient (~> 0.4.0)
       jwt (~> 2.2.2)
@@ -323,7 +323,7 @@ DEPENDENCIES
   byebug
   cypress-on-rails (~> 1.0)
   database_cleaner-active_record
-  decidim-bulletin_board (~> 0.8.0)
+  decidim-bulletin_board (~> 0.9.0)
   factory_bot_rails
   faker (~> 1.9)
   graphiql-rails
