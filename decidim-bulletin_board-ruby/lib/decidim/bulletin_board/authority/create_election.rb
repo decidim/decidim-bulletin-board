@@ -10,8 +10,12 @@ module Decidim
           @election_data = election_data
         end
 
+        # Returns the message_id related to the operation
+        def message_id
+          @message_id ||= message_id(unique_election_id(election_id), "create_election")
+        end
+
         def call
-          message_id = message_id(unique_election_id(election_id), "create_election")
           signed_data = sign_message(message_id, election_data)
 
           begin

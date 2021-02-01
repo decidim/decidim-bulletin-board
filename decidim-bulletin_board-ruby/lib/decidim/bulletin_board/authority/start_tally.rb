@@ -12,6 +12,11 @@ module Decidim
           @election_id = election_id
         end
 
+        # Returns the message_id related to the operation
+        def message_id
+          @message_id ||= message_id(unique_election_id(election_id), "start_tally")
+        end
+
         # Executes the command. Broadcasts these events:
         #
         # - :ok when everything is valid and the query operation is successful.
@@ -19,7 +24,6 @@ module Decidim
         #
         # Returns nothing.
         def call
-          message_id = message_id(unique_election_id(election_id), "start_tally")
           signed_data = sign_message(message_id, {})
 
           begin
