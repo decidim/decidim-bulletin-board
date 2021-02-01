@@ -63,14 +63,26 @@ export class Client {
   }
 
   /**
-   * Query PendingMessages for a given messageId
+   * Wait until a pending message is processed
    *
-   * @param {Object} params - An object that include the following options.
-   *  - {String} messageId - The messageId
-   * @returns {Promise<Object>} - The pending message received.
-   * @throws Will throw an error if the request is rejected.
+   * @param {Object} messageId - An object that includes the following options.
+   *  - {String} messageId - the unique identifier of a message
+   * @returns {Promise<Object>} - Returns the PendingMessage
    */
-  getPendingMessageByMessageId({ messageId }) {
-    return this.apiClient.getPendingMessageByMessageId({ messageId });
+  waitForPendingMessageToBeProcessed(messageId) {
+    return new Promise((resolve, reject) => {
+      const intervalId = setInterval(() => {
+        this.apiClient
+          .getPendingMessageByMessageId({
+            messageId,
+          })
+          .then((pendingMessage) => {
+            if (pendingMessage.status !== "enqueued") {
+              clearInterval(intervalId);
+              resolve(pendingMessage);
+            }
+          });
+      }, this.options.bulletinBoardWaitTime);
+    });
   }
 }

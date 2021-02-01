@@ -55,30 +55,6 @@ export class Voter {
   }
 
   /**
-   * Confirms if a vote was processed
-   *
-   * @param {Object} messageId - An object that includes the following options.
-   *  - {String} messageId - the unique identifier of a message
-   * @returns {Promise<Object>} - Returns the PendingMessage
-   */
-  waitForPendingMessageToBeProcessed(messageId) {
-    return new Promise((resolve, reject) => {
-      const intervalId = setInterval(() => {
-        this.bulletinBoardClient
-          .getPendingMessageByMessageId({
-            messageId,
-          })
-          .then((pendingMessage) => {
-            if (pendingMessage.status !== "enqueued") {
-              clearInterval(intervalId);
-              resolve(pendingMessage);
-            }
-          });
-      }, this.options.bulletinBoardWaitTime);
-    });
-  }
-
-  /**
    * Verifies a vote
    *
    * @param {String} contentHash - An object that includes the following options.
