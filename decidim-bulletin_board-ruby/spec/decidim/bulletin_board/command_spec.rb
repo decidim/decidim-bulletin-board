@@ -10,8 +10,8 @@ module Decidim
 
       include_context "with a configured bulletin board"
 
-      describe ".message_id" do
-        subject { instance.message_id(unique_election_id, type_subtype, voter_id) }
+      describe ".build_message_id" do
+        subject { instance.build_message_id(unique_election_id, type_subtype, voter_id) }
 
         let(:unique_election_id) { "decidim-test-authority.26" }
         let(:type_subtype) { "vote.cast" }

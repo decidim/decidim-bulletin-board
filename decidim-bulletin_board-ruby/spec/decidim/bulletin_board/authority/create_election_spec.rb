@@ -32,6 +32,10 @@ module Decidim
             expect { subject.call }.to broadcast(:ok)
           end
 
+          it "build the right message_id" do
+            expect(subject.message_id).to eq("decidim-test-authority.1.create_election+a.decidim-test-authority")
+          end
+
           it "uses the graphql client to open the ballot box and return the election" do
             subject.on(:ok) do |election|
               expect(election.status).to eq("created")

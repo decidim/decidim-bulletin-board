@@ -41,22 +41,23 @@ module Decidim
       describe "start_key_ceremony" do
         subject { instance.start_key_ceremony(election_id) }
 
+        before do
+          stub_command("Decidim::BulletinBoard::Authority::StartKeyCeremony", :call, *result)
+        end
+
         let(:election_id) { "test.1" }
+        let(:result) { [:ok, double(status: "enqueued")] }
 
-        context "when everything went ok" do
-          before do
-            stub_wisper_publisher("Decidim::BulletinBoard::Authority::StartKeyCeremony", :call, :ok, double(status: "enqueued"))
-          end
+        it "yields the message_id" do
+          expect {|block| instance.start_key_ceremony(election_id, &block) } .to yield_with_args("a.message+id")
+        end
 
-          it "calls the StartKeyCeremony command and returns the result" do
-            expect(subject.status).to eq("enqueued")
-          end
+        it "calls the StartKeyCeremony command and returns the result" do
+          expect(subject.status).to eq("enqueued")
         end
 
         context "when something went wrong" do
-          before do
-            stub_wisper_publisher("Decidim::BulletinBoard::Authority::StartKeyCeremony", :call, :error, "something went wrong")
-          end
+          let(:result) { [:error, "something went wrong"] }
 
           it "calls the StartKeyCeremony command and throws an error" do
             expect { subject }.to raise_error("something went wrong")
@@ -67,22 +68,23 @@ module Decidim
       describe "start_vote" do
         subject { instance.start_vote(election_id) }
 
+        before do
+          stub_command("Decidim::BulletinBoard::Authority::StartVote", :call, *result)
+        end
+
         let(:election_id) { "test.1" }
+        let(:result) { [:ok, double(status: "enqueued")] }
 
-        context "when everything went ok" do
-          before do
-            stub_wisper_publisher("Decidim::BulletinBoard::Authority::StartVote", :call, :ok, double(status: "enqueued"))
-          end
+        it "yields the message_id" do
+          expect {|block| instance.start_vote(election_id, &block) } .to yield_with_args("a.message+id")
+        end
 
-          it "calls the StartVote command and return the result" do
-            expect(subject.status).to eq("enqueued")
-          end
+        it "calls the StartVote command and return the result" do
+          expect(subject.status).to eq("enqueued")
         end
 
         context "when something went wrong" do
-          before do
-            stub_wisper_publisher("Decidim::BulletinBoard::Authority::StartVote", :call, :error, "something went wrong")
-          end
+          let(:result) { [:error, "something went wrong"] }
 
           it "calls the StartVote command and throws an error" do
             expect { subject }.to raise_error("something went wrong")
@@ -90,41 +92,30 @@ module Decidim
         end
       end
 
-      describe "cast_vote_message_id" do
-        let(:election_id) { "test.1" }
-        let(:voter_id) { "voter.1" }
-
-        context "when everything went ok" do
-          it "calls the cast_vote_message_id method and returns message_id" do
-            message_id = subject.cast_vote_message_id(election_id, voter_id)
-            expect(message_id).to eq("decidim-test-authority.test.1.vote.cast+v.voter.1")
-          end
-        end
-      end
-
       describe "cast_vote" do
         subject { instance.cast_vote(election_id, voter_id, encrypted_vote) }
+
+        before do
+          stub_command("Decidim::BulletinBoard::Voter::CastVote", :call, *result)
+        end
 
         let(:election_id) { "test.1" }
         let(:voter_id) { "voter.1" }
         let(:encrypted_vote) do
           { question_1: "aNsWeR 1" }.to_json
         end
+        let(:result) { [:ok, double(status: "enqueued")] }
 
-        context "when everything went ok" do
-          before do
-            stub_wisper_publisher("Decidim::BulletinBoard::Voter::CastVote", :call, :ok, double(status: "enqueued"))
-          end
+        it "yields the message_id" do
+          expect {|block| instance.cast_vote(election_id, voter_id, encrypted_vote, &block) } .to yield_with_args("a.message+id")
+        end
 
-          it "calls the CastVote command and return the result" do
-            expect(subject.status).to eq("enqueued")
-          end
+        it "calls the CastVote command and return the result" do
+          expect(subject.status).to eq("enqueued")
         end
 
         context "when something went wrong" do
-          before do
-            stub_wisper_publisher("Decidim::BulletinBoard::Voter::CastVote", :call, :error, "something went wrong")
-          end
+          let(:result) { [:error, "something went wrong"] }
 
           it "calls the CastVote command and throws an error" do
             expect { subject }.to raise_error("something went wrong")
@@ -135,22 +126,19 @@ module Decidim
       describe "end_vote" do
         subject { instance.end_vote(election_id) }
 
+        before do
+          stub_command("Decidim::BulletinBoard::Authority::EndVote", :call, *result)
+        end
+
         let(:election_id) { "test.1" }
+        let(:result) { [:ok, double(status: "enqueued")] }
 
-        context "when everything went ok" do
-          before do
-            stub_wisper_publisher("Decidim::BulletinBoard::Authority::EndVote", :call, :ok, double(status: "enqueued"))
-          end
-
-          it "calls the EndVote command and returns the result" do
-            expect(subject.status).to eq("enqueued")
-          end
+        it "calls the EndVote command and returns the result" do
+          expect(subject.status).to eq("enqueued")
         end
 
         context "when something went wrong" do
-          before do
-            stub_wisper_publisher("Decidim::BulletinBoard::Authority::EndVote", :call, :error, "something went wrong")
-          end
+          let(:result) { [:error, "something went wrong"] }
 
           it "calls the EndVote command and throws an error" do
             expect { subject }.to raise_error("something went wrong")
@@ -212,22 +200,23 @@ module Decidim
       describe "start_tally" do
         subject { instance.start_tally(election_id) }
 
+        before do
+          stub_command("Decidim::BulletinBoard::Authority::StartTally", :call, *result)
+        end
+
         let(:election_id) { "test.1" }
+        let(:result) { [:ok, double(status: "enqueued")] }
 
-        context "when everything went ok" do
-          before do
-            stub_wisper_publisher("Decidim::BulletinBoard::Authority::StartTally", :call, :ok, double(status: "enqueued"))
-          end
+        it "yields the message_id" do
+          expect {|block| instance.start_tally(election_id, &block) } .to yield_with_args("a.message+id")
+        end
 
-          it "calls the StartTally command and returns the result" do
-            expect(subject.status).to eq("enqueued")
-          end
+        it "calls the StartTally command and returns the result" do
+          expect(subject.status).to eq("enqueued")
         end
 
         context "when something went wrong" do
-          before do
-            stub_wisper_publisher("Decidim::BulletinBoard::Authority::StartTally", :call, :error, "something went wrong")
-          end
+          let(:result) { [:error, "something went wrong"] }
 
           it "calls the StartTally command and throws an error" do
             expect { subject }.to raise_error("something went wrong")
@@ -238,22 +227,23 @@ module Decidim
       describe "publish_results" do
         subject { instance.publish_results(election_id) }
 
+        before do
+          stub_command("Decidim::BulletinBoard::Authority::PublishResults", :call, *result)
+        end
+
         let(:election_id) { "decidim-test-authority.1" }
+        let(:result) { [:ok, "results_published"] }
 
-        context "when everything went ok" do
-          before do
-            stub_wisper_publisher("Decidim::BulletinBoard::Authority::PublishResults", :call, :ok, "results_published")
-          end
+        it "yields the message_id" do
+          expect {|block| instance.publish_results(election_id, &block) } .to yield_with_args("a.message+id")
+        end
 
-          it "calls the PublishResults command and returns the result" do
-            expect(subject).to eq("results_published")
-          end
+        it "calls the PublishResults command and returns the result" do
+          expect(subject).to eq("results_published")
         end
 
         context "when something went wrong" do
-          before do
-            stub_wisper_publisher("Decidim::BulletinBoard::Authority::PublishResults", :call, :error, "Sorry, something went wrong")
-          end
+          let(:result) { [:error, "Sorry, something went wrong"] }
 
           it "calls the PublishResults command and throws an error" do
             expect { subject }.to raise_error("Sorry, something went wrong")
