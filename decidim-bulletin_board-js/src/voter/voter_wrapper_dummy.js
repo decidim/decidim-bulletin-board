@@ -23,7 +23,7 @@ export class VoterWrapper {
    * @param {String} messageId - The identifier of the message.
    * @param {Object} message - An object with the message to process.
    *
-   * @returns {Object|undefined}
+   * @returns {undefined}
    */
   processMessage(messageId, message) {
     const messageIdentifier = MessageIdentifier.parse(messageId);
@@ -71,29 +71,26 @@ export class VoterWrapper {
    * @returns {<Object>}
    */
   createBallot(vote) {
+    /* eslint-disable camelcase */
     return {
       ballot_style: "ballot-style",
-      contests: this.contests.map((contestDescription) => {
+      contests: this.contests.map(({ object_id, ballot_selections }) => {
         return {
-          object_id: contestDescription.object_id,
-          ballot_selections: contestDescription.ballot_selections.map(
-            (ballotSelection) => {
-              const voted = vote[contestDescription.object_id].includes(
-                ballotSelection.object_id
-              )
-                ? 1
-                : 0;
+          object_id,
+          ballot_selections: ballot_selections.map((ballotSelection) => {
+            const voted = vote[object_id].includes(ballotSelection.object_id)
+              ? 1
+              : 0;
 
-              return {
-                object_id: ballotSelection.object_id,
-                ciphertext:
-                  voted +
-                  Math.floor(Math.random() * 500) * this.jointElectionKey,
-              };
-            }
-          ),
+            return {
+              object_id: ballotSelection.object_id,
+              ciphertext:
+                voted + Math.floor(Math.random() * 500) * this.jointElectionKey,
+            };
+          }),
         };
       }),
     };
+    /* eslint-enable camelcase */
   }
 }
