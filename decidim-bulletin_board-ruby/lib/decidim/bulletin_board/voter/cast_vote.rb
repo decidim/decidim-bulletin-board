@@ -25,14 +25,16 @@ module Decidim
         # - :error if the form wasn't valid or the mutation operation was not successful.
         #
         # Returns nothing.
-        def call
-          mid = message_id
-          signed_data = sign_message(mid, { content: encrypted_vote })
+        def call          # arguments used inside the graphql operation
+          args = {
+            message_id: message_id,
+            signed_data: sign_message(message_id, { content: encrypted_vote })
+          }
 
           begin
             response = client.query do
               mutation do
-                vote(messageId: mid, signedData: signed_data) do
+                vote(messageId: args[:message_id], signedData: args[:signed_data]) do
                   pendingMessage do
                     messageId
                     status
