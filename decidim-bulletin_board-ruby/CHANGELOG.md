@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## [0.9.0] - 2021-02-01
+
 ## Changed
 
 - The `open_ballot_box` and `close_ballot_box` are now called `start_vote` and `end_vote` and return a pending message.
