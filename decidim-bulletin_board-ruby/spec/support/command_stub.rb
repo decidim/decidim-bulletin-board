@@ -2,7 +2,7 @@
 
 def stub_command(clazz, called_method, event_to_publish, *published_event_args)
   stub_const(clazz, Class.new(TestWisperPublisher) do
-    define_method(called_method) do |*args|
+    define_method(called_method) do |*_args|
       publish(event_to_publish, *published_event_args)
     end
 

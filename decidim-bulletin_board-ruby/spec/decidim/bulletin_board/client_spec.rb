@@ -49,7 +49,7 @@ module Decidim
         let(:result) { [:ok, double(status: "enqueued")] }
 
         it "yields the message_id" do
-          expect {|block| instance.start_key_ceremony(election_id, &block) } .to yield_with_args("a.message+id")
+          expect { |block| instance.start_key_ceremony(election_id, &block) }.to yield_with_args("a.message+id")
         end
 
         it "calls the StartKeyCeremony command and returns the result" do
@@ -76,7 +76,7 @@ module Decidim
         let(:result) { [:ok, double(status: "enqueued")] }
 
         it "yields the message_id" do
-          expect {|block| instance.start_vote(election_id, &block) } .to yield_with_args("a.message+id")
+          expect { |block| instance.start_vote(election_id, &block) }.to yield_with_args("a.message+id")
         end
 
         it "calls the StartVote command and return the result" do
@@ -107,7 +107,7 @@ module Decidim
         let(:result) { [:ok, double(status: "enqueued")] }
 
         it "yields the message_id" do
-          expect {|block| instance.cast_vote(election_id, voter_id, encrypted_vote, &block) } .to yield_with_args("a.message+id")
+          expect { |block| instance.cast_vote(election_id, voter_id, encrypted_vote, &block) }.to yield_with_args("a.message+id")
         end
 
         it "calls the CastVote command and return the result" do
@@ -208,7 +208,7 @@ module Decidim
         let(:result) { [:ok, double(status: "enqueued")] }
 
         it "yields the message_id" do
-          expect {|block| instance.start_tally(election_id, &block) } .to yield_with_args("a.message+id")
+          expect { |block| instance.start_tally(election_id, &block) }.to yield_with_args("a.message+id")
         end
 
         it "calls the StartTally command and returns the result" do
@@ -235,7 +235,7 @@ module Decidim
         let(:result) { [:ok, "results_published"] }
 
         it "yields the message_id" do
-          expect {|block| instance.publish_results(election_id, &block) } .to yield_with_args("a.message+id")
+          expect { |block| instance.publish_results(election_id, &block) }.to yield_with_args("a.message+id")
         end
 
         it "calls the PublishResults command and returns the result" do
