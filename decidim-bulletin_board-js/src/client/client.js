@@ -1,5 +1,7 @@
 import { GraphQLClient } from "./graphql-client";
 
+export const WAIT_TIME_MS = 1_000; // 1s
+
 /**
  * This is a facade over the API client specific implementation.
  */
@@ -65,12 +67,12 @@ export class Client {
   /**
    * Wait until a pending message is processed
    *
-   * @param {Object} messageId - An object that includes the following options.
-   *  - {String} messageId - the unique identifier of a message
+   * @param {String} messageId - the unique identifier of a message
+   * @param {Integer} [waitTime=WAIT_TIME_MS] - the interval to wait for the pending message to be processed
    * @returns {Promise<Object>} - Returns the PendingMessage
    */
-  waitForPendingMessageToBeProcessed(messageId) {
-    return new Promise((resolve, reject) => {
+  waitForPendingMessageToBeProcessed(messageId, waitTime = WAIT_TIME_MS) {
+    return new Promise((resolve) => {
       const intervalId = setInterval(() => {
         this.apiClient
           .getPendingMessageByMessageId({
@@ -82,7 +84,7 @@ export class Client {
               resolve(pendingMessage);
             }
           });
-      }, this.options.bulletinBoardWaitTime);
+      }, waitTime);
     });
   }
 }

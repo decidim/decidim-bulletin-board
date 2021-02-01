@@ -1,8 +1,6 @@
 import { VoterWrapper } from "./voter_wrapper_dummy";
 import { JWTParser } from "../jwt_parser";
 
-export const WAIT_TIME_MS = 1_000; // 1s
-
 /**
  * This is a facade class that will use the correspondig `VoterWrapper` to encrypt
  * the vote.
@@ -15,13 +13,12 @@ export class Voter {
    * @param {Object} params - An object that contains the initialization params.
    *  - {String} id - The voter identifier.
    */
-  constructor({ id, electionContext, bulletinBoardClient, options }) {
+  constructor({ id, electionContext, bulletinBoardClient }) {
     this.id = id;
     this.electionContext = electionContext;
     this.bulletinBoardClient = bulletinBoardClient;
     this.wrapper = new VoterWrapper({ voterId: id });
     this.parser = new JWTParser();
-    this.options = options || { bulletinBoardWaitTime: WAIT_TIME_MS };
   }
 
   /**

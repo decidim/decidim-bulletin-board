@@ -5,7 +5,6 @@ jest.mock("./graphql-client");
 describe("Client", () => {
   const defaultParams = {
     apiEndpointUrl: "https://example.org/api",
-    wsEndpointUrl: "wss://example.org/ws",
   };
 
   const buildClient = (params = defaultParams) => {
@@ -47,11 +46,11 @@ describe("Client", () => {
     });
   });
 
-  describe("getPendingMessageByMessageId", () => {
+  describe("waitForPendingMessageToBeProcessed", () => {
     it("returns the pending message for the given messageId", async () => {
-      const pendingMessage = await client.getPendingMessageByMessageId({
-        messageId: "dummy.1",
-      });
+      const pendingMessage = await client.waitForPendingMessageToBeProcessed(
+        "dummy.1"
+      );
       expect(pendingMessage).toEqual({
         status: "accepted",
       });
