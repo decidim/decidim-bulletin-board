@@ -55,6 +55,9 @@ group :development, :test do
   gem "rubocop", "~> 0.71.0"
   gem "rubocop-rails", "~> 2.0"
   gem "rubocop-rspec", "~> 1.21"
+
+  # Uncomment these (and comment the previous reference to the gem) to work in development mode in the sandbox
+  # gem "decidim-bulletin_board", path: "../decidim-bulletin_board-ruby"
 end
 
 group :development do

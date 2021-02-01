@@ -1,9 +1,9 @@
 /* eslint-disable camelcase */
 import { TrusteeWrapper } from "./trustee_wrapper_dummy";
 import { EventManager } from "./event_manager";
-import { JWTParser } from "./jwt_parser";
+import { JWTParser } from "../jwt_parser";
 
-export const WAIT_TIME_MS = 1_000; // 1s
+export const WAIT_TIME_MS = 100; // 0.1s
 
 /**
  * This class encapsulates all the behavior that is needed to interact with the evoting
@@ -72,7 +72,11 @@ export class Trustee {
    * @returns {Promise<Boolean>}
    */
   async *setupKeyCeremony() {
-    const message = await this.waitForNextLogEntryResult();
+    let message;
+    while (!message) {
+      message = await this.waitForNextLogEntryResult();
+    }
+
     yield this.wrapper.backup();
     await this.processKeyCeremonyStep(message);
     this.hasSetupKeyCeremony = true;
@@ -196,8 +200,8 @@ export class Trustee {
     const message = logEntries[this.nextLogEntryIndexToProcess];
 
     this.events.broadcastMessageReceived(message);
-
-    const payload = await this.parser.parse(message.signedData);
+    const payload =
+      message.signedData && (await this.parser.parse(message.signedData));
     const result = await this.wrapper.processMessage(
       message.messageId,
       payload

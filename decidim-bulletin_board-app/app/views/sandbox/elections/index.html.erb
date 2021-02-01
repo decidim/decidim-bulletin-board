@@ -16,11 +16,27 @@
         <td><%= election.title %></td>
         <td><%= election.status %></td>
         <td>
+          <% if election.created? %>
+            <%= link_to "Start key ceremony", start_key_ceremony_sandbox_election_path(election) %>
+          <% end %>
           <% if election.key_ceremony? %>
             <%= link_to "Perform key ceremony", key_ceremony_sandbox_election_path(election) %>
           <% end %>
+          <% if election.key_ceremony_ended? %>
+            <%= link_to "Start vote", start_vote_sandbox_election_path(election) %>
+          <% end %>
+          <% if election.vote? %>
+            <%= link_to "Vote", vote_sandbox_election_path(election) %> |
+            <%= link_to "End vote", end_vote_sandbox_election_path(election) %>
+          <% end %>
+          <% if election.vote_ended? %>
+            <%= link_to "Start tally", start_tally_sandbox_election_path(election) %>
+          <% end %>
           <% if election.tally? %>
             <%= link_to "Perform tally", tally_sandbox_election_path(election) %>
+          <% end %>
+          <% if election.tally_ended? %>
+            <%= link_to "Publish results", publish_results_sandbox_election_path(election) %>
           <% end %>
         </td>
       </tr>

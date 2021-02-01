@@ -7,19 +7,19 @@ export class TrusteeWrapper {
     this.tallyDone = false;
   }
 
-  processMessage(messageId, signedData) {
+  processMessage(messageId, message) {
     const typeSubtype = parseMessageId(messageId);
     switch (typeSubtype) {
       case "dummy.send": {
         return {
           message_id: buildMessageId("dummy.response_send"),
-          content: signedData,
+          content: message,
         };
       }
       case "dummy.save": {
         return {
           message_id: buildMessageId("dummy.response_save"),
-          content: signedData,
+          content: message,
         };
       }
       case "dummy.done": {
@@ -30,7 +30,7 @@ export class TrusteeWrapper {
         this.tallyDone = true;
         return {
           message_id: buildMessageId("dummy.response_cast"),
-          content: signedData,
+          content: message,
         };
       }
     }

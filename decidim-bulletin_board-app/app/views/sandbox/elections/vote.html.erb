@@ -1,0 +1,16 @@
+<%= link_to "Back", sandbox_elections_path %>
+
+<h1>Vote for <%= election.title %></h1>
+
+<div class="voter" data-election-unique-id="<%= election.unique_id %>">
+  <p>Voter Id: <input name="voter_id" value="<%= random_voter_id %>" style="width:20rem"></p>
+  <p>
+    Vote content: <br/>
+    <textarea cols="100" rows="5"><%= base_vote %></textarea>
+  </p>
+
+  <button>Cast vote</button>
+  <a href="">Refresh</a>
+</div>
+
+<%= javascript_include_tag "sandbox/vote" %>

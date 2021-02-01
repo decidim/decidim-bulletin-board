@@ -16,3 +16,6 @@
 
 # byebug history
 .byebug_history
+
+# compiled dev JS client
+/app/assets/javascripts/decidim/bulletin_board/decidim-bulletin_board.dev.js

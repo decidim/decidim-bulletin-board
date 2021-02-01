@@ -3,7 +3,7 @@ import { MESSAGE_RECEIVED, MESSAGE_PROCESSED } from "./event_manager";
 import { buildMessageId } from "../test-utils";
 
 jest.mock("./trustee_wrapper_dummy");
-jest.mock("./jwt_parser");
+jest.mock("../jwt_parser");
 
 describe("Trustee", () => {
   const election = {
