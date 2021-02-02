@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## Added
+
+- The `VoteComponent` has been added. It will be used as a glue code between the vote and the UI.
+
 ## [0.9.0] - 2021-02-01
 
 ## Changed

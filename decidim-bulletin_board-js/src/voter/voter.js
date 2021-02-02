@@ -11,13 +11,16 @@ export class Voter {
    *
    * @constructor
    * @param {Object} params - An object that contains the initialization params.
-   *  - {String} id - The voter identifier.
+   *  - {String} uniqueId - The voter identifier.
+   *  - {Object} election - An object that interacts with a specific election
+   *                        to get some data and perform the vote.
+   *  - {Client} bulletinBoardClient - An instance of the Bulletin Board Client
    */
-  constructor({ id, electionContext, bulletinBoardClient }) {
-    this.id = id;
-    this.electionContext = electionContext;
+  constructor({ uniqueId, election, bulletinBoardClient }) {
+    this.uniqueId = uniqueId;
+    this.election = election;
     this.bulletinBoardClient = bulletinBoardClient;
-    this.wrapper = new VoterWrapper({ voterId: id });
+    this.wrapper = new VoterWrapper({ voterId: uniqueId });
     this.parser = new JWTParser();
   }
 
@@ -31,7 +34,7 @@ export class Voter {
   setup() {
     return this.bulletinBoardClient
       .getElectionLogEntries({
-        electionUniqueId: this.electionContext.id,
+        electionUniqueId: this.election.uniqueId,
       })
       .then(async (logEntries) => {
         for (const logEntry of logEntries) {
@@ -44,11 +47,25 @@ export class Voter {
   /**
    * Encrypts the data using the wrapper.
    *
-   * @param {Object} data - The data to be.
-   * @returns {Object} - The data encrypted.
+   * @param {Object} data - The data to be encrypted.
+   * @returns {Promise<Object>} - The data encrypted and its hash.
    */
-  encrypt(data) {
-    return this.wrapper.encrypt(data);
+  async encrypt(data) {
+    const encryptedVote = await this.wrapper.encrypt(data);
+
+    return window.crypto.subtle
+      .digest("SHA-256", new TextEncoder().encode(encryptedVote))
+      .then((hashBuffer) => {
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        const hashHex = hashArray
+          .map((b) => b.toString(16).padStart(2, "0"))
+          .join("");
+
+        return {
+          encryptedVote,
+          encryptedVoteHash: hashHex,
+        };
+      });
   }
 
   /**
@@ -59,7 +76,7 @@ export class Voter {
    * @returns {Promise<Object>} - Returns a logEntry
    */
   verifyVote(contentHash) {
-    const { id: electionUniqueId } = this.electionContext;
+    const { uniqueId: electionUniqueId } = this.election;
 
     return this.bulletinBoardClient.getLogEntry({
       electionUniqueId,

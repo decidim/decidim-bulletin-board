@@ -4,7 +4,7 @@ jest.mock("./voter_wrapper_dummy");
 
 describe("Voter", () => {
   const defaultParams = {
-    id: "voter-1",
+    uniqueId: "voter-1",
   };
 
   const buildVoter = (params = defaultParams) => {
@@ -18,8 +18,8 @@ describe("Voter", () => {
   });
 
   it("initialise the voter wrapper with the given params", () => {
-    expect(voter.id).toEqual(defaultParams.id);
-    expect(voter.wrapper.voterId).toEqual(defaultParams.id);
+    expect(voter.uniqueId).toEqual(defaultParams.uniqueId);
+    expect(voter.wrapper.voterId).toEqual(defaultParams.uniqueId);
   });
 
   describe("encrypt", () => {
