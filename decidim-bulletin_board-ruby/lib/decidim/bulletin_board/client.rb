@@ -94,6 +94,13 @@ module Decidim
         start_tally.call
       end
 
+      def get_election_log_entries_by_types(election_id, types)
+        get_log_entries = Decidim::BulletinBoard::Authority::GetElectionLogEntriesByTypes.new(election_id, types)
+        get_log_entries.on(:ok) { |log_entries| return log_entries }
+        get_log_entries.on(:error) { |error_message| raise StandardError, error_message }
+        get_log_entries.call
+      end
+
       def publish_results(election_id)
         publish_results = Decidim::BulletinBoard::Authority::PublishResults.new(election_id)
         yield publish_results.message_id if block_given?
