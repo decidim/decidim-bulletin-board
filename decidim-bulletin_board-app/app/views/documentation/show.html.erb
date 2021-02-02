@@ -1,10 +1,10 @@
 
 <div class="intro">
-  <div class="version">Bulletin Board Version 1.0s</div>
+  <div class="version">Bulletin Board Version <%= Decidim::BulletinBoard::VERSION %></div>
 
   <h1>Bulletin Board Version API documentation</h1>
-  <% if defined?(graphiql_path) %>
-    <%= link_to "Explore the API interactively with GraphiQL", graphiql_path %>
+  <% if defined?(graphiql_rails) %>
+    <%= link_to "Explore the API interactively with GraphiQL", graphiql_rails_path %>
   <% end %>
 </div>
 
