@@ -10,13 +10,13 @@ module Types
 
     field :log_entries, [Types::LogEntryType], null: false, description: "Returns the list of log entries for this election in the bulletin board" do
       argument :after, String, required: false
+      argument :types, [String], required: false
 
       def resolve(parent, args, _context)
-        if args[:after]
-          parent.object.log_entries.where("id > ?", args[:after].to_i)
-        else
-          parent.object.log_entries
-        end
+        log_entries = parent.object.log_entries
+        log_entries = log_entries.where(message_type: args[:types]) if args[:types]
+        log_entries = log_entries.where("id > ?", args[:after].to_i) if args[:after]
+        log_entries
       end
     end
   end

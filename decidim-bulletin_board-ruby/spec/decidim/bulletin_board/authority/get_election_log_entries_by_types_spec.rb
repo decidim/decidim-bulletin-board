@@ -5,13 +5,13 @@ require "spec_helper"
 module Decidim
   module BulletinBoard
     module Authority
-      describe GetElectionLogEntries do
-        subject { described_class.new(election_id) }
+      describe GetElectionLogEntriesByTypes do
+        subject { described_class.new(election_id, types) }
 
         include_context "with a configured bulletin board"
 
         let(:election_id) { "decidim-test-authority.1" }
-
+        let(:types) { ["tally_ended"] }
         let(:bulletin_board_response) do
           {
             election: {

@@ -93,6 +93,13 @@ module Decidim
         start_tally.on(:error) { |error_message| raise StandardError, error_message }
         start_tally.call
       end
+      
+      def get_election_log_entries_by_types(election_id, types)
+        log_entries = Decidim::BulletinBoard::Authority::GetElectionLogEntriesByTypes.new(election_id, types)
+        log_entries.on(:ok) { |log_entries| return log_entries }
+        log_entries.on(:error) { |error_message| raise StandardError, error_message }
+        log_entries.call
+      end
 
       def publish_results(election_id)
         publish_results = Decidim::BulletinBoard::Authority::PublishResults.new(election_id)

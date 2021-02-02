@@ -4,12 +4,14 @@ module Decidim
   module BulletinBoard
     module Authority
       # This command uses the GraphQL client to get the log entries of an election.
-      class GetElectionLogEntries < Decidim::BulletinBoard::Command
+      class GetElectionLogEntriesByTypes < Decidim::BulletinBoard::Command
         # Public: Initializes the command.
         #
-        # election_id - The local election identifier
-        def initialize(election_id)
+        # election_id [String] - The local election identifier
+        # types [Array of Strings] - The message types you want to filter the log entries with
+        def initialize(election_id, types)
           @election_id = election_id
+          @types = types
         end
 
         # Executes the command. Broadcasts these events:
@@ -22,7 +24,7 @@ module Decidim
           # arguments used inside the graphql operation
           args = {
             unique_id: unique_election_id(election_id),
-            types: ["tally_ended"]
+            types: types
           }
 
           response = client.query do
@@ -42,7 +44,7 @@ module Decidim
 
         private
 
-        attr_reader :election_id
+        attr_reader :election_id, :types
       end
     end
   end

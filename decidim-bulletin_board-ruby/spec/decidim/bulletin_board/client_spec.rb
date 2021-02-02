@@ -224,6 +224,30 @@ module Decidim
         end
       end
 
+      describe "get_election_log_entries_by_type" do
+        subject { instance.get_election_log_entries_by_types(election_id, types) }
+
+        before do
+          stub_command("Decidim::BulletinBoard::Authority::GetElectionLogEntriesByTypes", :call, *result)
+        end
+
+        let(:election_id) { "test.1" }
+        let(:types) { ["tally_ended"] }
+        let(:result) { [:ok, [ double( signed_data: "12345678" ) ]] }
+
+        it "calls the GetElectionLogEntriesByTypes command and returns the result" do
+          expect(subject.first.signed_data).to eq("12345678")
+        end
+
+        context "when something went wrong" do
+          let(:result) { [:error, "something went wrong"] }
+
+          it "calls the GetElectionLogEntriesByTypes command and throws an error" do
+            expect { subject }.to raise_error("something went wrong")
+          end
+        end
+      end
+
       describe "publish_results" do
         subject { instance.publish_results(election_id) }
 
