@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require "pycall/dict"
-require "pycall"
-EGBB = PyCall.import_module("decidim.electionguard.bulletin_board")
+# require "pycall/dict"
+# require "pycall"
+EGBB = 1 # PyCall.import_module("decidim.electionguard.bulletin_board")
 
 module VotingScheme
   # An implementation of the ElectionGuard voting scheme, using PyCall to execute the ElectionGuard python code
