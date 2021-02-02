@@ -7,9 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## [0.9.1] - 2021-02-02
+
 ## Added
 
 - The `VoteComponent` has been added. It will be used as a glue code between the vote and the UI.
+- The ruby client now includes the `get_election_log_entries_by_types` method to get the election log entries filtered by type.
 
 ## [0.9.0] - 2021-02-01
 
