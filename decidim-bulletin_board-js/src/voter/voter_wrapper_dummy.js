@@ -78,9 +78,11 @@ export class VoterWrapper {
         return {
           object_id,
           ballot_selections: ballot_selections.map((ballotSelection) => {
-            const voted = vote[object_id].includes(ballotSelection.object_id)
-              ? 1
-              : 0;
+            const voted =
+              vote[object_id] &&
+              vote[object_id].includes(ballotSelection.object_id)
+                ? 1
+                : 0;
 
             return {
               object_id: ballotSelection.object_id,
