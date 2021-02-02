@@ -233,7 +233,7 @@ module Decidim
 
         let(:election_id) { "test.1" }
         let(:types) { ["tally_ended"] }
-        let(:result) { [:ok, [ double( signed_data: "12345678" ) ]] }
+        let(:result) { [:ok, [double(signed_data: "12345678")]] }
 
         it "calls the GetElectionLogEntriesByTypes command and returns the result" do
           expect(subject.first.signed_data).to eq("12345678")
