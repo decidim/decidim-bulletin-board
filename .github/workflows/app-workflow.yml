@@ -201,3 +201,8 @@ jobs:
         with:
           name: cypress videos
           path: decidim-bulletin_board-app/spec/cypress/videos/
+      - name: Upload artifacts (downloads)
+        uses: actions/upload-artifact@v2
+        with:
+          name: cypress downloads
+          path: decidim-bulletin_board-app/spec/cypress/downloads/
