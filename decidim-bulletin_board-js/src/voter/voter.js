@@ -12,12 +12,11 @@ export class Voter {
    * @constructor
    * @param {Object} params - An object that contains the initialization params.
    *  - {String} uniqueId - The voter identifier.
-   *  - {Client} bulletinBoardClient - An instance of the Bulletin Board Client
    *  - {Object} election - An object that interacts with a specific election
    *                        to get some data and perform the vote.
-   *  - {Object?} options - An optional object with some extra options.
+   *  - {Client} bulletinBoardClient - An instance of the Bulletin Board Client
    */
-  constructor({ uniqueId, election, bulletinBoardClient, options }) {
+  constructor({ uniqueId, election, bulletinBoardClient }) {
     this.uniqueId = uniqueId;
     this.election = election;
     this.bulletinBoardClient = bulletinBoardClient;
@@ -54,7 +53,7 @@ export class Voter {
   async encrypt(data) {
     const encryptedVote = await this.wrapper.encrypt(data);
 
-    return crypto.subtle
+    return window.crypto.subtle
       .digest("SHA-256", new TextEncoder().encode(encryptedVote))
       .then((hashBuffer) => {
         const hashArray = Array.from(new Uint8Array(hashBuffer));
