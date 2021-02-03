@@ -48,4 +48,7 @@ Rails.application.configure do
 
   # Raises error for missing translations.
   # config.action_view.raise_on_missing_translations = true
+
+  # Run jobs inline by default when you are in the test environment.
+  config.active_job.queue_adapter = :inline
 end
