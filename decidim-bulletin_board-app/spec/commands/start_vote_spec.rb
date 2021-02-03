@@ -27,7 +27,7 @@ RSpec.describe StartVote do
   end
 
   it "changes the election status" do
-    expect { subject }.to change { Election.last.status } .from("key_ceremony_ended").to("vote")
+    expect { subject }.to change { Election.last.status }.from("key_ceremony_ended").to("vote")
   end
 
   shared_examples "starting the voting period fails" do

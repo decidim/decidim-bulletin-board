@@ -37,7 +37,7 @@ RSpec.describe StartKeyCeremony do
   end
 
   it "changes the election status to key_ceremony" do
-    expect { subject }.to change { Election.last.status } .from("created").to("key_ceremony")
+    expect { subject }.to change { Election.last.status }.from("created").to("key_ceremony")
   end
 
   it_behaves_like "with an invalid signed data", "starting the key ceremony fails"

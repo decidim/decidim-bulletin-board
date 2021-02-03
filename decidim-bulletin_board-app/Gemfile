@@ -33,7 +33,7 @@ gem "pycall"
 
 # Reduces boot times through caching; required in config/boot.rb
 gem "bootsnap", ">= 1.4.2", require: false
-gem "faker", "~> 1.9"
+gem "faker", "~> 2.14"
 gem "graphiql-rails"
 gem "jquery-rails"
 gem "jwt"
@@ -43,7 +43,7 @@ gem "sprockets-es6"
 
 gem "factory_bot_rails"
 
-gem "decidim-bulletin_board", "~> 0.8.0"
+gem "decidim-bulletin_board", "~> 0.9.0"
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
@@ -52,9 +52,10 @@ group :development, :test do
   gem "graphlient", "~> 0.4.0"
   gem "pry-rails"
   gem "rspec-rails", "~> 3.7"
-  gem "rubocop", "~> 0.71.0"
-  gem "rubocop-rails", "~> 2.0"
-  gem "rubocop-rspec", "~> 1.21"
+  gem "rubocop", "~> 0.92.0"
+  gem "rubocop-faker", "~> 1.1.0"
+  gem "rubocop-rails", "~> 2.9.1"
+  gem "rubocop-rspec", "~> 1.44.1"
 
   # Uncomment these (and comment the previous reference to the gem) to work in development mode in the sandbox
   # gem "decidim-bulletin_board", path: "../decidim-bulletin_board-ruby"

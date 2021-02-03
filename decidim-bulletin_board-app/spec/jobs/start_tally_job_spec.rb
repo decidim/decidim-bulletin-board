@@ -10,14 +10,14 @@ RSpec.describe StartTallyJob do
   let(:message) { build(:start_tally_message, election: election) }
 
   it "processes the message" do
-    expect { subject }.to change { PendingMessage.last.status } .from("enqueued").to("accepted")
+    expect { subject }.to change { PendingMessage.last.status }.from("enqueued").to("accepted")
   end
 
   context "when the message was already processed" do
     before { described_class.perform_now(pending_message.id) }
 
     it "doesn't change the message status" do
-      expect { subject }.not_to change { PendingMessage.last.status } .from("accepted")
+      expect { subject }.not_to change { PendingMessage.last.status }.from("accepted")
     end
   end
 end

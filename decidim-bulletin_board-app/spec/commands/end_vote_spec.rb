@@ -27,7 +27,7 @@ RSpec.describe EndVote do
   end
 
   it "changes the election status" do
-    expect { subject }.to change { Election.last.status } .from("vote") .to("vote_ended")
+    expect { subject }.to change { Election.last.status }.from("vote").to("vote_ended")
   end
 
   shared_examples "ending the voting period fails" do

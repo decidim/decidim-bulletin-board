@@ -18,7 +18,7 @@ RSpec.describe "client:add_authority", type: :task do
 
   context "when authority's public key already exists" do
     let(:authority) { create(:authority, private_key: private_key) }
-    let(:name) { authority.name + "2" }
+    let(:name) { "#{authority.name}2" }
 
     it "detects the existing public key" do
       subject

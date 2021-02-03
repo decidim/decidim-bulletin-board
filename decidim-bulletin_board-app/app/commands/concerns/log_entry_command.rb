@@ -9,6 +9,7 @@ module LogEntryCommand
     include HasMessageIdentifier
 
     attr_accessor :client, :signed_data, :error, :response_message
+
     delegate :decoded_data, to: :log_entry
 
     private

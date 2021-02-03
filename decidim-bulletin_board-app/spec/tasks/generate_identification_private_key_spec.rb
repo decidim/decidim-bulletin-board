@@ -16,7 +16,7 @@ RSpec.describe "client:generate_identification_private_key", type: :task do
     subject do
       task.execute
       task.execute
-      output.split("\n").select { |line| line.starts_with?("{") } .map { |json| JSON.parse(json) }
+      output.split("\n").select { |line| line.starts_with?("{") }.map { |json| JSON.parse(json) }
     end
 
     it "changes the output on each execution" do

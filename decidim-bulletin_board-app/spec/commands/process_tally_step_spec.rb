@@ -29,7 +29,7 @@ RSpec.describe ProcessTallyStep do
   end
 
   it "doesn't change the election status" do
-    expect { subject }.not_to change { Election.last.status } .from("tally")
+    expect { subject }.not_to change { Election.last.status }.from("tally")
   end
 
   context "when the voting scheme generates an answer" do
@@ -48,7 +48,7 @@ RSpec.describe ProcessTallyStep do
     end
 
     it "changes the election status" do
-      expect { subject }.to change { Election.last.status } .from("tally").to("tally_ended")
+      expect { subject }.to change { Election.last.status }.from("tally").to("tally_ended")
     end
   end
 

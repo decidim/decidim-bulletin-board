@@ -10,7 +10,7 @@ RSpec.describe StartKeyCeremonyJob do
   let(:message) { build(:start_key_ceremony_message, election: election) }
 
   it "processes the message" do
-    expect { subject }.to change { PendingMessage.last.status } .from("enqueued").to("accepted")
+    expect { subject }.to change { PendingMessage.last.status }.from("enqueued").to("accepted")
   end
 
   context "when the message was already processed" do

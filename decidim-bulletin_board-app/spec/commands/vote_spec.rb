@@ -27,7 +27,7 @@ RSpec.describe Vote do
   end
 
   it "doesn't change the election status" do
-    expect { subject }.not_to change { Election.last.status } .from("vote")
+    expect { subject }.not_to change { Election.last.status }.from("vote")
   end
 
   context "when the vote message is invalid" do
@@ -46,7 +46,7 @@ RSpec.describe Vote do
     end
 
     it "doesn't change the election status" do
-      expect { subject }.not_to change { Election.last.status } .from("vote")
+      expect { subject }.not_to change { Election.last.status }.from("vote")
     end
   end
 

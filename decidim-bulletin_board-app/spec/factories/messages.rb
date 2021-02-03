@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+# rubocop:disable Style/HashTransformValues
+
 require "test/elections"
 
 def fix_reserved_names(attributes)
@@ -371,3 +373,5 @@ FactoryBot.define do
     end
   end
 end
+
+# rubocop:enable Style/HashTransformValues

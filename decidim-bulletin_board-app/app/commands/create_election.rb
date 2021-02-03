@@ -112,8 +112,8 @@ class CreateElection < Rectify::Command
 
   def valid_questions?
     questions.each do |quest|
-      number_elected = quest.dig(:number_elected)
-      ballot_selections = quest.dig(:ballot_selections)
+      number_elected = quest[:number_elected]
+      ballot_selections = quest[:ballot_selections]
       return false unless run_validations do
         if number_elected.blank?
           "There must be specified the number of answers to be selected"

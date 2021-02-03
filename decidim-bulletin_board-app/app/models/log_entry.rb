@@ -17,10 +17,10 @@ class LogEntry < ApplicationRecord
 
   def decoded_data
     @decoded_data ||= begin
-                        JWT.decode(signed_data, client.public_key_rsa, true, verify_iat: true, algorithm: "RS256").first.with_indifferent_access
-                      rescue JWT::VerificationError, JWT::DecodeError, JWT::InvalidIatError, JWT::InvalidPayload => e
-                        { error: e.message }
-                      end
+      JWT.decode(signed_data, client.public_key_rsa, true, verify_iat: true, algorithm: "RS256").first.with_indifferent_access
+    rescue JWT::VerificationError, JWT::DecodeError, JWT::InvalidIatError, JWT::InvalidPayload => e
+      { error: e.message }
+    end
   end
 
   def content
