@@ -24,7 +24,7 @@ module VotingScheme
         let(:dont_process_count) { 1 }
 
         it "updates the wrapper state" do
-          expect { subject } .to change(instance, :backup)
+          expect { subject }.to change(instance, :backup)
         end
       end
 
@@ -34,7 +34,7 @@ module VotingScheme
           let(:dont_process_count) { 4 - trustee_number }
 
           it "updates the wrapper state" do
-            expect { subject } .to change(instance, :backup)
+            expect { subject }.to change(instance, :backup)
           end
         end
       end

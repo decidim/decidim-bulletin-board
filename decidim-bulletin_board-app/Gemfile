@@ -52,10 +52,10 @@ group :development, :test do
   gem "graphlient", "~> 0.4.0"
   gem "pry-rails"
   gem "rspec-rails", "~> 3.7"
-  gem "rubocop", "~> 0.82.0"
-  gem "rubocop-rails", "~> 2.0"
-  gem "rubocop-rspec", "~> 1.21"
+  gem "rubocop", "~> 0.92.0"
   gem "rubocop-faker", "~> 1.1.0"
+  gem "rubocop-rails", "~> 2.9.1"
+  gem "rubocop-rspec", "~> 1.44.1"
 
   # Uncomment these (and comment the previous reference to the gem) to work in development mode in the sandbox
   # gem "decidim-bulletin_board", path: "../decidim-bulletin_board-ruby"

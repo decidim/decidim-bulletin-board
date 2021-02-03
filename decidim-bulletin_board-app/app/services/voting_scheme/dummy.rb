@@ -71,6 +71,7 @@ module VotingScheme
       end
     end
 
+    # rubocop:disable Metrics/CyclomaticComplexity
     def process_vote_message(_message_identifier, _message, content)
       raise RejectedMessage, "The given ballot style is invalid" if content.fetch(:ballot_style, "invalid-style") == "invalid-style"
       raise RejectedMessage, "Invalid ballot format" unless content[:contests]
@@ -84,6 +85,7 @@ module VotingScheme
         end
       end
     end
+    # rubocop:enable Metrics/CyclomaticComplexity
 
     def process_start_tally_message(_message_identifier, _message, _content)
       results = build_questions_struct(0)

@@ -29,7 +29,7 @@ RSpec.describe ProcessKeyCeremonyStep do
   end
 
   it "doesn't change the election status" do
-    expect { subject }.not_to change { Election.last.status } .from("key_ceremony")
+    expect { subject }.not_to change { Election.last.status }.from("key_ceremony")
   end
 
   context "when the voting scheme generates an answer" do
@@ -48,7 +48,7 @@ RSpec.describe ProcessKeyCeremonyStep do
     end
 
     it "changes the election status" do
-      expect { subject }.to change { Election.last.status } .from("key_ceremony").to("key_ceremony_ended")
+      expect { subject }.to change { Election.last.status }.from("key_ceremony").to("key_ceremony_ended")
     end
   end
 

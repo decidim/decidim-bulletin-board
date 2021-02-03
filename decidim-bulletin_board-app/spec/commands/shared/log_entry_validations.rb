@@ -11,7 +11,7 @@ end
 
 RSpec.shared_examples_for "with an invalid signed data" do |examples|
   context "when the message_id in the payload is different from the one in the signed message" do
-    let(:message_id) { payload["message_id"] + "a" }
+    let(:message_id) { "#{payload["message_id"]}a" }
 
     it_behaves_like examples
 

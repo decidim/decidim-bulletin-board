@@ -13,14 +13,14 @@ RSpec.describe ProcessTallyStepJob do
   let(:content_traits) { [] }
 
   it "processes the message" do
-    expect { subject }.to change { PendingMessage.last.status } .from("enqueued").to("accepted")
+    expect { subject }.to change { PendingMessage.last.status }.from("enqueued").to("accepted")
   end
 
   context "when the message is rejected" do
     let(:content_traits) { [:invalid] }
 
     it "rejects the message" do
-      expect { subject }.to change { PendingMessage.last.status } .from("enqueued").to("rejected")
+      expect { subject }.to change { PendingMessage.last.status }.from("enqueued").to("rejected")
     end
   end
 
@@ -28,7 +28,7 @@ RSpec.describe ProcessTallyStepJob do
     before { described_class.perform_now(pending_message.id) }
 
     it "doesn't change the message status" do
-      expect { subject }.not_to change { PendingMessage.last.status } .from("accepted")
+      expect { subject }.not_to change { PendingMessage.last.status }.from("accepted")
     end
   end
 end

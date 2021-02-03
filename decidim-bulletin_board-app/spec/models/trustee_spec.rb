@@ -31,7 +31,7 @@ RSpec.describe Trustee do
     subject { trustee.save }
 
     it "calculates the key thumbprint" do
-      expect { subject } .to change(trustee, :public_key_thumbprint).from(nil)
+      expect { subject }.to change(trustee, :public_key_thumbprint).from(nil)
     end
   end
 end
