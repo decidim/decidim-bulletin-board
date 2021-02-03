@@ -1,5 +1,9 @@
+const IDENTIFICATION_KEYS_DATABASE_NAME = "identification_keys";
 export class KeyCeremonyPage {
   setup(onSetupFn) {
+    // Clear the IndexDB database every test so we always start fresh
+    window.indexedDB.deleteDatabase(IDENTIFICATION_KEYS_DATABASE_NAME);
+
     cy.appScenario("key_ceremony").then((scenarioData) => {
       onSetupFn(scenarioData);
     });
@@ -23,6 +27,16 @@ export class KeyCeremonyPage {
       cy.findByText(name)
         .parent("tr")
         .within((trusteeRow) => {
+          // Ensure that the button is present before starting to upload the keys
+          cy.get(trusteeRow)
+            .findByText("Upload private key")
+            .should("be.visible");
+
+          // When the upload button is rendered on the screen the change event callback
+          // may not be set yet, so we wait a reasonable time to ensure it is set correctly.
+          cy.wait(500);
+
+          // Emulate trustee uploading the private key file
           cy.get(trusteeRow)
             .find(".private-key-input")
             .attachFile(
