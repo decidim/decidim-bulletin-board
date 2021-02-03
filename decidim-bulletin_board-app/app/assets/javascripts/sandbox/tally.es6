@@ -9,7 +9,7 @@ $(() => {
 
   // Data
   const bulletinBoardClientParams = {
-    apiEndpointUrl: "http://localhost:8000/api",
+    apiEndpointUrl: $trusteeTable.data("apiEndpointUrl"),
   };
   const electionUniqueId = $trusteeTable.data("electionUniqueId");
 

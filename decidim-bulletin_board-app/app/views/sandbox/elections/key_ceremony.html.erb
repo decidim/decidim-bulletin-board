@@ -1,3 +1,5 @@
+<%= stylesheet_link_tag "sandbox/key_ceremony" %>
+
 <%= link_to "Back", sandbox_elections_path %>
 
 <h1>Key ceremony for <%= election.title %></h1>
@@ -6,7 +8,7 @@
 
 <p>You can find the trustee keys in the project's <code>lib/assets</code> folder.</p>
 
-<table class="trustee-table" data-election-unique-id="<%= election.unique_id %>">
+<table class="trustee-table" data-election-unique-id="<%= election.unique_id %>" data-api-endpoint-url="<%= Rails.application.secrets.api_endpoint_url %>">
   <thead>
     <tr>
       <th>Unique ID</th>
@@ -20,7 +22,7 @@
         <td><%= trustee.unique_id %></td>
         <td><%= trustee.name %></td>
         <td>
-          <label class="private-key">
+          <label class="upload-private-key-button">
             <span>Upload private key</span>
             <input class="private-key-input" style="display: none" type="file" />
           </label>

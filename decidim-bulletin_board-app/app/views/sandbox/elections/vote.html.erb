@@ -2,7 +2,7 @@
 
 <h1>Vote for <%= election.title %></h1>
 
-<div class="voter" data-election-unique-id="<%= election.unique_id %>">
+<div class="voter" data-election-unique-id="<%= election.unique_id %>" data-api-endpoint-url="<%= Rails.application.secrets.api_endpoint_url %>">
   <p>Voter Id: <input name="voter_id" value="<%= random_voter_id %>" style="width:20rem"></p>
   <p>
     Vote content: <br/>

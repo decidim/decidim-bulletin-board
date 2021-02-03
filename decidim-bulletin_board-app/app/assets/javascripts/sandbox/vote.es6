@@ -16,7 +16,7 @@ $(async () => {
 
   // Data
   const bulletinBoardClientParams = {
-    apiEndpointUrl: "http://localhost:8000/api",
+    apiEndpointUrl: $voter.data("apiEndpointUrl"),
   };
   const electionUniqueId = $voter.data("electionUniqueId");
   const voterUniqueId = $voterId.val();

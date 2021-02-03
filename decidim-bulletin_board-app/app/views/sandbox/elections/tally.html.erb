@@ -6,7 +6,7 @@
 
 <p>You can find the trustee keys in the project's <code>lib/assets</code> folder.</p>
 
-<table class="trustee-table" data-election-unique-id="<%= election.unique_id %>">
+<table class="trustee-table" data-election-unique-id="<%= election.unique_id %>" data-api-endpoint-url="<%= Rails.application.secrets.api_endpoint_url %>">
   <thead>
     <tr>
       <th>Unique ID</th>

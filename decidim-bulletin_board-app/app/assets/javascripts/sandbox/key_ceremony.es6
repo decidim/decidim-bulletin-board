@@ -12,7 +12,7 @@ $(() => {
 
   // Data
   const bulletinBoardClientParams = {
-    apiEndpointUrl: "http://localhost:8000/api",
+    apiEndpointUrl: $trusteeTable.data("apiEndpointUrl"),
   };
   const electionUniqueId = $trusteeTable.data("electionUniqueId");
 
@@ -32,12 +32,8 @@ $(() => {
     const $startButton = $trustee.find(".start-button");
     const $backupButton = $trustee.find(".backup-button");
     const $restoreButton = $trustee.find(".restore-button");
+    const $uploadPrivateKeyButton = $trustee.find(".upload-private-key-button");
     const $doneMessage = $trustee.find(".done-message");
-
-    $startButton.hide();
-    $backupButton.hide();
-    $restoreButton.hide();
-    $doneMessage.hide();
 
     // Use the key ceremony component and bind all UI events
     const component = new KeyCeremonyComponent({
@@ -48,7 +44,7 @@ $(() => {
     });
 
     const bindComponentEvents = async () => {
-      $trustee.find(".private-key").hide();
+      $uploadPrivateKeyButton.hide();
 
       await component.bindEvents({
         onEvent(_event) {},
@@ -94,14 +90,16 @@ $(() => {
       });
     };
 
+    $trustee.on("change", ".private-key-input", async (event) => {
+      await trusteeIdentificationKeys.upload(event, true);
+      await bindComponentEvents();
+    });
+
     trusteeIdentificationKeys.present(async (exists) => {
       if (exists) {
         await bindComponentEvents();
       } else {
-        $trustee.on("change", ".private-key-input", async (event) => {
-          await trusteeIdentificationKeys.upload(event, true);
-          await bindComponentEvents();
-        });
+        $uploadPrivateKeyButton.show();
       }
     });
   });
