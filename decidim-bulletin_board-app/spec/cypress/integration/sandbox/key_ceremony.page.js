@@ -10,15 +10,14 @@ export class KeyCeremonyPage {
   }
 
   startKeyCeremony() {
-    cy.findByText("created");
+    cy.findByText("created").should("be.visible");
     cy.findByText("Start key ceremony").click();
   }
 
   performKeyCeremony({ title }, trustees) {
-    cy.reload();
-    cy.findByText("key_ceremony");
+    cy.findByText("key_ceremony").should("be.visible");
     cy.findByText("Perform key ceremony").click();
-    cy.findByText(`Key ceremony for ${title}`);
+    cy.findByText(`Key ceremony for ${title}`).should("be.visible");
 
     trustees.forEach(({ unique_id, name }) => {
       cy.findByText(name)

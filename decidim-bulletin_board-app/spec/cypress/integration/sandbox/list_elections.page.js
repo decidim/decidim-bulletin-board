@@ -11,8 +11,8 @@ export class ListElectionsPage {
 
   assertElectionsDataIsPresent(elections) {
     elections.forEach(({ unique_id, title }) => {
-      cy.findByText(unique_id);
-      cy.findByText(title);
+      cy.findByText(unique_id).should("be.visible");
+      cy.findByText(title).should("be.visible");
     });
   }
 }

@@ -5,5 +5,6 @@
 //= link api/docs.js
 //= link api/docs.css
 //= link sandbox/key_ceremony.js
+//= link sandbox/key_ceremony.css
 //= link sandbox/tally.js
 //= link sandbox/vote.js

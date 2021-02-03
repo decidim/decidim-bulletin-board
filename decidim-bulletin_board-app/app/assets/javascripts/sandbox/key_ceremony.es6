@@ -34,11 +34,6 @@ $(() => {
     const $restoreButton = $trustee.find(".restore-button");
     const $doneMessage = $trustee.find(".done-message");
 
-    $startButton.hide();
-    $backupButton.hide();
-    $restoreButton.hide();
-    $doneMessage.hide();
-
     // Use the key ceremony component and bind all UI events
     const component = new KeyCeremonyComponent({
       bulletinBoardClientParams,
