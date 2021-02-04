@@ -9,6 +9,7 @@ RSpec.shared_context "with a configured bulletin board" do
       config.authority_name = authority_name
       config.number_of_trustees = number_of_trustees
       config.identification_private_key = identification_private_key
+      config.server_public_key = server_public_key
     end
 
     if server.present?
@@ -40,6 +41,10 @@ RSpec.shared_context "with a configured bulletin board" do
 
   let(:identification_private_key_content) do
     Decidim::BulletinBoard::JwkUtils.import_private_key(identification_private_key)
+  end
+
+  let(:server_public_key) do
+    { "kty": "RSA", "n": "zMXsZpYPKkDlSmezX898y7zNOaJ7ENIN4kj4UhQ95Vm4HlgTpIs2VMMsO0eqynMaOR_G1mXdqbpbaJtXijBe4V8323QwGm6WVAa71E7pDXa5g6-uo5f8GePitN0YER9y2yNQN4uTaNzJiWV2uLBUYfMdj3SIif31YwLULHAOj3B_oleFK8coE_Qr3NzATcYBmsqE8AR4NljxTO6KDmP1SLdf5GBOBhOAIFbnL_Kpj2xkm7MS3hjMVKpiRhqA1UgX5oKZ8ixBv46fNJF0pBsHi3fHNjK9oZzgdx_AI-YFpdE_40-8bh_g9sWzxacqOM2-MdQLHbvRPEVltO3E8tr6I5YWrylcP7l9VD8OJeqjq2qFYHnGYdmLoD2XuXmI9EuBvSb9H4-qcartxZSIQCimKib_fxZvgrG1FSRRhK6YpvIdGv4-G2zfCCRsC4XD80TYI2bf-oYCoy7eU3_eVHFMV2yg4p1Wnuw2Vgq0edPL_bKaV9JvGx7F-U5juxNN0WZR9LzbPl4ReejzN95lyHgbj0nTH_u3bSpZmgJrQF-PwdnPcG46deVjJgUeosrlC4lQxVrRz0GL58BuFunnz2uYDBDrcJCiG60EbdkAFHjOcXU4wrUWATin7je_aqdBXhSnkTafcJAMvL7Y2Ld7vDge8nLqjAVlAi5am3rN0kqKT6M", "e": "AQAB", "kid": "a8e86f02ca27e1861bfc49e2a9a4614ca9068f8efdb6d42d19d3aab0eb2a31be" }
   end
 
   let(:error_response) { false }

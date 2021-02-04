@@ -48,5 +48,8 @@ module Decidim
 
     # The identification private key (JSON) for your Decidim instance
     config_accessor :identification_private_key
+
+    # The public key (JSON) of the Bulletin Board server
+    config_accessor :server_public_key
   end
 end
