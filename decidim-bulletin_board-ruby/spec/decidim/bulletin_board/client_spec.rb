@@ -224,19 +224,18 @@ module Decidim
         end
       end
 
-      describe "get_election_log_entries_by_type" do
-        subject { instance.get_election_log_entries_by_types(election_id, types) }
+      describe "get_election_results" do
+        subject { instance.get_election_results(election_id) }
 
         before do
-          stub_command("Decidim::BulletinBoard::Authority::GetElectionLogEntriesByTypes", :call, *result)
+          stub_command("Decidim::BulletinBoard::Authority::GetElectionResults", :call, *result)
         end
 
         let(:election_id) { "test.1" }
-        let(:types) { ["tally_ended"] }
-        let(:result) { [:ok, [double(signed_data: "12345678")]] }
+        let(:result) { [:ok, double(results: { "23" => { "66" => 0, "67" => 0, "68" => 0, "69" => 4 }, "24" => { "70" => 0, "71" => 1, "72" => 1 } })] }
 
-        it "calls the GetElectionLogEntriesByTypes command and returns the result" do
-          expect(subject.first.signed_data).to eq("12345678")
+        it "calls the GetElectionResults command and returns the result" do
+          expect(subject.results).to eq({ "23" => { "66" => 0, "67" => 0, "68" => 0, "69" => 4 }, "24" => { "70" => 0, "71" => 1, "72" => 1 } })
         end
 
         context "when something went wrong" do
