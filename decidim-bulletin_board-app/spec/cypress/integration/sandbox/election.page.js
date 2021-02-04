@@ -236,7 +236,7 @@ export class ElectionPage {
   }
 
   /**
-   * Prepares a context to find elements in a election row from the list.
+   * Prepare a context to find elements in an election row from the list.
    *
    * @param {Object} election - An Election instance.
    * @param {Function} fn - The function that will be called with that context.
