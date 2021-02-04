@@ -1,3 +1,5 @@
+<%= stylesheet_link_tag "sandbox/vote" %>
+
 <%= link_to "Back", sandbox_elections_path %>
 
 <h1>Vote for <%= election.title %></h1>
@@ -9,7 +11,9 @@
     <textarea cols="100" rows="5"><%= base_vote %></textarea>
   </p>
 
-  <button>Cast vote</button>
+  <span class="done-message">Your vote has been casted successfully</span>
+
+  <button disabled>Cast vote</button>
   <a href="">Refresh</a>
 </div>
 
