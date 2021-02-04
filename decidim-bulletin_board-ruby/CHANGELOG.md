@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## Added
+
+- A command to get decoded election results.
+- The (Bulletin Board) server public key is now included in the gem configuration.
+
+## Changed
+
+- The `get_election_log_entries_by_type` command got renamed to `get_election_results`.
+
 ## [0.9.2] - 2021-02-02
 
 ## [0.9.1] - 2021-02-02
