@@ -192,16 +192,19 @@ jobs:
       - name: Run tests
         run: npm run e2e:tests
       - name: Upload artifacts (screenshots)
+        if: ${{ always() }}
         uses: actions/upload-artifact@v2
         with:
           name: cypress screenshots
           path: decidim-bulletin_board-app/spec/cypress/screenshots/
       - name: Upload artifacts (videos)
+        if: ${{ always() }}
         uses: actions/upload-artifact@v2
         with:
           name: cypress videos
           path: decidim-bulletin_board-app/spec/cypress/videos/
       - name: Upload artifacts (downloads)
+        if: ${{ always() }}
         uses: actions/upload-artifact@v2
         with:
           name: cypress downloads
