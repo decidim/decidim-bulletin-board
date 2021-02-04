@@ -18,6 +18,11 @@ describe("Election", () => {
       page.assertVoteHasBeenCasted();
       page.endVote(election);
       page.assertVoteHasEnded(election);
+
+      page.startTally(election);
+      page.assertTallyHasStarted(election);
+      page.performTally(election, trustees);
+      page.assertTallyHasEnded(election, trustees);
     });
   });
 });

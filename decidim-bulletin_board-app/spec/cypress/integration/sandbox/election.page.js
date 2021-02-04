@@ -39,10 +39,13 @@ export class ElectionPage {
    * @returns {undefined}
    */
   startKeyCeremony(election) {
-    this.withinElectionRow(election, () => {
-      cy.findByText("created").should("be.visible");
-      cy.findByText("Start key ceremony").click().should("not.exist");
-    });
+    this.withinElectionRow(election, () =>
+      cy.findByText("created").should("be.visible")
+    );
+
+    this.withinElectionRow(election, () =>
+      cy.findByText("Start key ceremony").click().should("not.exist")
+    );
   }
 
   /**
@@ -53,10 +56,15 @@ export class ElectionPage {
    * @returns {undefined}
    */
   assertKeyCeremonyHasStarted(election) {
-    this.withinElectionRow(election, () => {
-      cy.findByText("created").should("not.exist");
-      cy.findByText("key_ceremony").should("be.visible");
-    });
+    this.withinElectionRow(election, () =>
+      cy.findByText("created").should("not.exist")
+    );
+
+    this.withinElectionRow(election, () =>
+      cy.findByText("key_ceremony").should("be.visible")
+    );
+
+    cy.log("Key Ceremony started");
   }
 
   /**
@@ -122,10 +130,15 @@ export class ElectionPage {
 
     cy.findByText("Back").click();
 
-    this.withinElectionRow(election, () => {
-      cy.findByText("key_ceremony").should("not.exist");
-      cy.findByText("key_ceremony_ended").should("be.visible");
-    });
+    this.withinElectionRow(election, () =>
+      cy.findByText("key_ceremony").should("not.exist")
+    );
+
+    this.withinElectionRow(election, () =>
+      cy.findByText("key_ceremony_ended").should("be.visible")
+    );
+
+    cy.log("Key Ceremony ended");
   }
 
   /**
@@ -136,9 +149,9 @@ export class ElectionPage {
    * @returns {undefined}
    */
   startVote(election) {
-    this.withinElectionRow(election, () => {
-      cy.findByText("Start vote").click().should("not.exist");
-    });
+    this.withinElectionRow(election, () =>
+      cy.findByText("Start vote").click().should("not.exist")
+    );
   }
 
   /**
@@ -149,10 +162,15 @@ export class ElectionPage {
    * @returns {undefined}
    */
   assertVoteHasStarted(election) {
-    this.withinElectionRow(election, () => {
-      cy.findByText("key_ceremony_ended").should("not.exist");
-      cy.findByText("vote").should("be.visible");
-    });
+    this.withinElectionRow(election, () =>
+      cy.findByText("key_ceremony_ended").should("not.exist")
+    );
+
+    this.withinElectionRow(election, () =>
+      cy.findByText("vote").should("be.visible")
+    );
+
+    cy.log("Vote started");
   }
 
   /**
@@ -189,9 +207,13 @@ export class ElectionPage {
    * @returns {undefined}
    */
   endVote(election) {
-    this.withinElectionRow(election, () => {
-      cy.findByText("End vote").click().should("not.exist");
-    });
+    this.withinElectionRow(election, () =>
+      cy.findByText("key_ceremony_ended").should("not.exist")
+    );
+
+    this.withinElectionRow(election, () =>
+      cy.findByText("End vote").click().should("not.exist")
+    );
   }
 
   /**
@@ -202,10 +224,15 @@ export class ElectionPage {
    * @returns {undefined}
    */
   assertVoteHasEnded(election) {
-    this.withinElectionRow(election, () => {
-      cy.findByText("vote").should("not.exist");
-      cy.findByText("vote_ended").should("be.visible");
-    });
+    this.withinElectionRow(election, () =>
+      cy.findByText("vote").should("not.exist")
+    );
+
+    this.withinElectionRow(election, () =>
+      cy.findByText("vote_ended").should("be.visible")
+    );
+
+    cy.log("Vote ended");
   }
 
   /**
@@ -218,5 +245,114 @@ export class ElectionPage {
    */
   withinElectionRow({ unique_id: uniqueId }, fn) {
     cy.findByText(uniqueId).parent("tr").within(fn);
+  }
+
+  /**
+   * Starts the tally process for the given election.
+   *
+   * @param {Object} election - An Election object.
+   *
+   * @returns {undefined}
+   */
+  startTally(election) {
+    this.withinElectionRow(election, () =>
+      cy.findByText("vote_ended").should("be.visible")
+    );
+
+    this.withinElectionRow(election, () =>
+      cy.findByText("Start tally").click().should("not.exist")
+    );
+  }
+
+  /**
+   * Assert that the tally has started checking the election status.
+   *
+   * @param {Object} election - An Election instance.
+   *
+   * @returns {undefined}
+   */
+  assertTallyHasStarted(election) {
+    this.withinElectionRow(election, () =>
+      cy.findByText("vote_ended").should("not.exist")
+    );
+
+    this.withinElectionRow(election, () =>
+      cy.findByText("tally").should("be.visible")
+    );
+
+    cy.log("Tally started");
+  }
+
+  /**
+   * Restore the trustee state and perform the tally process.
+   *
+   * @param {Object} election - An Election object.
+   * @param {Array<Object>} trustees - A collection of Trustee objects.
+   *
+   * @returns {undefined}
+   */
+  performTally(election, trustees) {
+    this.withinElectionRow(election, () => {
+      cy.findByText("Perform tally").click().should("not.exist");
+    });
+
+    cy.findByText(`Tally for ${election.title}`).should("be.visible");
+
+    trustees.forEach(({ unique_id, name }) => {
+      cy.findByText(name)
+        .parent("tr")
+        .within((trusteeRow) => {
+          cy.findByText("Start").click();
+
+          // Ensure that the button is present before starting to upload the trustee state
+          cy.findByText("Restore").should("be.visible");
+
+          // When the upload button is rendered on the screen the change event callback
+          // may not be set yet, so we wait a reasonable time to ensure it is set correctly.
+          cy.wait(500);
+
+          // Emulate trustee uploading the private key file
+          cy.get(trusteeRow)
+            .find(".restore-button-input")
+            .attachFile(
+              {
+                filePath: `../downloads/${unique_id}-election-${election.unique_id}.bak`,
+              },
+              {
+                force: true,
+              }
+            );
+        });
+    });
+  }
+
+  /**
+   * Assert that the tally has ended checking the election status.
+   *
+   * @param {Object} election - An Election object.
+   * @param {Array<Object>} trustees - A collection of Trustee objects.
+   *
+   * @returns {undefined}
+   */
+  assertTallyHasEnded(election, trustees) {
+    trustees.forEach(({ name }) => {
+      cy.contains(name)
+        .parent("tr")
+        .within(() => {
+          cy.findByText("Done").should("be.visible");
+        });
+    });
+
+    cy.findByText("Back").click();
+
+    this.withinElectionRow(election, () =>
+      cy.findByText("tally").should("not.exist")
+    );
+
+    this.withinElectionRow(election, () =>
+      cy.findByText("tally_ended").should("be.visible")
+    );
+
+    cy.log("Tally ended");
   }
 }

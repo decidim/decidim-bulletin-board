@@ -7,5 +7,6 @@
 //= link sandbox/key_ceremony.js
 //= link sandbox/key_ceremony.css
 //= link sandbox/tally.js
+//= link sandbox/tally.css
 //= link sandbox/vote.js
 //= link sandbox/vote.css
