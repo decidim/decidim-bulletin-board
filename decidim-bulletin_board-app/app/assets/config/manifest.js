@@ -8,3 +8,4 @@
 //= link sandbox/key_ceremony.css
 //= link sandbox/tally.js
 //= link sandbox/vote.js
+//= link sandbox/vote.css

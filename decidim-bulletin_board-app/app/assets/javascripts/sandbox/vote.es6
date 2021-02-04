@@ -9,6 +9,7 @@ $(async () => {
   const $castVote = $voter.find("button");
   const $vote = $voter.find("textarea");
   const $voterId = $voter.find("input");
+  const $doneMessage = $voter.find(".done-message");
 
   $vote.on("change", (event) => {
     $vote.css("border", "");
@@ -29,13 +30,16 @@ $(async () => {
   });
 
   await component.bindEvents({
-    onSetup() {},
+    onSetup() {
+      $castVote.removeAttr("disabled");
+    },
     onBindStartButton(onEventTriggered) {
       $castVote.on("click", onEventTriggered);
     },
     onStart() {},
     onVoteValidation(validVoteFn, invalidVoteFn) {
       $vote.css("background", "");
+      $doneMessage.hide();
       try {
         const vote = JSON.parse($vote.val());
         if (!vote) {
@@ -46,7 +50,7 @@ $(async () => {
         invalidVoteFn();
       }
     },
-    onVoteEncrypted({ encryptedVote, encryptedVoteHash }) {
+    onVoteEncrypted({ encryptedVote }) {
       return $.ajax({
         method: "POST",
         contentType: "application/json",
@@ -60,6 +64,7 @@ $(async () => {
       });
     },
     onComplete() {
+      $doneMessage.show();
       $vote.css("background", "green");
     },
     onInvalid() {
