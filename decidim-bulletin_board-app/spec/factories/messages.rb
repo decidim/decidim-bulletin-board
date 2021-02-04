@@ -185,14 +185,6 @@ FactoryBot.define do
       trait :invalid do
         owner_id { "wrong_trustee" }
       end
-
-      trait :trustee_2 do
-        election_public_key { Test::Elections.trustees_election_keys.second }
-      end
-
-      trait :trustee_3 do
-        election_public_key { Test::Elections.trustees_election_keys.third }
-      end
     end
 
     factory :end_key_ceremony_message, parent: :message do
@@ -313,14 +305,6 @@ FactoryBot.define do
 
       trait :invalid do
         owner_id { "wrong_trustee" }
-      end
-
-      trait :trustee_2 do
-        election_public_key { Test::Elections.trustees_election_keys.second }
-      end
-
-      trait :trustee_3 do
-        election_public_key { Test::Elections.trustees_election_keys.third }
       end
 
       after(:build) do |content, evaluator|
