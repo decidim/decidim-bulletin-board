@@ -128,6 +128,9 @@ export class ElectionPage {
         });
     });
 
+    // Wait a reasonable time so the Bulletin Board can publish the latest message
+    cy.wait(2000);
+
     cy.findByText("Back").click();
 
     this.withinElectionRow(election, () =>
@@ -236,18 +239,6 @@ export class ElectionPage {
   }
 
   /**
-   * Prepare a context to find elements in an election row from the list.
-   *
-   * @param {Object} election - An Election instance.
-   * @param {Function} fn - The function that will be called with that context.
-   *
-   * @private
-   */
-  withinElectionRow({ unique_id: uniqueId }, fn) {
-    cy.findByText(uniqueId).parent("tr").within(fn);
-  }
-
-  /**
    * Starts the tally process for the given election.
    *
    * @param {Object} election - An Election object.
@@ -343,6 +334,9 @@ export class ElectionPage {
         });
     });
 
+    // Wait a reasonable time so the Bulletin Board can publish the latest message
+    cy.wait(2000);
+
     cy.findByText("Back").click();
 
     this.withinElectionRow(election, () =>
@@ -354,5 +348,17 @@ export class ElectionPage {
     );
 
     cy.log("Tally ended");
+  }
+
+  /**
+   * Prepare a context to find elements in an election row from the list.
+   *
+   * @param {Object} election - An Election instance.
+   * @param {Function} fn - The function that will be called with that context.
+   *
+   * @private
+   */
+  withinElectionRow({ unique_id: uniqueId }, fn) {
+    cy.findByText(uniqueId).parent("tr").within(fn);
   }
 }
