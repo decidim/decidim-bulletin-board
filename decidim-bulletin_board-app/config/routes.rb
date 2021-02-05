@@ -8,7 +8,7 @@ Rails.application.routes.draw do
     post "/", to: "graphql#execute"
   end
 
-  mount ActionCable.server, at: "/cable"
+  root to: "pages#index"
 
   if Rails.env.development? || Rails.env.test?
     scope "/sandbox", module: :sandbox, as: :sandbox do
