@@ -3,7 +3,7 @@
 module Decidim
   module BulletinBoard
     module Authority
-      # This command uses the GraphQL client to get the the results of an election.
+      # This command uses the GraphQL client to get the results of an election.
       class GetElectionResults < Decidim::BulletinBoard::Command
         # Public: Initializes the command.
         #
@@ -36,6 +36,8 @@ module Decidim
               end
             end
           end
+
+          return broadcast(:error, "There aren't any log entries with type: 'end_tally' for this election.") if response.data.election.log_entries.empty?
 
           @signed_data = response.data.election.log_entries.first.signed_data
 

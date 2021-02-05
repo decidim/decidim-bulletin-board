@@ -41,6 +41,20 @@ module Decidim
             expect { subject.call }.to broadcast(:error, "Sorry, something went wrong")
           end
         end
+
+        context "when there is no log entry with type 'end_tally'" do
+          let(:bulletin_board_response) do
+            {
+              election: {
+                logEntries: []
+              }
+            }
+          end
+
+          it "broadcasts error with an expected error" do
+            expect { subject.call }.to broadcast(:error, "There aren't any log entries with type: 'end_tally' for this election.")
+          end
+        end
       end
     end
   end
