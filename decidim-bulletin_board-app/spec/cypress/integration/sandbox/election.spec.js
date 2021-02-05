@@ -7,17 +7,22 @@ describe("Election", () => {
     page.setup(({ election, trustees }) => {
       page.visit();
 
-      page.startKeyCeremony(election);
-      page.assertKeyCeremonyHasStarted(election);
+      page.startKeyCeremony();
+      page.assertKeyCeremonyHasStarted();
       page.performKeyCeremony(election, trustees);
-      page.assertKeyCeremonyHasEnded(election, trustees);
+      page.assertKeyCeremonyHasEnded(trustees);
 
-      page.startVote(election);
-      page.assertVoteHasStarted(election);
-      page.castVote(election);
+      page.startVote();
+      page.assertVoteHasStarted();
+      page.castVote();
       page.assertVoteHasBeenCasted();
-      page.endVote(election);
-      page.assertVoteHasEnded(election);
+      page.endVote();
+      page.assertVoteHasEnded();
+
+      page.startTally();
+      page.assertTallyHasStarted();
+      page.performTally(election, trustees);
+      page.assertTallyHasEnded(trustees);
     });
   });
 });

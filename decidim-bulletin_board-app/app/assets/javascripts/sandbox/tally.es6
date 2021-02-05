@@ -31,11 +31,6 @@ $(() => {
     const $restoreButton = $trustee.find(".restore-button");
     const $doneMessage = $trustee.find(".done-message");
 
-    $startButton.hide();
-    $generateBackupButton.hide();
-    $restoreButton.hide();
-    $doneMessage.hide();
-
     // Use the tally component and bind all UI events
     const component = new TallyComponent({
       bulletinBoardClientParams,
@@ -52,7 +47,7 @@ $(() => {
           $generateBackupButton.on("click", (event) => {
             $generateBackupButton.attr(
               "href",
-              `data:text/plain;charset=utf-8,{"trusteeId":"${trusteeContext.uniqueId}","electionId":"${electionUniqueId}","status":"key_ceremony.step_1","electionTrusteesCount":3,"processedMessages":[]}`
+              `data:text/plain;charset=utf-8,{"trusteeId":"${trusteeContext.uniqueId}","electionId":"${electionUniqueId}","status":1,"electionTrusteesCount":3,"processedMessages":[]}`
             );
             $generateBackupButton.attr(
               "download",
