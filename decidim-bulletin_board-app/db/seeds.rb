@@ -13,12 +13,13 @@ def create_start_key_ceremony_log_entry(election)
 end
 
 def create_key_ceremony_log_entries(election)
-  Trustee.first(3).zip(Test::PrivateKeys.trustees_private_keys).each do |trustee, private_key|
+  Trustee.first(3).zip(Test::PrivateKeys.trustees_private_keys, Test::Elections.trustees_election_keys).each do |trustee, private_key, election_key|
     FactoryBot.create(:log_entry,
                       election: election,
                       client: trustee,
                       private_key: private_key,
                       message: FactoryBot.build(:key_ceremony_message,
+                                                election_public_key: election_key,
                                                 election: election,
                                                 trustee: trustee))
   end
@@ -41,10 +42,9 @@ end
 
 def create_vote_log_entries(election, amount = 3)
   amount.times do
-    FactoryBot.create(:log_entry,
-                      election: election,
-                      message: FactoryBot.build(:vote_message,
-                                                election: election))
+    vote_message = FactoryBot.build(:vote_message, election: election)
+    FactoryBot.create(:pending_message, :accepted, election: election, message: vote_message)
+    FactoryBot.create(:log_entry, election: election, message: vote_message)
   end
 end
 
@@ -61,18 +61,20 @@ def create_start_tally_log_entries(election)
                     message: FactoryBot.build(:start_tally_message,
                                               election: election))
   FactoryBot.create(:log_entry,
+                    :by_bulletin_board,
                     election: election,
                     message: FactoryBot.build(:tally_cast_message,
                                               election: election))
 end
 
 def create_tally_log_entries(election)
-  Trustee.first(3).zip(Test::PrivateKeys.trustees_private_keys).each do |trustee, private_key|
+  Trustee.first(3).zip(Test::PrivateKeys.trustees_private_keys, Test::Elections.trustees_election_keys).each do |trustee, private_key, election_key|
     FactoryBot.create(:log_entry,
                       election: election,
                       client: trustee,
                       private_key: private_key,
                       message: FactoryBot.build(:tally_share_message,
+                                                election_public_key: election_key,
                                                 election: election,
                                                 trustee: trustee))
   end

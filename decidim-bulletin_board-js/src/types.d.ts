@@ -60,6 +60,7 @@ export type LogEntry = MessageInterface & {
   chainedHash: Scalars['String'];
   client: Client;
   contentHash?: Maybe<Scalars['String']>;
+  decodedData: Scalars['JSON'];
   election: Election;
   id: Scalars['ID'];
   messageId: Scalars['String'];

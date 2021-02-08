@@ -129,6 +129,7 @@ FactoryBot.define do
 
     trait :by_bulletin_board do
       bulletin_board { true }
+      client { nil }
       signed_data { BulletinBoard.sign(message) }
     end
   end
