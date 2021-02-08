@@ -12,13 +12,14 @@ module Decidim
         @scheme = BulletinBoard.scheme.presence
         @authority_name = BulletinBoard.authority_name.presence
         @number_of_trustees = BulletinBoard.number_of_trustees.presence
+        @server_public_key = BulletinBoard.server_public_key.presence
         @identification_private_key = BulletinBoard.identification_private_key.presence
         @private_key = identification_private_key_content if identification_private_key
       end
 
       attr_reader :server, :scheme, :api_key, :number_of_trustees, :authority_name
 
-      delegate :authority_slug, to: Decidim::BulletinBoard::Command
+      delegate :authority_slug, :server_public_key, to: Decidim::BulletinBoard::Command
 
       def quorum
         @scheme.dig(:parameters, :quorum) || number_of_trustees
@@ -94,9 +95,9 @@ module Decidim
         start_tally.call
       end
 
-      def get_election_log_entries_by_types(election_id, types)
-        get_log_entries = Decidim::BulletinBoard::Authority::GetElectionLogEntriesByTypes.new(election_id, types)
-        get_log_entries.on(:ok) { |log_entries| return log_entries }
+      def get_election_results(election_id)
+        get_log_entries = Decidim::BulletinBoard::Authority::GetElectionResults.new(election_id)
+        get_log_entries.on(:ok) { |result| return result }
         get_log_entries.on(:error) { |error_message| raise StandardError, error_message }
         get_log_entries.call
       end

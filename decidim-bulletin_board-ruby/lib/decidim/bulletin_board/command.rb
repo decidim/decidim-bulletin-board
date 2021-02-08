@@ -8,7 +8,7 @@ module Decidim
     class Command
       include Wisper::Publisher
 
-      delegate :authority_slug, :private_key, :unique_election_id, :build_message_id, to: :class
+      delegate :authority_slug, :private_key, :unique_election_id, :build_message_id, :server_public_key_rsa, to: :class
 
       def sign_message(message_id, message)
         JWT.encode(complete_message(message_id, message), private_key.keypair, "RS256")
@@ -36,6 +36,14 @@ module Decidim
 
         def authority_slug
           @authority_slug ||= BulletinBoard.authority_name.parameterize
+        end
+
+        def server_public_key
+          @server_public_key ||= BulletinBoard.server_public_key
+        end
+
+        def server_public_key_rsa
+          @server_public_key_rsa ||= JWT::JWK::RSA.import(server_public_key).public_key
         end
 
         def unique_election_id(election_id)

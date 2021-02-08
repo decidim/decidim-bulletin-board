@@ -3,15 +3,13 @@
 module Decidim
   module BulletinBoard
     module Authority
-      # This command uses the GraphQL client to get the log entries of an election.
-      class GetElectionLogEntriesByTypes < Decidim::BulletinBoard::Command
+      # This command uses the GraphQL client to get the results of an election.
+      class GetElectionResults < Decidim::BulletinBoard::Command
         # Public: Initializes the command.
         #
         # election_id [String] - The local election identifier
-        # types [Array of Strings] - The message types you want to filter the log entries with
-        def initialize(election_id, types)
+        def initialize(election_id)
           @election_id = election_id
-          @types = types
         end
 
         # Executes the command. Broadcasts these events:
@@ -22,9 +20,11 @@ module Decidim
         # Returns nothing.
         def call
           # arguments used inside the graphql operation
+          # unique_id [String] as election identifier
+          # types [Array of Strings] to filter election log entries by their type
           args = {
             unique_id: unique_election_id(election_id),
-            types: types
+            types: ["end_tally"]
           }
 
           response = client.query do
@@ -37,14 +37,26 @@ module Decidim
             end
           end
 
-          broadcast(:ok, response.data.election.log_entries)
+          return broadcast(:error, "There aren't any log entries with type: 'end_tally' for this election.") if response.data.election.log_entries.empty?
+
+          @signed_data = response.data.election.log_entries.first.signed_data
+
+          broadcast(:ok, decoded_data["results"])
         rescue Graphlient::Errors::ServerError
           broadcast(:error, "Sorry, something went wrong")
         end
 
         private
 
-        attr_reader :election_id, :types
+        attr_reader :election_id, :types, :signed_data
+
+        def decoded_data
+          @decoded_data ||= begin
+            JWT.decode(signed_data, server_public_key_rsa, true, algorithm: "RS256").first
+          rescue JWT::VerificationError, JWT::DecodeError, JWT::InvalidIatError, JWT::InvalidPayload => e
+            { error: e.message }
+          end
+        end
       end
     end
   end

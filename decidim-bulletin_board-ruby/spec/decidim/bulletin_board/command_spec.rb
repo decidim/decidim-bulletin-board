@@ -74,6 +74,12 @@ module Decidim
 
         it { expect(subject).to eq("decidim-test-authority") }
       end
+
+      describe "#server_public_key_rsa" do
+        subject { described_class.server_public_key_rsa }
+
+        it { expect(subject).to be_a OpenSSL::PKey::RSA }
+      end
     end
   end
 end
