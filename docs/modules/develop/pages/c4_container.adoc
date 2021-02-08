@@ -1,0 +1,59 @@
+[plantuml]
+....
+@startuml
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/v2.0.1/C4_Container.puml
+
+' uncomment the following line to make proposals
+'LAYOUT_AS_SKETCH()
+
+title System Container diagram for Decidim Bulletin Board (https://decidim.org)
+
+Person(participant_user, "Participant User", "A registered user. Could also be verified.")
+Person(trustee_user, "Trustee User", "A registered user that allows to ensure the secrecy of the vote.")
+Person(administration_user, "Administration User", "A registered user with special permissions.")
+Person_Ext(visitor_user, "Visitor User", "Anonymous, non registered user.")
+
+Person(system_user, "System Administration User", "The system administrator responsible of registering authorities (Decidim instances).")
+
+System_Boundary(decidim_bulletin_board_system, "Decidim Bulletin Board"){
+    Container(web_api, "GraphQL API", "Ruby on Rails 6", "Provide an API that allows Decidim instances to celebrate end-to-end auditable elections providing an append-only log with cryptographic capabilities.")
+    Container(tasks, "Command line tasks", "Ruby on Rails 6", "Allows to register Decidim instances as authorities.")
+    Container(worker, "Worker", "Ruby on Rails 6", "ActiveJob queues for non syncronuos jobs. Works for processing most of the received messages.")
+    ContainerDb(rel_db, "Relational Database", "PostgreSQL", "Stores clients, elections and log entries")
+}
+
+System_Boundary(verifier, "Verificator"){
+    Container(app, "Command line application", "Python", "Verify the complete messages log of an election.")
+}
+
+System_Ext(decidim_system, "Decidim", "Allow participants to run elections against this instance.") {
+    Container(ruby_client, "Ruby client", "Ruby Gem", "Allow Ruby applications to connect to the Bulletin Board.")
+    Container(js_client, "JS client", "JS bundle", "Allow trustees and voters browsers to perform cryptographic tasks and connect directly to the Decidim Bulletin Board.")
+}
+
+System_Ext(third_party_verifiers, "Third party verifiers", "External systems can access to the logs to verify elections.")
+
+Rel_Neighbor(administration_user, decidim_system, "Administrate elections")
+Rel(trustee_user, js_client, "Prepare elections and perform the tally of the casted votes")
+Rel(visitor_user, js_client, "Monitorize elections")
+
+Lay_R(ruby_client, js_client)
+
+Rel(ruby_client, web_api, "Publish and query messages")
+Rel(js_client, web_api, "Publish and query messages")
+
+Rel(participant_user, js_client, "Encrypt votes")
+Rel(participant_user, decidim_system, "Cast votes")
+
+Rel_Neighbor(web_api, worker, "Delegate asynchronous tasks")
+
+Rel_Up(system_user, tasks, "Register authorities")
+Rel_Up(verifier, web_api, "Verify election logs")
+Rel_Neighbor(third_party_verifiers, web_api, "Verify election logs")
+
+Rel_Right(tasks, rel_db, "Update authorities")
+Rel(web_api, rel_db, "Use")
+Rel(worker, rel_db, "Update")
+
+@enduml
+....

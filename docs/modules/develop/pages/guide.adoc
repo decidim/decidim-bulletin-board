@@ -1,0 +1,9 @@
+= Developing Decidim Bulletin Board
+
+* xref:develop:guide_architecture.adoc[Architecture]
+* xref:develop:environment.adoc[Development environment]
+
+== Good to know
+
+* We follow https://12factor.net/[12factor recommendations]
+* For testing, refer to the xref:develop:testing.adoc[testing] guide.
