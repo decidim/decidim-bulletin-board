@@ -25,6 +25,6 @@ We try to let most of the things defined through Environment Variables, as https
 |Secret key base for the Application. It's specially important that this is kept secret from the outside word; do NOT publish it on GitHub/GitLab/BitBucket.
 
 |SEED
-|Used to force seed test data on production environments.
+|Used to force seed test data on production environments, if `true`.
 
 |===

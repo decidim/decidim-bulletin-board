@@ -24,6 +24,8 @@ And then you have to enter to the Rails application directory:
 [source,console]
 ----
 cd decidim-bulletin-board-app
+bundle install
+yarn install
 ----
 
 == Initializing your app for local development

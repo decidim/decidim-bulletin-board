@@ -1,6 +1,6 @@
 = Welcome to Decidim Bulletin Board Documentation
 
-This is the documentation site to Decidim Bulletin Board, an append-only public service created to allow Decidim instances to celebrate secure end-to-end auditable votings.
+This is the documentation site for Decidim Bulletin Board, an append-only public service created to allow Decidim instances to celebrate secure end-to-end auditable votings.
 
 == New to Decidim?
 
@@ -10,6 +10,6 @@ The documentation covers xref:install:index.adoc[installing], xref:configure:ind
 
 If you want to make changes to the source code, we have documentation for xref:develop:guide.adoc[developers] too.
 
-If you are an organisation who wants to use Decidim, or a developer who is interested in collaborating on the software, please https://decidim.org/contact[get in touch].
+If you are an organization who wants to use Decidim, or a developer who is interested in collaborating on the software, please https://decidim.org/contact[get in touch].
 
-Decidim is a community effort, as such if you find any errors on these guides please let us know at hola [at] decidim [dot] org. Every help is welcome. If you've a GitHub user then you can even propose changes to this website with the Edit link on every page.
+Decidim is a community effort, as such if you find any errors on these guides please let us know at hola [at] decidim [dot] org. Every help is welcome. If you've a GitHub user then you can even propose changes to this website with the _edit_ link on every page.
