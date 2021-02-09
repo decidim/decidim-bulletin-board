@@ -1,0 +1,20 @@
+<div class="intro">
+  <div class="version">Bulletin Board Version <%= Decidim::BulletinBoard::VERSION %></div>
+  <h1>Welcome to this Decidim Bulletin Board instance!</h1>
+
+  <p>The public key used by this instance to sign all the messages is the following:</p>
+  <pre>
+<%= JSON.pretty_generate(public_key) %>
+  </pre>
+</div>
+
+<div class="info">
+  <p>More information on the following links:</p>
+  <ul>
+  <li><a href="<%= documentation_path %>">API documentation</a></li>
+  <li><a href="<%= graphiql_rails_path %>">GraphiQL user interface</a></li>
+  <% if Rails.env.development? %>
+    <li><a href="<%= sandbox_elections_path %>">Elections sandbox</a></li>
+  <% end %>
+  </ul>
+</div>

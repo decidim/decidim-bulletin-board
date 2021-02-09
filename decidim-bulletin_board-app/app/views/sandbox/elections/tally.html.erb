@@ -1,38 +1,44 @@
 <%= stylesheet_link_tag "sandbox/tally" %>
 
-<%= link_to "Back", sandbox_elections_path %>
+<div class="intro">
+  <div class="version">Bulletin Board Version <%= Decidim::BulletinBoard::VERSION %></div>
 
-<h1>Tally for <%= election.title %></h1>
+  <h1>Tally for <%= election.title %></h1>
+</div>
 
-<h2>Trustees</h2>
+<div class="info">
+  <%= link_to "Back", sandbox_elections_path %>
 
-<p>You can find the trustee keys in the project's <code>lib/assets</code> folder.</p>
+  <h2>Trustees</h2>
 
-<table class="trustee-table" data-election-unique-id="<%= election.unique_id %>" data-api-endpoint-url="<%= Rails.application.secrets.api_endpoint_url %>">
-  <thead>
-    <tr>
-      <th>Unique ID</th>
-      <th>Name</th>
-      <th>Actions</th>
-    </tr>
-  </thead>
-  <tbody>
-    <% election.trustees.each do |trustee| %>
-      <tr data-unique-id="<%= trustee.unique_id %>" data-public-key="<%= trustee.public_key.to_json %>">
-        <td><%= trustee.unique_id %></td>
-        <td><%= trustee.name %></td>
-        <td>
-          <%= link_to "Start", "#", class: "start-button" %>
-          <%= link_to "Generate backup", "#", class: "generate-backup-button" %>
-          <label class="restore-button">
-            <span>Restore</span>
-            <input class="restore-button-input" style="display: none" type="file" />
-          </label>
-          <span class="done-message">Done</span>
-        </td>
+  <p>You can find the trustee keys in the project's <code>lib/assets</code> folder.</p>
+
+  <table class="trustee-table" data-election-unique-id="<%= election.unique_id %>" data-api-endpoint-url="<%= Rails.application.secrets.api_endpoint_url %>">
+    <thead>
+      <tr>
+        <th>Unique ID</th>
+        <th>Name</th>
+        <th>Actions</th>
       </tr>
-    <% end %>
-  </tbody>
-</table>
+    </thead>
+    <tbody>
+      <% election.trustees.each do |trustee| %>
+        <tr data-unique-id="<%= trustee.unique_id %>" data-public-key="<%= trustee.public_key.to_json %>">
+          <td><%= trustee.unique_id %></td>
+          <td><%= trustee.name %></td>
+          <td>
+            <%= link_to "Start", "#", class: "start-button" %>
+            <%= link_to "Generate backup", "#", class: "generate-backup-button" %>
+            <label class="restore-button">
+              <span>Restore</span>
+              <input class="restore-button-input" style="display: none" type="file" />
+            </label>
+            <span class="done-message">Done</span>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
 
 <%= javascript_include_tag "sandbox/tally" %>

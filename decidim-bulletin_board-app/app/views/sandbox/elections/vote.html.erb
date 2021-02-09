@@ -1,20 +1,26 @@
 <%= stylesheet_link_tag "sandbox/vote" %>
 
-<%= link_to "Back", sandbox_elections_path %>
+<div class="intro">
+  <div class="version">Bulletin Board Version <%= Decidim::BulletinBoard::VERSION %></div>
 
-<h1>Vote for <%= election.title %></h1>
+  <h1>Vote for <%= election.title %></h1>
+</div>
 
-<div class="voter" data-election-unique-id="<%= election.unique_id %>" data-api-endpoint-url="<%= Rails.application.secrets.api_endpoint_url %>">
-  <p>Voter Id: <input name="voter_id" value="<%= random_voter_id %>" style="width:20rem"></p>
-  <p>
-    Vote content: <br/>
-    <textarea cols="100" rows="5"><%= base_vote %></textarea>
-  </p>
+<div class="info">
+  <%= link_to "Back", sandbox_elections_path %>
 
-  <span class="done-message">Your vote has been casted successfully</span>
+  <div class="voter" data-election-unique-id="<%= election.unique_id %>" data-api-endpoint-url="<%= Rails.application.secrets.api_endpoint_url %>">
+    <p>Voter Id: <input name="voter_id" value="<%= random_voter_id %>" style="width:20rem"></p>
+    <p>
+      Vote content: <br/>
+      <textarea cols="100" rows="5"><%= base_vote %></textarea>
+    </p>
 
-  <button disabled>Cast vote</button>
-  <a href="">Refresh</a>
+    <span class="done-message">Your vote has been casted successfully</span>
+
+    <button disabled>Cast vote</button>
+    <a href="">Refresh</a>
+  </div>
 </div>
 
 <%= javascript_include_tag "sandbox/vote" %>
