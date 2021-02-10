@@ -1,21 +1,20 @@
 # frozen_string_literal: true
 
-require "decidim/bulletin_board/graphql/client"
-
 module Decidim
   module BulletinBoard
     # The base class for all commands.
     class Command
       include Wisper::Publisher
 
-      delegate :authority_slug, :private_key, :unique_election_id, :build_message_id, :server_public_key_rsa, to: :class
+      attr_reader :settings, :graphql
 
-      def sign_message(message_id, message)
-        JWT.encode(complete_message(message_id, message), private_key.keypair, "RS256")
+      def configure(settings, graphql)
+        @settings = settings
+        @graphql = graphql
       end
 
-      def client
-        @client ||= BulletinBoard::Graphql::Client.client
+      def sign_message(message_id, message)
+        JWT.encode(complete_message(message_id, message), settings.private_key.keypair, "RS256")
       end
 
       def complete_message(message_id, message)
@@ -25,34 +24,12 @@ module Decidim
                       })
       end
 
-      class << self
-        def self.call(*args)
-          new(*args).call
-        end
+      def build_message_id(unique_election_id, type_subtype, voter_id = nil)
+        MessageIdentifier.format(unique_election_id, type_subtype, voter_id ? :voter : :authority, voter_id || settings.authority_slug)
+      end
 
-        def private_key
-          @private_key ||= JwkUtils.import_private_key(BulletinBoard.identification_private_key)
-        end
-
-        def authority_slug
-          @authority_slug ||= BulletinBoard.authority_name.parameterize
-        end
-
-        def server_public_key
-          @server_public_key ||= BulletinBoard.server_public_key
-        end
-
-        def server_public_key_rsa
-          @server_public_key_rsa ||= JWT::JWK::RSA.import(server_public_key).public_key
-        end
-
-        def unique_election_id(election_id)
-          Decidim::BulletinBoard::MessageIdentifier.unique_election_id(authority_slug, election_id)
-        end
-
-        def build_message_id(unique_election_id, type_subtype, voter_id = nil)
-          Decidim::BulletinBoard::MessageIdentifier.format(unique_election_id, type_subtype, voter_id ? :voter : :authority, voter_id || authority_slug)
-        end
+      def unique_election_id(election_id)
+        MessageIdentifier.unique_election_id(settings.authority_slug, election_id)
       end
     end
   end

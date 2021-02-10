@@ -30,7 +30,7 @@ module Decidim
             signed_data: sign_message(message_id, {})
           }
 
-          response = client.query do
+          response = graphql.query do
             mutation do
               startTally(messageId: args[:message_id], signedData: args[:signed_data]) do
                 pendingMessage do

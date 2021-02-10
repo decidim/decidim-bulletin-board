@@ -7,13 +7,10 @@ require "jwt"
 require "graphlient"
 require "wisper"
 
+require "decidim/bulletin_board/client"
 require "decidim/bulletin_board/engine"
 require "decidim/bulletin_board/jwk_utils"
 require "decidim/bulletin_board/message_identifier"
-
-require "decidim/bulletin_board/client"
-require "decidim/bulletin_board/authority"
-require "decidim/bulletin_board/voter"
 
 module Decidim
   # This module holds all the logic for the Bulletin Board Ruby Client to connect
