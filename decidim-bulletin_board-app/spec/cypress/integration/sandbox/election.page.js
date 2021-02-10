@@ -146,7 +146,8 @@ export class ElectionPage {
    */
   castVote() {
     cy.findByText("Vote").click();
-    cy.findByText("Cast vote").should("not.be.disabled").click();
+    cy.findByText("Encrypt vote").click();
+    cy.findByText("Cast vote").should("be.visible").click();
   }
 
   /**
@@ -156,6 +157,29 @@ export class ElectionPage {
    */
   assertVoteHasBeenCasted() {
     cy.findByText("Your vote has been casted successfully").should(
+      "be.visible"
+    );
+    cy.findByText("Back").click();
+  }
+
+  /**
+   * Audit a vote.
+   *
+   * @returns {undefined}
+   */
+  auditVote() {
+    cy.findByText("Vote").click();
+    cy.findByText("Encrypt vote").click();
+    cy.findByText("Audit vote").should("be.visible").click();
+  }
+
+  /**
+   * Assert that the vote has been audited successfully.
+   *
+   * @returns {undefined}
+   */
+  assertVoteHasBeenAudited() {
+    cy.findByText("Your vote has been audited successfully").should(
       "be.visible"
     );
     cy.findByText("Back").click();
