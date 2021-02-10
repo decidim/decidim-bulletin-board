@@ -4,12 +4,15 @@ RSpec.shared_context "with a configured bulletin board" do
   before do
     Decidim::BulletinBoard.configure do |config|
       config.server = server
-      config.api_key = api_key
-      config.scheme = scheme
-      config.authority_name = authority_name
-      config.number_of_trustees = number_of_trustees
-      config.identification_private_key = identification_private_key
       config.server_public_key = server_public_key
+      config.api_key = api_key
+
+      config.authority_name = authority_name
+      config.identification_private_key = identification_private_key
+
+      config.scheme_name = scheme_name
+      config.number_of_trustees = number_of_trustees
+      config.quorum = quorum
     end
 
     if server.present?
@@ -29,14 +32,8 @@ RSpec.shared_context "with a configured bulletin board" do
 
   let(:server) { "https://bb.example.org" }
   let(:api_key) { Random.urlsafe_base64(30) }
-  let(:scheme) do
-    {
-      name: "test",
-      parameters: {
-        quorum: 2
-      }
-    }
-  end
+  let(:scheme_name) { "test" }
+  let(:quorum) { 2 }
   let(:authority_name) { "Decidim Test Authority" }
 
   let(:identification_private_key_content) do
@@ -49,4 +46,11 @@ RSpec.shared_context "with a configured bulletin board" do
 
   let(:error_response) { false }
   let(:bulletin_board_response) { {} }
+
+  let(:settings) { Decidim::BulletinBoard::Settings.new(Decidim::BulletinBoard) }
+  let(:graphql) { Decidim::BulletinBoard::Graphql::Factory.client_for(settings) }
+
+  before do
+    try(:command)&.configure(settings, graphql)
+  end
 end

@@ -12,32 +12,6 @@ module Decidim
 
       it { is_expected.to be_configured }
 
-      it "has an identification public key" do
-        expect(subject.public_key).not_to be_nil
-      end
-
-      context "when private key is not present" do
-        let(:identification_private_key) { "" }
-
-        it { is_expected.not_to be_configured }
-
-        it "doesn't have an identification public key" do
-          expect(subject.public_key).to be_nil
-        end
-      end
-
-      context "when server is not present" do
-        let(:server) { "" }
-
-        it { is_expected.not_to be_configured }
-      end
-
-      context "when api_key is not present" do
-        let(:api_key) { "" }
-
-        it { is_expected.not_to be_configured }
-      end
-
       describe "start_key_ceremony" do
         subject { instance.start_key_ceremony(election_id) }
 
@@ -151,7 +125,7 @@ module Decidim
 
         context "when everything went ok" do
           before do
-            stub_wisper_publisher("Decidim::BulletinBoard::Voter::GetPendingMessageStatus", :call, :ok, "accepted")
+            stub_command("Decidim::BulletinBoard::Voter::GetPendingMessageStatus", :call, :ok, "accepted")
           end
 
           it "calls the GetPendingMessageStatus command and returns the result" do
@@ -162,7 +136,7 @@ module Decidim
 
         context "when something went wrong" do
           before do
-            stub_wisper_publisher("Decidim::BulletinBoard::Voter::GetPendingMessageStatus", :call, :error, "Sorry, something went wrong")
+            stub_command("Decidim::BulletinBoard::Voter::GetPendingMessageStatus", :call, :error, "Sorry, something went wrong")
           end
 
           it "calls the GetPendingMessageStatus command and throws an error" do
@@ -178,7 +152,7 @@ module Decidim
 
         context "when everything went ok" do
           before do
-            stub_wisper_publisher("Decidim::BulletinBoard::Authority::GetElectionStatus", :call, :ok, "key_ceremony")
+            stub_command("Decidim::BulletinBoard::Authority::GetElectionStatus", :call, :ok, "key_ceremony")
           end
 
           it "calls the GetElectionStatus command and returns the result" do
@@ -188,7 +162,7 @@ module Decidim
 
         context "when something went wrong" do
           before do
-            stub_wisper_publisher("Decidim::BulletinBoard::Authority::GetElectionStatus", :call, :error, "Sorry, something went wrong")
+            stub_command("Decidim::BulletinBoard::Authority::GetElectionStatus", :call, :error, "Sorry, something went wrong")
           end
 
           it "calls the GetElectionStatus command and throws an error" do
