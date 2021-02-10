@@ -9,7 +9,7 @@
 title System Container diagram for Decidim Bulletin Board (https://decidim.org)
 
 Person(participant_user, "Participant User", "A registered user. Could also be verified.")
-Person(trustee_user, "Trustee User", "A registered user that allows to ensure the secrecy of the vote.")
+Person(trustee_user, "Trustee User", "A registered user that ensures the secrecy of the vote.")
 Person(administration_user, "Administration User", "A registered user with special permissions.")
 Person_Ext(visitor_user, "Visitor User", "Anonymous, non registered user.")
 
@@ -18,12 +18,12 @@ Person(system_user, "System Administration User", "The system administrator resp
 System_Boundary(decidim_bulletin_board_system, "Decidim Bulletin Board"){
     Container(web_api, "GraphQL API", "Ruby on Rails 6", "Provide an API that allows Decidim instances to celebrate end-to-end auditable elections providing an append-only log with cryptographic capabilities.")
     Container(tasks, "Command line tasks", "Ruby on Rails 6", "Allows to register Decidim instances as authorities.")
-    Container(worker, "Worker", "Ruby on Rails 6", "ActiveJob queues for non syncronuos jobs. Works for processing most of the received messages.")
+    Container(worker, "Worker", "Ruby on Rails 6", "ActiveJob queues for asynchronous jobs. Works for processing most of the received messages.")
     ContainerDb(rel_db, "Relational Database", "PostgreSQL", "Stores clients, elections and log entries")
 }
 
 System_Boundary(verifier, "Verificator"){
-    Container(app, "Command line application", "Python", "Verify the complete messages log of an election.")
+    Container(app, "Command line application", "Python", "Verifies the complete messages log of an election.")
 }
 
 System_Ext(decidim_system, "Decidim", "Allow participants to run elections against this instance.") {

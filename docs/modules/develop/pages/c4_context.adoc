@@ -9,7 +9,7 @@
 title System Context diagram for Decidim Bulletin Board (https://decidim.org)
 
 Person(participant_user, "Participant User", "A registered user. Could also be verified.")
-Person(trustee_user, "Trustee User", "A registered user that allows to ensure the secrecy of the vote.")
+Person(trustee_user, "Trustee User", "A registered user that ensures the secrecy of the vote.")
 Person(administration_user, "Administration User", "A registered user with special permissions.")
 Person_Ext(visitor_user, "Visitor User", "Anonymous, non registered user.")
 Person(system_user, "System Administration User", "The system administrator responsible of registering authorities (Decidim instances).")

@@ -1,6 +1,6 @@
 = Environment Variables
 
-We try to let most of the things defined through Environment Variables, as https://12factor.net/config[12factor applications's config]. You'll need to configure through your hosting provider (for example in Heroku), through a gem like `figaro` or through docker-compose `env_file`.
+We try to let most of the things defined through Environment Variables, as https://12factor.net/config[12factor applications's config]. You'll need to configure them through your hosting provider (for example in Heroku), through a gem like `figaro` or through docker-compose `env_file`.
 
 .Decidim Bulletin Board Env Vars
 |===
@@ -16,10 +16,10 @@ We try to let most of the things defined through Environment Variables, as https
 |The Bulletin Board private key, in JWT format. It should at least include the keys `kty`, `n`, `e`, `d`, `p`, `q`, `dp`, `dq` and `qi`.
 
 |RAILS_ENV
-|Environment for Ruby on Rails. If it's on your local machine for development, then it should be `development`. If it's on server it should be `production`. Please take care that this has security implications. You DON'T want to be running a production application on development mode.
+|Environment for Ruby on Rails. If it's on your local machine for development, then it should be `development`. If it's on server it should be `production`. Please take care that this has security implications. You DON'T want to run a production application in development mode.
 
 |RAILS_LOG_TO_STDOUT
-|If true it'll show the log contents on the shell Standard Out. It's special relevant on certain hosting providers (for example, Heroku or Docker). It's also part of https://12factor.net/logs[12factor's recomendations].
+|If true it will show the log contents on the shell Standard Out. It's especially relevant for certain hosting providers (for example, Heroku or Docker). It's also part of https://12factor.net/logs[12factor's recommendations].
 
 |SECRET_KEY_BASE
 |Secret key base for the Application. It's specially important that this is kept secret from the outside word; do NOT publish it on GitHub/GitLab/BitBucket.

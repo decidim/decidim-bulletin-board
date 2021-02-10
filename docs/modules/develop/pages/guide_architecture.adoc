@@ -2,7 +2,7 @@
 
 For better understanding Decidim Bulletin Board, here you have some diagrams based in the https://c4model.com[C4 model].
 
-TIP: You can read better these images by doing a right click and selecting "View image"
+TIP: Right click and select "View image" to see a better image.
 
 == System Context diagram
 

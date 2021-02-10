@@ -7,5 +7,4 @@ Just as a reminder, these files are important:
 * config/database.yml
 * config/secrets.yml
 
-Although most of these settings you can change them through xref:configure:environment_variables.adoc[Environment Variables].
-
+You can change most of these settings through xref:configure:environment_variables.adoc[Environment Variables].
