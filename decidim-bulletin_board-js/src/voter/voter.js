@@ -48,13 +48,23 @@ export class Voter {
    * Encrypts the data using the wrapper.
    *
    * @param {Object} data - The data to be encrypted.
-   * @returns {Promise<Object>} - The data encrypted and its hash.
+   * @returns {Promise<Object>} - The data encrypted.
    */
   async encrypt(data) {
-    const encryptedVote = await this.wrapper.encrypt(data);
+    const ballot = await this.wrapper.encrypt(data);
+    return ballot;
+  }
 
+  /**
+   * Encrypts the data using the wrapper.
+   *
+   * @param {Object} encryptedVote - The encryptedVote to be encrypted.
+   * @returns {Promise<Object>} - The data encrypted and its hash.
+   */
+  async encryptBallot(encryptedVote) {
+    const encryptedBallot = encryptedVote.encryptedBallot;
     return window.crypto.subtle
-      .digest("SHA-256", new TextEncoder().encode(encryptedVote))
+      .digest("SHA-256", new TextEncoder().encode(encryptedBallot))
       .then((hashBuffer) => {
         const hashArray = Array.from(new Uint8Array(hashBuffer));
         const hashHex = hashArray
@@ -62,10 +72,29 @@ export class Voter {
           .join("");
 
         return {
-          encryptedVote,
+          encryptedVote: encryptedBallot,
           encryptedVoteHash: hashHex,
         };
       });
+  }
+
+  /**
+   * Audits the data using the wrapper.
+   *
+   * @param {Object} encryptedVote - The encrypted vote to be audited.
+   * @returns {Promise<Object>} - The encrypted ballot, the vote hash and the plain vote.
+   */
+  async auditBallot(encryptedVote) {
+    const auditableBallot = encryptedVote.auditableBallot;
+    const ballot = await this.encryptBallot(encryptedVote);
+    const encryptedBallot = ballot.encryptedVote;
+    const encryptedVoteHash = ballot.encryptedVoteHash;
+
+    return {
+      encryptedBallot,
+      encryptedVoteHash: encryptedVoteHash,
+      plainVote: auditableBallot,
+    };
   }
 
   /**

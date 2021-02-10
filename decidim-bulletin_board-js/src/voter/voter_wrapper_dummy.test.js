@@ -113,7 +113,7 @@ describe("VoterWrapper", () => {
           "question-2": ["question-2-answer-2"],
         });
 
-        expect(response).toEqual(
+        expect(response.encryptedBallot).toEqual(
           `{"ballot_style":"ballot-style","contests":[{"object_id":"question-1","ballot_selections":[{"object_id":"question-1-answer-1","ciphertext":${
             250 * 123456789 + 1
           }},{"object_id":"question-1-answer-2","ciphertext":${
@@ -124,6 +124,53 @@ describe("VoterWrapper", () => {
             250 * 123456789 + 1
           }}]}]}`
         );
+      });
+
+      it("returns an Object with the audited ballot", async () => {
+        const response = await wrapper.encrypt({
+          "question-1": ["question-1-answer-1"],
+          "question-2": ["question-2-answer-2"],
+        });
+
+        expect(response.auditableBallot).toEqual({
+          ballot_style: "ballot-style",
+          contests: [
+            {
+              ballot_selections: [
+                {
+                  ciphertext: 30864197251,
+                  object_id: "question-1-answer-1",
+                  plaintext: 1,
+                  random: 0.5,
+                },
+                {
+                  ciphertext: 30864197250,
+                  object_id: "question-1-answer-2",
+                  plaintext: 0,
+                  random: 0.5,
+                },
+              ],
+              object_id: "question-1",
+            },
+            {
+              ballot_selections: [
+                {
+                  ciphertext: 30864197250,
+                  object_id: "question-2-answer-1",
+                  plaintext: 0,
+                  random: 0.5,
+                },
+                {
+                  ciphertext: 30864197251,
+                  object_id: "question-2-answer-2",
+                  plaintext: 1,
+                  random: 0.5,
+                },
+              ],
+              object_id: "question-2",
+            },
+          ],
+        });
       });
     });
   });
