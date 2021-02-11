@@ -146,7 +146,7 @@ export class ElectionPage {
    */
   auditVote() {
     cy.findByText("Vote").click();
-    cy.findByText("Encrypt vote").click();
+    cy.findByText("Encrypt vote").should("be.visible").click();
     cy.findByText("Audit vote").should("be.visible").click();
   }
 
@@ -169,7 +169,7 @@ export class ElectionPage {
    */
   castVote() {
     cy.findByText("Vote").click();
-    cy.findByText("Encrypt vote").click();
+    cy.findByText("Encrypt vote").should("be.visible").click();
     cy.findByText("Cast vote").should("be.visible").click();
   }
 
