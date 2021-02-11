@@ -18,7 +18,8 @@
   "dependencies": {
     "@apollo/client": "^3.2.7",
     "graphql": "^15.4.0",
-    "graphql-ruby-client": "^1.8.1"
+    "graphql-ruby-client": "^1.8.1",
+    "node-jose": "^2.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.3",
