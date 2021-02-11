@@ -15,7 +15,6 @@ import {
 } from "./trustee_wrapper_dummy";
 
 import {
-  MessageIdentifier,
   AUTHORITY_TYPE,
   TRUSTEE_TYPE,
   BULLETIN_BOARD_TYPE,
@@ -48,12 +47,16 @@ describe("TrusteeWrapper", () => {
       describe("when it receives the START_KEY_CEREMONY message", () => {
         it("changes the wrapper status and stores some data", () => {
           const response = wrapper.processMessage(
-            MessageIdentifier.format(
-              "some-authority.some-id",
-              START_KEY_CEREMONY,
-              AUTHORITY_TYPE,
-              "some-authority-id"
-            ),
+            {
+              electionId: "some-authority.some-id",
+              type: START_KEY_CEREMONY,
+              subtype: null,
+              typeSubtype: START_KEY_CEREMONY,
+              author: {
+                type: AUTHORITY_TYPE,
+                id: "some-authority-id",
+              },
+            },
             {}
           );
           expect(wrapper.status).toEqual(KEY_CEREMONY);
@@ -70,12 +73,16 @@ describe("TrusteeWrapper", () => {
       describe("when it receives any other message", () => {
         it("doesn't do anything", () => {
           wrapper.processMessage(
-            MessageIdentifier.format(
-              "some-authority.some-id",
-              "some-type",
-              TRUSTEE_TYPE,
-              "some-author-id"
-            ),
+            {
+              electionId: "some-authority.some-id",
+              type: "some-type",
+              subtype: null,
+              typeSubtype: "some-type",
+              author: {
+                type: TRUSTEE_TYPE,
+                id: "some-author-id",
+              },
+            },
             {}
           );
           expect(wrapper.status).toEqual(CREATED);
@@ -91,12 +98,16 @@ describe("TrusteeWrapper", () => {
       describe("when it receives the END_KEY_CEREMONY message", () => {
         it("changes the wrapper status", () => {
           wrapper.processMessage(
-            MessageIdentifier.format(
-              "some-authority.some-id",
-              END_KEY_CEREMONY,
-              BULLETIN_BOARD_TYPE,
-              "some-bb-id"
-            ),
+            {
+              electionId: "some-authority.some-id",
+              type: END_KEY_CEREMONY,
+              subtype: null,
+              typeSubtype: END_KEY_CEREMONY,
+              author: {
+                type: BULLETIN_BOARD_TYPE,
+                id: "some-bb-id",
+              },
+            },
             {}
           );
           expect(wrapper.status).toEqual(KEY_CEREMONY_ENDED);
@@ -106,12 +117,16 @@ describe("TrusteeWrapper", () => {
       describe("when it receives any other message", () => {
         it("doesn't do anything", () => {
           wrapper.processMessage(
-            MessageIdentifier.format(
-              "some-authority.some-id",
-              "some-type",
-              TRUSTEE_TYPE,
-              "some-author-id"
-            ),
+            {
+              electionId: "some-authority.some-id",
+              type: "some-type",
+              subtype: null,
+              typeSubtype: "some-type",
+              author: {
+                type: TRUSTEE_TYPE,
+                id: "some-author-id",
+              },
+            },
             {}
           );
           expect(wrapper.status).toEqual(KEY_CEREMONY);
@@ -127,12 +142,16 @@ describe("TrusteeWrapper", () => {
       describe("when it receives the START_TALLY message", () => {
         it("changes the wrapper status", () => {
           wrapper.processMessage(
-            MessageIdentifier.format(
-              "some-authority.some-id",
-              START_TALLY,
-              AUTHORITY_TYPE,
-              "some-authority-id"
-            ),
+            {
+              electionId: "some-authority.some-id",
+              type: START_TALLY,
+              subtype: null,
+              typeSubtype: START_TALLY,
+              author: {
+                type: AUTHORITY_TYPE,
+                id: "some-authority-id",
+              },
+            },
             {}
           );
           expect(wrapper.status).toEqual(TALLY);
@@ -142,12 +161,16 @@ describe("TrusteeWrapper", () => {
       describe("when it receives any other message", () => {
         it("doesn't do anything", () => {
           wrapper.processMessage(
-            MessageIdentifier.format(
-              "some-authority.some-id",
-              "some-type",
-              TRUSTEE_TYPE,
-              "some-author-id"
-            ),
+            {
+              electionId: "some-authority.some-id",
+              type: "some-type",
+              subtype: null,
+              typeSubtype: "some-type",
+              author: {
+                type: TRUSTEE_TYPE,
+                id: "some-author-id",
+              },
+            },
             {}
           );
           expect(wrapper.status).toEqual(KEY_CEREMONY_ENDED);
@@ -165,12 +188,16 @@ describe("TrusteeWrapper", () => {
       describe("when it receives the TALLY_CAST message", () => {
         it("returns some data", () => {
           const response = wrapper.processMessage(
-            MessageIdentifier.format(
-              "some-authority.some-id",
-              TALLY_CAST,
-              BULLETIN_BOARD_TYPE,
-              "some-bb-id"
-            ),
+            {
+              electionId: "some-authority.some-id",
+              type: "tally",
+              subtype: "cast",
+              typeSubtype: TALLY_CAST,
+              author: {
+                type: BULLETIN_BOARD_TYPE,
+                id: "some-bb-id",
+              },
+            },
             {
               content: JSON.stringify({
                 "question-1": {
@@ -198,12 +225,16 @@ describe("TrusteeWrapper", () => {
       describe("when it receives the END_TALLY message", () => {
         it("returns some data", () => {
           wrapper.processMessage(
-            MessageIdentifier.format(
-              "some-authority.some-id",
-              END_TALLY,
-              BULLETIN_BOARD_TYPE,
-              "some-bb-id"
-            ),
+            {
+              electionId: "some-authority.some-id",
+              type: END_TALLY,
+              subtype: null,
+              typeSubtype: END_TALLY,
+              author: {
+                type: BULLETIN_BOARD_TYPE,
+                id: "some-bb-id",
+              },
+            },
             {}
           );
           expect(wrapper.status).toEqual(TALLY_ENDED);
@@ -237,12 +268,16 @@ describe("TrusteeWrapper", () => {
     describe("after creating the election keys", () => {
       beforeEach(() => {
         wrapper.processMessage(
-          MessageIdentifier.format(
-            "some-authority.some-id",
-            START_KEY_CEREMONY,
-            AUTHORITY_TYPE,
-            "some-authority-id"
-          ),
+          {
+            electionId: "some-authority.some-id",
+            type: START_KEY_CEREMONY,
+            subtype: null,
+            typeSubtype: START_KEY_CEREMONY,
+            author: {
+              type: AUTHORITY_TYPE,
+              id: "some-authority-id",
+            },
+          },
           {}
         );
       });
