@@ -6,7 +6,7 @@ module Decidim
   module BulletinBoard
     module Voter
       describe CastVote do
-        subject { described_class.new(election_id, voter_id, encrypted_vote) }
+        subject(:command) { described_class.new(election_id, voter_id, encrypted_vote) }
 
         include_context "with a configured bulletin board"
 

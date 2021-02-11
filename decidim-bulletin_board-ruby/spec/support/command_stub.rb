@@ -9,5 +9,7 @@ def stub_command(clazz, called_method, event_to_publish, *published_event_args)
     define_method(:message_id) do
       "a.message+id"
     end
+
+    define_method(:configure) { |*_args|; }
   end)
 end

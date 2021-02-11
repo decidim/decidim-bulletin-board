@@ -5,8 +5,10 @@ require "spec_helper"
 module Decidim
   module BulletinBoard
     module Graphql
-      describe Client do
-        subject { described_class.client }
+      describe Factory do
+        subject { described_class.client_for(settings) }
+
+        let(:settings) { double(server: "http://localhost:8000", api_key: "123") }
 
         it "has a client" do
           expect(subject).not_to be_nil

@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Changed
 
 - The `get_election_log_entries_by_type` command got renamed to `get_election_results`.
+- The `create_election` command now receives all the information needed in a simple hash and builds the message to add to the election log. It only needs seven main keys: `trustees`, `default_locale`, `title`, `start_date`, `end_date`, `questions` and `answers`.
+- The `scheme` setting was replaced by the `scheme_name` and `quorum` settings.
 
 ## [0.9.2] - 2021-02-02
 

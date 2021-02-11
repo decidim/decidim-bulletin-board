@@ -6,7 +6,7 @@ module Decidim
   module BulletinBoard
     module Voter
       describe GetPendingMessageStatus do
-        subject { described_class.new(message_id) }
+        subject(:command) { described_class.new(message_id) }
 
         include_context "with a configured bulletin board"
 

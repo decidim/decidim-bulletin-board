@@ -24,7 +24,7 @@ module Decidim
             unique_id: unique_election_id(election_id)
           }
 
-          response = client.query do
+          response = graphql.query do
             query do
               election(uniqueId: args[:unique_id]) do
                 status

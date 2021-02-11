@@ -22,7 +22,7 @@ module Decidim
           message_id = @message_id
 
           begin
-            response = client.query do
+            response = graphql.query do
               query do
                 pendingMessage(messageId: message_id) do
                   status

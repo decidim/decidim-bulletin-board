@@ -6,7 +6,7 @@ module Decidim
   module BulletinBoard
     module Authority
       describe StartVote do
-        subject { described_class.new(election_id) }
+        subject(:command) { described_class.new(election_id) }
 
         include_context "with a configured bulletin board"
 

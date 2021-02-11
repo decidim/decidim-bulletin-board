@@ -27,7 +27,7 @@ module Decidim
             types: ["end_tally"]
           }
 
-          response = client.query do
+          response = graphql.query do
             query do
               election(uniqueId: args[:unique_id]) do
                 logEntries(types: args[:types]) do
@@ -52,7 +52,7 @@ module Decidim
 
         def decoded_data
           @decoded_data ||= begin
-            JWT.decode(signed_data, server_public_key_rsa, true, algorithm: "RS256").first
+            JWT.decode(signed_data, settings.server_public_key_rsa, true, algorithm: "RS256").first
           rescue JWT::VerificationError, JWT::DecodeError, JWT::InvalidIatError, JWT::InvalidPayload => e
             { error: e.message }
           end

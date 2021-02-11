@@ -33,7 +33,7 @@ module Decidim
           }
 
           begin
-            response = client.query do
+            response = graphql.query do
               mutation do
                 vote(messageId: args[:message_id], signedData: args[:signed_data]) do
                   pendingMessage do
