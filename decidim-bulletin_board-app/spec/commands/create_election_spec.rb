@@ -111,7 +111,7 @@ RSpec.describe CreateElection do
   end
 
   context "when the message author is not the same authority" do
-    let(:extra_message_params) { { authority: create(:authority) } }
+    let(:extra_message_params) { { authority_client: create(:authority) } }
 
     it "broadcast invalid" do
       expect { subject }.to broadcast(:invalid, "Invalid message author")
