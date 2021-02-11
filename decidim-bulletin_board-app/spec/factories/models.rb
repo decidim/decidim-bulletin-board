@@ -33,7 +33,7 @@ FactoryBot.define do
       election_id { generate(:election_id) }
     end
 
-    title { Faker::Name.name }
+    title { { en: Faker::Name.name } }
     authority { Authority.first }
     status { :created }
     unique_id { [authority.unique_id, election_id].join(".") }

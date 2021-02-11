@@ -75,7 +75,9 @@ class CreateElection < Rectify::Command
   end
 
   def title
-    @title ||= decoded_data.dig(:description, :name, :text, 0, :value)
+    @title ||= decoded_data.dig(:description, :name, :text).map do |text|
+      [text["language"], text["value"]]
+    end.to_h
   end
 
   def start_date
