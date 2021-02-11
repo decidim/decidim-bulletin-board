@@ -89,7 +89,7 @@ $(async () => {
         contentType: "application/json",
         data: JSON.stringify({
           voter_id: $voterId.val(),
-          encrypted_vote: encryptedBallot,
+          encrypted_ballot: encryptedBallot,
         }), // eslint-disable-line camelcase
         headers: {
           "X-CSRF-Token": $("meta[name=csrf-token]").attr("content"),

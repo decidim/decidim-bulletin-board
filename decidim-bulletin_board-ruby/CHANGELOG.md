@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - A command to get decoded election results.
 - The (Bulletin Board) server public key is now included in the gem configuration.
+- The option to `audit` a vote.
 
 ## Changed
 

@@ -23,7 +23,7 @@ module Sandbox
     def vote
       return unless request.post?
 
-      bulletin_board_client.cast_vote(election_id, params[:voter_id], params[:encrypted_vote])
+      bulletin_board_client.cast_vote(election_id, params[:voter_id], params[:encrypted_ballot])
     end
 
     def end_vote

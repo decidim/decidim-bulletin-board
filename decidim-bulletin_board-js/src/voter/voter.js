@@ -51,7 +51,7 @@ export class Voter {
    * @returns {Promise<Object>} - The data encrypted.
    */
   async encrypt(data) {
-    const ballot = await this.wrapper.encrypt(data);
+    const ballot = this.wrapper.encrypt(data);
     return ballot;
   }
 
@@ -67,13 +67,13 @@ export class Voter {
       .digest("SHA-256", new TextEncoder().encode(encryptedBallot))
       .then((hashBuffer) => {
         const hashArray = Array.from(new Uint8Array(hashBuffer));
-        const hashHex = hashArray
+        const encryptedBallotHash = hashArray
           .map((b) => b.toString(16).padStart(2, "0"))
           .join("");
 
         return {
-          encryptedVote: encryptedBallot,
-          encryptedVoteHash: hashHex,
+          encryptedBallot,
+          encryptedBallotHash,
         };
       });
   }
@@ -87,12 +87,12 @@ export class Voter {
   async auditBallot(encryptedVote) {
     const auditableBallot = encryptedVote.auditableBallot;
     const ballot = await this.encryptBallot(encryptedVote);
-    const encryptedBallot = ballot.encryptedVote;
-    const encryptedVoteHash = ballot.encryptedVoteHash;
+    const encryptedBallot = ballot.encryptedBallot;
+    const encryptedBallotHash = ballot.encryptedBallotHash;
 
     return {
       encryptedBallot,
-      encryptedVoteHash: encryptedVoteHash,
+      encryptedBallotHash,
       plainVote: auditableBallot,
     };
   }
