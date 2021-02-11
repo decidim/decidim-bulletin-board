@@ -40,7 +40,7 @@ export class VoteComponent {
    * - {Function} castOrAuditBallot - a function that is called to cast or audit a ballot
    * - {Function} onStart - a function that is called when the vote has started.
    * - {Function} onAuditVote - a function that is called to audit a vote before encrypting it.
-   * - {Function} onVoteAudition - a functio, that is called when the auditable vote is ready.
+   * - {Function} onVoteAudition - a function that is called when the auditable vote is ready.
    * - {Function} onAuditComplete - a function that is called when the auditable vote is audited.
    * - {Function} onVoteValidation - a function that is called to validate the vote before encrypting it.
    * - {Function} onVoteEncrypted - a function that is called when the vote has been encrypted.

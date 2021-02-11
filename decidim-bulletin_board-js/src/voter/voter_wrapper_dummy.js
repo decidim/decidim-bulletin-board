@@ -110,13 +110,12 @@ export class VoterWrapper {
   /**
    * Creates an encrypted ballot.
    *
-   * @param {Object} auditableBallot - An object with the encrypted vote.
+   * @param {Object} vote - An object with the encrypted vote.
    *
    * @private
    * @returns {<Object>}
    */
   createEncryptedBallot(vote) {
-    // const auditBallot = this.createAuditableBallot(vote);
     const encryptedBallot = this.removeAuditInformation(vote);
     return encryptedBallot;
   }
