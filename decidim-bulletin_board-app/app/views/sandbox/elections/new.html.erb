@@ -1,0 +1,79 @@
+<div class="intro">
+  <div class="version">Bulletin Board Version <%= Decidim::BulletinBoard::VERSION %></div>
+
+  <h1>Create election</h1>
+</div>
+
+<div class="info">
+  <%= link_to "Back", sandbox_elections_path %>
+
+  <form method="post" action="<%= sandbox_elections_path %>">
+    <%= hidden_field_tag :authenticity_token, form_authenticity_token -%>
+    <ul>
+      <li><label>Election ID: <input name="election[id]" type="text" value="<%= SecureRandom.base58 %>"></label></li>
+      <li><label>Default locale: <select name="election[default_locale]"><option>ca</option><option selected>en</option><option>es</option></select></label></li>
+      <li>
+        <label>Title:
+          <input name="election[title][ca]" type="text" value="Votació de prova" placeholder="ca">
+          <input name="election[title][en]" type="text" value="Test election" placeholder="en">
+          <input name="election[title][es]" type="text" value="Votación de prueba" placeholder="es">
+        </label>
+      </li>
+      <li><label>Start date: <input name="election[start_date]" type="number" value="1"> days from now</label></li>
+      <li><label>End date: <input name="election[end_date]" type="number" value="1"> after the start</label></li>
+      <li>
+        <h2>Questions</h2>
+        <ul>
+        <% 3.times.each_with_index do |question_index| %>
+          <li><h3>Question #<%= question_index + 1 %></h3></li>
+          <li>
+              <label>Title:
+                <input name="election[questions][<%= question_index %>][title][ca]" type="text" value="Pregunta #<%= question_index + 1 %>" placeholder="ca">
+                <input name="election[questions][<%= question_index %>][title][en]" type="text" value="Question #<%= question_index + 1 %>" placeholder="en">
+                <input name="election[questions][<%= question_index %>][title][es]" type="text" value="Pregunta #<%= question_index + 1 %>" placeholder="es">
+              </label>
+          </li>
+          <li>
+              <label>Description:
+                <input name="election[questions][<%= question_index %>][description][ca]" type="text" value="Descripció #<%= question_index + 1 %>" placeholder="ca">
+                <input name="election[questions][<%= question_index %>][description][en]" type="text" value="Description #<%= question_index + 1 %>" placeholder="en">
+                <input name="election[questions][<%= question_index %>][description][es]" type="text" value="Descripción #<%= question_index + 1 %>" placeholder="es">
+              </label>
+          </li>
+          <li>
+              <label>Slug: <input name="election[questions][<%= question_index %>][slug]" type="text" value="question-<%= question_index + 1 %>"></label>
+          </li>
+          <li>
+              <label>Weight: <input name="election[questions][<%= question_index %>][weight]" type="number" value="0"></label>
+          </li>
+          <li>
+              <label>Maximum selections: <input name="election[questions][<%= question_index %>][max_selections]" type="number" value="1" min="1" max="4"></label>
+          </li>
+          <li>
+              <h4>Answers: </h4>
+              <ul>
+                <% 3.times.each_with_index do |answer_index| %>
+                <li><h5>Answer #<%= question_index + 1 %>.<%= answer_index + 1 %></h5></li>
+                <li>
+                    <label>Title:
+                      <input name="election[questions][<%= question_index %>][answers][<%= answer_index %>][title][ca]" type="text" value="Resposta #<%= question_index + 1 %>.<%= answer_index + 1 %>" placeholder="ca">
+                      <input name="election[questions][<%= question_index %>][answers][<%= answer_index %>][title][en]" type="text" value="Answer #<%= question_index + 1 %>.<%= answer_index + 1 %>" placeholder="en">
+                      <input name="election[questions][<%= question_index %>][answers][<%= answer_index %>][title][es]" type="text" value="Respuesta #<%= question_index + 1 %>.<%= answer_index + 1 %>" placeholder="es">
+                    </label>
+                </li>
+                <li>
+                    <label>Slug: <input name="election[questions][<%= question_index %>][answers][<%= answer_index %>][slug]" type="text" value="answer-<%= question_index + 1 %>-<%= answer_index + 1 %>"></label>
+                </li>
+                <li>
+                    <label>Weight: <input name="election[questions][<%= question_index %>][answers][<%= answer_index %>][weight]" type="number" value="0"></label>
+                </li>
+                <% end %>
+              </ul>
+          </li>
+        <% end %>
+        </ul>
+      </li>
+      <li><input type="submit"></li>
+    </ul>
+  </form>
+</div>
