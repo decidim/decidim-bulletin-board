@@ -20,9 +20,7 @@ export class MessageParser {
    */
   constructor({ authorityPublicKeyJSON }) {
     this.authorityPublicKeyJSON = authorityPublicKeyJSON;
-    JWK.asKey(authorityPublicKeyJSON, "json").then((result) => {
-      this.authorityPublicKey = result;
-    });
+    this.authorityPublicKey = JWK.asKey(authorityPublicKeyJSON, "json");
     this.keys = null;
   }
 
@@ -38,7 +36,7 @@ export class MessageParser {
     const messageIdentifier = MessageIdentifier.parse(messageId);
     const senderKey = this.keys
       ? this.keys[messageIdentifier.author.type][messageIdentifier.author.id]
-      : this.authorityPublicKey;
+      : await this.authorityPublicKey;
 
     if (!signedData) {
       return { messageIdentifier, decodedData: null };
