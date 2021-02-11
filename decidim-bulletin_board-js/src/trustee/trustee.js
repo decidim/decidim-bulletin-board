@@ -1,7 +1,7 @@
 /* eslint-disable camelcase */
 import { TrusteeWrapper } from "./trustee_wrapper_dummy";
 import { EventManager } from "./event_manager";
-import { JWTParser } from "../jwt_parser";
+import { MessageParser } from "../client/message-parser";
 
 export const WAIT_TIME_MS = 100; // 0.1s
 
@@ -38,7 +38,7 @@ export class Trustee {
     this.election = election;
     this.options = options || { waitUntilNextCheck: WAIT_TIME_MS };
     this.wrapper = new TrusteeWrapper({ trusteeId: uniqueId });
-    this.parser = new JWTParser();
+    this.parser = new MessageParser({ authorityPublicKeyJSON });
     this.events = new EventManager();
     this.nextLogEntryIndexToProcess = 0;
     this.lastMessageProcessedWithResult = null;
@@ -202,11 +202,10 @@ export class Trustee {
     const message = logEntries[this.nextLogEntryIndexToProcess];
 
     this.events.broadcastMessageReceived(message);
-    const payload =
-      message.signedData && (await this.parser.parse(message.signedData));
+    const { messageIdentifier, decodedData } = await this.parser.parse(message);
     const result = await this.wrapper.processMessage(
-      message.messageId,
-      payload
+      messageIdentifier,
+      decodedData
     );
 
     this.events.broadcastMessageProcessed(message, result);

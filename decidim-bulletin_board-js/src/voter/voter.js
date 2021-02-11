@@ -1,5 +1,5 @@
 import { VoterWrapper } from "./voter_wrapper_dummy";
-import { JWTParser } from "../jwt_parser";
+import { MessageParser } from "../client/message-parser";
 
 /**
  * This is a facade class that will use the correspondig `VoterWrapper` to encrypt
@@ -27,7 +27,7 @@ export class Voter {
     this.election = election;
     this.bulletinBoardClient = bulletinBoardClient;
     this.wrapper = new VoterWrapper({ voterId: uniqueId });
-    this.parser = new JWTParser();
+    this.parser = new MessageParser({ authorityPublicKeyJSON });
   }
 
   /**
@@ -45,8 +45,13 @@ export class Voter {
       })
       .then(async (logEntries) => {
         for (const logEntry of logEntries) {
-          const message = await this.parser.parse(logEntry.signedData);
-          this.wrapper.processMessage(logEntry.messageId, message);
+          const { messageIdentifier, decodedData } = await this.parser.parse(
+            logEntry
+          );
+          const result = await this.wrapper.processMessage(
+            messageIdentifier,
+            decodedData
+          );
         }
       });
   }
