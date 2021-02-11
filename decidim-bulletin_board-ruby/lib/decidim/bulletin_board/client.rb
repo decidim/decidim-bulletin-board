@@ -24,7 +24,7 @@ module Decidim
         @graphql = Graphql::Factory.client_for(settings)
       end
 
-      delegate :configured?, :server, :authority_name, :number_of_trustees, :quorum, to: :settings
+      delegate :configured?, :server, :public_key, :authority_name, :number_of_trustees, :quorum, to: :settings
 
       def create_election(election_id, election_data)
         create_election = configure Authority::CreateElection.new(election_id, election_data)

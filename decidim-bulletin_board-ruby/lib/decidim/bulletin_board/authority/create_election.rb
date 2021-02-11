@@ -69,6 +69,8 @@ module Decidim
 
         def bulletin_board
           {
+            name: "Bulletin Board",
+            slug: "bulletin-board",
             public_key: settings.server_public_key
           }
         end
@@ -76,6 +78,7 @@ module Decidim
         def authority
           {
             name: settings.authority_name,
+            slug: settings.authority_slug,
             public_key: settings.public_key
           }
         end
@@ -84,6 +87,7 @@ module Decidim
           election_data[:trustees].map do |trustee|
             {
               name: trustee[:name],
+              slug: trustee[:slug],
               public_key: trustee[:public_key]
             }
           end
