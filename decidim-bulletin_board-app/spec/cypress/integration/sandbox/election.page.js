@@ -140,29 +140,6 @@ export class ElectionPage {
   }
 
   /**
-   * Cast a vote.
-   *
-   * @returns {undefined}
-   */
-  castVote() {
-    cy.findByText("Vote").click();
-    cy.findByText("Encrypt vote").click();
-    cy.findByText("Cast vote").should("be.visible").click();
-  }
-
-  /**
-   * Assert that the vote has been casted successfully.
-   *
-   * @returns {undefined}
-   */
-  assertVoteHasBeenCasted() {
-    cy.findByText("Your vote has been casted successfully").should(
-      "be.visible"
-    );
-    cy.findByText("Back").click();
-  }
-
-  /**
    * Audit a vote.
    *
    * @returns {undefined}
@@ -180,6 +157,29 @@ export class ElectionPage {
    */
   assertVoteHasBeenAudited() {
     cy.findByText("Your vote has been audited successfully").should(
+      "be.visible"
+    );
+    cy.findByText("Back").click();
+  }
+
+  /**
+   * Cast a vote.
+   *
+   * @returns {undefined}
+   */
+  castVote() {
+    cy.findByText("Vote").click();
+    cy.findByText("Encrypt vote").click();
+    cy.findByText("Cast vote").should("be.visible").click();
+  }
+
+  /**
+   * Assert that the vote has been casted successfully.
+   *
+   * @returns {undefined}
+   */
+  assertVoteHasBeenCasted() {
+    cy.findByText("Your vote has been casted successfully").should(
       "be.visible"
     );
     cy.findByText("Back").click();
