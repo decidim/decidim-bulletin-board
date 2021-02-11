@@ -71,6 +71,10 @@ FactoryBot.define do
     end
 
     factory :json_authority do
+      transient do
+        authority { Authority.first }
+      end
+
       name { authority.name }
       slug { authority.unique_id }
       public_key { authority.public_key.to_json }
