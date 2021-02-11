@@ -59,6 +59,7 @@ export class MessageParser {
     return { messageIdentifier, decodedData };
   }
 
+  /* eslint-disable camelcase */
   async parseCreateElection({ authority, bulletin_board, trustees }) {
     if (!samePublicKeys(authority.public_key, this.authorityPublicKeyJSON)) {
       throw new Error(
@@ -78,7 +79,6 @@ export class MessageParser {
         result[BULLETIN_BOARD_TYPE][bulletin_board.slug] = key;
       })
     );
-    const trustee_keys = {};
     for (const trustee of trustees) {
       promises.push(
         this.loadKey(trustee).then((key) => {
@@ -91,6 +91,7 @@ export class MessageParser {
 
     return result;
   }
+  /* eslint-enable camelcase */
 
   loadKey(client) {
     return JWK.asKey(client.public_key, "json");

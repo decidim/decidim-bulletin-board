@@ -48,10 +48,7 @@ export class Voter {
           const { messageIdentifier, decodedData } = await this.parser.parse(
             logEntry
           );
-          const result = await this.wrapper.processMessage(
-            messageIdentifier,
-            decodedData
-          );
+          await this.wrapper.processMessage(messageIdentifier, decodedData);
         }
       });
   }

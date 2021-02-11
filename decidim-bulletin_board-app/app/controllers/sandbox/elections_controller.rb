@@ -69,14 +69,16 @@ module Sandbox
     def bulletin_board_client
       return unless params[:id]
 
-      @bulletin_board_client ||= Decidim::BulletinBoard::Client.new(OpenStruct.new(
-        server: Rails.application.secrets.api_endpoint_url,
-        api_key: authority.api_key,
-        scheme: "dummy",
-        authority_name: authority.name,
-        number_of_trustees: 3,
-        identification_private_key: Test::PrivateKeys.authority_private_key_json
-      ))
+      @bulletin_board_client ||= Decidim::BulletinBoard::Client.new(
+        OpenStruct.new(
+          server: Rails.application.secrets.api_endpoint_url,
+          api_key: authority.api_key,
+          scheme: "dummy",
+          authority_name: authority.name,
+          number_of_trustees: 3,
+          identification_private_key: Test::PrivateKeys.authority_private_key_json
+        )
+      )
     end
 
     def base_vote
