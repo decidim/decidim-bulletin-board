@@ -42,28 +42,38 @@ FactoryBot.define do
 
     factory :create_election_message, parent: :message do
       transient do
-        authority { Authority.first }
+        authority_client { Authority.first }
         start_date { 1.week.from_now }
         trustees_plus_keys { Trustee.first(3).zip(Test::PrivateKeys.trustees_private_keys) }
         voting_scheme { :dummy }
-        election_id { "#{authority.unique_id}.#{generate(:election_id)}" }
+        election_id { "#{authority_client.unique_id}.#{generate(:election_id)}" }
         number_of_questions { 2 }
         title { Faker::Quotes::Shakespeare.as_you_like_it }
       end
 
-      message_id { "#{election_id}.create_election+a.#{authority.unique_id}" }
+      message_id { "#{election_id}.create_election+a.#{authority_client.unique_id}" }
       scheme { build(:voting_scheme, name: voting_scheme) }
+      bulletin_board { build(:json_bulletin_board) }
+      authority { build(:json_authority, authority: authority_client) }
       trustees { trustees_plus_keys.map { |trustee, private_key| build(:json_trustee, trustee: trustee, private_key: private_key) } }
       description { build(:description, number_of_questions: number_of_questions, start_date: start_date, title: title) }
     end
 
     factory :voting_scheme do
       name { "dummy" }
-      parameters do
-        {
-          quorum: 2
-        }.stringify_keys
-      end
+      quorum { 2 }
+    end
+
+    factory :json_bulletin_board do
+      name { "Bulletin Board" }
+      slug { "bulletin-board" }
+      public_key { BulletinBoard.public_key.to_json }
+    end
+
+    factory :json_authority do
+      name { authority.name }
+      slug { authority.unique_id }
+      public_key { authority.public_key.to_json }
     end
 
     factory :json_trustee do
@@ -73,6 +83,7 @@ FactoryBot.define do
       end
 
       name { trustee.name }
+      slug { name.parameterize }
       public_key { private_key.export.to_json }
     end
 
