@@ -15,7 +15,7 @@ So, to be able to run the application, first you have to clone the repository:
 
 [source,console]
 ----
-git clone git@github.com:decidim/decidim-bulletin-board.git
+git clone https://github.com/decidim/decidim-bulletin-board
 cd decidim-bulletin-board
 ----
 
