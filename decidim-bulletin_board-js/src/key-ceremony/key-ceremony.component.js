@@ -27,6 +27,12 @@ export class KeyCeremonyComponent {
     this.election = new Election({
       uniqueId: electionUniqueId,
       bulletinBoardClient,
+      typesFilter: [
+        "create_election",
+        "start_key_ceremony",
+        "key_ceremony",
+        "end_key_ceremony",
+      ],
     });
 
     this.trustee = new Trustee({

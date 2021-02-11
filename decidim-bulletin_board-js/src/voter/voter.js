@@ -35,6 +35,7 @@ export class Voter {
     return this.bulletinBoardClient
       .getElectionLogEntries({
         electionUniqueId: this.election.uniqueId,
+        types: ["create_election", "end_key_ceremony"],
       })
       .then(async (logEntries) => {
         for (const logEntry of logEntries) {

@@ -27,6 +27,14 @@ export class TallyComponent {
     this.election = new Election({
       uniqueId: electionUniqueId,
       bulletinBoardClient,
+      typesFilter: [
+        "create_election",
+        "start_key_ceremony",
+        "end_key_ceremony",
+        "start_tally",
+        "tally",
+        "end_tally",
+      ],
     });
 
     this.trustee = new Trustee({
