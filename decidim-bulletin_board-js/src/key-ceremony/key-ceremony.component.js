@@ -10,6 +10,7 @@ export class KeyCeremonyComponent {
    * Initialises the class with the given params.
    * @param {Object} params - An object that contains the initialization params.
    *  - {Object} bulletinBoardClientParams - An object to configure the bulletin board client.
+   *  - {String} authorityPublicKeyJSON - The authority identification public key.
    *  - {String} electionUniqueId - The unique identifier of an election.
    *  - {String} trusteeUniqueId - The unique identifier of a trustee.
    *  - {Object} trusteeIdentificationKeys - An object that contains both the public and private key for
@@ -18,6 +19,7 @@ export class KeyCeremonyComponent {
    */
   constructor({
     bulletinBoardClientParams,
+    authorityPublicKeyJSON,
     electionUniqueId,
     trusteeUniqueId,
     trusteeIdentificationKeys,
@@ -38,6 +40,7 @@ export class KeyCeremonyComponent {
     this.trustee = new Trustee({
       uniqueId: trusteeUniqueId,
       bulletinBoardClient,
+      authorityPublicKeyJSON,
       identificationKeys: trusteeIdentificationKeys,
       election: this.election,
     });

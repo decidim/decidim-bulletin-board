@@ -17,6 +17,7 @@ export class Trustee {
    * @param {Object} params - An object that contains the initialization params.
    *  - {String} uniqueId - The trustee identifier.
    *  - {Client} bulletinBoardClient - An instance of the Bulletin Board Client
+   *  - {String} authorityPublicKeyJSON - The authority identification public key.
    *  - {Object} identificationKeys - A object that contains both the public and private key for
    *                                  the corresponding trustee.
    *  - {Object} election - An object that interacts with a specific election
@@ -26,6 +27,7 @@ export class Trustee {
   constructor({
     uniqueId,
     bulletinBoardClient,
+    authorityPublicKeyJSON,
     identificationKeys,
     election,
     options,

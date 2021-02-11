@@ -11,12 +11,18 @@ export class Voter {
    *
    * @constructor
    * @param {Object} params - An object that contains the initialization params.
-   *  - {String} uniqueId - The voter identifier.
+   *  - {Client} bulletinBoardClient - An instance of the Bulletin Board Client.
+   *  - {String} authorityPublicKeyJSON - The authority identification public key.
    *  - {Object} election - An object that interacts with a specific election
    *                        to get some data and perform the vote.
-   *  - {Client} bulletinBoardClient - An instance of the Bulletin Board Client
+   *  - {String} uniqueId - The voter identifier.
    */
-  constructor({ uniqueId, election, bulletinBoardClient }) {
+  constructor({
+    bulletinBoardClient,
+    authorityPublicKeyJSON,
+    election,
+    uniqueId,
+  }) {
     this.uniqueId = uniqueId;
     this.election = election;
     this.bulletinBoardClient = bulletinBoardClient;
