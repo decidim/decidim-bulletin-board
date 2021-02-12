@@ -71,8 +71,8 @@ jobs:
         name: Lint JS files
       - run: npm run format
         name: Format JS files
-  rspec-test:
-    name: RSpec tests
+  unit-tests:
+    name: Unit tests
     needs: lint
     runs-on: ubuntu-latest
     services:
@@ -97,10 +97,15 @@ jobs:
       - uses: ruby/setup-ruby@master
         with:
           ruby-version: ${{ env.RUBY_VERSION }}
+      - uses: actions/setup-node@v2-beta
+        with:
+          node-version: ${{ env.NODE_VERSION }}
       - uses: actions/setup-python@v2
         with:
           python-version: "3.8.2"
-      - name: Recover dependency cache
+      - name: Install postgres client
+        run: sudo apt-get install libpq-dev
+      - name: Recover gems cache
         uses: actions/cache@v1
         with:
           path: ./decidim-bulletin_board-app/vendor/bundle
@@ -109,14 +114,21 @@ jobs:
             ${{ runner.OS }}-decidim-bulletin_board-app-deps-${{ env.cache-name }}-
             ${{ runner.OS }}-decidim-bulletin_board-app-deps-
             ${{ runner.OS }}-decidim-bulletin_board-app-
-      - name: Install postgres client
-        run: sudo apt-get install libpq-dev
       - name: Install Ruby deps
         uses: nick-invision/retry@v1
         with:
           timeout_minutes: 10
           max_attempts: 3
           command: cd decidim-bulletin_board-app && bundle install --path vendor/bundle --jobs 4 --retry 3
+      - name: Recover packages cache
+        uses: actions/cache@v1
+        with:
+          path: ./decidim-bulletin_board-app/node_modules
+          key: ${{ runner.OS }}-decidim-bulletin_board-app-js-deps-${{ hashFiles('decidim-bulletin_board-app/package-lock.lock') }}
+          restore-keys: |
+            ${{ runner.OS }}-decidim-bulletin_board-app-js-deps-${{ env.cache-name }}-
+            ${{ runner.OS }}-decidim-bulletin_board-app-js-deps-
+            ${{ runner.OS }}-decidim-bulletin_board-app-js-
       - name: Install Javascript deps
         uses: nick-invision/retry@v1
         with:
@@ -140,15 +152,17 @@ jobs:
           bundle exec rake schema:generate
           npm run schema:generate
           git diff --exit-code
-      - name: Run tests
+      - name: Run Rspec tests
         run: bundler exec rake
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v1
         with:
           directory: ./decidim-bulletin_board-app/coverage
+      - name: Run Jest tests
+        run: npm run test
   e2e-test:
     name: E2E tests
-    needs: rspec-test
+    needs: unit-tests
     runs-on: ubuntu-latest
     services:
       postgres:
@@ -172,10 +186,15 @@ jobs:
       - uses: ruby/setup-ruby@master
         with:
           ruby-version: ${{ env.RUBY_VERSION }}
+      - uses: actions/setup-node@v2-beta
+        with:
+          node-version: ${{ env.NODE_VERSION }}
       - uses: actions/setup-python@v2
         with:
           python-version: "3.8.2"
-      - name: Recover dependency cache
+      - name: Install postgres client
+        run: sudo apt-get install libpq-dev
+      - name: Recover gems cache
         uses: actions/cache@v1
         with:
           path: ./decidim-bulletin_board-app/vendor/bundle
@@ -184,14 +203,21 @@ jobs:
             ${{ runner.OS }}-decidim-bulletin_board-app-deps-${{ env.cache-name }}-
             ${{ runner.OS }}-decidim-bulletin_board-app-deps-
             ${{ runner.OS }}-decidim-bulletin_board-app-
-      - name: Install postgres client
-        run: sudo apt-get install libpq-dev
       - name: Install Ruby deps
         uses: nick-invision/retry@v1
         with:
           timeout_minutes: 10
           max_attempts: 3
           command: cd decidim-bulletin_board-app && bundle install --path vendor/bundle --jobs 4 --retry 3
+      - name: Recover packages cache
+        uses: actions/cache@v1
+        with:
+          path: ./decidim-bulletin_board-app/node_modules
+          key: ${{ runner.OS }}-decidim-bulletin_board-app-js-deps-${{ hashFiles('decidim-bulletin_board-app/package-lock.lock') }}
+          restore-keys: |
+            ${{ runner.OS }}-decidim-bulletin_board-app-js-deps-${{ env.cache-name }}-
+            ${{ runner.OS }}-decidim-bulletin_board-app-js-deps-
+            ${{ runner.OS }}-decidim-bulletin_board-app-js-
       - name: Install Javascript deps
         uses: nick-invision/retry@v1
         with:
