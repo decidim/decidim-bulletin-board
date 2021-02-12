@@ -63,7 +63,7 @@ export class ElectionPage {
    */
   performKeyCeremony(election, trustees) {
     cy.findByText("Perform key ceremony").click().should("not.exist");
-    cy.findByText(`Key ceremony for ${election.title}`).should("be.visible");
+    cy.findByText(`Key ceremony for ${election.title.en}`).should("be.visible");
 
     trustees.forEach(({ unique_id, name }) => {
       cy.findByText(name)
@@ -81,7 +81,7 @@ export class ElectionPage {
             .find(".private-key-input")
             .attachFile(
               {
-                filePath: `../../../lib/assets/${unique_id}-private-key.jwk`,
+                filePath: `../../lib/assets/${unique_id}-private-key.jwk`,
               },
               {
                 force: true,

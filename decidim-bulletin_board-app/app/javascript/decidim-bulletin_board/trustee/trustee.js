@@ -177,14 +177,19 @@ export class Trustee {
    * @returns {Promise<Object>}
    */
   waitForNextLogEntryResult() {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
       const intervalId = setInterval(async () => {
         const { logEntries } = this.election;
 
         if (logEntries.length > this.nextLogEntryIndexToProcess) {
-          const result = await this.processNextLogEntry();
-          clearInterval(intervalId);
-          resolve(result);
+          try {
+            const result = await this.processNextLogEntry();
+            resolve(result);
+          } catch (error) {
+            reject(error);
+          } finally {
+            clearInterval(intervalId);
+          }
         }
       }, this.options.waitUntilNextCheck);
     });
