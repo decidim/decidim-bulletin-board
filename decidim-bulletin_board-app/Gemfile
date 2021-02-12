@@ -43,7 +43,7 @@ gem "sprockets-es6"
 
 gem "factory_bot_rails"
 
-gem "decidim-bulletin_board", "~> 0.9.0"
+gem "decidim-bulletin_board", path: "../decidim-bulletin_board-ruby"
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
@@ -56,9 +56,6 @@ group :development, :test do
   gem "rubocop-faker", "~> 1.1.0"
   gem "rubocop-rails", "~> 2.9.1"
   gem "rubocop-rspec", "~> 1.44.1"
-
-  # Uncomment these (and comment the previous reference to the gem) to work in development mode in the sandbox
-  # gem "decidim-bulletin_board", path: "../decidim-bulletin_board-ruby"
 end
 
 group :development do

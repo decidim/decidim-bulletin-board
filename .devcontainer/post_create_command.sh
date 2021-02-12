@@ -5,7 +5,7 @@ cd decidim-bulletin_board-app
 # Install app dependencies
 MAKEFLAGS=-j4 gem install sassc # install sassc faster
 bundle install --jobs 4
-yarn install
+npm install
 bin/rails db:setup
 
 # Install pyenv
