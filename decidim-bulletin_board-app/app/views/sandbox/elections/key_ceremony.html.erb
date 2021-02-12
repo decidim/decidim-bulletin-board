@@ -1,4 +1,5 @@
 <%= stylesheet_link_tag "sandbox/key_ceremony" %>
+
 <div class="intro">
   <div class="version">Bulletin Board Version <%= Decidim::BulletinBoard::VERSION %></div>
 
@@ -47,4 +48,4 @@
   </table>
 </div>
 
-<%= javascript_include_tag "sandbox/key_ceremony" %>
+<%= javascript_packs_with_chunks_tag "sandbox/key_ceremony" %>

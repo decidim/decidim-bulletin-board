@@ -1,12 +1,10 @@
-// = require decidim/bulletin_board/decidim-bulletin_board
-// = require jquery
+import $ from "jquery";
+import {
+  KeyCeremonyComponent,
+  IdentificationKeys,
+} from "../decidim-bulletin_board";
 
 $(() => {
-  const {
-    KeyCeremonyComponent,
-    IdentificationKeys,
-  } = window.decidimBulletinBoard;
-
   // UI Elements
   const $trusteeTable = $(".trustee-table");
 
