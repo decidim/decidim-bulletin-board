@@ -1,0 +1,35 @@
+[plantuml]
+....
+@startuml
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/v2.0.1/C4_Context.puml
+
+' uncomment the following line to make proposals
+'LAYOUT_AS_SKETCH()
+
+title System Context diagram for Decidim Bulletin Board (https://decidim.org)
+
+Person(participant_user, "Participant User", "A registered user. Could also be verified.")
+Person(trustee_user, "Trustee User", "A registered user that ensures the secrecy of the vote.")
+Person(administration_user, "Administration User", "A registered user with special permissions.")
+Person_Ext(visitor_user, "Visitor User", "Anonymous, non registered user.")
+Person(system_user, "System Administration User", "The system administrator responsible of registering authorities (Decidim instances).")
+
+System(decidim_bulletin_board_system, "Decidim Bulletin Board", "Allows participants to cast end-to-end verifiable secret votes.")
+System(verifier, "Verifier", "Allow to verify elections")
+
+System_Ext(decidim_system, "Decidim", "Allows participants to run elections against this instance.")
+System_Ext(third_party_verifiers, "Third party verifiers", "External systems can access to the logs to verify elections.")
+
+Rel_Neighbor(administration_user, decidim_system, "Administrate elections")
+Rel(trustee_user, decidim_system, "Prepare elections and perform the tally of the casted votes")
+Rel(visitor_user, decidim_system, "Monitorize elections")
+
+Rel(participant_user, decidim_system, "Encrypt & Cast votes")
+
+Rel_Up(system_user, decidim_bulletin_board_system, "Register authorities")
+Rel_Down(decidim_system, decidim_bulletin_board_system, "Publish and query messages.")
+Rel_Back(decidim_bulletin_board_system, verifier, "Verify election logs")
+Rel_Neighbor(third_party_verifiers, decidim_bulletin_board_system, "Verify election logs")
+
+@enduml
+....

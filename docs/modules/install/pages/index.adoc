@@ -1,0 +1,63 @@
+= Getting started with Decidim Bulletin Board
+:source-highlighter: highlightjs
+
+== What is and what isn't Decidim Bulletin Board?
+
+Decidim Bulletin Board is an independent application designed to provide services to Decidim instances to allow them to celebrate secure end-to-end auditable votings. But it can't be used as a standalone application, since it doesn't offer a user interface for administrators to define elections nor for voters to cast their votes.
+
+If you want to start your own installation of Decidim Bulletin Board, you need to clone this repo. Keep reading to find out how to install Decidim Bulletin Board.
+
+== Clone the Decidim Bulletin Board repository
+
+The Decidim Bulletin Board repository includes the main Rails application, but also the Ruby client and the JS client to be used inside Decidim apps, and additional projects for the different voting schemes implemented.
+
+So, to be able to run the application, first you have to clone the repository:
+
+[source,console]
+----
+git clone https://github.com/decidim/decidim-bulletin-board
+cd decidim-bulletin-board
+----
+
+And then you have to enter to the Rails application directory:
+
+[source,console]
+----
+cd decidim-bulletin-board-app
+bundle install
+yarn install
+----
+
+== Initializing your app for local development
+
+Now, you should setup your database:
+
+[source,console]
+----
+bin/rails db:create db:migrate db:seed
+----
+
+This will also create some default data so you can start testing the app.
+
+This data won't be created in production environments, if you still want to do it, run: `$ SEED=true rails db:setup`.
+
+Now, you can start your server!
+
+[source,console]
+----
+bin/rails s
+----
+
+Visit http://localhost:8000 to see your app running.
+
+=== Further configuration
+
+We also have other guides on how to configure some extra components:
+
+* xref:services:activejob.adoc[ActiveJob]: For background jobs (like sending emails).
+
+== Contributing
+
+We always welcome new contributors of all levels to the project.
+
+We also have a xref:develop:guide.adoc[developer's reference] that will help you getting started with your environment and our daily commands, routines, etc.

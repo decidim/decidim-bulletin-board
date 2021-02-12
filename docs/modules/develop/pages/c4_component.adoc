@@ -1,0 +1,70 @@
+[plantuml]
+....
+@startuml
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/v2.0.1/C4_Component.puml
+
+' uncomment the following line to make proposals
+'LAYOUT_AS_SKETCH()
+
+title System Component diagram for Decidim Bulletin Board (https://decidim.org)
+
+Container_Boundary(ruby_client, "Ruby client") {
+    Component(graphql_ruby_client, "GraphQL client", "Ruby", "Allows authority to connect to the BB server.")
+    Component(common, "Common code", "Ruby", "Shared code between Decidim and the BB server: cryptography settings, JWT, message identifiers format and parse, etc.")
+    Component(js_client_inner, "JS client", "JS bundle", "Served to the participants browsers.")
+}
+
+Container_Boundary(js_client, "JS client") {
+    Component(main, "JS main", "JS", "Implements trustees and voters logic for all voting schemes.")
+    Component(graphql_js_client, "GraphQL client", "JS", "Allows trustees and voters to connect to the BB server.")
+    Component(dummy_wrappers, "Dummy Wrappers", "JS", "Trustees and voters wrappers for the Dummy voting scheme.")
+    Component(eg_wrappers, "ElectionGuard Wrappers", "JS", "Trustees and voters wrappers for the ElectionGuard voting scheme.")
+}
+
+Container_Boundary(web_api, "GraphQL API") {
+    Component(ruby_client_inner, "Ruby client", "Ruby On Rails Engine", "Common code with the Decidim part.")
+    Component(graphql_server, "GraphQL server", "Ruby On Rails", "Implements the GraphQL server logic.")
+    Component(dummy_wrapper, "Dummy Wrapper", "Ruby", "Bulletin Board wrapper for the Dummy voting scheme.")
+    Component(eg_wrapper, "ElectionGuard Wrapper", "Ruby/Python", "Bulletin Board wrapper for the ElectionGuard voting scheme.")
+}
+ContainerDb(rel_db, "Relational Database", "PostgreSQL", "Stores clients, elections and log entries")
+Container(tasks, "Command line tasks", "Ruby on Rails 6", "Allows to register Decidim instances as authorities.")
+Container(worker, "Worker", "Ruby on Rails 6", "ActiveJob queues for asynchronous jobs. Works for processing most of the received messages.")
+Container(verifier, "Command line application", "Python", "Verifies the complete messages log of an election.")
+
+System_Ext(decidim_system, "Decidim", "Allow participants to run elections against this instance.")
+System_Ext(third_party_verifiers, "Third party verifiers", "External systems can access to the logs to verify elections.")
+
+Lay_L(ruby_client, js_client)
+Lay_D(js_client, web_api)
+Lay_D(ruby_client, web_api)
+Lay_D(web_api, tasks)
+Lay_D(web_api, rel_db)
+Lay_D(web_api, worker)
+Lay_D(web_api, verifier)
+Lay_D(web_api, third_party_verifiers)
+
+Rel(decidim_system, ruby_client, "Uses")
+Rel(decidim_system, js_client, "Serves")
+Rel(main, graphql_js_client, "Uses")
+Rel(main, dummy_wrappers, "Loads")
+Rel(main, eg_wrappers, "Loads")
+Rel(graphql_ruby_client, graphql_server, "Connects to")
+Rel(graphql_js_client, graphql_server, "Connects to")
+Rel_L(js_client_inner, js_client, "Is")
+Rel_U(ruby_client_inner, ruby_client, "Is")
+Rel(graphql_server, rel_db, "Uses")
+
+Rel(dummy_wrappers, dummy_wrapper, "to")
+Rel(dummy_wrapper, dummy_wrappers, "Talks")
+Rel(eg_wrappers, eg_wrapper, "Talks")
+Rel(eg_wrapper, eg_wrappers, "to")
+
+Rel_Neighbor(graphql_server, worker, "Delegate asynchronous tasks")
+Rel_Up(verifier, graphql_server, "Verify election logs")
+Rel_Up(third_party_verifiers, graphql_server, "Verify election logs")
+
+Rel_Left(tasks, rel_db, "Update authorities")
+Rel_Right(worker, rel_db, "Update")
+@enduml
+....

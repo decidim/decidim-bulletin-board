@@ -1,0 +1,5 @@
+= Development environment
+
+To start working with the Bulletin Board you will need to install all the dependencies for the server. These are explained in the https://github.com/decidim/decidim-bulletin_board/blob/master/README.md[README file of the web application]. This server will include test data that can be used by Decidim or the elections sandbox to test the different parts of the system.
+
+Also, this application includes Visual Studio Code Dev Containers to simplify the environment setup.
