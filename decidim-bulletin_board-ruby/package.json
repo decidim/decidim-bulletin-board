@@ -1,0 +1,15 @@
+{
+  "name": "decidim-bulletin_board-ruby",
+  "version": "1.0.0",
+  "description": "Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/decidim/bulletin_board`. To experiment with that code, run `bin/console` for an interactive prompt.",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "prerelease": "cd ../decidim-bulletin_board-app && npm run release && git add . && git commit --amend",
+    "release": "bundle exec rake release"
+  },
+  "author": "",
+  "license": "ISC"
+}

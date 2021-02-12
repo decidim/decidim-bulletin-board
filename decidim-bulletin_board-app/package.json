@@ -9,7 +9,8 @@
     "format": "prettier -c app/**/*.js",
     "lint": "eslint app/**/*.js",
     "test": "jest --detectOpenHandles --forceExit",
-    "test:watch": "npm run test -- --watch"
+    "test:watch": "npm run test -- --watch",
+    "release": "webpack --progress --config webpack.release.js"
   },
   "dependencies": {
     "@apollo/client": "^3.2.7",
