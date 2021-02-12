@@ -36,7 +36,7 @@ export type Election = {
   /** Returns the list of log entries for this election in the bulletin board */
   logEntries: Array<LogEntry>;
   status: Scalars['String'];
-  title: Scalars['String'];
+  title: Scalars['JSON'];
   /** Returns the list of trustees for this election */
   trustees: Array<Client>;
 };

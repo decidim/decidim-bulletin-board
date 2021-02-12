@@ -12,7 +12,7 @@ Rails.application.routes.draw do
 
   if Rails.env.development? || Rails.env.test?
     scope "/sandbox", module: :sandbox, as: :sandbox do
-      resources :elections, only: [:index] do
+      resources :elections, only: [:new, :create, :index] do
         member do
           get :start_key_ceremony
           get :key_ceremony

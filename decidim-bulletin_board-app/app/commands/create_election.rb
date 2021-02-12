@@ -75,7 +75,9 @@ class CreateElection < Rectify::Command
   end
 
   def title
-    @title ||= decoded_data.dig(:description, :name, :text, 0, :value)
+    @title ||= decoded_data.dig(:description, :name, :text).map do |text|
+      [text["language"], text["value"]]
+    end.to_h
   end
 
   def start_date
@@ -98,7 +100,7 @@ class CreateElection < Rectify::Command
     run_validations do
       if voting_scheme_class.blank?
         "A valid Voting Scheme must be specified"
-      elsif title.blank?
+      elsif title.none? || title.values.any?(&:blank?)
         "Missing title"
       elsif start_date.after?(end_date)
         "Starting date cannot be after the end date"

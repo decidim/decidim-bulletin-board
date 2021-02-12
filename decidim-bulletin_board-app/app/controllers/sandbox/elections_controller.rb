@@ -2,9 +2,14 @@
 
 module Sandbox
   class ElectionsController < ApplicationController
-    helper_method :elections, :election, :base_vote, :random_voter_id, :server, :authority_public_key
+    helper_method :elections, :election, :base_vote, :random_voter_id, :server, :authority_slug, :authority_public_key
 
     def index; end
+
+    def create
+      bulletin_board_client.create_election(params[:election][:id], election_data)
+      go_back
+    end
 
     def start_key_ceremony
       bulletin_board_client.start_key_ceremony(election_id)
@@ -44,14 +49,70 @@ module Sandbox
     private
 
     delegate :authority, to: :election
-    delegate :server, to: :bulletin_board_client
+    delegate :server, :authority_slug, to: :bulletin_board_client
+
+    def election_data
+      @election_data ||= params.require(:election).permit(:default_locale, title: {}).to_h.merge(
+        trustees: trustees,
+        start_date: start_date,
+        end_date: end_date,
+        questions: questions,
+        answers: answers
+      )
+    end
+
+    def start_date
+      @start_date ||= params[:election][:start_date].to_i.days.from_now
+    end
+
+    def end_date
+      @end_date ||= start_date + params[:election][:end_date].to_i.days
+    end
+
+    def trustees
+      @trustees ||= Trustee.first(3).map do |trustee|
+        {
+          name: trustee.name,
+          slug: trustee.unique_id,
+          public_key: trustee.public_key.to_json
+        }
+      end
+    end
+
+    def questions
+      @questions ||= params.require(:election).permit(questions: {})[:questions].to_h.values.map do |question|
+        question.merge(
+          answers: question[:answers].values.map do |answer|
+            {
+              slug: answer[:slug],
+              weight: answer[:weight]
+            }
+          end
+        )
+      end
+    end
+
+    def answers
+      @answers ||= params.require(:election).permit(questions: {})[:questions].to_h.values.flat_map do |question|
+        question[:answers].values.map do |answer|
+          {
+            slug: answer[:slug],
+            title: answer[:title]
+          }
+        end
+      end
+    end
 
     def go_back
       redirect_to sandbox_elections_path
     end
 
+    def authority
+      Authority.first
+    end
+
     def authority_public_key
-      @authority_public_key ||= bulletin_board_client.public_key.to_json
+      @authority_public_key ||= authority.public_key.to_json
     end
 
     def elections
@@ -63,17 +124,16 @@ module Sandbox
     end
 
     def election_id
-      @election_id ||= election.unique_id.split(".").last.to_i
+      @election_id ||= election.unique_id.split(".").last
     end
 
     def bulletin_board_client
-      return unless params[:id]
-
       @bulletin_board_client ||= Decidim::BulletinBoard::Client.new(
         OpenStruct.new(
           server: Rails.application.secrets.api_endpoint_url,
           api_key: authority.api_key,
-          scheme: "dummy",
+          scheme_name: "dummy",
+          quorum: 2,
           authority_name: authority.name,
           number_of_trustees: 3,
           identification_private_key: Test::PrivateKeys.authority_private_key_json

@@ -20,7 +20,7 @@
       <% elections.each do |election| %>
         <tr>
           <td><%= election.unique_id %></td>
-          <td><%= election.title %></td>
+          <td><%= election.title.values.first %></td>
           <td><%= election.status %></td>
           <td>
             <% if election.created? %>
@@ -50,4 +50,6 @@
       <% end %>
     </tbody>
   </table>
+
+  <%= link_to "Setup new election", new_sandbox_election_path %>
 </div>
