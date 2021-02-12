@@ -1,5 +1,8 @@
 .voter {
-  .done-message {
+  .done-message,
+  .audit-done-message,
+  .audit-vote,
+  .cast-vote {
     display: none;
   }
 }

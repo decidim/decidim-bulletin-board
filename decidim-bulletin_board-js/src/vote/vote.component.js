@@ -35,9 +35,13 @@ export class VoteComponent {
    * @method bindEvents
    * @param {Object} eventCallbacks - An object that contains event callback functions.
    * - {Function} onSetup - a function that is called when the voter is set up.
-   * - {Function} onBindStartButton - a function that receives a callback function that will be called when
-   *                                  the vote must be started.
+   * - {Function} onBindEncryptButton - a function that receives a callback function that will be called when encrypting the vote must be started
+   * - {Function} onVoteEncryption - a function that is called when the vote gets encrypted
+   * - {Function} castOrAuditBallot - a function that is called to cast or audit a ballot
    * - {Function} onStart - a function that is called when the vote has started.
+   * - {Function} onAuditVote - a function that is called to audit a vote before encrypting it.
+   * - {Function} onVoteAudition - a function that is called when the auditable vote is ready.
+   * - {Function} onAuditComplete - a function that is called when the auditable vote is audited.
    * - {Function} onVoteValidation - a function that is called to validate the vote before encrypting it.
    * - {Function} onVoteEncrypted - a function that is called when the vote has been encrypted.
    * - {Function} onComplete - a function that is called when the vote is done.
@@ -47,31 +51,61 @@ export class VoteComponent {
    */
   async bindEvents({
     onSetup,
-    onBindStartButton,
+    onBindEncryptButton,
     onStart,
+    onVoteEncryption,
+    castOrAuditBallot,
+    onAuditVote,
+    onVoteAudition,
+    onAuditComplete,
     onVoteValidation,
     onVoteEncrypted,
     onComplete,
     onInvalid,
   }) {
-    onBindStartButton(() => {
+    onBindEncryptButton(() => {
       onStart();
 
-      onVoteValidation(
-        (plainVote) => {
-          this.voter
-            .encrypt(plainVote)
-            .then(async (encryptedVote) => {
-              onVoteEncrypted(encryptedVote);
-            })
-            .then(() => {
-              onComplete();
-            });
-        },
-        () => {
-          onInvalid();
-        }
-      );
+      onVoteEncryption((plainVote) => {
+        this.voter.encrypt(plainVote).then((encryptedVote) => {
+          castOrAuditBallot();
+
+          onAuditVote(
+            () => {
+              this.voter
+                .auditBallot(encryptedVote)
+                .then((auditedVote) => {
+                  onVoteAudition(
+                    auditedVote,
+                    `${this.voter.uniqueId}-election-${this.voter.election.uniqueId}.txt`
+                  );
+                })
+                .then(() => {
+                  onAuditComplete();
+                });
+            },
+            () => {
+              onInvalid();
+            }
+          );
+
+          onVoteValidation(
+            () => {
+              this.voter
+                .encryptBallot(encryptedVote)
+                .then(async (encryptedBallot) => {
+                  onVoteEncrypted(encryptedBallot);
+                })
+                .then(() => {
+                  onComplete();
+                });
+            },
+            () => {
+              onInvalid();
+            }
+          );
+        });
+      });
     });
 
     await this.voter.setup();

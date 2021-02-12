@@ -6,10 +6,13 @@ $(async () => {
 
   // UI Elements
   const $voter = $(".voter");
-  const $castVote = $voter.find("button");
+  const $encryptVote = $voter.find(".encrypt-vote");
+  const $castVote = $voter.find(".cast-vote");
+  const $auditVote = $voter.find(".audit-vote");
   const $vote = $voter.find("textarea");
   const $voterId = $voter.find("input");
   const $doneMessage = $voter.find(".done-message");
+  const $auditMessage = $voter.find(".audit-done-message");
 
   $vote.on("change", (event) => {
     $vote.css("border", "");
@@ -31,15 +34,17 @@ $(async () => {
 
   await component.bindEvents({
     onSetup() {
-      $castVote.removeAttr("disabled");
+      $encryptVote.removeAttr("disabled");
     },
-    onBindStartButton(onEventTriggered) {
-      $castVote.on("click", onEventTriggered);
+    onBindEncryptButton(onEventTriggered) {
+      $encryptVote.on("click", onEventTriggered);
     },
     onStart() {},
-    onVoteValidation(validVoteFn, invalidVoteFn) {
+    onVoteEncryption(validVoteFn, invalidVoteFn) {
       $vote.css("background", "");
+      $auditMessage.hide();
       $doneMessage.hide();
+
       try {
         const vote = JSON.parse($vote.val());
         if (!vote) {
@@ -50,13 +55,41 @@ $(async () => {
         invalidVoteFn();
       }
     },
-    onVoteEncrypted({ encryptedVote }) {
+    castOrAuditBallot() {
+      $encryptVote.prop("disabled", true);
+      $castVote.show();
+      $auditVote.show();
+    },
+    onAuditVote(onEventTriggered) {
+      $auditVote.on("click", onEventTriggered);
+    },
+    onVoteValidation(onEventTriggered) {
+      $castVote.on("click", onEventTriggered);
+    },
+    onVoteAudition(auditedVote, auditFileName) {
+      vote = JSON.stringify(auditedVote);
+
+      let link = document.createElement("a");
+      link.setAttribute("href", `data:text/plain;charset=utf-8,${vote}`);
+      link.setAttribute("download", auditFileName);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    },
+    onAuditComplete() {
+      $castVote.prop("disabled", true);
+      $auditVote.prop("disabled", true);
+
+      $auditMessage.show();
+      $vote.css("background", "green");
+    },
+    onVoteEncrypted({ encryptedBallot }) {
       return $.ajax({
         method: "POST",
         contentType: "application/json",
         data: JSON.stringify({
           voter_id: $voterId.val(),
-          encrypted_vote: encryptedVote,
+          encrypted_ballot: encryptedBallot,
         }), // eslint-disable-line camelcase
         headers: {
           "X-CSRF-Token": $("meta[name=csrf-token]").attr("content"),

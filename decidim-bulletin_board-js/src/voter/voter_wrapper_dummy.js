@@ -41,7 +41,7 @@ export class VoterWrapper {
   }
 
   /**
-   * Converts the given vote into an encrypted ballot JSON. As the process is very fast,
+   * Converts the given vote into an auditable ballot and an encrypted Ballot. As the process is very fast,
    * it simulates the delay of the encryption process.
    *
    * @param {Object} vote - An object with the choosen answers for each question.
@@ -56,7 +56,14 @@ export class VoterWrapper {
           console.warn("Invalid election status.");
           return;
         }
-        return JSON.stringify(this.createBallot(vote));
+
+        const auditableBallot = this.createAuditableBallot(vote);
+        const castableBallot = JSON.parse(JSON.stringify(auditableBallot));
+        const encryptedBallot = JSON.stringify(
+          this.createEncryptedBallot(castableBallot)
+        );
+
+        return { auditableBallot, encryptedBallot };
       }
     );
   }
@@ -64,13 +71,14 @@ export class VoterWrapper {
   /**
    * Encrypts the given vote into an object with the format expected by the Dummy voting scheme,
    * using the silly encryption defined by the scheme for each answer ((1|0) + random * jointElectionKey).
+   * Returns the auditable vote.
    *
    * @param {Object} vote - An object with the choosen answers for each question.
    *
    * @private
    * @returns {<Object>}
    */
-  createBallot(vote) {
+  createAuditableBallot(vote) {
     /* eslint-disable camelcase */
     return {
       ballot_style: "ballot-style",
@@ -78,7 +86,8 @@ export class VoterWrapper {
         return {
           object_id,
           ballot_selections: ballot_selections.map((ballotSelection) => {
-            const voted =
+            const random = Math.random();
+            const plaintext =
               vote[object_id] &&
               vote[object_id].includes(ballotSelection.object_id)
                 ? 1
@@ -87,12 +96,50 @@ export class VoterWrapper {
             return {
               object_id: ballotSelection.object_id,
               ciphertext:
-                voted + Math.floor(Math.random() * 500) * this.jointElectionKey,
+                plaintext + Math.floor(random * 500) * this.jointElectionKey,
+              random,
+              plaintext,
             };
           }),
         };
       }),
     };
+    /* eslint-enable camelcase */
+  }
+
+  /**
+   * Creates an encrypted ballot.
+   *
+   * @param {Object} vote - An object with the encrypted vote.
+   *
+   * @private
+   * @returns {<Object>}
+   */
+  createEncryptedBallot(vote) {
+    const encryptedBallot = this.removeAuditInformation(vote);
+    return encryptedBallot;
+  }
+
+  /**
+   * Removes the 'random' and 'plaintext' fields from the auditable ballot.
+   *
+   * @param {Object} ballot - An auditable ballot.
+   *
+   * @private
+   * @returns {<Object>}
+   */
+  removeAuditInformation(ballot) {
+    /* eslint-disable camelcase */
+    ballot.contests.map((contest) => {
+      return contest.ballot_selections.map((ballot_selection) => {
+        delete ballot_selection.random;
+        delete ballot_selection.plaintext;
+
+        return ballot_selection;
+      });
+    });
+
+    return ballot;
     /* eslint-enable camelcase */
   }
 }

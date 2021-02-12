@@ -140,13 +140,37 @@ export class ElectionPage {
   }
 
   /**
+   * Audit a vote.
+   *
+   * @returns {undefined}
+   */
+  auditVote() {
+    cy.findByText("Vote").click();
+    cy.findByText("Encrypt vote").should("be.visible").click();
+    cy.findByText("Audit vote").should("be.visible").click();
+  }
+
+  /**
+   * Assert that the vote has been audited successfully.
+   *
+   * @returns {undefined}
+   */
+  assertVoteHasBeenAudited() {
+    cy.findByText("Your vote has been audited successfully").should(
+      "be.visible"
+    );
+    cy.findByText("Back").click();
+  }
+
+  /**
    * Cast a vote.
    *
    * @returns {undefined}
    */
   castVote() {
     cy.findByText("Vote").click();
-    cy.findByText("Cast vote").should("not.be.disabled").click();
+    cy.findByText("Encrypt vote").should("be.visible").click();
+    cy.findByText("Cast vote").should("be.visible").click();
   }
 
   /**
