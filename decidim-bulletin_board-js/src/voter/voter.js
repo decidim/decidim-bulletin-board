@@ -1,5 +1,5 @@
 import { VoterWrapper } from "./voter_wrapper_dummy";
-import { JWTParser } from "../jwt_parser";
+import { MessageParser } from "../client/message-parser";
 
 /**
  * This is a facade class that will use the correspondig `VoterWrapper` to encrypt
@@ -11,17 +11,23 @@ export class Voter {
    *
    * @constructor
    * @param {Object} params - An object that contains the initialization params.
-   *  - {String} uniqueId - The voter identifier.
+   *  - {Client} bulletinBoardClient - An instance of the Bulletin Board Client.
+   *  - {String} authorityPublicKeyJSON - The authority identification public key.
    *  - {Object} election - An object that interacts with a specific election
    *                        to get some data and perform the vote.
-   *  - {Client} bulletinBoardClient - An instance of the Bulletin Board Client
+   *  - {String} uniqueId - The voter identifier.
    */
-  constructor({ uniqueId, election, bulletinBoardClient }) {
+  constructor({
+    bulletinBoardClient,
+    authorityPublicKeyJSON,
+    election,
+    uniqueId,
+  }) {
     this.uniqueId = uniqueId;
     this.election = election;
     this.bulletinBoardClient = bulletinBoardClient;
     this.wrapper = new VoterWrapper({ voterId: uniqueId });
-    this.parser = new JWTParser();
+    this.parser = new MessageParser({ authorityPublicKeyJSON });
   }
 
   /**
@@ -35,11 +41,14 @@ export class Voter {
     return this.bulletinBoardClient
       .getElectionLogEntries({
         electionUniqueId: this.election.uniqueId,
+        types: ["create_election", "end_key_ceremony"],
       })
       .then(async (logEntries) => {
         for (const logEntry of logEntries) {
-          const message = await this.parser.parse(logEntry.signedData);
-          this.wrapper.processMessage(logEntry.messageId, message);
+          const { messageIdentifier, decodedData } = await this.parser.parse(
+            logEntry
+          );
+          await this.wrapper.processMessage(messageIdentifier, decodedData);
         }
       });
   }

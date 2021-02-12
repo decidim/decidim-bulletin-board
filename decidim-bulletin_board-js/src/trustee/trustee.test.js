@@ -1,9 +1,9 @@
 import { Trustee } from "./trustee";
 import { MESSAGE_RECEIVED, MESSAGE_PROCESSED } from "./event_manager";
-import { buildMessageId } from "../test-utils";
+import { buildMessageId, buildMessageIdentifier } from "../test-utils";
 
 jest.mock("./trustee_wrapper_dummy");
-jest.mock("../jwt_parser");
+jest.mock("../client/message-parser");
 
 describe("Trustee", () => {
   const election = {
@@ -294,15 +294,15 @@ describe("Trustee", () => {
         ];
         await trustee.runTally();
         expect(trustee.wrapper.processMessage).toHaveBeenCalledWith(
-          buildMessageId("dummy.send"),
+          buildMessageIdentifier("dummy.send"),
           "1234"
         );
         expect(trustee.wrapper.processMessage).toHaveBeenCalledWith(
-          buildMessageId("dummy.send"),
+          buildMessageIdentifier("dummy.send"),
           "5678"
         );
         expect(trustee.wrapper.processMessage).toHaveBeenCalledWith(
-          buildMessageId("dummy.cast"),
+          buildMessageIdentifier("dummy.cast"),
           "0912"
         );
       });

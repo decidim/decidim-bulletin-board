@@ -5,7 +5,6 @@ import {
 } from "./voter_wrapper_dummy";
 
 import {
-  MessageIdentifier,
   AUTHORITY_TYPE,
   BULLETIN_BOARD_TYPE,
 } from "../client/message-identifier";
@@ -60,12 +59,16 @@ describe("VoterWrapper", () => {
     describe("when it receives the CREATE_ELECTION message", () => {
       it("changes the wrapper status and stores some data", () => {
         wrapper.processMessage(
-          MessageIdentifier.format(
-            "some-authority.some-id",
-            CREATE_ELECTION,
-            AUTHORITY_TYPE,
-            "some-authority-id"
-          ),
+          {
+            electionId: "some-authority.some-id",
+            type: CREATE_ELECTION,
+            subtype: null,
+            typeSubtype: CREATE_ELECTION,
+            author: {
+              type: AUTHORITY_TYPE,
+              id: "some-authority-id",
+            },
+          },
           {
             description: {
               contests: contestsExample,
@@ -81,12 +84,16 @@ describe("VoterWrapper", () => {
     describe("when it receives the END_KEY_CEREMONY message", () => {
       it("changes the wrapper status and stores some data", () => {
         wrapper.processMessage(
-          MessageIdentifier.format(
-            "some-authority.some-id",
-            END_KEY_CEREMONY,
-            BULLETIN_BOARD_TYPE,
-            "some-bb-id"
-          ),
+          {
+            electionId: "some-authority.some-id",
+            type: END_KEY_CEREMONY,
+            subtype: null,
+            typeSubtype: END_KEY_CEREMONY,
+            author: {
+              type: BULLETIN_BOARD_TYPE,
+              id: "some-bb-id",
+            },
+          },
           {
             content: JSON.stringify({
               joint_election_key: 123456789,

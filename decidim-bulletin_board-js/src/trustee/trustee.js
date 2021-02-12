@@ -1,7 +1,7 @@
 /* eslint-disable camelcase */
 import { TrusteeWrapper } from "./trustee_wrapper_dummy";
 import { EventManager } from "./event_manager";
-import { JWTParser } from "../jwt_parser";
+import { MessageParser } from "../client/message-parser";
 
 export const WAIT_TIME_MS = 100; // 0.1s
 
@@ -17,6 +17,7 @@ export class Trustee {
    * @param {Object} params - An object that contains the initialization params.
    *  - {String} uniqueId - The trustee identifier.
    *  - {Client} bulletinBoardClient - An instance of the Bulletin Board Client
+   *  - {String} authorityPublicKeyJSON - The authority identification public key.
    *  - {Object} identificationKeys - A object that contains both the public and private key for
    *                                  the corresponding trustee.
    *  - {Object} election - An object that interacts with a specific election
@@ -26,6 +27,7 @@ export class Trustee {
   constructor({
     uniqueId,
     bulletinBoardClient,
+    authorityPublicKeyJSON,
     identificationKeys,
     election,
     options,
@@ -36,7 +38,7 @@ export class Trustee {
     this.election = election;
     this.options = options || { waitUntilNextCheck: WAIT_TIME_MS };
     this.wrapper = new TrusteeWrapper({ trusteeId: uniqueId });
-    this.parser = new JWTParser();
+    this.parser = new MessageParser({ authorityPublicKeyJSON });
     this.events = new EventManager();
     this.nextLogEntryIndexToProcess = 0;
     this.lastMessageProcessedWithResult = null;
@@ -200,11 +202,10 @@ export class Trustee {
     const message = logEntries[this.nextLogEntryIndexToProcess];
 
     this.events.broadcastMessageReceived(message);
-    const payload =
-      message.signedData && (await this.parser.parse(message.signedData));
+    const { messageIdentifier, decodedData } = await this.parser.parse(message);
     const result = await this.wrapper.processMessage(
-      message.messageId,
-      payload
+      messageIdentifier,
+      decodedData
     );
 
     this.events.broadcastMessageProcessed(message, result);

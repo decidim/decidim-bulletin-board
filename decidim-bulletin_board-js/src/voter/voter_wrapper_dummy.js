@@ -1,5 +1,3 @@
-import { MessageIdentifier } from "../client/message-identifier";
-
 export const CREATE_ELECTION = "create_election";
 export const END_KEY_CEREMONY = "end_key_ceremony";
 
@@ -20,20 +18,19 @@ export class VoterWrapper {
   /**
    * Process the message and update the wrapper status.
    *
-   * @param {String} messageId - The identifier of the message.
-   * @param {Object} message - An object with the message to process.
+   * @param {String} messageIdentifier - The parsed identifier of the message.
+   * @param {Object} decodedData - An object with the data to process.
    *
    * @returns {undefined}
    */
-  processMessage(messageId, message) {
-    const messageIdentifier = MessageIdentifier.parse(messageId);
+  processMessage(messageIdentifier, decodedData) {
     switch (messageIdentifier.type) {
       case CREATE_ELECTION: {
-        this.contests = message.description.contests;
+        this.contests = decodedData.description.contests;
         break;
       }
       case END_KEY_CEREMONY: {
-        const content = JSON.parse(message.content);
+        const content = JSON.parse(decodedData.content);
         this.jointElectionKey = content.joint_election_key;
         break;
       }

@@ -1,4 +1,4 @@
-import { buildMessageId, parseMessageId } from "../../test-utils";
+import { buildMessageId } from "../../test-utils";
 
 export class TrusteeWrapper {
   constructor({ trusteeId }) {
@@ -7,9 +7,8 @@ export class TrusteeWrapper {
     this.tallyDone = false;
   }
 
-  processMessage(messageId, message) {
-    const typeSubtype = parseMessageId(messageId);
-    switch (typeSubtype) {
+  processMessage(messageIdentifier, message) {
+    switch (messageIdentifier.typeSubtype) {
       case "dummy.send": {
         return {
           message_id: buildMessageId("dummy.response_send"),

@@ -15,6 +15,7 @@ $(() => {
     apiEndpointUrl: $trusteeTable.data("apiEndpointUrl"),
   };
   const electionUniqueId = $trusteeTable.data("electionUniqueId");
+  const authorityPublicKeyJSON = $trusteeTable.data("authorityPublicKey");
 
   $trusteeTable.find("tbody tr").each((_index, row) => {
     const $trustee = $(row);
@@ -38,6 +39,7 @@ $(() => {
     // Use the key ceremony component and bind all UI events
     const component = new KeyCeremonyComponent({
       bulletinBoardClientParams,
+      authorityPublicKeyJSON,
       electionUniqueId,
       trusteeUniqueId: trusteeContext.uniqueId,
       trusteeIdentificationKeys,

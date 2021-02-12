@@ -2,9 +2,7 @@
 
 module Sandbox
   class ElectionsController < ApplicationController
-    helper_method :elections, :election, :base_vote, :random_voter_id
-
-    before_action :configure_bb_client
+    helper_method :elections, :election, :base_vote, :random_voter_id, :server, :authority_public_key
 
     def index; end
 
@@ -46,9 +44,14 @@ module Sandbox
     private
 
     delegate :authority, to: :election
+    delegate :server, to: :bulletin_board_client
 
     def go_back
       redirect_to sandbox_elections_path
+    end
+
+    def authority_public_key
+      @authority_public_key ||= bulletin_board_client.public_key.to_json
     end
 
     def elections
@@ -64,20 +67,18 @@ module Sandbox
     end
 
     def bulletin_board_client
-      @bulletin_board_client = Decidim::BulletinBoard::Client.new
-    end
-
-    def configure_bb_client
       return unless params[:id]
 
-      Decidim::BulletinBoard.configure do |config|
-        config.server = "#{request.base_url}/api"
-        config.api_key = authority.api_key
-        config.scheme = "dummy"
-        config.authority_name = authority.name
-        config.number_of_trustees = 3
-        config.identification_private_key = Test::PrivateKeys.authority_private_key_json
-      end
+      @bulletin_board_client ||= Decidim::BulletinBoard::Client.new(
+        OpenStruct.new(
+          server: Rails.application.secrets.api_endpoint_url,
+          api_key: authority.api_key,
+          scheme: "dummy",
+          authority_name: authority.name,
+          number_of_trustees: 3,
+          identification_private_key: Test::PrivateKeys.authority_private_key_json
+        )
+      )
     end
 
     def base_vote

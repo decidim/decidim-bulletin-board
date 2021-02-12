@@ -10,11 +10,17 @@ export class VoteComponent {
    * Initialises the class with the given params.
    * @param {Object} params - An object that contains the initialization params.
    *  - {Object} bulletinBoardClientParams - An object to configure the bulletin board client.
+   *  - {String} authorityPublicKeyJSON - The authority identification public key.
    *  - {String} electionUniqueId - The unique identifier of an election.
    *  - {String} voterUniqueId - The unique identifier of a voter.
    * @constructor
    */
-  constructor({ bulletinBoardClientParams, electionUniqueId, voterUniqueId }) {
+  constructor({
+    bulletinBoardClientParams,
+    authorityPublicKeyJSON,
+    electionUniqueId,
+    voterUniqueId,
+  }) {
     this.bulletinBoardClient = new Client(bulletinBoardClientParams);
 
     const election = new Election({
@@ -23,9 +29,10 @@ export class VoteComponent {
     });
 
     this.voter = new Voter({
-      uniqueId: voterUniqueId,
       bulletinBoardClient: this.bulletinBoardClient,
+      authorityPublicKeyJSON,
       election,
+      uniqueId: voterUniqueId,
     });
   }
 

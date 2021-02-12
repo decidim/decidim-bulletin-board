@@ -37,13 +37,12 @@ export class TrusteeWrapper {
   /**
    * Process the message and update the wrapper status.
    *
-   * @param {String} messageId - The identifier of the message.
-   * @param {Object} message - An object with the message to process.
+   * @param {String} messageIdentifier - The parsed identifier of the message.
+   * @param {Object} decodedData - An object with the data to process.
    *
    * @returns {Object|undefined}
    */
-  processMessage(messageId, message) {
-    const messageIdentifier = MessageIdentifier.parse(messageId);
+  processMessage(messageIdentifier, decodedData) {
     switch (this.status) {
       case CREATED: {
         if (messageIdentifier.type === START_KEY_CEREMONY) {
@@ -80,7 +79,7 @@ export class TrusteeWrapper {
       }
       case TALLY: {
         if (messageIdentifier.typeSubtype === TALLY_CAST) {
-          const contests = JSON.parse(message.content);
+          const contests = JSON.parse(decodedData.content);
           for (const [question, answers] of Object.entries(contests)) {
             for (const [answer, value] of Object.entries(answers)) {
               contests[question][answer] =

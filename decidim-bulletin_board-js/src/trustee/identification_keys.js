@@ -1,6 +1,9 @@
 /**
  * IdentificationKeys component.
  */
+
+import { samePublicKeys } from "../utils";
+
 export class IdentificationKeys {
   constructor(trusteeUniqueId, storedPublicKey) {
     this.format = "jwk";
@@ -180,13 +183,7 @@ export class IdentificationKeys {
   }
 
   _matchesStoredPublicKey(publicKey) {
-    if (publicKey && this.storedPublicKey) {
-      const { n: n1, e: e1, kty: kty1 } = publicKey;
-      const { n: n2, e: e2, kty: kty2 } = this.storedPublicKey;
-
-      return n1 === n2 && e1 === e2 && kty1 === kty2;
-    }
-    return false;
+    return samePublicKeys(publicKey, this.storedPublicKey);
   }
 
   _encode64(payload) {

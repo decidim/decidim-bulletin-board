@@ -13,12 +13,14 @@ export class Election {
    * @param {Object} params - An object that contains the initialization params.
    *  - {String} uniqueId - The unique identifier of an election.
    *  - {Client} bulletinBoardClient - An instance of the Bulletin Board Client
+   *  - {Array<String>} typesFilter - The list of type of messages to retrieve.
    *  - {Object?} options - An optional object with some extra options.
    */
-  constructor({ uniqueId, bulletinBoardClient, options }) {
+  constructor({ uniqueId, bulletinBoardClient, typesFilter, options }) {
     this.uniqueId = uniqueId;
     this.bulletinBoardClient = bulletinBoardClient;
     this.logEntries = [];
+    this.typesFilter = typesFilter;
     this.subscriptionId = null;
     this.options = options || { waitUntilNextCheck: WAIT_TIME_MS };
   }
@@ -88,6 +90,7 @@ export class Election {
         .getElectionLogEntries({
           electionUniqueId: this.uniqueId,
           after,
+          types: this.typesFilter,
         })
         .then((logEntries) => {
           if (logEntries.length) {

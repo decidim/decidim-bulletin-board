@@ -43,7 +43,7 @@ FactoryBot.define do
       election.trustees << evaluator.trustees_plus_keys.map(&:first)
       election.log_entries << build(:log_entry, election: election, private_key: evaluator.authority_private_key,
                                                 message: build(:create_election_message, election_id: election.unique_id,
-                                                                                         authority: election.authority,
+                                                                                         authority_client: election.authority,
                                                                                          voting_scheme: :dummy,
                                                                                          trustees_plus_keys: evaluator.trustees_plus_keys))
     end
