@@ -13,6 +13,7 @@ env:
   SIMPLECOV: "true"
   RUBY_VERSION: 2.6.6
   ACTIONS_ALLOW_UNSECURE_COMMANDS: "true"
+  NODE_VERSION: "15"
 
 defaults:
   run:
@@ -29,7 +30,10 @@ jobs:
       - uses: ruby/setup-ruby@master
         with:
           ruby-version: ${{ env.RUBY_VERSION }}
-      - name: Recover dependency cache
+      - uses: actions/setup-node@v2-beta
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - name: Recover gems cache
         uses: actions/cache@v1
         with:
           path: ./decidim-bulletin_board-app/vendor/bundle
@@ -44,10 +48,29 @@ jobs:
           timeout_minutes: 10
           max_attempts: 3
           command: cd decidim-bulletin_board-app && bundle install --path vendor/bundle --jobs 4 --retry 3
+      - name: Recover packages cache
+        uses: actions/cache@v1
+        with:
+          path: ./decidim-bulletin_board-app/node_modules
+          key: ${{ runner.OS }}-decidim-bulletin_board-app-js-deps-${{ hashFiles('decidim-bulletin_board-app/package-lock.lock') }}
+          restore-keys: |
+            ${{ runner.OS }}-decidim-bulletin_board-app-js-deps-${{ env.cache-name }}-
+            ${{ runner.OS }}-decidim-bulletin_board-app-js-deps-
+            ${{ runner.OS }}-decidim-bulletin_board-app-js-
+      - name: Install Javascript deps
+        uses: nick-invision/retry@v1
+        with:
+          timeout_minutes: 10
+          max_attempts: 3
+          command: cd decidim-bulletin_board-app && npm ci
       - name: Install Rubocop
         run: gem install rubocop
       - run: bundle exec rubocop -P
         name: Lint Ruby files
+      - run: npm run lint
+        name: Lint JS files
+      - run: npm run format
+        name: Format JS files
   rspec-test:
     name: RSpec tests
     needs: lint
