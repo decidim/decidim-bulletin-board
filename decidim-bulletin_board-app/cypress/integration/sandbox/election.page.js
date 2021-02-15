@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 const IDENTIFICATION_KEYS_DATABASE_NAME = "identification_keys";
 
 /**
@@ -239,7 +240,7 @@ export class ElectionPage {
    */
   performTally(election, trustees) {
     cy.findByText("Perform tally").click().should("not.exist");
-    cy.findByText(`Tally for ${election.title}`).should("be.visible");
+    cy.findByText(`Tally for ${election.title.en}`).should("be.visible");
 
     trustees.forEach(({ unique_id, name }) => {
       cy.findByText(name)

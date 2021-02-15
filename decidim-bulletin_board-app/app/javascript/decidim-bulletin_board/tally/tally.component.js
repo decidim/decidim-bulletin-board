@@ -32,6 +32,7 @@ export class TallyComponent {
       typesFilter: [
         "create_election",
         "start_key_ceremony",
+        "key_ceremony",
         "end_key_ceremony",
         "start_tally",
         "tally",
