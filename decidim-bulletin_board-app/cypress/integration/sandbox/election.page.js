@@ -75,7 +75,7 @@ export class ElectionPage {
 
           // When the upload button is rendered on the screen the change event callback
           // may not be set yet, so we wait a reasonable time to ensure it is set correctly.
-          cy.wait(500);
+          cy.wait(1000);
 
           // Emulate trustee uploading the private key file
           cy.get(trusteeRow)
@@ -253,7 +253,7 @@ export class ElectionPage {
 
           // When the upload button is rendered on the screen the change event callback
           // may not be set yet, so we wait a reasonable time to ensure it is set correctly.
-          cy.wait(500);
+          cy.wait(1000);
 
           // Emulate trustee uploading the private key file
           cy.get(trusteeRow)
