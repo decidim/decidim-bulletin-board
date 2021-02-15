@@ -245,16 +245,16 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: cypress screenshots
-          path: decidim-bulletin_board-app/spec/cypress/screenshots/
+          path: decidim-bulletin_board-app/cypress/screenshots/
       - name: Upload artifacts (videos)
         if: ${{ always() }}
         uses: actions/upload-artifact@v2
         with:
           name: cypress videos
-          path: decidim-bulletin_board-app/spec/cypress/videos/
+          path: decidim-bulletin_board-app/cypress/videos/
       - name: Upload artifacts (downloads)
         if: ${{ always() }}
         uses: actions/upload-artifact@v2
         with:
           name: cypress downloads
-          path: decidim-bulletin_board-app/spec/cypress/downloads/
+          path: decidim-bulletin_board-app/cypress/downloads/

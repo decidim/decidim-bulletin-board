@@ -32,6 +32,6 @@
 /decidim-bulletin_board-app/spec/examples.txt
 /decidim-bulletin_board-app/coverage
 /decidim-bulletin_board-app/electionguard.log
-/decidim-bulletin_board-app/spec/cypress/screenshots/
-/decidim-bulletin_board-app/spec/cypress/videos/
-/decidim-bulletin_board-app/spec/cypress/downloads/
+/decidim-bulletin_board-app/cypress/screenshots/
+/decidim-bulletin_board-app/cypress/videos/
+/decidim-bulletin_board-app/cypress/downloads/
