@@ -6,7 +6,7 @@ require "wisper/rspec/stub_wisper_publisher"
 module Decidim
   module BulletinBoard
     describe Client do
-      subject(:instance) { described_class.new }
+      subject(:instance) { described_class.new(config) }
 
       include_context "with a configured bulletin board"
 

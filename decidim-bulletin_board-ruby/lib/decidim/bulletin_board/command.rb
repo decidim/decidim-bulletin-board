@@ -14,7 +14,7 @@ module Decidim
       end
 
       def sign_message(message_id, message)
-        JWT.encode(complete_message(message_id, message), settings.private_key.keypair, "RS256")
+        JWT.encode(complete_message(message_id, message), settings.authority_private_key.keypair, "RS256")
       end
 
       def complete_message(message_id, message)
