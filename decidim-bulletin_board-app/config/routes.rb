@@ -5,7 +5,7 @@ Rails.application.routes.draw do
     mount GraphiQL::Rails::Engine, at: "/graphiql", graphql_path: "/api"
     get "/docs", to: "documentation#show", as: :documentation
     get "/", to: redirect("/api/docs")
-    post "/", to: "graphql#execute"
+    post "/", to: "graphql#execute", as: :api_endpoint
   end
 
   root to: "pages#index"
