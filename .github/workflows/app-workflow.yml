@@ -52,7 +52,7 @@ jobs:
         uses: actions/cache@v1
         with:
           path: ./decidim-bulletin_board-app/node_modules
-          key: ${{ runner.OS }}-decidim-bulletin_board-app-js-deps-${{ hashFiles('decidim-bulletin_board-app/package-lock.lock') }}
+          key: ${{ runner.OS }}-decidim-bulletin_board-app-js-deps-${{ hashFiles('decidim-bulletin_board-app/package-lock.json') }}
           restore-keys: |
             ${{ runner.OS }}-decidim-bulletin_board-app-js-deps-${{ env.cache-name }}-
             ${{ runner.OS }}-decidim-bulletin_board-app-js-deps-
@@ -124,7 +124,7 @@ jobs:
         uses: actions/cache@v1
         with:
           path: ./decidim-bulletin_board-app/node_modules
-          key: ${{ runner.OS }}-decidim-bulletin_board-app-js-deps-${{ hashFiles('decidim-bulletin_board-app/package-lock.lock') }}
+          key: ${{ runner.OS }}-decidim-bulletin_board-app-js-deps-${{ hashFiles('decidim-bulletin_board-app/package-lock.json') }}
           restore-keys: |
             ${{ runner.OS }}-decidim-bulletin_board-app-js-deps-${{ env.cache-name }}-
             ${{ runner.OS }}-decidim-bulletin_board-app-js-deps-
@@ -213,7 +213,7 @@ jobs:
         uses: actions/cache@v1
         with:
           path: ./decidim-bulletin_board-app/node_modules
-          key: ${{ runner.OS }}-decidim-bulletin_board-app-js-deps-${{ hashFiles('decidim-bulletin_board-app/package-lock.lock') }}
+          key: ${{ runner.OS }}-decidim-bulletin_board-app-js-deps-${{ hashFiles('decidim-bulletin_board-app/package-lock.json') }}
           restore-keys: |
             ${{ runner.OS }}-decidim-bulletin_board-app-js-deps-${{ env.cache-name }}-
             ${{ runner.OS }}-decidim-bulletin_board-app-js-deps-
