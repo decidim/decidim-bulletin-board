@@ -1,9 +1,7 @@
-// = require decidim/bulletin_board/decidim-bulletin_board
-// = require jquery
+import $ from "jquery";
+import { VoteComponent } from "../decidim-bulletin_board";
 
 $(async () => {
-  const { VoteComponent } = window.decidimBulletinBoard;
-
   // UI Elements
   const $voter = $(".voter");
   const $encryptVote = $voter.find(".encrypt-vote");
@@ -69,9 +67,9 @@ $(async () => {
       $castVote.on("click", onEventTriggered);
     },
     onVoteAudition(auditedVote, auditFileName) {
-      vote = JSON.stringify(auditedVote);
+      const vote = JSON.stringify(auditedVote);
+      const link = document.createElement("a");
 
-      let link = document.createElement("a");
       link.setAttribute("href", `data:text/plain;charset=utf-8,${vote}`);
       link.setAttribute("download", auditFileName);
       document.body.appendChild(link);

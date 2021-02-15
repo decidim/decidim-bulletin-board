@@ -13,6 +13,7 @@ env:
   SIMPLECOV: "true"
   RUBY_VERSION: 2.6.6
   ACTIONS_ALLOW_UNSECURE_COMMANDS: "true"
+  NODE_VERSION: "15"
 
 defaults:
   run:
@@ -29,7 +30,10 @@ jobs:
       - uses: ruby/setup-ruby@master
         with:
           ruby-version: ${{ env.RUBY_VERSION }}
-      - name: Recover dependency cache
+      - uses: actions/setup-node@v2-beta
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - name: Recover gems cache
         uses: actions/cache@v1
         with:
           path: ./decidim-bulletin_board-app/vendor/bundle
@@ -44,12 +48,31 @@ jobs:
           timeout_minutes: 10
           max_attempts: 3
           command: cd decidim-bulletin_board-app && bundle install --path vendor/bundle --jobs 4 --retry 3
+      - name: Recover packages cache
+        uses: actions/cache@v1
+        with:
+          path: ./decidim-bulletin_board-app/node_modules
+          key: ${{ runner.OS }}-decidim-bulletin_board-app-js-deps-${{ hashFiles('decidim-bulletin_board-app/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.OS }}-decidim-bulletin_board-app-js-deps-${{ env.cache-name }}-
+            ${{ runner.OS }}-decidim-bulletin_board-app-js-deps-
+            ${{ runner.OS }}-decidim-bulletin_board-app-js-
+      - name: Install Javascript deps
+        uses: nick-invision/retry@v1
+        with:
+          timeout_minutes: 10
+          max_attempts: 3
+          command: cd decidim-bulletin_board-app && npm ci
       - name: Install Rubocop
         run: gem install rubocop
       - run: bundle exec rubocop -P
         name: Lint Ruby files
-  rspec-test:
-    name: RSpec tests
+      - run: npm run lint
+        name: Lint JS files
+      - run: npm run format
+        name: Format JS files
+  unit-tests:
+    name: Unit tests
     needs: lint
     runs-on: ubuntu-latest
     services:
@@ -74,10 +97,15 @@ jobs:
       - uses: ruby/setup-ruby@master
         with:
           ruby-version: ${{ env.RUBY_VERSION }}
+      - uses: actions/setup-node@v2-beta
+        with:
+          node-version: ${{ env.NODE_VERSION }}
       - uses: actions/setup-python@v2
         with:
           python-version: "3.8.2"
-      - name: Recover dependency cache
+      - name: Install postgres client
+        run: sudo apt-get install libpq-dev
+      - name: Recover gems cache
         uses: actions/cache@v1
         with:
           path: ./decidim-bulletin_board-app/vendor/bundle
@@ -86,14 +114,21 @@ jobs:
             ${{ runner.OS }}-decidim-bulletin_board-app-deps-${{ env.cache-name }}-
             ${{ runner.OS }}-decidim-bulletin_board-app-deps-
             ${{ runner.OS }}-decidim-bulletin_board-app-
-      - name: Install postgres client
-        run: sudo apt-get install libpq-dev
       - name: Install Ruby deps
         uses: nick-invision/retry@v1
         with:
           timeout_minutes: 10
           max_attempts: 3
           command: cd decidim-bulletin_board-app && bundle install --path vendor/bundle --jobs 4 --retry 3
+      - name: Recover packages cache
+        uses: actions/cache@v1
+        with:
+          path: ./decidim-bulletin_board-app/node_modules
+          key: ${{ runner.OS }}-decidim-bulletin_board-app-js-deps-${{ hashFiles('decidim-bulletin_board-app/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.OS }}-decidim-bulletin_board-app-js-deps-${{ env.cache-name }}-
+            ${{ runner.OS }}-decidim-bulletin_board-app-js-deps-
+            ${{ runner.OS }}-decidim-bulletin_board-app-js-
       - name: Install Javascript deps
         uses: nick-invision/retry@v1
         with:
@@ -117,15 +152,17 @@ jobs:
           bundle exec rake schema:generate
           npm run schema:generate
           git diff --exit-code
-      - name: Run tests
+      - name: Run Rspec tests
         run: bundler exec rake
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v1
         with:
           directory: ./decidim-bulletin_board-app/coverage
+      - name: Run Jest tests
+        run: npm run test
   e2e-test:
     name: E2E tests
-    needs: rspec-test
+    needs: unit-tests
     runs-on: ubuntu-latest
     services:
       postgres:
@@ -149,10 +186,15 @@ jobs:
       - uses: ruby/setup-ruby@master
         with:
           ruby-version: ${{ env.RUBY_VERSION }}
+      - uses: actions/setup-node@v2-beta
+        with:
+          node-version: ${{ env.NODE_VERSION }}
       - uses: actions/setup-python@v2
         with:
           python-version: "3.8.2"
-      - name: Recover dependency cache
+      - name: Install postgres client
+        run: sudo apt-get install libpq-dev
+      - name: Recover gems cache
         uses: actions/cache@v1
         with:
           path: ./decidim-bulletin_board-app/vendor/bundle
@@ -161,14 +203,21 @@ jobs:
             ${{ runner.OS }}-decidim-bulletin_board-app-deps-${{ env.cache-name }}-
             ${{ runner.OS }}-decidim-bulletin_board-app-deps-
             ${{ runner.OS }}-decidim-bulletin_board-app-
-      - name: Install postgres client
-        run: sudo apt-get install libpq-dev
       - name: Install Ruby deps
         uses: nick-invision/retry@v1
         with:
           timeout_minutes: 10
           max_attempts: 3
           command: cd decidim-bulletin_board-app && bundle install --path vendor/bundle --jobs 4 --retry 3
+      - name: Recover packages cache
+        uses: actions/cache@v1
+        with:
+          path: ./decidim-bulletin_board-app/node_modules
+          key: ${{ runner.OS }}-decidim-bulletin_board-app-js-deps-${{ hashFiles('decidim-bulletin_board-app/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.OS }}-decidim-bulletin_board-app-js-deps-${{ env.cache-name }}-
+            ${{ runner.OS }}-decidim-bulletin_board-app-js-deps-
+            ${{ runner.OS }}-decidim-bulletin_board-app-js-
       - name: Install Javascript deps
         uses: nick-invision/retry@v1
         with:
@@ -196,16 +245,16 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: cypress screenshots
-          path: decidim-bulletin_board-app/spec/cypress/screenshots/
+          path: decidim-bulletin_board-app/cypress/screenshots/
       - name: Upload artifacts (videos)
         if: ${{ always() }}
         uses: actions/upload-artifact@v2
         with:
           name: cypress videos
-          path: decidim-bulletin_board-app/spec/cypress/videos/
+          path: decidim-bulletin_board-app/cypress/videos/
       - name: Upload artifacts (downloads)
         if: ${{ always() }}
         uses: actions/upload-artifact@v2
         with:
           name: cypress downloads
-          path: decidim-bulletin_board-app/spec/cypress/downloads/
+          path: decidim-bulletin_board-app/cypress/downloads/

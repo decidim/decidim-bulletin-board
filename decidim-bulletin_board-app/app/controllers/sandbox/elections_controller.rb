@@ -74,7 +74,7 @@ module Sandbox
         {
           name: trustee.name,
           slug: trustee.unique_id,
-          public_key: trustee.public_key.to_json
+          public_key: trustee.public_key
         }
       end
     end
@@ -131,6 +131,7 @@ module Sandbox
       @bulletin_board_client ||= Decidim::BulletinBoard::Client.new(
         OpenStruct.new(
           server: Rails.application.secrets.api_endpoint_url,
+          server_public_key: BulletinBoard.public_key,
           api_key: authority.api_key,
           scheme_name: "dummy",
           quorum: 2,

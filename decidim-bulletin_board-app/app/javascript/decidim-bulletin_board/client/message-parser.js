@@ -34,9 +34,9 @@ export class MessageParser {
    */
   async parse({ messageId, signedData }) {
     const messageIdentifier = MessageIdentifier.parse(messageId);
-    const senderKey = this.keys
+    const senderKey = await (this.keys
       ? this.keys[messageIdentifier.author.type][messageIdentifier.author.id]
-      : await this.authorityPublicKey;
+      : this.authorityPublicKey);
 
     if (!signedData) {
       return { messageIdentifier, decodedData: null };

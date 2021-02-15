@@ -1,0 +1,10 @@
+#!/bin/bash
+
+cd ../decidim-bulletin_board-app && \
+bundle install && \
+npm run release && \
+cd ../decidim-bulletin_board-ruby && \
+bundle install && \
+git add .. && \
+git commit --amend && \
+bundle exec rake release

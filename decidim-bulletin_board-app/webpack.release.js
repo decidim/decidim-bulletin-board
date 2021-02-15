@@ -1,7 +1,10 @@
+const TerserPlugin = require("terser-webpack-plugin");
+
 const path = require("path");
 
 module.exports = {
-  entry: "./src/index.js",
+  mode: "production",
+  entry: "./app/javascript/packs/decidim-bulletin_board.js",
   output: {
     path: path.resolve(
       __dirname,
@@ -33,6 +36,14 @@ module.exports = {
         exclude: /node_modules/,
         loader: "graphql-tag/loader",
       },
+    ],
+  },
+  optimization: {
+    minimize: true,
+    minimizer: [
+      new TerserPlugin({
+        extractComments: false,
+      }),
     ],
   },
 };

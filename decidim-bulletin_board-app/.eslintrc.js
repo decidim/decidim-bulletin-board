@@ -5,6 +5,9 @@ module.exports = {
     "jest/globals": true,
     jasmine: true,
   },
+  globals: {
+    cy: false,
+  },
   extends: ["standard", "prettier"],
   plugins: ["jest", "jasmine"],
   parserOptions: {

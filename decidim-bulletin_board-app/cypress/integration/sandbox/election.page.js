@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 const IDENTIFICATION_KEYS_DATABASE_NAME = "identification_keys";
 
 /**
@@ -63,7 +64,7 @@ export class ElectionPage {
    */
   performKeyCeremony(election, trustees) {
     cy.findByText("Perform key ceremony").click().should("not.exist");
-    cy.findByText(`Key ceremony for ${election.title}`).should("be.visible");
+    cy.findByText(`Key ceremony for ${election.title.en}`).should("be.visible");
 
     trustees.forEach(({ unique_id, name }) => {
       cy.findByText(name)
@@ -74,14 +75,14 @@ export class ElectionPage {
 
           // When the upload button is rendered on the screen the change event callback
           // may not be set yet, so we wait a reasonable time to ensure it is set correctly.
-          cy.wait(500);
+          cy.wait(1000);
 
           // Emulate trustee uploading the private key file
           cy.get(trusteeRow)
             .find(".private-key-input")
             .attachFile(
               {
-                filePath: `../../../lib/assets/${unique_id}-private-key.jwk`,
+                filePath: `../../lib/assets/${unique_id}-private-key.jwk`,
               },
               {
                 force: true,
@@ -239,7 +240,7 @@ export class ElectionPage {
    */
   performTally(election, trustees) {
     cy.findByText("Perform tally").click().should("not.exist");
-    cy.findByText(`Tally for ${election.title}`).should("be.visible");
+    cy.findByText(`Tally for ${election.title.en}`).should("be.visible");
 
     trustees.forEach(({ unique_id, name }) => {
       cy.findByText(name)
@@ -252,7 +253,7 @@ export class ElectionPage {
 
           // When the upload button is rendered on the screen the change event callback
           // may not be set yet, so we wait a reasonable time to ensure it is set correctly.
-          cy.wait(500);
+          cy.wait(1000);
 
           // Emulate trustee uploading the private key file
           cy.get(trusteeRow)

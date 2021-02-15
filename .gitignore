@@ -28,13 +28,10 @@
 /decidim-bulletin_board-app/public/packs
 /decidim-bulletin_board-app/public/packs-test
 /decidim-bulletin_board-app/node_modules
-/decidim-bulletin_board-app/yarn-error.log
-/decidim-bulletin_board-app/yarn-debug.log*
-/decidim-bulletin_board-app/.yarn-integrity
 /decidim-bulletin_board-app/.rubocop-https---raw-githubusercontent-com-decidim-decidim-master--rubocop-*
 /decidim-bulletin_board-app/spec/examples.txt
 /decidim-bulletin_board-app/coverage
 /decidim-bulletin_board-app/electionguard.log
-/decidim-bulletin_board-app/spec/cypress/screenshots/
-/decidim-bulletin_board-app/spec/cypress/videos/
-/decidim-bulletin_board-app/spec/cypress/downloads/
+/decidim-bulletin_board-app/cypress/screenshots/
+/decidim-bulletin_board-app/cypress/videos/
+/decidim-bulletin_board-app/cypress/downloads/
