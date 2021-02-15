@@ -2,7 +2,7 @@
 
 module Sandbox
   class ElectionsController < ApplicationController
-    helper_method :elections, :election, :base_vote, :random_voter_id, :server, :authority_slug, :authority_public_key
+    helper_method :elections, :election, :base_vote, :random_voter_id, :bulletin_board_server, :authority_slug, :authority_public_key
 
     def index; end
 
@@ -49,7 +49,7 @@ module Sandbox
     private
 
     delegate :authority, to: :election
-    delegate :server, :authority_slug, to: :bulletin_board_client
+    delegate :bulletin_board_server, :authority_slug, to: :bulletin_board_client
 
     def election_data
       @election_data ||= params.require(:election).permit(:default_locale, title: {}).to_h.merge(
@@ -128,17 +128,19 @@ module Sandbox
     end
 
     def bulletin_board_client
-      @bulletin_board_client ||= Decidim::BulletinBoard::Client.new(
-        OpenStruct.new(
-          server: Rails.application.secrets.api_endpoint_url,
-          server_public_key: BulletinBoard.public_key,
-          api_key: authority.api_key,
-          scheme_name: "dummy",
-          quorum: 2,
-          authority_name: authority.name,
-          number_of_trustees: 3,
-          identification_private_key: Test::PrivateKeys.authority_private_key_json
-        )
+      @bulletin_board_client ||= Decidim::BulletinBoard::Client.new(bulletin_board_settings)
+    end
+
+    def bulletin_board_settings
+      @bulletin_board_settings ||= OpenStruct.new(
+        bulletin_board_server: api_endpoint_url,
+        bulletin_board_public_key: BulletinBoard.public_key,
+        authority_api_key: authority.api_key,
+        authority_name: authority.name,
+        authority_private_key: Test::PrivateKeys.authority_private_key_json,
+        scheme_name: "dummy",
+        quorum: 2,
+        number_of_trustees: 3
       )
     end
 
