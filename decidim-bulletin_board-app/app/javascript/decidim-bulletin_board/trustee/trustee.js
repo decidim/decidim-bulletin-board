@@ -1,7 +1,7 @@
 /* eslint-disable camelcase */
-import { TrusteeWrapper } from "./trustee_wrapper_dummy";
 import { EventManager } from "./event_manager";
 import { MessageParser } from "../client/message-parser";
+import { MessageIdentifier, TRUSTEE_TYPE } from "../client/message-identifier";
 
 export const WAIT_TIME_MS = 100; // 0.1s
 
@@ -22,6 +22,7 @@ export class Trustee {
    *                                  the corresponding trustee.
    *  - {Object} election - An object that interacts with a specific election
    *                        to get some data and perform the key ceremony.
+   *  - {Object} wrapperAdapter - An object to interact with the trustee wrapper.
    *  - {Object?} options - An optional object with some extra options.
    */
   constructor({
@@ -30,6 +31,7 @@ export class Trustee {
     authorityPublicKeyJSON,
     identificationKeys,
     election,
+    wrapperAdapter,
     options,
   }) {
     this.uniqueId = uniqueId;
@@ -37,7 +39,7 @@ export class Trustee {
     this.identificationKeys = identificationKeys;
     this.election = election;
     this.options = options || { waitUntilNextCheck: WAIT_TIME_MS };
-    this.wrapper = new TrusteeWrapper({ trusteeId: uniqueId });
+    this.wrapperAdapter = wrapperAdapter;
     this.parser = new MessageParser({ authorityPublicKeyJSON });
     this.events = new EventManager();
     this.nextLogEntryIndexToProcess = 0;
@@ -79,7 +81,7 @@ export class Trustee {
       message = await this.waitForNextLogEntryResult();
     }
 
-    yield this.wrapper.backup();
+    yield this.wrapperAdapter.backup();
     await this.processKeyCeremonyStep(message);
     this.hasSetupKeyCeremony = true;
     return this.hasSetupKeyCeremony;
@@ -104,7 +106,7 @@ export class Trustee {
     return this.waitForNextLogEntryResult().then(async (message) => {
       await this.processKeyCeremonyStep(message);
 
-      if (this.wrapper.isKeyCeremonyDone()) {
+      if (this.wrapperAdapter.isKeyCeremonyDone()) {
         return this.tearDown();
       }
 
@@ -127,7 +129,7 @@ export class Trustee {
     return this.waitForNextLogEntryResult().then(async (message) => {
       await this.processTallyStep(message);
 
-      if (this.wrapper.isTallyDone()) {
+      if (this.wrapperAdapter.isTallyDone()) {
         return this.tearDown();
       }
 
@@ -145,10 +147,7 @@ export class Trustee {
       this.uniqueId
     );
 
-    return (
-      lastMessageFromTrustee &&
-      this.wrapper.needsToBeRestored(lastMessageFromTrustee.messageId)
-    );
+    return lastMessageFromTrustee && this.wrapperAdapter.isFresh();
   }
 
   /**
@@ -164,7 +163,10 @@ export class Trustee {
 
     this.hasSetupKeyCeremony =
       lastMessageFromTrustee &&
-      this.wrapper.restore(wrapperState, lastMessageFromTrustee.messageId);
+      this.wrapperAdapter.restore(
+        wrapperState,
+        lastMessageFromTrustee.messageId
+      );
     return this.hasSetupKeyCeremony;
   }
 
@@ -207,15 +209,29 @@ export class Trustee {
     const message = logEntries[this.nextLogEntryIndexToProcess];
 
     this.events.broadcastMessageReceived(message);
+
     const { messageIdentifier, decodedData } = await this.parser.parse(message);
-    const result = await this.wrapper.processMessage(
-      messageIdentifier,
+    const result = await this.wrapperAdapter.processMessage(
+      messageIdentifier.typeSubtype,
       decodedData
     );
 
     this.events.broadcastMessageProcessed(message, result);
 
     this.nextLogEntryIndexToProcess += 1;
+
+    if (result) {
+      const { messageType, content } = result;
+      return {
+        message_id: MessageIdentifier.format(
+          this.election.uniqueId,
+          messageType,
+          TRUSTEE_TYPE,
+          this.uniqueId
+        ),
+        content,
+      };
+    }
 
     return result;
   }

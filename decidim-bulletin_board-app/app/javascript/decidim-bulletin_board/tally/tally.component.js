@@ -15,6 +15,7 @@ export class TallyComponent {
    *  - {String} trusteeUniqueId - The unique identifier of a trustee.
    *  - {Object} trusteeIdentificationKeys - An object that contains both the public and private key for
    *                                         the corresponding trustee.
+   *  - {Object} trusteeWrapperAdapter - An object to interact with the trustee wrapper.
    * @constructor
    */
   constructor({
@@ -23,6 +24,7 @@ export class TallyComponent {
     electionUniqueId,
     trusteeUniqueId,
     trusteeIdentificationKeys,
+    trusteeWrapperAdapter,
   }) {
     const bulletinBoardClient = new Client(bulletinBoardClientParams);
 
@@ -46,6 +48,7 @@ export class TallyComponent {
       authorityPublicKeyJSON,
       identificationKeys: trusteeIdentificationKeys,
       election: this.election,
+      wrapperAdapter: trusteeWrapperAdapter,
     });
   }
 

@@ -3,6 +3,7 @@ import {
   KeyCeremonyComponent,
   IdentificationKeys,
 } from "../decidim-bulletin_board";
+import { TrusteeWrapperAdapter as DummyTrusteeWrapperAdapter } from "voting-scheme-dummy";
 
 $(() => {
   // UI Elements
@@ -41,6 +42,9 @@ $(() => {
       electionUniqueId,
       trusteeUniqueId: trusteeContext.uniqueId,
       trusteeIdentificationKeys,
+      trusteeWrapperAdapter: new DummyTrusteeWrapperAdapter({
+        trusteeId: trusteeContext.uniqueId,
+      }),
     });
 
     const bindComponentEvents = async () => {
