@@ -1,5 +1,3 @@
-import { MessageIdentifier, TRUSTEE_TYPE } from "../client/message-identifier";
-
 export const CREATED = 0;
 export const KEY_CEREMONY = 1;
 export const KEY_CEREMONY_ENDED = 2;
@@ -29,7 +27,6 @@ export class TrusteeWrapper {
    */
   constructor({ trusteeId }) {
     this.trusteeId = trusteeId;
-    this.electionId = null;
     this.status = CREATED;
     this.electionPublicKey = 0;
   }
@@ -37,26 +34,20 @@ export class TrusteeWrapper {
   /**
    * Process the message and update the wrapper status.
    *
-   * @param {String} messageIdentifier - The parsed identifier of the message.
+   * @param {String} messageType - The message type.
    * @param {Object} decodedData - An object with the data to process.
    *
    * @returns {Object|undefined}
    */
-  processMessage(messageIdentifier, decodedData) {
+  processMessage(messageType, decodedData) {
     switch (this.status) {
       case CREATED: {
-        if (messageIdentifier.type === START_KEY_CEREMONY) {
+        if (messageType === START_KEY_CEREMONY) {
           this.status = KEY_CEREMONY;
-          this.electionId = messageIdentifier.electionId;
           this.electionPublicKey = Math.floor(50 + Math.random() * 200) * 2 + 1;
 
           return {
-            message_id: MessageIdentifier.format(
-              this.electionId,
-              KEY_CEREMONY_STEP_1,
-              TRUSTEE_TYPE,
-              this.trusteeId
-            ),
+            messageType: KEY_CEREMONY_STEP_1,
             content: JSON.stringify({
               election_public_key: this.electionPublicKey,
               owner_id: this.trusteeId,
@@ -66,19 +57,19 @@ export class TrusteeWrapper {
         break;
       }
       case KEY_CEREMONY: {
-        if (messageIdentifier.type === END_KEY_CEREMONY) {
+        if (messageType === END_KEY_CEREMONY) {
           this.status = KEY_CEREMONY_ENDED;
         }
         break;
       }
       case KEY_CEREMONY_ENDED: {
-        if (messageIdentifier.type === START_TALLY) {
+        if (messageType === START_TALLY) {
           this.status = TALLY;
         }
         break;
       }
       case TALLY: {
-        if (messageIdentifier.typeSubtype === TALLY_CAST) {
+        if (messageType === TALLY_CAST) {
           const contests = JSON.parse(decodedData.content);
           for (const [question, answers] of Object.entries(contests)) {
             for (const [answer, value] of Object.entries(answers)) {
@@ -88,18 +79,13 @@ export class TrusteeWrapper {
           }
 
           return {
-            message_id: MessageIdentifier.format(
-              this.electionId,
-              TALLY_SHARE,
-              TRUSTEE_TYPE,
-              this.trusteeId
-            ),
+            messageType: TALLY_SHARE,
             content: JSON.stringify({
               owner_id: this.trusteeId,
               contests,
             }),
           };
-        } else if (messageIdentifier.type === END_TALLY) {
+        } else if (messageType === END_TALLY) {
           this.status = TALLY_ENDED;
         }
         break;
@@ -108,13 +94,12 @@ export class TrusteeWrapper {
   }
 
   /**
-   * Whether the trustee wrapper state needs to be restored or not.
+   * Whether the trustee wrapper is in a fresh state or no.
    *
-   * @param {String} messageId - The unique identifier of a message.
    * @returns {boolean}
    */
-  needsToBeRestored(messageId) {
-    return messageId && this.status === CREATED;
+  isFresh() {
+    return this.status === CREATED;
   }
 
   /**
@@ -127,14 +112,13 @@ export class TrusteeWrapper {
   }
 
   /**
-   * Restore the trustee state from the given state string. It uses the last message sent to check that the state is valid.
+   * Restore the trustee state from the given state string.
    *
    * @param {string} state - As string with the wrapper state retrieved from the backup method.
-   * @param {messageId} messageId - The unique id of the last message sent by the trustee.
    * @returns {boolean}
    */
-  restore(state, messageId) {
-    if (!this.needsToBeRestored(messageId)) {
+  restore(state) {
+    if (!this.isFresh()) {
       console.warn("Restore not needed");
       return false;
     }
@@ -145,7 +129,7 @@ export class TrusteeWrapper {
       return false;
     }
 
-    if (messageId && result.status === CREATED) {
+    if (result.status === CREATED) {
       console.warn("Invalid restored status");
       return false;
     }
