@@ -97,6 +97,8 @@ $(async () => {
       });
     },
     onComplete() {
+      $castVote.prop("disabled", true);
+      $auditVote.prop("disabled", true);
       $doneMessage.show();
       $vote.css("background", "green");
     },

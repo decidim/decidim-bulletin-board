@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased
+
+## Changed
+
+- Changed the name of some settings\* to improve the readability of the code:
+  - BB settings: `bulletin_board_server`\* and `bulletin_board_public_key`\*.
+  - Authority settings: `authority_api_key`\*, `authority_name` and `authority_private_key`\*.
+  - Elections settings: `scheme_name`, `number_of_trustees` and `quorum`.
+
 ## [0.10.1] - 2021-02-15
 
 ### Fixed

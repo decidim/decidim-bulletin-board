@@ -1,7 +1,7 @@
 {
   "name": "decidim-bulletin_board",
   "private": true,
-  "version": "0.9.2",
+  "version": "0.10.1",
   "scripts": {
     "schema:generate": "graphql-codegen",
     "e2e:open": "cypress open",
@@ -22,12 +22,12 @@
     "graphql": "^15.4.0",
     "graphql-ruby-client": "^1.8.1",
     "jquery": "^3.5.1",
+    "node-jose": "^2.0.0",
     "regenerator-runtime": "^0.13.7",
     "rxjs": "^6.6.3",
     "turbolinks": "^5.2.0",
     "webpack": "^5.11.0",
-    "webpack-cli": "^4.2.0",
-    "node-jose": "^2.0.0"
+    "webpack-cli": "^4.2.0"
   },
   "devDependencies": {
     "@graphql-codegen/cli": "^1.19.4",

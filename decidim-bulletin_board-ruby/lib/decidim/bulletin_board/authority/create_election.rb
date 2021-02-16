@@ -71,7 +71,7 @@ module Decidim
           {
             name: "Bulletin Board",
             slug: "bulletin-board",
-            public_key: settings.server_public_key
+            public_key: settings.bulletin_board_public_key
           }
         end
 
@@ -79,7 +79,7 @@ module Decidim
           {
             name: settings.authority_name,
             slug: settings.authority_slug,
-            public_key: settings.public_key
+            public_key: settings.authority_public_key
           }
         end
 
