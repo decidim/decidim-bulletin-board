@@ -51,7 +51,9 @@ jobs:
       - name: Recover packages cache
         uses: actions/cache@v1
         with:
-          path: ./decidim-bulletin_board-app/node_modules
+          path: |
+            ./decidim-bulletin_board-app/node_modules
+            ./.cache/Cypress
           key: ${{ runner.OS }}-decidim-bulletin_board-app-js-deps-${{ hashFiles('decidim-bulletin_board-app/package-lock.json') }}
           restore-keys: |
             ${{ runner.OS }}-decidim-bulletin_board-app-js-deps-${{ env.cache-name }}-
@@ -123,7 +125,9 @@ jobs:
       - name: Recover packages cache
         uses: actions/cache@v1
         with:
-          path: ./decidim-bulletin_board-app/node_modules
+          path: |
+            ./decidim-bulletin_board-app/node_modules
+            ./.cache/Cypress
           key: ${{ runner.OS }}-decidim-bulletin_board-app-js-deps-${{ hashFiles('decidim-bulletin_board-app/package-lock.json') }}
           restore-keys: |
             ${{ runner.OS }}-decidim-bulletin_board-app-js-deps-${{ env.cache-name }}-
@@ -212,7 +216,9 @@ jobs:
       - name: Recover packages cache
         uses: actions/cache@v1
         with:
-          path: ./decidim-bulletin_board-app/node_modules
+          path: |
+            ./decidim-bulletin_board-app/node_modules
+            ./.cache/Cypress
           key: ${{ runner.OS }}-decidim-bulletin_board-app-js-deps-${{ hashFiles('decidim-bulletin_board-app/package-lock.json') }}
           restore-keys: |
             ${{ runner.OS }}-decidim-bulletin_board-app-js-deps-${{ env.cache-name }}-
