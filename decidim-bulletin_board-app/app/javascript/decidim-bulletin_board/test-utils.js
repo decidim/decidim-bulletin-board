@@ -16,5 +16,55 @@ export function buildMessageIdentifier(typeSubtype) {
 }
 
 export function buildMessageId(typeSubtype) {
-  return `decidim-barcelona.1.${typeSubtype}+a.decidim-barcelona`;
+  return `decidim-barcelona.1.${typeSubtype}+t.trustee-1`;
+}
+
+export class TrusteeWrapperAdapter {
+  constructor({ trusteeId }) {
+    this.trusteeId = trusteeId;
+    this.keyCeremonyDone = false;
+    this.tallyDone = false;
+  }
+
+  processMessage(messageType, message) {
+    switch (messageType) {
+      case "dummy.send": {
+        return {
+          messageType: "dummy.response_send",
+          content: message,
+        };
+      }
+      case "dummy.save": {
+        return {
+          messageType: "dummy.response_save",
+          content: message,
+        };
+      }
+      case "dummy.done": {
+        this.keyCeremonyDone = true;
+        break;
+      }
+      case "dummy.cast": {
+        this.tallyDone = true;
+        return {
+          messageType: "dummy.response_cast",
+          content: message,
+        };
+      }
+    }
+  }
+
+  isFresh() {}
+
+  backup() {}
+
+  restore() {}
+
+  isKeyCeremonyDone() {
+    return this.keyCeremonyDone;
+  }
+
+  isTallyDone() {
+    return this.tallyDone;
+  }
 }

@@ -1,12 +1,16 @@
 import { Trustee } from "./trustee";
 import { MESSAGE_RECEIVED, MESSAGE_PROCESSED } from "./event_manager";
-import { buildMessageId, buildMessageIdentifier } from "../test-utils";
+import {
+  buildMessageId,
+  buildMessageIdentifier,
+  TrusteeWrapperAdapter,
+} from "../test-utils";
 
-jest.mock("./trustee_wrapper_dummy");
 jest.mock("../client/message-parser");
 
 describe("Trustee", () => {
   const election = {
+    uniqueId: "decidim-barcelona.1",
     subscribeToLogEntriesChanges: jest.fn(),
     unsubscribeToLogEntriesChanges: jest.fn(),
     logEntries: [],
@@ -31,6 +35,7 @@ describe("Trustee", () => {
     bulletinBoardClient,
     identificationKeys,
     election,
+    wrapperAdapter: new TrusteeWrapperAdapter({ trusteeId: "trustee-1" }),
     options: {
       waitUntilNextCheck: 0,
     },
@@ -57,10 +62,7 @@ describe("Trustee", () => {
     expect(trustee.election).toEqual(defaultParams.election);
     expect(trustee.nextLogEntryIndexToProcess).toEqual(0);
     expect(trustee.lastMessageProcessedWithResult).toBeNull();
-  });
-
-  it("initialises the trustee wrapper with the given params", () => {
-    expect(trustee.wrapper.trusteeId).toEqual(defaultParams.uniqueId);
+    expect(trustee.wrapperAdapter).toEqual(defaultParams.wrapperAdapter);
   });
 
   describe("setup", () => {
@@ -132,7 +134,7 @@ describe("Trustee", () => {
           expect(trustee.tearDown).toHaveBeenCalled();
         });
 
-        it("processes messages until a done message", async () => {
+        fit("processes messages until a done message", async () => {
           await trustee.runKeyCeremony();
           expect(
             bulletinBoardClient.processKeyCeremonyStep
@@ -274,7 +276,7 @@ describe("Trustee", () => {
         jest
           .spyOn(trustee, "needsToBeRestored")
           .mockImplementation(() => false);
-        jest.spyOn(trustee.wrapper, "processMessage");
+        jest.spyOn(trustee.wrapperAdapter, "processMessage");
       });
 
       it("processes all the log entries in the election using the given trustee until the tally cast", async () => {
@@ -293,15 +295,15 @@ describe("Trustee", () => {
           },
         ];
         await trustee.runTally();
-        expect(trustee.wrapper.processMessage).toHaveBeenCalledWith(
+        expect(trustee.wrapperAdapter.processMessage).toHaveBeenCalledWith(
           buildMessageIdentifier("dummy.send"),
           "1234"
         );
-        expect(trustee.wrapper.processMessage).toHaveBeenCalledWith(
+        expect(trustee.wrapperAdapter.processMessage).toHaveBeenCalledWith(
           buildMessageIdentifier("dummy.send"),
           "5678"
         );
-        expect(trustee.wrapper.processMessage).toHaveBeenCalledWith(
+        expect(trustee.wrapperAdapter.processMessage).toHaveBeenCalledWith(
           buildMessageIdentifier("dummy.cast"),
           "0912"
         );
@@ -348,13 +350,13 @@ describe("Trustee", () => {
           .mockImplementation(() => ({ messageId: "some-id" }));
 
         jest
-          .spyOn(trustee.wrapper, "needsToBeRestored")
+          .spyOn(trustee.wrapperAdapter, "needsToBeRestored")
           .mockImplementation(() => true);
       });
 
       it("returns true", () => {
         expect(trustee.needsToBeRestored()).toBeTruthy();
-        expect(trustee.wrapper.needsToBeRestored).toHaveBeenCalledWith(
+        expect(trustee.wrapperAdapter.needsToBeRestored).toHaveBeenCalledWith(
           "some-id"
         );
       });
@@ -367,13 +369,13 @@ describe("Trustee", () => {
           .mockImplementation(() => null);
 
         jest
-          .spyOn(trustee.wrapper, "needsToBeRestored")
+          .spyOn(trustee.wrapperAdapter, "needsToBeRestored")
           .mockImplementation(() => false);
       });
 
       it("returns false", () => {
         expect(trustee.needsToBeRestored()).toBeFalsy();
-        expect(trustee.wrapper.needsToBeRestored).not.toHaveBeenCalled();
+        expect(trustee.wrapperAdapter.needsToBeRestored).not.toHaveBeenCalled();
       });
     });
   });
@@ -395,10 +397,10 @@ describe("Trustee", () => {
       jest
         .spyOn(election, "getLastMessageFromTrustee")
         .mockImplementation(() => ({ messageId: "some-id" }));
-      jest.spyOn(trustee.wrapper, "restore");
+      jest.spyOn(trustee.wrapperAdapter, "restore");
 
       trustee.restore("some state");
-      expect(trustee.wrapper.restore).toHaveBeenCalledWith(
+      expect(trustee.wrapperAdapter.restore).toHaveBeenCalledWith(
         "some state",
         "some-id"
       );

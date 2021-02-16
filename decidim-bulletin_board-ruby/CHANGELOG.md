@@ -13,6 +13,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - BB settings: `bulletin_board_server`\* and `bulletin_board_public_key`\*.
   - Authority settings: `authority_api_key`\*, `authority_name` and `authority_private_key`\*.
   - Elections settings: `scheme_name`, `number_of_trustees` and `quorum`.
+- `KeyCeremonyComponent` and `TallyComponent` now accepts a `trusteeWrapperAdapter` object.
+- The `processMessage` method from the `TrusteeWrapperAdapter` now accepts a `messageType` instead of a `messageIdentifier`.
+
+### Removed
+
+- The `TrusteeWrapper` for the "dummy" voting scheme has been removed from the project.
+
+### Added
+
+- The `TrusteeWrapperAdapter` abstract class can be used to implement any voting scheme wrapper adapter.
 
 ## [0.10.1] - 2021-02-15
 
