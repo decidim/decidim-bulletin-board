@@ -1,0 +1,10 @@
+#!/bin/bash
+
+rm -rf $DIST_DIR
+mkdir -p $DIST_DIR
+
+# Use this for production builds
+# npm run build -- --env production
+
+# Use this for development builds
+npm run build -- --env development

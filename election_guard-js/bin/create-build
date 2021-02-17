@@ -1,0 +1,38 @@
+#!/bin/bash
+
+DIR=$1
+
+function fix_relative_imports {
+  for file in $(ls $DIR/$1/*.py)
+  do
+    sed -i'.bak' "s/^\s*from \./from $2./g" $file && rm $file.bak
+    sed -i'.bak' "s/^\s*import \./import $2./g" $file && rm $file.bak
+  done
+}
+
+rm -rf $DIR
+mkdir -p $DIR
+
+for source in electionguard-python decidim-electionguard
+do
+  for file in $(cat $SOURCES_DIR/$source.txt)
+  do
+    mkdir -p $DIR/$(dirname $file)
+    strip-hints --to-empty $SOURCES_DIR/$source/src/$file > $DIR/$file
+  done
+done
+
+cp -rf $SOURCES_DIR/modules/* $DIR/
+
+fix_relative_imports electionguard electionguard
+fix_relative_imports decidim/electionguard decidim.electionguard
+
+
+### TESTS
+mkdir -p $DIR/tests
+for file in $(cat $SOURCES_DIR/decidim-electionguard-tests.txt)
+do
+  strip-hints --to-empty $SOURCES_DIR/decidim-electionguard/tests/$file > $DIR/tests/$file
+done
+
+fix_relative_imports tests tests

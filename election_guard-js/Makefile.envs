@@ -1,0 +1,7 @@
+
+export SOURCES_DIR = sources
+export ORIG_DIR = orig
+export BUILD_DIR = build
+export PATCHES_FILE = patches.patch
+export TRANSPILE_DIR = transpile
+export DIST_DIR = dist

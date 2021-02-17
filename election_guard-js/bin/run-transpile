@@ -1,0 +1,13 @@
+#!/bin/bash
+
+TEMP_DIR=temp/
+
+rm -rf $TRANSPILE_DIR $TEMP_DIR
+cp -rf $BUILD_DIR $TEMP_DIR
+
+cd $TEMP_DIR
+transcrypt -n __init__.py
+cd ..
+
+mv $TEMP_DIR/__target__/ $TRANSPILE_DIR
+rm -rf $TEMP_DIR

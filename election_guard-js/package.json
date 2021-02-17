@@ -1,0 +1,27 @@
+{
+  "name": "electionguard-javascript",
+  "version": "1.0.0",
+  "description": "",
+  "main": "",
+  "dependencies": {
+    "big-integer": "^1.6.48",
+    "jssha": "^3.1.2"
+  },
+  "devDependencies": {
+    "webpack": "^5.3.0",
+    "webpack-cli": "^4.1.0"
+  },
+  "scripts": {
+    "build": "webpack"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/codegram/electionguard-javascript.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/codegram/electionguard-javascript/issues"
+  },
+  "homepage": "https://github.com/codegram/electionguard-javascript#readme"
+}

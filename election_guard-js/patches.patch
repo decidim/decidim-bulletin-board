@@ -1,0 +1,2376 @@
+diff -ruwN orig/decidim/electionguard/common.py build/decidim/electionguard/common.py
+--- orig/decidim/electionguard/common.py	2020-11-03 10:10:47.000000000 +0100
++++ build/decidim/electionguard/common.py	2020-10-28 15:25:36.000000000 +0100
+@@ -12,7 +12,7 @@
+     #quorum: int
+ 
+     def build_election(self, election_creation ):
+-        self.election = ElectionDescription.from_json_object(complete_election_description(election_creation['description']))
++        self.election = ElectionDescription.from_json_object(complete_election_description(election_creation['description']), ElectionDescription)
+ 
+         if not self.election.is_valid():
+             raise InvalidElectionDescription()
+diff -ruwN orig/decidim/electionguard/utils.py build/decidim/electionguard/utils.py
+--- orig/decidim/electionguard/utils.py	2020-11-03 10:10:47.000000000 +0100
++++ build/decidim/electionguard/utils.py	2020-11-03 10:28:42.000000000 +0100
+@@ -1,46 +1,7 @@
+-from base64 import b64encode, b64decode
+ from electionguard.group import ElementModP, ElementModQ
+ import electionguard.serializable
+-from gmpy2 import mpz
+ 
+-# -- TEMPORARY MONKEYPATCH JSONS SERIALIZATION --
+-old_set_serializers = electionguard.serializable.set_serializers
+-old_set_deserializers = electionguard.serializable.set_deserializers
+-electionguard.serializable.KEYS_TO_REMOVE += ['nonce']  # Remove nonces when serializing to JSON
+-
+-
+-def set_serializers():
+-    old_set_serializers()
+-    electionguard.serializable.set_serializer(serialize_big_number, ElementModP)
+-    electionguard.serializable.set_serializer(serialize_big_number, ElementModQ)
+-
+-
+-def set_deserializers():
+-    old_set_serializers()
+-    electionguard.serializable.set_deserializer(deserialize_big_number, ElementModP)
+-    electionguard.serializable.set_deserializer(deserialize_big_number, ElementModQ)
+-
+-
+-electionguard.serializable.set_serializers = set_serializers
+-electionguard.serializable.set_deserializers = set_deserializers
+-# -----------------------------------------------
+-
+-
+-def serialize_big_number(obj , **_):
+-    number = int(obj.to_int())
+-    return b64encode(
+-        number.to_bytes(
+-            (number.bit_length() + 7) // 8,
+-            byteorder='big'
+-        )
+-    ).decode('utf-8')
+-
+-
+-def deserialize_big_number(obj, cls, **_):
+-    return cls(mpz(int.from_bytes(b64decode(obj), byteorder='big')))
+-
+-
+-def serialize(obj, include_private  = False):
++def serialize(obj, include_private: bool = False):
+     return electionguard.serializable.write_json_object(obj, not include_private)
+ 
+ 
+@@ -49,7 +10,7 @@
+ 
+ 
+ def deserialize_key(obj):
+-    return deserialize_big_number(obj, ElementModP)
++    return electionguard.serializable.read_json_object(obj, ElementModP)
+ 
+ 
+ class InvalidElectionDescription(Exception):
+@@ -67,24 +28,28 @@
+ 
+ 
+ def complete_election_description(election_description )  :
+-    complete_description = {
+-        **election_description,
++    complete_description = dict(election_description)
++    complete_description.update({
+         'contact_information': {
+             'address_line': [],
+-            'name': 'Organization name',
++            '_name': 'Organization name',
+             'email': [{'annotation': 'contact', 'value': 'contact@example.org'}],
+             'phone': []
+         },
+         'election_scope_id': 'test-election',
+-        'type': 'special',
++        '_type': {
++            '_name': 'special'
++        },
+         'geopolitical_units': [
+             {
+                 'object_id': 'a-place',
+-                'name': 'A place',
+-                'type': 'county',
++                '_name': 'A place',
++                '_type': {
++                    '_name': 'county',
++                },
+                 'contact_information': {
+                     'address_line': [],
+-                    'name': 'Organization name',
++                    '_name': 'Organization name',
+                     'email': [{'annotation': 'contact', 'value': 'contact@example.org'}]
+                 },
+                 'phone': []
+@@ -97,7 +62,7 @@
+                 'geopolitical_unit_ids': ['a-place']
+             }
+         ]
+-    }
++    })
+ 
+     for contest in complete_description['contests']:
+         contest['electoral_district_id'] = 'a-place'
+diff -ruwN orig/decidim/electionguard/voter.py build/decidim/electionguard/voter.py
+--- orig/decidim/electionguard/voter.py	2020-11-03 10:10:47.000000000 +0100
++++ build/decidim/electionguard/voter.py	2020-11-02 16:30:32.000000000 +0100
+@@ -5,7 +5,9 @@
+ from typing import List
+ from decidim.electionguard.common import Context, ElectionStep, Wrapper
+ from decidim.electionguard.utils import MissingJointKey, serialize, deserialize_key
++import BigInteger as bigInt
+ 
++mpz = bigInt
+ 
+ class VoterContext(Context):
+     has_joint_key  = False
+@@ -24,7 +26,6 @@
+ 
+     def process_message(self, message_type , message , context ):
+         joint_key = deserialize_key(message['joint_election_key'])
+-
+         context.election_builder.set_public_key(get_optional(joint_key))
+         context.election_metadata, context.election_context = get_optional(context.election_builder.build())
+         context.has_joint_key = True
+@@ -50,20 +51,12 @@
+                 for selection in contest.ballot_selections
+             ]
+ 
+-            contests.append(PlaintextBallotContest(contest.object_id, selections))
++            contests.append(PlaintextBallotContest(object_id = contest.object_id, ballot_selections = selections))
+ 
+-        plaintext_ballot = PlaintextBallot(self.ballot_id, ballot_style, contests)
++        plaintext_ballot = PlaintextBallot(object_id = self.ballot_id, ballot_style = ballot_style, contests = contests)
+ 
+         # TODO: store the audit information somewhere
+ 
+-        # return serialize(encrypt_ballot(
+-        #     plaintext_ballot,
+-        #     self.context.election_metadata,
+-        #     self.context.election_context,
+-        #     ElementModQ(0),
+-        #     None,
+-        #     True
+-        # ))
+         return encrypt_ballot(
+             plaintext_ballot,
+             self.context.election_metadata,
+diff -ruwN orig/distutils.py build/distutils.py
+--- orig/distutils.py	1970-01-01 01:00:00.000000000 +0100
++++ build/distutils.py	2020-10-28 15:25:36.000000000 +0100
+@@ -0,0 +1,5 @@
++class Util:
++    def strtobool(str):
++        return int(str) == 1
++
++util = Util()
+\ No newline at end of file
+diff -ruwN orig/electionguard/ballot.py build/electionguard/ballot.py
+--- orig/electionguard/ballot.py	2020-11-03 10:10:47.000000000 +0100
++++ build/electionguard/ballot.py	2020-11-02 16:55:52.000000000 +0100
+@@ -1,8 +1,6 @@
+ from dataclasses import dataclass, field, replace
+ from datetime import datetime
+-from distutils import util
+ from enum import Enum
+-from typing import Any, List, Optional, Protocol, runtime_checkable, Sequence
+ 
+ from electionguard.chaum_pedersen import (
+     ConstantChaumPedersenProof,
+@@ -15,9 +13,12 @@
+ from electionguard.group import add_q, ElementModP, ElementModQ, ZERO_MOD_Q
+ from electionguard.hash import CryptoHashCheckable, hash_elems
+ from electionguard.logs import log_warning
++from electionguard.nonces import Nonces
++from electionguard.proof import Proof
+ from electionguard.tracker import get_rotating_tracker_hash, tracker_hash_to_words
+ from electionguard.utils import to_ticks, flatmap_optional
+ 
++__pragma__ ('kwargs')
+ 
+ def _list_eq(
+     list1 , list2 
+@@ -63,7 +64,11 @@
+     discarded when encrypting.
+     """
+ 
+-    #vote: str
++    _types = [
++        ["vote", str],
++        ["is_placeholder_selection", bool],
++        ["extended_data", ExtendedData]
++    ]
+ 
+     is_placeholder_selection  = field(default=False)
+     """Determines if this is a placeholder selection"""
+@@ -101,17 +106,21 @@
+         :return: an integer 0 or 1 for valid data, or 0 if the data is malformed
+         """
+ 
+-        as_bool = False
+-        try:
+-            as_bool = util.strtobool(self.vote.lower())
+-        except ValueError:
++        vote_lower = str(self.vote).lower()
++        as_int = {
++            "y": 1, "yes": 1, "true": 1, "on": 1, "1": 1,
++            "n": 0, "no": 0, "f": 0, "false": 0, "off": 0, "0": 0
++        }.get(vote_lower)
++
++        if as_int is None:
+             log_warning(
+-                f"to_int could not convert plaintext: {self.vote.lower()} to bool"
++                f"to_int could not convert plaintext: {vote_lower} to bool"
+             )
++            as_int = 0
+ 
+         # TODO: ISSUE #33: If the boolean coercion above fails, support integer votes
+         # greater than 1 for cases such as cumulative voting
+-        as_int = int(as_bool)
++        # as_int = int(as_bool)
+         return as_int
+ 
+     def __eq__(self, other )  :
+@@ -127,8 +136,7 @@
+         return not self.__eq__(other)
+ 
+ 
+-@runtime_checkable
+-class CiphertextSelection(Protocol):
++class CiphertextSelection:
+     """
+     Encrypted selection
+     """
+@@ -170,14 +178,21 @@
+     By keeping the `proof` the nonce is not required fotor verify the encrypted selection.
+     """
+ 
+-    #description_hash: ElementModQ
+-    """The SelectionDescription hash"""
+-
+-    #ciphertext: ElGamalCiphertext
+-    """The encrypted representation of the vote field"""
+-
+-    #crypto_hash: ElementModQ
+-    """The hash of the encrypted values"""
++    _types = [
++        ["description_hash", ElementModQ],
++        # """The SelectionDescription hash"""
++
++        ["ciphertext", ElGamalCiphertext],
++        # """The encrypted representation of the vote field"""
++
++        ["crypto_hash", ElementModQ],
++        # """The hash of the encrypted values"""
++
++        ["is_placeholder_selection", bool],
++        ["nonce", Nonces],
++        ["proof", Proof],
++        ["extended_data", ExtendedData]
++    ]
+ 
+     is_placeholder_selection  = field(default=False)
+     """Determines if this is a placeholder selection"""
+@@ -216,7 +231,7 @@
+             return False
+ 
+         recalculated_crypto_hash = self.crypto_hash_with(seed_hash)
+-        if self.crypto_hash != recalculated_crypto_hash:
++        if self.crypto_hash.__ne__(recalculated_crypto_hash):
+             log_warning(
+                 f"mismatching crypto hash: {self.object_id} expected({str(recalculated_crypto_hash)}), actual({str(self.crypto_hash)})"
+             )
+@@ -317,6 +332,10 @@
+     while complete contests are passed into ElectionGuard when running encryption on an existing dataset.
+     """
+ 
++    _types = [
++        ["ballot_selections", [PlaintextBallotSelection]]
++    ]
++
+     ballot_selections  = field(
+         default_factory=lambda: []
+     )
+@@ -349,6 +368,7 @@
+ 
+         number_elected = 0
+         votes = 0
++
+         # Verify the selections are well-formed
+         for selection in self.ballot_selections:
+             selection_count = selection.to_int()
+@@ -394,14 +414,19 @@
+     then it is required in order to regenerate the proof.
+     """
+ 
+-    #description_hash: ElementModQ
+-    """Hash from contestDescription"""
++    _types = [
++        ["description_hash", ElementModQ],
++        #"""Hash from contestDescription"""
+ 
+-    #ballot_selections: List[CiphertextBallotSelection]
+-    """Collection of ballot selections"""
++        ["ballot_selections", [CiphertextBallotSelection]],
++        #"""Collection of ballot selections"""
+ 
+-    #crypto_hash: ElementModQ
+-    """Hash of the encrypted values"""
++        ["crypto_hash", ElementModQ],
++        #"""Hash of the encrypted values"""
++
++        ["nonce", Nonces],
++        ["proof", Proof]
++    ]
+ 
+     nonce  = None
+     """The nonce used to generate the encryption. Sensitive & should be treated as a secret"""
+@@ -471,6 +496,7 @@
+         Specifically, the seed hash in this context is the hash of the ContestDescription, 
+         or whatever `ElementModQ` was used to populate the `description_hash` field.
+         """
++
+         if seed_hash != self.description_hash:
+             log_warning(
+                 f"mismatching contest hash: {self.object_id} expected({str(seed_hash)}), actual({str(self.description_hash)})"
+@@ -478,7 +504,7 @@
+             return False
+ 
+         recalculated_crypto_hash = self.crypto_hash_with(seed_hash)
+-        if self.crypto_hash != recalculated_crypto_hash:
++        if self.crypto_hash.__ne__(recalculated_crypto_hash):
+             log_warning(
+                 f"mismatching crypto hash: {self.object_id} expected({str(recalculated_crypto_hash)}), actual({str(self.crypto_hash)})"
+             )
+@@ -490,6 +516,8 @@
+             log_warning(f"no proof exists for: {self.object_id}")
+             return False
+ 
++
++
+         # Verify the sum of the selections matches the proof
+         elgamal_accumulation = self.elgamal_accumulate()
+         return self.proof.is_valid(
+@@ -588,11 +616,13 @@
+     :field object_id: A unique Ballot ID that is relevant to the external system
+     """
+ 
+-    #ballot_style: str
+-    """The `object_id` of the `BallotStyle` in the `Election` Manifest"""
++    _types = [
++        ["ballot_style", str],
++        # """The `object_id` of the `BallotStyle` in the `Election` Manifest"""
+ 
+-    #contests: List[PlaintextBallotContest]
+-    """The list of contests for this ballot"""
++        ["contests", [PlaintextBallotContest]]
++        # """The list of contests for this ballot"""
++    ]
+ 
+     def is_valid(self, expected_ballot_style_id )  :
+         """
+@@ -632,29 +662,31 @@
+     :field object_id: A unique Ballot ID that is relevant to the external system
+     """
+ 
+-    #ballot_style: str
+-    """The `object_id` of the `BallotStyle` in the `Election` Manifest"""
++    _types = [
++        ["ballot_style", str],
++        #"""The `object_id` of the `BallotStyle` in the `Election` Manifest"""
+ 
+-    #description_hash: ElementModQ
+-    """Hash of the election metadata"""
++        ["description_hash", ElementModQ],
++        #"""Hash of the election metadata"""
+ 
+-    #previous_tracking_hash: ElementModQ
+-    """Previous tracking hash or seed hash"""
++        ["previous_tracking_hash", ElementModQ],
++        #"""Previous tracking hash or seed hash"""
+ 
+-    #contests: List[CiphertextBallotContest]
+-    """List of contests for this ballot"""
++        ["contests", [CiphertextBallotContest]],
++        #"""List of contests for this ballot"""
+ 
+-    #tracking_hash: Optional[ElementModQ]
+-    """Unique ballot tracking hash for this ballot"""
++        ["tracking_hash", [ElementModQ]],
++        #"""Unique ballot tracking hash for this ballot"""
+ 
+-    #timestamp: int
+-    """Timestamp at which the ballot encryption is generated in tick"""
++        ["timestamp", int],
++        #"""Timestamp at which the ballot encryption is generated in tick"""
+ 
+-    #crypto_hash: ElementModQ
+-    """The hash of the encrypted ballot representation"""
++        ["crypto_hash", ElementModQ],
++        #"""The hash of the encrypted ballot representation"""
+ 
+-    #nonce: Optional[ElementModQ]
+-    """The nonce used to encrypt this ballot. Sensitive & should be treated as a secret"""
++        ["nonce", [ElementModQ]]
++        #"""The nonce used to encrypt this ballot. Sensitive & should be treated as a secret"""
++    ]
+ 
+     def __eq__(self, other )  :
+         return (
+@@ -747,7 +779,7 @@
+             return False
+ 
+         recalculated_crypto_hash = self.crypto_hash_with(seed_hash)
+-        if self.crypto_hash != recalculated_crypto_hash:
++        if self.crypto_hash.__ne__(recalculated_crypto_hash):
+             log_warning(
+                 f"mismatching crypto hash: {self.object_id} expected({str(recalculated_crypto_hash)}), actual({str(self.crypto_hash)})"
+             )
+@@ -812,7 +844,7 @@
+     def __eq__(self, other )  :
+         return (
+             isinstance(other, CiphertextAcceptedBallot)
+-            and super.__eq__(self, other)
++            and super().__eq__(self, other)
+             and self.state == other.state
+         )
+ 
+diff -ruwN orig/electionguard/chaum_pedersen.py build/electionguard/chaum_pedersen.py
+--- orig/electionguard/chaum_pedersen.py	2020-11-03 10:10:47.000000000 +0100
++++ build/electionguard/chaum_pedersen.py	2020-11-03 09:50:06.000000000 +0100
+@@ -19,6 +19,8 @@
+ from electionguard.nonces import Nonces
+ from electionguard.proof import Proof, ProofUsage
+ 
++__pragma__ ('kwargs')
++
+ 
+ @dataclass(frozen=True)
+ class DisjunctiveChaumPedersenProof(Proof):
+@@ -47,8 +49,16 @@
+     usage  = ProofUsage.SelectionValue
+     """a description of how to use this proof"""
+ 
+-    def __post_init__(self)  :
+-        super().__init__()
++    def __init__(self, proof_zero_pad, proof_zero_data, proof_one_pad, proof_one_data, proof_zero_challenge, proof_one_challenge, challenge, proof_zero_response, proof_one_response)  :
++        self.proof_zero_pad = proof_zero_pad
++        self.proof_zero_data = proof_zero_data
++        self.proof_one_pad = proof_one_pad
++        self.proof_one_data = proof_one_data
++        self.proof_zero_challenge = proof_zero_challenge
++        self.proof_one_challenge = proof_one_challenge
++        self.challenge = challenge
++        self.proof_zero_response = proof_zero_response
++        self.proof_one_response = proof_one_response
+ 
+     def is_valid(
+         self, message , k , q 
+@@ -62,7 +72,7 @@
+         :return: True if everything is consistent. False otherwise.
+         """
+ 
+-        (alpha, beta) = message
++        (alpha, beta) = message.tuple()
+         a0 = self.proof_zero_pad
+         b0 = self.proof_zero_data
+         a1 = self.proof_one_pad
+@@ -82,13 +92,13 @@
+         in_bounds_c1 = c1.is_in_bounds()
+         in_bounds_v0 = v0.is_in_bounds()
+         in_bounds_v1 = v1.is_in_bounds()
+-        consistent_c = add_q(c0, c1) == c == hash_elems(q, alpha, beta, a0, b0, a1, b1)
+-        consistent_gv0 = g_pow_p(v0) == mult_p(a0, pow_p(alpha, c0))
+-        consistent_gv1 = g_pow_p(v1) == mult_p(a1, pow_p(alpha, c1))
+-        consistent_kv0 = pow_p(k, v0) == mult_p(b0, pow_p(beta, c0))
+-        consistent_gc1kv1 = mult_p(g_pow_p(c1), pow_p(k, v1)) == mult_p(
++        consistent_c = add_q(c0, c1).__eq__(c) and c.__eq__(hash_elems(q, alpha, beta, a0, b0, a1, b1))
++        consistent_gv0 = g_pow_p(v0).__eq__(mult_p(a0, pow_p(alpha, c0)))
++        consistent_gv1 = g_pow_p(v1).__eq__(mult_p(a1, pow_p(alpha, c1)))
++        consistent_kv0 = pow_p(k, v0).__eq__(mult_p(b0, pow_p(beta, c0)))
++        consistent_gc1kv1 = mult_p(g_pow_p(c1), pow_p(k, v1)).__eq__(mult_p(
+             b1, pow_p(beta, c1)
+-        )
++        ))
+ 
+         success = (
+             in_bounds_alpha
+@@ -153,8 +163,11 @@
+     usage  = ProofUsage.SecretValue
+     """a description of how to use this proof"""
+ 
+-    def __post_init__(self)  :
+-        super().__init__()
++    def __init__(self, pad, data, challenge, response)  :
++        self.pad = pad
++        self.data = data
++        self.challenge = challenge
++        self.response = response
+ 
+     def is_valid(
+         self,
+@@ -178,7 +191,7 @@
+         :param q: The extended base hash of the election
+         :return: True if everything is consistent. False otherwise.
+         """
+-        (alpha, beta) = message
++        (alpha, beta) = message.tuple()
+         a = self.pad
+         b = self.data
+         c = self.challenge
+@@ -193,14 +206,14 @@
+         in_bounds_v = v.is_in_bounds()
+         in_bounds_q = q.is_in_bounds()
+ 
+-        same_c = c == hash_elems(q, alpha, beta, a, b, m)
++        same_c = c.__eq__(hash_elems(q, alpha, beta, a, b, m))
+         consistent_gv = (
+             in_bounds_v
+             and in_bounds_a
+             and in_bounds_c
+             and in_bounds_v
+             # The equation 𝑔^𝑣𝑖 = 𝑎𝑖𝐾^𝑐𝑖
+-            and g_pow_p(v) == mult_p(a, pow_p(k, c))
++            and g_pow_p(v).__eq__(mult_p(a, pow_p(k, c)))
+         )
+ 
+         # The equation 𝐴^𝑣𝑖 = 𝑏𝑖𝑀𝑖^𝑐𝑖 mod 𝑝
+@@ -209,7 +222,7 @@
+             and in_bounds_b
+             and in_bounds_c
+             and in_bounds_v
+-            and pow_p(alpha, v) == mult_p(b, pow_p(m, c))
++            and pow_p(alpha, v).__eq__(mult_p(b, pow_p(m, c)))
+         )
+ 
+         success = (
+@@ -272,8 +285,12 @@
+     usage  = ProofUsage.SelectionLimit
+     """a description of how to use this proof"""
+ 
+-    def __post_init__(self)  :
+-        super().__init__()
++    def __init__(self, pad, data, challenge, response, constant)  :
++        self.pad = pad
++        self.data = data
++        self.challenge = challenge
++        self.response = response
++        self.constant = constant
+ 
+     def is_valid(
+         self, message , k , q 
+@@ -288,7 +305,7 @@
+         :return: True if everything is consistent. False otherwise.
+         """
+ 
+-        (alpha, beta) = message
++        (alpha, beta) = message.tuple()
+         a = self.pad
+         b = self.data
+         c = self.challenge
+@@ -311,20 +328,20 @@
+         # this is an arbitrary constant check to verify that decryption will be performant
+         # in some use cases this value may need to be increased
+         sane_constant = 0 <= constant < 1_000_000_000
+-        same_c = c == hash_elems(q, alpha, beta, a, b)
++        same_c = c.__eq__(hash_elems(q, alpha, beta, a, b))
+         consistent_gv = (
+             in_bounds_v
+             and in_bounds_a
+             and in_bounds_alpha
+             and in_bounds_c
+             # The equation 𝑔^𝑉 = 𝑎𝐴^𝐶 mod 𝑝
+-            and g_pow_p(v) == mult_p(a, pow_p(alpha, c))
++            and g_pow_p(v).__eq__(mult_p(a, pow_p(alpha, c)))
+         )
+ 
+         # The equation 𝑔^𝐿𝐾^𝑣 = 𝑏𝐵^𝐶 mod 𝑝
+         consistent_kv = in_bounds_constant and mult_p(
+             g_pow_p(mult_p(c, constant_q)), pow_p(k, v)
+-        ) == mult_p(b, pow_p(beta, c))
++        ).__eq__(mult_p(b, pow_p(beta, c)))
+ 
+         success = (
+             in_bounds_alpha
+@@ -385,7 +402,6 @@
+     :param seed: Used to generate other random values here
+     :param plaintext: Zero or one
+     """
+-
+     assert (
+         0 <= plaintext <= 1
+     ), "make_disjunctive_chaum_pedersen only supports plaintexts of 0 or 1"
+@@ -412,10 +428,10 @@
+                         usually the election extended base hash (𝑄')
+     :param seed: Used to generate other random values here
+     """
+-    (alpha, beta) = message
++    (alpha, beta) = message.tuple()
+ 
+     # Pick three random numbers in Q.
+-    c1, v1, u0 = Nonces(seed, "disjoint-chaum-pedersen-proof")[0:3]
++    c1, v1, u0 = Nonces(seed, "disjoint-chaum-pedersen-proof").get_slice(0, 3)
+ 
+     # Compute the NIZKP
+     a0 = g_pow_p(u0)
+@@ -447,10 +463,10 @@
+                         usually the election extended base hash (𝑄')
+     :param seed: Used to generate other random values here
+     """
+-    (alpha, beta) = message
++    (alpha, beta) = message.tuple()
+ 
+     # Pick three random numbers in Q.
+-    c0, v0, u1 = Nonces(seed, "disjoint-chaum-pedersen-proof")[0:3]
++    c0, v0, u1 = Nonces(seed, "disjoint-chaum-pedersen-proof").get_slice(0, 3)
+ 
+     # Compute the NIZKP
+     q_minus_c0 = negate_q(c0)
+@@ -483,10 +499,10 @@
+     :param hash_header: A value used when generating the challenge, 
+                         usually the election extended base hash (𝑄')
+     """
+-    (alpha, beta) = message
++    (alpha, beta) = message.tuple()
+ 
+     # Pick one random number in Q.
+-    u = Nonces(seed, "constant-chaum-pedersen-proof")[0]
++    u = Nonces(seed, "constant-chaum-pedersen-proof").get(0)
+     a = g_pow_p(u)  # 𝑔^𝑢𝑖 mod 𝑝
+     b = pow_p(alpha, u)  # 𝐴^𝑢𝑖 mod 𝑝
+     c = hash_elems(hash_header, alpha, beta, a, b, m)  # sha256(𝑄', A, B, a𝑖, b𝑖, 𝑀𝑖)
+@@ -514,10 +530,10 @@
+     :param hash_header: A value used when generating the challenge,
+                         usually the election extended base hash (𝑄')
+     """
+-    (alpha, beta) = message
++    (alpha, beta) = message.tuple()
+ 
+     # Pick one random number in Q.
+-    u = Nonces(seed, "constant-chaum-pedersen-proof")[0]
++    u = Nonces(seed, "constant-chaum-pedersen-proof").get(0)
+     a = g_pow_p(u)  # 𝑔^𝑢𝑖 mod 𝑝
+     b = pow_p(k, u)  # 𝐴^𝑢𝑖 mod 𝑝
+     c = hash_elems(hash_header, alpha, beta, a, b)  # sha256(𝑄', A, B, a, b)
+diff -ruwN orig/electionguard/dlog.py build/electionguard/dlog.py
+--- orig/electionguard/dlog.py	2020-11-03 10:10:47.000000000 +0100
++++ build/electionguard/dlog.py	2020-10-28 15:25:51.000000000 +0100
+@@ -1,8 +1,5 @@
+ # support for computing discrete logs, with a cache so they're never recomputed
+ 
+-import asyncio
+-from typing import Dict, Optional
+-
+ from electionguard.group import G, ElementModP, ONE_MOD_P, mult_p, int_to_p_unchecked
+ 
+ __dlog_cache   = {ONE_MOD_P: 0}
+@@ -30,20 +27,14 @@
+     if e in __dlog_cache:
+         return __dlog_cache[e]
+     else:
+-        return asyncio.run(__discrete_log_internal(e))
++        return __discrete_log_internal(e)
+ 
+ 
+ async def __discrete_log_internal(e )  :
+     global __dlog_cache
+     global __dlog_max_elem
+     global __dlog_max_exp
+-    global __dlog_lock
+-
+-    if __dlog_lock is None:
+-        # Initialize the lock on on first function call per process
+-        __dlog_lock = asyncio.Lock()
+ 
+-    async with __dlog_lock:
+         g = int_to_p_unchecked(G)
+         while e != __dlog_max_elem:
+             __dlog_max_exp = __dlog_max_exp + 1
+diff -ruwN orig/electionguard/election.py build/electionguard/election.py
+--- orig/electionguard/election.py	2020-11-03 10:10:47.000000000 +0100
++++ build/electionguard/election.py	2020-10-30 10:15:50.000000000 +0100
+@@ -1,7 +1,6 @@
+ from dataclasses import dataclass, field, InitVar
+ from datetime import datetime
+ from enum import Enum, unique
+-from typing import cast, List, Optional, Set, Any
+ 
+ from electionguard.ballot import _list_eq
+ from electionguard.election_object_base import ElectionObjectBase
+@@ -11,6 +10,7 @@
+ from electionguard.serializable import Serializable
+ from electionguard.utils import get_optional, to_ticks
+ 
++__pragma__ ('kwargs')
+ 
+ @unique
+ class ElectionType(Enum):
+@@ -129,6 +129,9 @@
+     Data entity used to represent multi-national text. Use when text on a ballot contains multi-national text.
+     See: https://developers.google.com/elections-data/reference/internationalized-text
+     """
++    _types = [
++        ["text", [Language]]
++    ]
+ 
+     text  = field(default_factory=lambda: [])
+ 
+@@ -145,17 +148,23 @@
+     For defining contact information about objects such as persons, boards of authorities, and organizations.
+     See: https://developers.google.com/elections-data/reference/contact-information
+     """
++    _types = [
++        ["address_line", [str]],
++        ["email", [AnnotatedString]],
++        ["phone", [AnnotatedString]],
++        ["_name", str]
++    ]
+ 
+     address_line  = field(default=None)
+     email  = field(default=None)
+     phone  = field(default=None)
+-    name  = field(default=None)
++    _name  = field(default=None)
+ 
+     def crypto_hash(self)  :
+         """
+         A hash representation of the object
+         """
+-        return hash_elems(self.name, self.address_line, self.email, self.phone)
++        return hash_elems(self._name, self.address_line, self.email, self.phone)
+ 
+ 
+ @dataclass(eq=True, unsafe_hash=True)
+@@ -166,8 +175,12 @@
+     See: https://developers.google.com/elections-data/reference/gp-unit
+     """
+ 
+-    #name: str
+-    #type: ReportingUnitType
++    _types = [
++        ["_name", str],
++        ["_type", ReportingUnitType],
++        ["contact_information", ContactInformation]
++    ]
++
+     contact_information  = field(default=None)
+ 
+     def crypto_hash(self)  :
+@@ -175,7 +188,7 @@
+         A hash representation of the object
+         """
+         return hash_elems(
+-            self.object_id, self.name, str(self.type.name), self.contact_information
++            self.object_id, self._name, str(self._type._name), self.contact_information
+         )
+ 
+ 
+@@ -185,6 +198,12 @@
+     A BallotStyle works as a key to uniquely specify a set of contests. See also `ContestDescription`.
+     """
+ 
++    _types = [
++        ["geopolitical_unit_ids", [str]],
++        ["party_ids", "Optional"],
++        ["image_uri", str]
++    ]
++
+     geopolitical_unit_ids  = field(default=None)
+     party_ids  = field(default=None)
+     image_uri  = field(default=None)
+@@ -205,6 +224,13 @@
+     See: https://developers.google.com/elections-data/reference/party
+     """
+ 
++    _types = [
++        ["ballot_name", InternationalizedText],
++        ["abbreviation", str],
++        ["color", str],
++        ["logo_uri", str]
++    ]
++
+     ballot_name  = field(default=InternationalizedText())
+     abbreviation  = field(default=None)
+     color  = field(default=None)
+@@ -241,6 +267,13 @@
+     selections for the contest.  See the wiki, readme's, and tests in this repo for more info
+     """
+ 
++    _types = [
++        ["ballot_name", InternationalizedText],
++        ["party_id", str],
++        ["image_uri", str],
++        ["is_write_in", bool],
++    ]
++
+     ballot_name  = field(default=InternationalizedText())
+     party_id  = field(default=None)
+     image_uri  = field(default=None)
+@@ -276,8 +309,11 @@
+     however that information is not captured by default when encrypting a specific ballot.
+     """
+ 
+-    #candidate_id: str
+-    #sequence_order: int
++    _types = [
++        ["candidate_id", str],
++        ["sequence_order", int]
++    ]
++
+     """
+     Used for ordering selections in a contest to ensure various encryption primitives are deterministic.
+     The sequence order must be unique and should be representative of how the contests are represnted
+@@ -305,28 +341,33 @@
+     however that information is not captured by default when encrypting a specific ballot.
+     """
+ 
+-    #electoral_district_id: str
+-    #sequence_order: int
+-    """
+-    Used for ordering contests in a ballot to ensure various encryption primitives are deterministic.
+-    The sequence order must be unique and should be representative of how the contests are represnted
+-    on a "master" ballot in an external system.  The sequence order is not required to be in the order 
+-    in which they are displayed to a voter.  Any acceptable range of integer values may be provided.
+-    """
++    _types = [
++        ["electoral_district_id", str],
++        ["sequence_order", int],
++
++        # Used for ordering contests in a ballot to ensure various encryption primitives are deterministic.
++        # The sequence order must be unique and should be representative of how the contests are represnted
++        # on a "master" ballot in an external system.  The sequence order is not required to be in the order
++        # in which they are displayed to a voter.  Any acceptable range of integer values may be provided.
+ 
+-    #vote_variation: VoteVariationType
++        ["vote_variation", VoteVariationType],
+ 
+     # Number of candidates that are elected in the contest ("n" of n-of-m).
+     # Note: a referendum is considered a specific case of 1-of-m in ElectionGuard
+-    #number_elected: int
++        ["number_elected", int],
+ 
+     # Maximum number of votes/write-ins per voter in this contest. Used in cumulative voting
+     # to indicate how many total votes a voter can spread around. In n-of-m elections, this will
+     # be None.
+-    #votes_allowed: Optional[int]
++        ["votes_allowed", "Optional"], # TODO: not the correct type
+ 
+     # Name of the contest, not necessarily as it appears on the ballot.
+-    #name: str
++        ["_name", str],
++
++        ["ballot_selections", [SelectionDescription]],
++        ["ballot_title", InternationalizedText],
++        ["ballot_subtitle", InternationalizedText]
++    ]
+ 
+     # For associating a ballot selection for the contest, i.e., a candidate, a ballot measure.
+     ballot_selections  = field(default_factory=lambda: [])
+@@ -345,7 +386,7 @@
+             and self.votes_allowed == other.votes_allowed
+             and self.number_elected == other.number_elected
+             and self.votes_allowed == other.votes_allowed
+-            and self.name == other.name
++            and self._name == other._name
+             and _list_eq(self.ballot_selections, other.ballot_selections)
+             and self.ballot_title == other.ballot_title
+             and self.ballot_subtitle == other.ballot_subtitle
+@@ -363,10 +404,10 @@
+             self.object_id,
+             self.sequence_order,
+             self.electoral_district_id,
+-            str(self.vote_variation.name),
++            str(self.vote_variation._name),
+             self.ballot_title,
+             self.ballot_subtitle,
+-            self.name,
++            self._name,
+             self.number_elected,
+             self.votes_allowed,
+             self.ballot_selections,
+@@ -531,23 +572,28 @@
+     See: https://developers.google.com/elections-data/reference/election
+     """
+ 
+-    #election_scope_id: str
+-    #type: ElectionType
+-    #start_date: datetime
+-    #end_date: datetime
+-    #geopolitical_units: List[GeopoliticalUnit]
+-    #parties: List[Party]
+-    #candidates: List[Candidate]
+-    #contests: List[ContestDescription]
+-    #ballot_styles: List[BallotStyle]
+-    name  = field(default=None)
++    _types = [
++        ["election_scope_id", str],
++        ["_type", ElectionType],
++        ["start_date", datetime],
++        ["end_date", datetime],
++        ["geopolitical_units", [GeopoliticalUnit]],
++        ["parties", [Party]],
++        ["candidates", [Candidate]],
++        ["contests", [ContestDescription]],
++        ["ballot_styles", [BallotStyle]],
++        ["_name", InternationalizedText],
++        ["contact_information", ContactInformation]
++    ]
++
++    _name  = field(default=None)
+     contact_information  = field(default=None)
+ 
+     def __eq__(self, other )  :
+         return (
+             isinstance(other, ElectionDescription)
+             and self.election_scope_id == other.election_scope_id
+-            and self.type == other.type
++            and self._type == other._type
+             and self.start_date == other.start_date
+             and self.end_date == other.end_date
+             and _list_eq(self.geopolitical_units, other.geopolitical_units)
+@@ -555,7 +601,7 @@
+             and _list_eq(self.candidates, other.candidates)
+             and _list_eq(self.contests, other.contests)
+             and _list_eq(self.ballot_styles, other.ballot_styles)
+-            and self.name == other.name
++            and self._name == other._name
+             and self.contact_information == other.contact_information
+         )
+ 
+@@ -563,13 +609,12 @@
+         """
+         Returns a hash of the metadata components of the election
+         """
+-
+         return hash_elems(
+             self.election_scope_id,
+-            str(self.type.name),
++            str(self._type._name),
+             to_ticks(self.start_date),
+             to_ticks(self.end_date),
+-            self.name,
++            self._name,
+             self.contact_information,
+             self.geopolitical_units,
+             self.parties,
+@@ -739,13 +784,12 @@
+ 
+     description_hash  = field(init=False)
+ 
+-    def __post_init__(self, description )  :
+-        object.__setattr__(self, "description_hash", description.crypto_hash())
+-        object.__setattr__(self, "geopolitical_units", description.geopolitical_units)
+-        object.__setattr__(self, "ballot_styles", description.ballot_styles)
+-        object.__setattr__(
+-            self, "contests", self._generate_contests_with_placeholders(description)
+-        )
++    def __init__(self, description )  :
++        # TO-DO: why the post_init and the __setattr__ thing?
++        self.description_hash = description.crypto_hash()
++        self.geopolitical_units = description.geopolitical_units
++        self.ballot_styles = description.ballot_styles
++        self.contests = self._generate_contests_with_placeholders(description)
+ 
+     def contest_for(
+         self, contest_id 
+@@ -844,26 +888,25 @@
+     `make_ciphertext_election_context` instead.
+     """
+ 
+-    #number_of_guardians: int
+-    """
+-    The number of guardians necessary to generate the public key
+-    """
+-    #quorum: int
+-    """
+-    The quorum of guardians necessary to decrypt an election.  Must be less than `number_of_guardians`
+-    """
++    _types = [
++        ["number_of_guardians", int],
++        #The number of guardians necessary to generate the public key
++
++        ["quorum", int],
++        #The quorum of guardians necessary to decrypt an election.  Must be less than `number_of_guardians`
+ 
+     # the `joint public key (K)` in the [ElectionGuard Spec](https://github.com/microsoft/electionguard/wiki)
+-    #elgamal_public_key: ElementModP
++        ["elgamal_public_key", ElementModP],
+ 
+     # The hash of the election metadata
+-    #description_hash: ElementModQ
++        ["description_hash", ElementModQ],
+ 
+     # the `base hash code (𝑄)` in the [ElectionGuard Spec](https://github.com/microsoft/electionguard/wiki)
+-    #crypto_base_hash: ElementModQ
++        ["crypto_base_hash", ElementModQ],
+ 
+     # the `extended base hash code (𝑄')` in the [ElectionGuard Spec](https://github.com/microsoft/electionguard/wiki)
+-    #crypto_extended_base_hash: ElementModQ
++        ["crypto_extended_base_hash", ElementModQ]
++    ]
+ 
+ 
+ def make_ciphertext_election_context(
+@@ -900,6 +943,7 @@
+     crypto_base_hash = hash_elems(
+         P, Q, G, number_of_guardians, quorum, description_hash
+     )
++
+     crypto_extended_base_hash = hash_elems(crypto_base_hash, elgamal_public_key)
+     return CiphertextElectionContext(
+         number_of_guardians=number_of_guardians,
+@@ -927,7 +971,7 @@
+         vote_variation=description.vote_variation,
+         number_elected=description.number_elected,
+         votes_allowed=description.votes_allowed,
+-        name=description.name,
++        _name=description._name,
+         ballot_selections=description.ballot_selections,
+         ballot_title=description.ballot_title,
+         ballot_subtitle=description.ballot_subtitle,
+@@ -954,11 +998,11 @@
+         )
+         return None
+ 
+-    placeholder_object_id = f"{contest.object_id}-{use_sequence_id}"
++    placeholder_object_id = str(contest.object_id) + "-" + str(use_sequence_id)
+     return SelectionDescription(
+-        f"{placeholder_object_id}-placeholder",
+-        f"{placeholder_object_id}-candidate",
+-        use_sequence_id,
++        object_id = str(placeholder_object_id) + "-placeholder",
++        candidate_id = str(placeholder_object_id) + "-candidate",
++        sequence_order = use_sequence_id,
+     )
+ 
+ 
+diff -ruwN orig/electionguard/election_builder.py build/electionguard/election_builder.py
+--- orig/electionguard/election_builder.py	2020-11-03 10:10:47.000000000 +0100
++++ build/electionguard/election_builder.py	2020-10-29 12:52:03.000000000 +0100
+@@ -1,7 +1,4 @@
+-from __future__ import annotations
+-
+ from dataclasses import dataclass, field
+-from typing import Optional, Tuple
+ 
+ from electionguard.election import (
+     CiphertextElectionContext,
+@@ -35,7 +32,10 @@
+ 
+     elgamal_public_key  = field(default=None)
+ 
+-    def __post_init__(self)  :
++    def __init__(self, number_of_guardians, quorum, description):
++        self.number_of_guardians = number_of_guardians
++        self.quorum = quorum
++        self.description = description
+         self.internal_description = InternalElectionDescription(self.description)
+ 
+     def set_public_key(self, elgamal_public_key )  :
+diff -ruwN orig/electionguard/election_object_base.py build/electionguard/election_object_base.py
+--- orig/electionguard/election_object_base.py	2020-11-03 10:10:47.000000000 +0100
++++ build/electionguard/election_object_base.py	2020-10-28 15:25:36.000000000 +0100
+@@ -2,6 +2,7 @@
+ 
+ from electionguard.serializable import Serializable
+ 
++__pragma__ ('kwargs')
+ 
+ @dataclass
+ class ElectionObjectBase(Serializable):
+diff -ruwN orig/electionguard/elgamal.py build/electionguard/elgamal.py
+--- orig/electionguard/elgamal.py	2020-11-03 10:10:47.000000000 +0100
++++ build/electionguard/elgamal.py	2020-10-28 17:52:09.000000000 +0100
+@@ -1,5 +1,3 @@
+-from typing import Iterable, NamedTuple, Optional
+-
+ from electionguard.dlog import discrete_log
+ from electionguard.group import (
+     ElementModQ,
+@@ -18,14 +16,18 @@
+ from electionguard.utils import flatmap_optional, get_optional
+ 
+ 
+-class ElGamalKeyPair(NamedTuple):
++class ElGamalKeyPair:
+     """A tuple of an ElGamal secret key and public key."""
+ 
+     #secret_key: ElementModQ
+     #public_key: ElementModP
+ 
++    def __init__(self, secret_key, public_key):
++        self.secret_key = secret_key
++        self.public_key = public_key
++
+ 
+-class ElGamalCiphertext(NamedTuple):
++class ElGamalCiphertext:
+     """
+     An "exponential ElGamal ciphertext" (i.e., with the plaintext in the exponent to allow for
+     homomorphic addition). Create one with `elgamal_encrypt`. Add them with `elgamal_add`.
+@@ -38,6 +40,13 @@
+     #data: ElementModP
+     """encrypted data or beta"""
+ 
++    def __init__(self, pad, data):
++        self.pad = pad
++        self.data = data
++
++    def tuple(self):
++        return [self.pad, self.data]
++
+     def decrypt_known_product(self, product )  :
+         """
+         Decrypts an ElGamal ciphertext with a "known product" (the blinding factor used in the encryption).
+diff -ruwN orig/electionguard/encrypt.py build/electionguard/encrypt.py
+--- orig/electionguard/encrypt.py	2020-11-03 10:10:47.000000000 +0100
++++ build/electionguard/encrypt.py	2020-11-03 10:39:58.000000000 +0100
+@@ -1,6 +1,3 @@
+-from typing import List, Optional
+-from uuid import getnode
+-
+ from electionguard.ballot import (
+     CiphertextBallot,
+     CiphertextBallotContest,
+@@ -23,71 +20,11 @@
+ from electionguard.elgamal import elgamal_encrypt
+ from electionguard.group import ElementModP, ElementModQ, rand_q
+ from electionguard.logs import log_warning
+-from electionguard.nonces import Nonces
++from Nonces import Nonces
+ from electionguard.serializable import Serializable
+-from electionguard.tracker import get_hash_for_device
+ from electionguard.utils import get_optional, get_or_else_optional_func
+ 
+-
+-class EncryptionDevice(Serializable):
+-    """
+-    Metadata for encryption device
+-    """
+-
+-    #uuid: int
+-    #location: str
+-
+-    def __init__(self, location )  :
+-        self.uuid = generate_device_uuid()
+-        self.location = location
+-
+-    def get_hash(self)  :
+-        """
+-        Get hash for encryption device
+-        :return: Starting hash
+-        """
+-        return get_hash_for_device(self.uuid, self.location)
+-
+-
+-class EncryptionMediator(object):
+-    """
+-    An object for caching election and encryption state.
+-
+-    It composes Elections and Ballots.
+-    """
+-
+-    #_metadata: InternalElectionDescription
+-    #_encryption: CiphertextElectionContext
+-    #_seed_hash: ElementModQ
+-
+-    def __init__(
+-        self,
+-        election_metadata ,
+-        context ,
+-        encryption_device ,
+-    ):
+-        self._metadata = election_metadata
+-        self._encryption = context
+-        self._seed_hash = encryption_device.get_hash()
+-
+-    def encrypt(self, ballot )  :
+-        """
+-        Encrypt the specified ballot using the cached election context.
+-        """
+-        encrypted_ballot = encrypt_ballot(
+-            ballot, self._metadata, self._encryption, self._seed_hash
+-        )
+-        if encrypted_ballot is not None and encrypted_ballot.tracking_hash is not None:
+-            self._seed_hash = encrypted_ballot.tracking_hash
+-        return encrypted_ballot
+-
+-
+-def generate_device_uuid()  :
+-    """
+-    Get unique identifier for device
+-    :return: Unique identifier
+-    """
+-    return getnode()
++__pragma__ ('kwargs')
+ 
+ 
+ def selection_from(
+@@ -107,7 +44,7 @@
+     """
+ 
+     return PlaintextBallotSelection(
+-        description.object_id,
++        object_id=description.object_id,
+         vote=str(is_affirmative),
+         is_placeholder_selection=is_placeholder,
+     )
+@@ -127,7 +64,7 @@
+     for selection_description in description.ballot_selections:
+         selections.append(selection_from(selection_description))
+ 
+-    return PlaintextBallotContest(description.object_id, selections)
++    return PlaintextBallotContest(object_id=description.object_id, ballot_selections=selections)
+ 
+ 
+ def encrypt_selection(
+@@ -159,7 +96,7 @@
+ 
+     selection_description_hash = selection_description.crypto_hash()
+     nonce_sequence = Nonces(selection_description_hash, nonce_seed)
+-    selection_nonce = nonce_sequence[selection_description.sequence_order]
++    selection_nonce = nonce_sequence.get(selection_description.sequence_order)
+     disjunctive_chaum_pedersen_nonce = next(iter(nonce_sequence))
+ 
+     selection_representation = selection.to_int()
+@@ -174,7 +111,6 @@
+         return None
+ 
+     # TODO: ISSUE #35: encrypt/decrypt: encrypt the extended_data field
+-
+     # Create the return object
+     encrypted_selection = make_ciphertext_ballot_selection(
+         object_id=selection.object_id,
+@@ -249,7 +185,7 @@
+     # account for sequence id
+     contest_description_hash = contest_description.crypto_hash()
+     nonce_sequence = Nonces(contest_description_hash, nonce_seed)
+-    contest_nonce = nonce_sequence[contest_description.sequence_order]
++    contest_nonce = nonce_sequence.get(contest_description.sequence_order)
+     chaum_pedersen_nonce = next(iter(nonce_sequence))
+ 
+     encrypted_selections  = list()
+@@ -418,7 +354,6 @@
+     nonce_seed = CiphertextBallot.nonce_seed(
+         election_metadata.description_hash, ballot.object_id, random_master_nonce,
+     )
+-
+     encrypted_contests  = list()
+ 
+     # only iterate on contests for this specific ballot style
+diff -ruwN orig/electionguard/group.py build/electionguard/group.py
+--- orig/electionguard/group.py	2020-11-03 10:10:47.000000000 +0100
++++ build/electionguard/group.py	2020-11-03 09:49:54.000000000 +0100
+@@ -2,41 +2,35 @@
+ # in the sense that performance may be less than hand-optimized C code, and no guarantees are
+ # made about timing or other side-channels.
+ 
+-from typing import Any, Final, NamedTuple, Optional, Union
+-from base64 import b16decode
+-from secrets import randbelow
+-from gmpy2 import mpz, powmod, invert, to_binary, from_binary
++import BigInteger as bigInt
++from SecureRandom import randomBelow
+ 
+-# Constants used by ElectionGuard
+-Q  = pow(2, 256) - 189
+-P      = 1044388881413152506691752710716624382579964249047383780384233483283953907971553643537729993126875883902173634017777416360502926082946377942955704498542097614841825246773580689398386320439747911160897731551074903967243883427132918813748016269754522343505285898816777211761912392772914485521155521641049273446207578961939840619466145806859275053476560973295158703823395710210329314709715239251736552384080845836048778667318931418338422443891025911884723433084701207771901944593286624979917391350564662632723703007964229849154756196890615252286533089643184902706926081744149289517418249153634178342075381874131646013444796894582106870531535803666254579602632453103741452569793905551901541856173251385047414840392753585581909950158046256810542678368121278509960520957624737942914600310646609792665012858397381435755902851312071248102599442308951327039250818892493767423329663783709190716162023529669217300939783171415808233146823000766917789286154006042281423733706462905243774854543127239500245873582012663666430583862778167369547603016344242729592244544608279405999759391099775667746401633668308698186721172238255007962658564443858927634850415775348839052026675785694826386930175303143450046575460843879941791946313299322976993405829119
++mpz = bigInt
+ 
++# Constants used by ElectionGuard
++Q = mpz(2).pow(256).minus(189)
++P = mpz("1044388881413152506691752710716624382579964249047383780384233483283953907971553643537729993126875883902173634017777416360502926082946377942955704498542097614841825246773580689398386320439747911160897731551074903967243883427132918813748016269754522343505285898816777211761912392772914485521155521641049273446207578961939840619466145806859275053476560973295158703823395710210329314709715239251736552384080845836048778667318931418338422443891025911884723433084701207771901944593286624979917391350564662632723703007964229849154756196890615252286533089643184902706926081744149289517418249153634178342075381874131646013444796894582106870531535803666254579602632453103741452569793905551901541856173251385047414840392753585581909950158046256810542678368121278509960520957624737942914600310646609792665012858397381435755902851312071248102599442308951327039250818892493767423329663783709190716162023529669217300939783171415808233146823000766917789286154006042281423733706462905243774854543127239500245873582012663666430583862778167369547603016344242729592244544608279405999759391099775667746401633668308698186721172238255007962658564443858927634850415775348839052026675785694826386930175303143450046575460843879941791946313299322976993405829119")
+ 
+-R  = ((P - 1) * pow(Q, -1, P)) % P
+-G      = 14245109091294741386751154342323521003543059865261911603340669522218159898070093327838595045175067897363301047764229640327930333001123401070596314469603183633790452807428416775717923182949583875381833912370889874572112086966300498607364501764494811956017881198827400327403252039184448888877644781610594801053753235453382508543906993571248387749420874609737451803650021788641249940534081464232937193671929586747339353451021712752406225276255010281004857233043241332527821911604413582442915993833774890228705495787357234006932755876972632840760599399514028393542345035433135159511099877773857622699742816228063106927776147867040336649025152771036361273329385354927395836330206311072577683892664475070720408447257635606891920123791602538518516524873664205034698194561673019535564273204744076336022130453963648114321050173994259620611015189498335966173440411967562175734606706258335095991140827763942280037063180207172918769921712003400007923888084296685269233298371143630883011213745082207405479978418089917768242592557172834921185990876960527013386693909961093302289646193295725135238595082039133488721800071459503353417574248679728577942863659802016004283193163470835709405666994892499382890912238098413819320185166580019604608311466
+ 
++R = P.minus(1).multiply(Q.modInv(P)).mod(P)
++G = mpz("14245109091294741386751154342323521003543059865261911603340669522218159898070093327838595045175067897363301047764229640327930333001123401070596314469603183633790452807428416775717923182949583875381833912370889874572112086966300498607364501764494811956017881198827400327403252039184448888877644781610594801053753235453382508543906993571248387749420874609737451803650021788641249940534081464232937193671929586747339353451021712752406225276255010281004857233043241332527821911604413582442915993833774890228705495787357234006932755876972632840760599399514028393542345035433135159511099877773857622699742816228063106927776147867040336649025152771036361273329385354927395836330206311072577683892664475070720408447257635606891920123791602538518516524873664205034698194561673019535564273204744076336022130453963648114321050173994259620611015189498335966173440411967562175734606706258335095991140827763942280037063180207172918769921712003400007923888084296685269233298371143630883011213745082207405479978418089917768242592557172834921185990876960527013386693909961093302289646193295725135238595082039133488721800071459503353417574248679728577942863659802016004283193163470835709405666994892499382890912238098413819320185166580019604608311466")
+ 
+ Q_MINUS_ONE  = Q - 1
+ 
+ 
+-class ElementModQ(NamedTuple):
++class ElementModQ:
+     """An element of the smaller `mod q` space, i.e., in [0, Q), where Q is a 256-bit prime."""
+ 
+     #elem: mpz
+-
+-    def to_bytes(self)  :
+-        """
+-        Converts from the element to the representation of bytes by first going through hex. 
+-        This is preferable to directly accessing `elem`, whose representation might change.
+-        """
+-        return b16decode(self.to_hex())
++    def __init__(self, elem):
++        self.elem = elem
+ 
+     def to_hex(self)  :
+         """
+         Converts from the element to the hex representation of bytes. This is preferable to directly
+         accessing `elem`, whose representation might change.
+         """
+-        h = format(self.elem, "02X")
++        h = self.elem.toString(16).upper()
+         if len(h) % 2:
+             h = "0" + h
+         return h
+@@ -53,14 +47,14 @@
+         Validates that the element is actually within the bounds of [0,Q).
+         Returns true if all is good, false if something's wrong.
+         """
+-        return 0 <= self.elem < Q
++        return 0 <= self.elem and self.elem.lesser(Q)
+ 
+     def is_in_bounds_no_zero(self)  :
+         """
+         Validates that the element is actually within the bounds of [1,Q).
+         Returns true if all is good, false if something's wrong.
+         """
+-        return 0 < self.elem < Q
++        return 0 < self.elem and self.elem.lesser(Q)
+ 
+     # overload != (not equal to) operator
+     def __ne__(self, other )  :
+@@ -75,20 +69,25 @@
+         ) and eq_elems(self, other)
+ 
+     def __str__(self)  :
+-        return self.elem.digits()
++        return self.elem.toString()
+ 
++    def toString(self)  :
++        return str(self)
+ 
+-class ElementModP(NamedTuple):
++
++class ElementModP:
+     """An element of the larger `mod p` space, i.e., in [0, P), where P is a 4096-bit prime."""
+ 
+     #elem: mpz
++    def __init__(self, elem):
++        self.elem = elem
+ 
+     def to_hex(self)  :
+         """
+         Converts from the element to the hex representation of bytes. This is preferable to directly
+         accessing `elem`, whose representation might change.
+         """
+-        h = format(self.elem, "02X")
++        h = self.elem.toString(16).upper()
+         if len(h) % 2:
+             h = "0" + h
+         return h
+@@ -105,21 +104,21 @@
+         Validates that the element is actually within the bounds of [0,P).
+         Returns true if all is good, false if something's wrong.
+         """
+-        return 0 <= self.elem < P
++        return 0 <= self.elem and self.elem.lesser(P)
+ 
+     def is_in_bounds_no_zero(self)  :
+         """
+         Validates that the element is actually within the bounds of [1,P).
+         Returns true if all is good, false if something's wrong.
+         """
+-        return 0 < self.elem < P
++        return 0 < self.elem and self.elem.lesser(P)
+ 
+     def is_valid_residue(self)  :
+         """
+         Validates that this element is in Z^r_p.
+         Returns true if all is good, false if something's wrong.
+         """
+-        residue = pow_p(self, ElementModQ(mpz(Q))) == ONE_MOD_P
++        residue = pow_p(self, ElementModQ(Q)).__eq__(ONE_MOD_P)
+         return self.is_in_bounds() and residue
+ 
+     # overload != (not equal to) operator
+@@ -135,7 +134,10 @@
+         ) and eq_elems(self, other)
+ 
+     def __str__(self)  :
+-        return self.elem.digits()
++        return self.elem.toString()
++
++    def toString(self)  :
++        return str(self)
+ 
+ 
+ # Common constants
+@@ -147,11 +149,6 @@
+ ONE_MOD_P  = ElementModP(mpz(1))
+ TWO_MOD_P  = ElementModP(mpz(2))
+ 
+-ElementModPOrQ = Union[ElementModP, ElementModQ]
+-ElementModPOrQorInt = Union[ElementModP, ElementModQ, int]
+-ElementModQorInt = Union[ElementModQ, int]
+-ElementModPorInt = Union[ElementModP, int]
+-
+ 
+ def hex_to_q(input )  :
+     """
+@@ -159,9 +156,9 @@
+     Returns `None` if the number is out of the allowed
+     [0,Q) range.
+     """
+-    i = int(input, 16)
++    i = mpz(input, 16)
+     if 0 <= i < Q:
+-        return ElementModQ(mpz(i))
++        return ElementModQ(i)
+     else:
+         return None
+ 
+@@ -172,9 +169,9 @@
+     Returns `None` if the number is out of the allowed
+     [0,Q) range.
+     """
+-    i = int(input)
++    i = mpz(input)
+     if 0 <= i < Q:
+-        return ElementModQ(mpz(i))
++        return ElementModQ(i)
+     else:
+         return None
+ 
+@@ -186,8 +183,7 @@
+     element (i.e., outside of [0,Q)). Useful for tests of it
+     you're absolutely, positively, certain the input is in-bounds.
+     """
+-
+-    m = mpz(int(i))
++    m = mpz(i)
+     return ElementModQ(m)
+ 
+ 
+@@ -197,9 +193,9 @@
+     Returns `None` if the number is out of the allowed
+     [0,P) range.
+     """
+-    i = int(input)
++    i = mpz(input)
+     if 0 <= i < P:
+-        return ElementModP(mpz(i))
++        return ElementModP(i)
+     else:
+         return None
+ 
+@@ -211,24 +207,9 @@
+     element (i.e., outside of [0,P)). Useful for tests or if
+     you're absolutely, positively, certain the input is in-bounds.
+     """
+-    m = mpz(int(i))
++    m = mpz(i)
+     return ElementModP(m)
+ 
+-
+-def q_to_bytes(e )  :
+-    """
+-    Returns a byte sequence from the element.
+-    """
+-    return to_binary(e.elem)
+-
+-
+-def bytes_to_q(b )  :
+-    """
+-    Returns an element from a byte sequence.
+-    """
+-    return ElementModQ(mpz(from_binary(b)))
+-
+-
+ def add_q(*elems )  :
+     """
+     Adds together one or more elements in Q, returns the sum mod Q.
+@@ -237,7 +218,7 @@
+     for e in elems:
+         if isinstance(e, int):
+             e = int_to_q_unchecked(e)
+-        t = (t + e.elem) % Q
++        t = t.add(e.elem).mod(Q)
+ 
+     return ElementModQ(t)
+ 
+@@ -251,7 +232,11 @@
+     if isinstance(b, int):
+         b = int_to_q_unchecked(b)
+ 
+-    return ElementModQ((a.elem - b.elem) % Q)
++    result = a.elem.minus(b.elem)
++    if result < 0:
++        return ElementModQ(result.mod(Q).plus(Q)) 
++
++    return ElementModQ(result.mod(Q))
+ 
+ 
+ def div_p(a , b )  :
+@@ -263,7 +248,7 @@
+     if isinstance(b, int):
+         b = int_to_p_unchecked(b)
+ 
+-    inverse = invert(b.elem, mpz(P))
++    inverse = b.elem.modInv(P)
+     return mult_p(a, int_to_p_unchecked(inverse))
+ 
+ 
+@@ -276,7 +261,7 @@
+     if isinstance(b, int):
+         b = int_to_p_unchecked(b)
+ 
+-    inverse = invert(b.elem, mpz(Q))
++    inverse = b.elem.modInv(Q)
+     return mult_q(a, int_to_q_unchecked(inverse))
+ 
+ 
+@@ -286,7 +271,7 @@
+     """
+     if isinstance(a, int):
+         a = int_to_q_unchecked(a)
+-    return ElementModQ(Q - a.elem)
++    return ElementModQ(Q.minus(a.elem))
+ 
+ 
+ def a_plus_bc_q(
+@@ -302,7 +287,7 @@
+     if isinstance(c, int):
+         c = int_to_q_unchecked(c)
+ 
+-    return ElementModQ((a.elem + b.elem * c.elem) % Q)
++    return ElementModQ(a.elem.add(b.elem.multiply(c.elem)).mod(Q))
+ 
+ 
+ def mult_inv_p(e )  :
+@@ -315,7 +300,7 @@
+         e = int_to_p_unchecked(e)
+ 
+     assert e.elem != 0, "No multiplicative inverse for zero"
+-    return ElementModP(powmod(e.elem, -1, P))
++    return ElementModP(e.elem.modInv(P))
+ 
+ 
+ def pow_p(b , e )  :
+@@ -331,7 +316,7 @@
+     if isinstance(e, int):
+         e = int_to_p_unchecked(e)
+ 
+-    return ElementModP(powmod(b.elem, e.elem, P))
++    return ElementModP(b.elem.modPow(e.elem, P))
+ 
+ 
+ def pow_q(b , e )  :
+@@ -347,7 +332,7 @@
+     if isinstance(e, int):
+         e = int_to_q_unchecked(e)
+ 
+-    return ElementModQ(powmod(b.elem, e.elem, Q))
++    return ElementModQ(b.elem.modPow(e.elem, Q))
+ 
+ 
+ def mult_p(*elems )  :
+@@ -360,7 +345,7 @@
+     for x in elems:
+         if isinstance(x, int):
+             x = int_to_p_unchecked(x)
+-        product = (product * x.elem) % P
++        product = product.multiply(x.elem).mod(P)
+     return ElementModP(product)
+ 
+ 
+@@ -374,7 +359,7 @@
+     for x in elems:
+         if isinstance(x, int):
+             x = int_to_p_unchecked(x)
+-        product = (product * x.elem) % Q
++        product = product.multiply(x.elem).mod(Q)
+     return ElementModQ(product)
+ 
+ 
+@@ -393,7 +378,7 @@
+ 
+     :return: Random value between 0 and Q
+     """
+-    return int_to_q_unchecked(randbelow(Q))
++    return int_to_q_unchecked(randomBelow(Q))
+ 
+ 
+ def rand_range_q(start )  :
+@@ -408,7 +393,7 @@
+ 
+     random = 0
+     while random < start:
+-        random = randbelow(Q)
++        random = randomBelow(Q)
+     return int_to_q_unchecked(random)
+ 
+ 
+@@ -416,4 +401,4 @@
+     """
+     Returns whether the two elements hold the same value.
+     """
+-    return a.elem == b.elem
++    return a.elem.eq(b.elem)
+diff -ruwN orig/electionguard/hash.py build/electionguard/hash.py
+--- orig/electionguard/hash.py	2020-11-03 10:10:47.000000000 +0100
++++ build/electionguard/hash.py	2020-10-30 09:48:02.000000000 +0100
+@@ -1,11 +1,3 @@
+-from abc import abstractmethod
+-from hashlib import sha256
+-from typing import (
+-    Union,
+-    Protocol,
+-    runtime_checkable,
+-    Sequence,
+-)
+ 
+ from electionguard.group import (
+     ElementModPOrQ,
+@@ -14,15 +6,17 @@
+     int_to_q_unchecked,
+     ElementModP,
+ )
++import BigInteger as bigInt
++from Hash import sha256
++from Array import isArray
+ 
++mpz = bigInt
+ 
+-@runtime_checkable
+-class CryptoHashable(Protocol):
++class CryptoHashable:
+     """
+     Denotes hashable
+     """
+ 
+-    @abstractmethod
+     def crypto_hash(self)  :
+         """
+         Generates a hash given the fields on the implementing instance.
+@@ -30,13 +24,11 @@
+         ...
+ 
+ 
+-@runtime_checkable
+-class CryptoHashCheckable(Protocol):
++class CryptoHashCheckable:
+     """
+     Checkable version of crypto hash
+     """
+ 
+-    @abstractmethod
+     def crypto_hash_with(self, seed_hash )  :
+         """
+         Generates a hash with a given seed that can be checked later against the seed and class metadata.
+@@ -44,16 +36,7 @@
+         ...
+ 
+ 
+-# All the "atomic" types that we know how to hash.
+-CRYPTO_HASHABLE_T = Union[CryptoHashable, ElementModPOrQ, str, int, None]
+-
+-# "Compound" types that we know how to hash. Note that we're using Sequence, rather than List,
+-# because Sequences are read-only, and thus safely covariant. All this really means is that
+-# we promise never to mutate any list that you pass to hash_elems.
+-CRYPTO_HASHABLE_ALL = Union[
+-    Sequence[CRYPTO_HASHABLE_T], CRYPTO_HASHABLE_T,
+-]
+-
++from random import randint
+ 
+ def hash_elems(*a )  :
+     """
+@@ -66,12 +49,11 @@
+     :return: A cryptographic hash of these elements, concatenated.
+     """
+     h = sha256()
+-    h.update("|".encode("utf-8"))
++    h.update("|")
+     for x in a:
+         # We could just use str(x) for everything, but then we'd have a resulting string
+         # that's a bit Python-specific, and we'd rather make it easier for other languages
+         # to exactly match this hash function.
+-
+         if not x:
+             # This case captures empty lists and None, nicely guaranteeing that we don't
+             # need to do a recursive call if the list is empty. So we need a string to
+@@ -86,13 +68,16 @@
+         elif isinstance(x, str):
+             # strings are iterable, so it's important to handle them before the following check
+             hash_me = x
+-        elif isinstance(x, Sequence):
++        elif isArray(x):
++            if x.length == 0:
++                hash_me = "null"
++            else:
+             # The simplest way to deal with lists, tuples, and such are to crunch them recursively.
+             hash_me = hash_elems(*x).to_hex()
+         else:
+             hash_me = str(x)
+-        h.update((hash_me + "|").encode("utf-8"))
+-
++        h.update((hash_me + "|"))
+     # We don't need the checked version of int_to_q, because the
+     # modulo operation here guarantees that we're in bounds.
+-    return int_to_q_unchecked(int.from_bytes(h.digest(), byteorder="big") % Q_MINUS_ONE)
++    return int_to_q_unchecked(mpz(h.digest(), 16).mod(Q_MINUS_ONE))
++
+diff -ruwN orig/electionguard/logs.py build/electionguard/logs.py
+--- orig/electionguard/logs.py	2020-11-03 10:10:47.000000000 +0100
++++ build/electionguard/logs.py	2020-10-29 11:24:41.000000000 +0100
+@@ -1,14 +1,11 @@
+-import inspect
+-import logging
+-import os.path
+-import sys
+-from typing import Any, Tuple
+-from logging.handlers import RotatingFileHandler
++from logger import Logger
+ 
+ from electionguard.singleton import Singleton
+ 
+ FORMAT = "[%(process)d:%(asctime)s]:%(levelname)s:%(message)s"
+ 
++__pragma__ ('kwargs')
++
+ 
+ class ElectionGuardLog(Singleton):
+     """
+@@ -18,87 +15,42 @@
+     #__logger: logging.Logger
+ 
+     def __init__(self)  :
+-        super(ElectionGuardLog, self).__init__()
+-
+-        self.__logger = logging.getLogger("electionguard")
+-        self.__logger.addHandler(self._get_file_handler())
+-        self.__logger.addHandler(self._get_stream_handler())
+-
+-    @staticmethod
+-    def __get_call_info()    :
+-        stack = inspect.stack()
+-
+-        # stack[0]: __get_call_info
+-        # stack[1]: __formatted_message
+-        # stack[2]: (log method, e.g. "warn")
+-        # stack[3]: Singleton
+-        # stack[4]: caller <-- we want this
+-
+-        filename = stack[4][1]
+-        line = stack[4][2]
+-        funcname = stack[4][3]
++        super().__init__()
+ 
+-        return filename, funcname, line
++        self.__logger = Logger()
+ 
+     def __formatted_message(self, message )  :
+-        filename, funcname, line = self.__get_call_info()
+-        message = f"{os.path.basename(filename)}.{funcname}:#L{line}: {message}"
+         return message
+ 
+-    def _get_stream_handler(self)  :
+-        """
+-        Get a Stream Handler, sends only warnings and errors to stdout.
+-        """
+-        stream_handler = logging.StreamHandler(sys.stdout)
+-        stream_handler.setLevel(logging.WARNING)
+-        stream_handler.setFormatter(logging.Formatter(FORMAT))
+-        return stream_handler
+-
+-    def _get_file_handler(self)  :
+-        """
+-        Get a File System Handler, sends verbose logging to a file, `electionguard.log`.
+-        When that file gets too large, the logs will rotate, creating files with names
+-        like `electionguard.log.1`.
+-        """
+-
+-        # TODO: add file compression, save a bunch of space.
+-        #   https://medium.com/@rahulraghu94/overriding-pythons-timedrotatingfilehandler-to-compress-your-log-files-iot-c766a4ace240
+-        file_handler = RotatingFileHandler(
+-            "electionguard.log", "a", maxBytes=10_000_000, backupCount=10
+-        )
+-        file_handler.setLevel(logging.DEBUG)
+-        file_handler.setFormatter(logging.Formatter(FORMAT))
+-        return file_handler
+-
+-    def debug(self, message , *args , **kwargs )  :
++    def debug(self, message)  :
+         """
+         Logs a debug message
+         """
+-        self.__logger.debug(self.__formatted_message(message), *args, **kwargs)
++        self.__logger.debug(self.__formatted_message(message))
+ 
+-    def info(self, message , *args , **kwargs )  :
++    def info(self, message)  :
+         """
+         Logs a info message
+         """
+-        self.__logger.info(self.__formatted_message(message), *args, **kwargs)
++        self.__logger.info(self.__formatted_message(message))
+ 
+-    def warn(self, message , *args , **kwargs )  :
++    def warn(self, message)  :
+         """
+         Logs a warning message
+         """
+-        self.__logger.warning(self.__formatted_message(message), *args, **kwargs)
++        self.__logger.warning(self.__formatted_message(message))
+ 
+-    def error(self, message , *args , **kwargs )  :
++    def error(self, message)  :
+         """
+         Logs a error message
+         """
+-        self.__logger.error(self.__formatted_message(message), *args, **kwargs)
++        self.__logger.error(self.__formatted_message(message))
+ 
+-    def critical(self, message , *args , **kwargs )  :
++    def critical(self, message)  :
+         """
+         Logs a critical message
+         """
+-        self.__logger.critical(self.__formatted_message(message), *args, **kwargs)
++        self.__logger.critical(self.__formatted_message(message))
+ 
+ 
+ LOG = ElectionGuardLog()
+@@ -108,32 +60,32 @@
+     """
+     Logs a debug message to the console and the file log.
+     """
+-    LOG.debug(msg, *args, **kwargs)
++    LOG.debug(msg)
+ 
+ 
+ def log_info(msg , *args , **kwargs )  :
+     """
+     Logs an information message to the console and the file log.
+     """
+-    LOG.info(msg, *args, **kwargs)
++    LOG.info(msg)
+ 
+ 
+ def log_warning(msg , *args , **kwargs )  :
+     """
+     Logs a warning message to the console and the file log.
+     """
+-    LOG.warn(msg, *args, **kwargs)
++    LOG.warn(msg)
+ 
+ 
+ def log_error(msg , *args , **kwargs )  :
+     """
+     Logs an error message to the console and the file log.
+     """
+-    LOG.error(msg, *args, **kwargs)
++    LOG.error(msg)
+ 
+ 
+ def log_critical(msg , *args , **kwargs )  :
+     """
+     Logs a critical message to the console and the file log.
+     """
+-    LOG.critical(msg, *args, **kwargs)
++    LOG.critical(msg)
+diff -ruwN orig/electionguard/nonces.py build/electionguard/nonces.py
+--- orig/electionguard/nonces.py	2020-11-03 10:10:47.000000000 +0100
++++ build/electionguard/nonces.py	2020-10-28 16:03:13.000000000 +0100
+@@ -1,10 +1,8 @@
+-from typing import Union, Sequence, List, overload
+-
+ from electionguard.group import ElementModQ, ElementModPOrQ
+ from electionguard.hash import hash_elems
+ 
+ 
+-class Nonces(Sequence[ElementModQ]):
++class Nonces:
+     """
+     Creates a sequence of random elements in [0,Q), seeded from an initial element in [0,Q).
+     If you start with the same seed, you'll get exactly the same sequence. Optional string
+@@ -21,27 +19,14 @@
+             self.__seed  = hash_elems(seed, *headers)
+         else:
+             self.__seed = seed
+-    # https://github.com/python/mypy/issues/4108
+-    @overload
+-    def __getitem__(self, index )  :
+-        pass
+-
+-    @overload
+-    def __getitem__(self, index )  :
+-        pass
+ 
+-    def __getitem__(
++    def get(
+         self, index  
+     )   :
+-        if isinstance(index, int):
+             return self.get_with_headers(index)
+-        else:
+-            if isinstance(index.stop, int):
+-                # Handling slices is a pain: https://stackoverflow.com/a/42731787
+-                indices = range(index.start or 0, index.stop, index.step or 1)
+-                return [self[i] for i in indices]
+-            else:
+-                raise TypeError("Cannot take unbounded slice of Nonces")
++
++    def get_slice(self, start, stop):
++        return [self.get(i) for i in range(start, stop)]
+ 
+     def __len__(self)  :
+         raise TypeError("Nonces does not have finite length")
+diff -ruwN orig/electionguard/proof.py build/electionguard/proof.py
+--- orig/electionguard/proof.py	2020-11-03 10:10:47.000000000 +0100
++++ build/electionguard/proof.py	2020-10-28 15:25:36.000000000 +0100
+@@ -16,10 +16,10 @@
+ class Proof(Serializable):
+     """Base class for proofs with name and usage case"""
+ 
+-    name  = "Proof"
++    _name  = "Proof"
+     usage  = ProofUsage.Unknown
+ 
+     def __init__(self)  :
+         object.__setattr__(
+-            self, "name", space_between_capitals(self.__class__.__name__)
++            self, "_name", space_between_capitals(self.__class__.__name__)
+         )
+diff -ruwN orig/electionguard/serializable.py build/electionguard/serializable.py
+--- orig/electionguard/serializable.py	2020-11-03 10:10:47.000000000 +0100
++++ build/electionguard/serializable.py	2020-10-29 12:48:10.000000000 +0100
+@@ -1,29 +1,14 @@
+ from dataclasses import dataclass
+ from datetime import datetime
+ import re
+-from os import path
+-from typing import Any, cast, Type, TypeVar
+ 
+ from jsons import (
+-    dump,
+-    dumps,
+-    NoneType,
+-    load,
+-    loads,
+-    JsonsError,
+-    set_deserializer,
+-    set_serializer,
+-    set_validator,
+-    suppress_warnings,
+-    default_nonetype_deserializer,
++    dump_json,
++    dump_json_object,
++    parse_json,
++    parse_json_object
+ )
+ 
+-S = TypeVar("S", bound="Serializable")
+-T = TypeVar("T")
+-
+-JSON_FILE_EXTENSION  = ".json"
+-WRITE  = "w"
+-READ  = "r"
+ JSON_PARSE_ERROR = '{"error": "Object could not be parsed due to json issue"}'
+ # TODO Issue #??: Jsons library incorrectly dumps class method
+ KEYS_TO_REMOVE = ["from_json", "from_json_file", "from_json_object"]
+@@ -51,17 +36,6 @@
+         """
+         return write_json_object(self, strip_privates)
+ 
+-    def to_json_file(
+-        self, file_name , file_path  = "", strip_privates  = True
+-    )  :
+-        """
+-        Serialize an object to a json file
+-        :param file_name: File name
+-        :param file_path: File path
+-        :param strip_privates: Strip private variables
+-        """
+-        write_json_file(self, file_name, file_path, strip_privates)
+-
+     @classmethod
+     def from_json(cls , data )  :
+         """
+@@ -78,35 +52,6 @@
+         """
+         return read_json_object(data, cls)
+ 
+-    @classmethod
+-    def from_json_file(cls , file_name , file_path  = "")  :
+-        """
+-        Deserialize the provided file into the specified instance
+-        :param file_name: File name
+-        :param file_path: File path
+-        """
+-        return read_json_file(cls, file_name, file_path)
+-
+-
+-def _remove_key(obj , key_to_remove )  :
+-    """
+-    Remove key from object recursively
+-    :param obj: Any object
+-    :param key_to_remove: key to remove
+-    """
+-    if isinstance(obj, dict):
+-        for key in list(obj.keys()):
+-            if key == key_to_remove:
+-                del obj[key]
+-            else:
+-                _remove_key(obj[key], key_to_remove)
+-    elif isinstance(obj, list):
+-        for i in reversed(range(len(obj))):
+-            if obj[i] == key_to_remove:
+-                del obj[i]
+-            else:
+-                _remove_key(obj[i], key_to_remove)
+-
+ 
+ def write_json(object_to_write , strip_privates  = True)  :
+     """
+@@ -115,16 +60,7 @@
+     :param strip_privates: strip private variables
+     :return: the json string representation of this object
+     """
+-    set_serializers()
+-    suppress_warnings()
+-    try:
+-        json_object = write_json_object(object_to_write, strip_privates)
+-        json_string = cast(
+-            str, dumps(json_object, strip_privates=strip_privates, strip_nulls=True)
+-        )
+-        return json_string
+-    except JsonsError:
+-        return JSON_PARSE_ERROR
++    return dump_json(object_to_write, strip_privates)
+ 
+ 
+ def write_json_object(object_to_write , strip_privates  = True)  :
+@@ -134,35 +70,7 @@
+     :param strip_privates: strip private variables
+     :return: the json representation of this object
+     """
+-    set_serializers()
+-    suppress_warnings()
+-    try:
+-        json_object = dump(
+-            object_to_write, strip_privates=strip_privates, strip_nulls=True
+-        )
+-        for key in KEYS_TO_REMOVE:
+-            _remove_key(json_object, key)
+-        return json_object
+-    except JsonsError:
+-        return JSON_PARSE_ERROR
+-
+-
+-def write_json_file(
+-    object_to_write ,
+-    file_name ,
+-    file_path  = "",
+-    strip_privates  = True,
+-)  :
+-    """
+-    Serialize json data string to json file
+-    :param object_to_write: object to write to json
+-    :param file_name: File name
+-    :param file_path: File path
+-    :param strip_privates: strip private variables
+-    """
+-    json_file_path  = path.join(file_path, file_name + JSON_FILE_EXTENSION)
+-    with open(json_file_path, WRITE) as json_file:
+-        json_file.write(write_json(object_to_write, strip_privates))
++    return dump_json_object(object_to_write, strip_privates)
+ 
+ 
+ def read_json(data , class_out )  :
+@@ -172,79 +80,14 @@
+     :param class_out: Object type
+     :return: Deserialized object
+     """
+-    set_deserializers()
+-    return cast(T, loads(data, class_out))
++    return parse_json(data, class_out)
+ 
+ 
+-def read_json_object(data , class_out )  :
++def read_json_object(data , class_out, endian = 'big')  :
+     """
+     Deserialize json file to object
+     :param data: Json file data
+     :param class_out: Object type
+     :return: Deserialized object
+     """
+-    set_deserializers()
+-    return cast(T, load(data, class_out))
+-
+-
+-def read_json_file(class_out , file_name , file_path  = "")  :
+-    """
+-    Deserialize json file to object
+-    :param class_out: Object type
+-    :param file_name: File name
+-    :param file_path: File path
+-    :return: Deserialized object
+-    """
+-    set_deserializers()
+-    json_file_path  = path.join(file_path, file_name + JSON_FILE_EXTENSION)
+-    with open(json_file_path, READ) as json_file:
+-        data = json_file.read()
+-        target  = read_json(data, class_out)
+-    return target
+-
+-
+-def set_serializers()  :
+-    """Set serializers for jsons to use to cast specific classes"""
+-
+-    # Local import to minimize jsons usage across files
+-    from .group import ElementModP, ElementModQ
+-
+-    set_serializer(lambda p, **_: str(p), ElementModP)
+-    set_serializer(lambda q, **_: str(q), ElementModQ)
+-    set_serializer(lambda dt, **_: dt.isoformat(), datetime)
+-
+-
+-def set_deserializers()  :
+-    """Set deserializers and validators for json to use to cast specific classes"""
+-
+-    # Local import to minimize jsons usage across files
+-    from .group import ElementModP, ElementModQ, int_to_p_unchecked, int_to_q_unchecked
+-
+-    set_deserializer(
+-        lambda p_as_int, cls, **_: int_to_p_unchecked(p_as_int), ElementModP
+-    )
+-    set_validator(lambda p: p.is_in_bounds(), ElementModP)
+-
+-    set_deserializer(
+-        lambda q_as_int, cls, **_: int_to_q_unchecked(q_as_int), ElementModQ
+-    )
+-    set_validator(lambda q: q.is_in_bounds(), ElementModQ)
+-
+-    set_deserializer(
+-        lambda none, cls, **_: None
+-        if none == "None"
+-        else default_nonetype_deserializer(none),
+-        NoneType,
+-    )
+-
+-    set_deserializer(lambda dt, cls, **_: _deserialize_datetime(dt), datetime)
+-
+-
+-def _deserialize_datetime(value )  :
+-    """
+-    The `fromisoformat` function doesn't recognize the Z (Zulu) suffix
+-    to indicate UTC.  For compatibility with more external clients, we
+-    should allow it.
+-    """
+-    tz_corrected = re.sub("Z$", "+00:00", value)
+-    return datetime.fromisoformat(tz_corrected)
++    return parse_json_object(data, class_out, endian)
+diff -ruwN orig/electionguard/singleton.py build/electionguard/singleton.py
+--- orig/electionguard/singleton.py	2020-11-03 10:10:47.000000000 +0100
++++ build/electionguard/singleton.py	2020-10-28 15:25:36.000000000 +0100
+@@ -1,4 +1,3 @@
+-from typing import Any
+ 
+ 
+ class Singleton:
+diff -ruwN orig/electionguard/tracker.py build/electionguard/tracker.py
+--- orig/electionguard/tracker.py	2020-11-03 10:10:47.000000000 +0100
++++ build/electionguard/tracker.py	2020-10-28 15:25:36.000000000 +0100
+@@ -1,4 +1,3 @@
+-from typing import List, Optional
+ from electionguard.hash import hash_elems
+ from electionguard.group import ElementModQ
+ from electionguard.words import get_word
+diff -ruwN orig/electionguard/utils.py build/electionguard/utils.py
+--- orig/electionguard/utils.py	2020-11-03 10:10:47.000000000 +0100
++++ build/electionguard/utils.py	2020-10-28 15:25:36.000000000 +0100
+@@ -1,10 +1,5 @@
+ from datetime import datetime, timezone
+-from os import mkdir, path
+ from re import sub
+-from typing import Callable, Optional, TypeVar
+-
+-T = TypeVar("T")
+-U = TypeVar("U")
+ 
+ 
+ def get_optional(optional )  :
+@@ -74,8 +69,9 @@
+ 
+     ticks = (
+         date_time.timestamp()
+-        if date_time.tzinfo
+-        else date_time.astimezone(timezone.utc).timestamp()
++        # TO-DO: timezone check needed
++        # if date_time.tzinfo
++        # else date_time.astimezone(timezone.utc).timestamp()
+     )
+     return int(ticks)
+ 
+diff -ruwN orig/electionguard/words.py build/electionguard/words.py
+--- orig/electionguard/words.py	2020-11-03 10:10:47.000000000 +0100
++++ build/electionguard/words.py	2020-10-28 15:25:36.000000000 +0100
+@@ -1,5 +1,3 @@
+-from typing import Optional
+-
+ MIN_INDEX = 0
+ MAX_INDEX = 4095
+ 
+diff -ruwN orig/jsons.js build/jsons.js
+--- orig/jsons.js	2020-11-03 10:10:47.000000000 +0100
++++ build/jsons.js	2020-10-30 10:27:36.000000000 +0100
+@@ -10,7 +10,7 @@
+   return str.replace(/-/g, '+').replace(/_/g, '/');
+ }
+ 
+-function b64ToBn(b64) {
++function b64ToBn(b64, endian = 'big') {
+   var bin = atob(b64);
+   var hex = [];
+ 
+@@ -19,9 +19,11 @@
+     if (h.length % 2) { h = '0' + h; }
+     hex.push(h);
+   });
+-
++  if (endian == 'big') {
+   return BigInt('0x' + hex.join(''));
+ }
++  return BigInt('0x' + hex.reverse().join(''));
++}
+ 
+ 
+ export var dump_json = function(instance, strip_privates = true) {
+@@ -38,11 +40,15 @@
+   return parse_json_object(JSON.parse(data), class_out);
+ }
+ 
+-export var parse_json_object = function(data, class_out) {
++export var parse_json_object = function(data, class_out, endian = 'big') {
+   if (class_out === 'Optional')
+       return data || null;
+ 
+   if (Array.isArray(class_out)) {
++    if (!data) {
++      return [];
++    }
++    
+     switch(class_out[0].__name__) {
+       case 'str':
+       case 'int':
+@@ -50,7 +56,7 @@
+         return data;
+       default:
+         return data.map(function(currentValue) {
+-          return parse_json_object(currentValue, class_out[0]);
++          return parse_json_object(currentValue, class_out[0], endian);
+         });
+     }
+   }
+@@ -61,7 +67,7 @@
+ 
+       case 'ElementModP':
+       case 'ElementModQ':
+-        return new class_out(new bigInt(b64ToBn(urlBase64ToBase64(data))));
++        return new class_out(new bigInt(b64ToBn(urlBase64ToBase64(data), endian)));
+ 
+       case 'str':
+       case 'int':
+diff -ruwN orig/tests/test_voter.py build/tests/test_voter.py
+--- orig/tests/test_voter.py	2020-11-03 10:10:48.000000000 +0100
++++ build/tests/test_voter.py	2020-10-28 15:25:36.000000000 +0100
+@@ -1,9 +1,8 @@
+-import unittest
+ from tests.utils import create_election_test_message, joint_election_key_test_message
+ from decidim.electionguard.voter import Voter
+ 
+ 
+-class TestVoter(unittest.TestCase):
++class TestVoter:
+     def setUp(self):
+         self.voter = Voter('a-voter')
+ 
+@@ -16,7 +15,7 @@
+             'question2': ['question2-first-project-selection', 'question2-fourth-project-selection']
+         })
+ 
+-        print(encrypted_ballot)
++        print(JSON.stringify(encrypted_ballot))
+ 
+         # TODO: assert ballot keys
+         # TODO: assert ballot constests keys
+@@ -25,6 +24,3 @@
+         # TODO: assert number of selections for each contest
+         # TODO: assert decryption of the ballot
+ 
+-
+-if __name__ == '__main__':
+-    unittest.main()
+diff -ruwN orig/tests/utils.py build/tests/utils.py
+--- orig/tests/utils.py	2020-11-03 10:10:48.000000000 +0100
++++ build/tests/utils.py	2020-10-30 09:15:04.000000000 +0100
+@@ -10,7 +10,7 @@
+             {'name': 'clara', 'public_key': '...'}
+         ],
+         'description': {
+-            'name': {'text': [{'value': 'Test election', 'language': 'en'}]},
++            '_name': {'text': [{'value': 'Test election', 'language': 'en'}]},
+             'start_date': '2021-03-01T08:00:00-05:00',
+             'end_date': '2021-03-01T20:00:00-05:00',
+             'candidates': [
+@@ -30,8 +30,10 @@
+                     '@type': 'ReferendumContest',
+                     'object_id': 'question1',
+                     'sequence_order': 0,
+-                    'vote_variation': 'one_of_m',
+-                    'name': 'Question 1',
++                    'vote_variation': {
++                        '_name': 'one_of_m',
++                    },
++                    '_name': 'Question 1',
+                     'number_elected': 1,
+                     'minimum_elected': 1,
+                     'ballot_title': {'text': [{'value': 'Do you agree?', 'language': 'en'}]},
+@@ -45,8 +47,10 @@
+                     '@type': 'CandidateContest',
+                     'object_id': 'question2',
+                     'sequence_order': 1,
+-                    'vote_variation': 'n_of_m',
+-                    'name': 'Question 2',
++                    'vote_variation': {
++                        '_name': 'n_of_m',
++                    },
++                    '_name': 'Question 2',
+                     'number_elected': 2,
+                     'minimum_elected': 0,
+                     'ballot_title': {'text': [{'value': 'Choose the projects that you like', 'language': 'en'}]},
+@@ -77,7 +81,7 @@
+             'election_public_key_proof': {
+                 'challenge': '7ER1o3ZlShoCD8Okg5Q6uaUAJUpL1l7SdD4pg6CkAw8=',
+                 'commitment': 'pl8zhjfiBLMCm/IgqapjuvmiU0d1EmfOANkf+ld3+R+EqWLZQ0K4l3Ae3Dv3ipP2dgKqNv/wGe61ZoRvhFGkQJnxXo/nFH3OR9bwqZLHpv6ZYeSX3ajD/f+M7nFUCbxDyZvlZYcPLcr2LSgFPXyKDr9tqpazpkQBo44ztZDIe1llv+aaxoiJP/A36IO0bVGKDG2BEU99+qUPMk8rxzaahI3u7yhI8MOC2FJUWTWwTZgnWsV2DnduGaW2cipCG1mbs3OfqHTodl10rOeLngw9CyybfvZdp0YIv1WLGO6S5jadJBYhptUCpamLW0C5pVpCG8uvTaR28kKS9h0NqEu6qa8g5Ow5bKrfxV2vb9SH4Ut1+2+9HqPyjGN16jKMIT79ZCu1iEEN2+RUw9K0rdRaqhKcOY9imLeHk8L5D0GJpR5MYgluFCmDl/+YDZbzE/m165OPiirqlSpY9gn9jCflDuXx9gR/kqsw28z1ImYo7eBDRPG2tQGgExibhycK4SLxPBL3nvYwtlrvd0EtP7eyA6Wb1RotJ92snSH5J5SleNBNCFEWm6cnlGGJ5el/2/kG/jcDVXLz4V02s6+FTbWXTF6s9mOg9Jp65av/T2umlfWvgT/r72AGyOn4hQtI9aGdyv7xPxyU7iiZa2h7BUpEQ3R5F2CO8NmBpdS0m5VEfrA=',  # noqa: E501
+-                'name': 'Schnorr Proof',
++                '_name': 'Schnorr Proof',
+                 'public_key': 'UxmYOgII7XfkqtmIhkm2I3W5g83recLynlu+z6qK9/iSyB1hW+H7j7KpKnd+pLAOCnxrKA7Kglxk4x5jQdXfYRhiTkL9TzIhejVoXpFFEqH8I1+8mPCYMPY1GxBhZodbAl3CRSIRqS7IMQfFZ6gtZFjrij5P70SuXYyI+K2igVcQuG1BK8CKFXpzDxiKhbVltIjNk4un8K48lTkNqH+nyJ+GQiBUi+x2/gGxgF6naQO9Z/ZAgTcECf9J7LnPxY/0iFkAyJsQiyDpktPCVfy5aAfUYwbDxatIIoE7ujKXyxrbEHPu+VtX3GvLRb53kPp8Wuh3b8eDSagwmh4Fa/yHpcfq1CJSGT4C4K55VbtQ1PcMTQyGJEtgBjpU/3XGyLK1TarnmFlZonKRiuYhHMLKmj4E1F5jaJ12/AwS+jXjTASZwMHgVdflkMCH/rceutcLTKtISNtZdGmP9JcnQ1uOCr1EQe/2sTlz1M8YzvupoPtBUE9ZtgvxGzPKx+tldJQv1cqVsAYTmEL3McUFeK3YLa5819kAOdZ/1tGy3pk3mIRdbiD1GFyiW3MEOwEAKVikIxninC0TwIw0ZiKh5C6YP3mOTN2C8zmWle1uPihO7XLK0f4TKC0pyCMXklkyZa05ZmjWgctJ17RWjLE1boNVTFwFOmy3ASErzDGbJtu9g8A=',  # noqa: E501
+                 'response': 'puH3SmTJnSn4JL3uDM5exiB0mDa67vibiu3qkA8IbCM=',
+                 'usage': 'SecretValue'
+@@ -90,7 +94,7 @@
+             'election_public_key_proof': {
+                 'challenge': 'jTFR44h84a0/XwiKNwdtSDaTb3EYJjOuePX6uaYn2Ds=',
+                 'commitment': 'hQXsT3tF9zhu5LcK4IFr8sTZmMXbkUMRXqFzlTUdV8ekcB/0ZwoC6zWcdia5BpSv4og2eIUR1kuGS+rTSa4LkaUd4Zl3pZ2M+PYR4J/chnBkVl70fRQBbCBiOi1/QtVniY+hOFR/x/r/sUYoTTVql2uy/mAsk12DXz5jwzFOsLEXCuagJxk9cCmzU8VTFLkIespup0A3HXFkdIihhUoXI24itIPmknn8umeJcgdSZkAc0uUzn/PFeg2Oul7any6DoLVA5nqpisp04w0NVSCxGEdNpS5fNKxpjm1HJr3xzqyySm21o2W8gokThV1y+NZsxGyRekjeDN5e5LeK2gTkLXyhtpFbEH6nGYYxHGYZrpt1ynamK41j8xp/FkibkGqzdBbkVuaLL+FcGy0PO6fGH2GyJEgPdOrAk3Jby1zaAz9UixLTwX31vCXeYVVStCwuHjT6uWKLDFNjXAUDRepg+TvejGUWKAuVF7QvH7hXoy2yuQT7abf7Z07TE0ZBTte+7UMUp/4rd4V6pWv/TiryLpkV3/8gUgNghfX5kP4jVxmXB0SHwdyeJ8rOjRt6KNgkK+SBds8GvB4ndj3QI7V9MXSH127yfNgwGcI74tekWIWjV/Z9mZZroZgbWbirINHV/2R4jvNihoEJOUQyqR1GC+x39Ew8jfjb1WgtVGJcZ4U=',  # noqa: E501
+-                'name': 'Schnorr Proof',
++                '_name': 'Schnorr Proof',
+                 'public_key': '7+o8hAuyqbgCBixFFyIxUim4sGgjsVhQVP0o10ohgBN5++f2ohuBvSbBb9VzKx4vmRzd7sfCxwpAeo+z/QQVmDHWLrcp17y/kYbipB3cE3ewsneojyh+qEqY5H9/QiRZkC2X3XVqPVxJv5aVS3Um4vFsfCgS6uWc6HxayWu0TOgQu5FNH4hQxQH7QI68u4uthuvyUfH0t7rqXgOoBbXpm3vPrJBnLvCaxL3FBUvQH27nW5prQoRFCjzUZgEJJtUbykIPWCI/VMT/Ui8jwx3EA8bsVwUti3Mdptlv9MilOlPKo7ChaNg/vzVqsmX2xKXGXhBijgG1iey+5FnIZPQBs/fCkHc9h13pVaEJemJDhZIhiYQ2KxDmf2bWk/ZR5LKX4kFpyY+MI3KSkK2HGrvFiLej2Wxc3jWUK3LmVBCxxB1JrAX94k5fOalVGA74cNte1dp644fR+7h/7K4huDfoVbqh+arkMfg1VDEnPCMjPuox+mwR0DfDvL1niOFNwSNuSdeFqRMdj0Fcx5vG4KXCZTDlPUQIcu9VwdQnXJWqf1izh7Ol2Oi4//Y+3PX8BzMUSyt3L1x2h8kC7sHvIVO+bA9zEjN105X0RJcLkP6WM/27MyrlcfSbWAD2LOBoXySTxiv0wBuDxowo/X2nW7nTcHqu2gaabeZQGMf8/F9VI/o=',  # noqa: E501
+                 'response': 'AQy+BIv++6QaVlDQNIpd45ZIarh/0weEaGTs8a4yJE8=',
+                 'usage': 'SecretValue'
+@@ -103,7 +107,7 @@
+             'election_public_key_proof': {
+                 'challenge': 'MK6CmlcHRCeI2Fq5GZAsonlUiD6VPcZHpXzM8gFWSoU=',
+                 'commitment': 'XRoO9PiizLZ2q7UiA2887LSbAuIE/NRLpNibEh6G3BZSJfkTpIGhmOm/1Qiw2wbWqM8ndlPh64GV+D5wjzmUEchva6mwtvVNfDCsP+hm+ELAKDUH9O+tiIbpDn+uzb2Y/O4En+eh6XtFyAjh6a6kDKkuEtxVQ6KLmbDuNjc5c0Bz6vM+97uFqLoIV9nDhDAypCXOsBsrRQhkBcQ+1n1U35astAUpSM3gdRNzQdHvjO1Gh+G9eprr3uWYaMMv8m/sp4xTrLB6vno/Tbcwa1vdkzo7EeIu+xQQYuttqPgvFVhxErEaw7CHMgqVN5LBWcmI5nulvEEWYtS6m6eZ1oqB7BnLTOADIlR1f1UIL2xiCOwKqWGXhD2j4Y/XTujzE0ZGxTp8/jXLmLiH3QgW31q61KPkvPHgCLwZ5Ty9vGmRwe18hAZwPqpYaZAmcMSZX7F43pHC2UNJTp5Kr2YeHxaEi6N3cKSg1zFsL9CWBD7dGbfIAMxUsE/yKH805x/+HWm5tGf2sdxaeOvBhL29gC2g1WJdw2hNiWKDzAjjk6KlLQEgA9UgT3/93WcN5bTTrO8ETYIMAg7U8Pd1Rp6GR7wgKCox5aDZsXkOitvNMOHXWosMWl602oRGXMYN6iFUyWPdkMxpaYx2kFXx0Kc9UDH2D3stlvI0fSNykEdxBpyEdVs=',  # noqa: E501
+-                'name': 'Schnorr Proof',
++                '_name': 'Schnorr Proof',
+                 'public_key': 'b5B8KfI6Np2k4bLj5RPUGQHxdiwIo4mvPyd/tQCS1PFUrVQ/7oTZRP2tsWg50qAqIdGIjehholjWUgz6LRqSZiMRaWOaD6+GPvqVOA7W0hCBEKxca3M3qbCiRY5jCPIy1/s9cZgZtfATpNIKXpKCr9ekonPMFTbuJiiAOSZFwEIeFAi3xtVBon/NOgmRyqXPu7fUGzWNQlJAmOWMU7Xa9G/K3xlytgcvbicukuyv4aBONYzd2SNEQsO81mKDcI6fXnLbG/44pcbS6F2p2PATfMPLxTQV7cLN8+gG3FXsVt+J8+7Ou74iwoNK0/E/FtGhwqQxiLjsYasTRcXGcQfOBEvP5GpcHn+uGId9sZdCge/HPVQ1CNKA3XUOZSmEfyJirVew7PaTy9ux4YMWNliGTYGFDsIrQDilkEvUNH8P7B+9aTG2S24+gz5IuMGDZ9yEwXx4a1krk15XPsxMFmC0Asv95oueeDP6KZ2zln+9rqPhyDR9LXNYF82cGSi57oWgxdX/J7luwFrLlTbvKHneCxGaERNQZAq8KeuflqQFUrTbr6uNlRI7RfBYGkUbDkYuoX9v/kXH7FtwZMP+CVu9ntCjAQz0YT5SGQX4Qa8jSX89N1FP+caqX4ndqHw58bp0Fa6oG+GX3hlUBJeBQpYhIr8e4kWaxkzqt4P4wacYlSY=',  # noqa: E501
+                 'response': '+rqEwVYM7oQoPJtI/kuIwnoWRqUoyRANbgv58j5vwc0=',
+                 'usage': 'SecretValue'

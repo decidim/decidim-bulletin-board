@@ -1,0 +1,20 @@
+#!/bin/bash
+
+if [[ -e $PATCHES_FILE ]]
+then
+  mv $PATCHES_FILE $PATCHES_FILE.orig
+fi
+
+diff -ruwN $ORIG_DIR $BUILD_DIR > $PATCHES_FILE
+
+if [[ -e $PATCHES_FILE ]]
+then
+  rm -f $PATCHES_FILE.orig
+  exit 0
+fi
+
+if [[ -e $PATCHES_FILE.orig ]]
+then
+  mv $PATCHES_FILE.orig $PATCHES_FILE
+  exit 1
+fi

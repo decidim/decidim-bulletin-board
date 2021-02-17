@@ -1,0 +1,6 @@
+[submodule "sources/decidim-electionguard"]
+	path = sources/decidim-electionguard
+	url = https://github.com/codegram/decidim-electionguard
+[submodule "sources/electionguard-python"]
+	path = sources/electionguard-python
+	url = https://github.com/microsoft/electionguard-python

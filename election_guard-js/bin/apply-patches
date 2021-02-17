@@ -1,0 +1,6 @@
+#!/bin/bash
+
+if [[ -e $PATCHES_FILE ]]
+then
+  patch -s -p0 < $PATCHES_FILE
+fi
