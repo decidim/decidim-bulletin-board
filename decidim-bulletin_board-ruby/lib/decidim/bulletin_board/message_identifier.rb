@@ -41,15 +41,19 @@ module Decidim
       end
 
       def election_id
-        @election_id = elements[0..1].join(".")
+        @election_id ||= elements[0..1].join(".")
       end
 
       def type
-        @type = elements[2]
+        @type ||= elements[2]
       end
 
       def subtype
-        @subtype = elements[3]
+        @subtype ||= elements[3]
+      end
+
+      def type_subtype
+        @type_subtype ||= "#{type}.#{subtype}"
       end
 
       def to_s

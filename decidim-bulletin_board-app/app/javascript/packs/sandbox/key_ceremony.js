@@ -3,7 +3,9 @@ import {
   KeyCeremonyComponent,
   IdentificationKeys,
 } from "../decidim-bulletin_board";
+// TODO: find a way to load it automatically
 import { TrusteeWrapperAdapter as DummyTrusteeWrapperAdapter } from "voting-scheme-dummy";
+import { TrusteeWrapperAdapter as ElectionGuardTrusteeWrapperAdapter } from "voting-scheme-election_guard";
 
 $(() => {
   // UI Elements
@@ -42,8 +44,13 @@ $(() => {
       electionUniqueId,
       trusteeUniqueId: trusteeContext.uniqueId,
       trusteeIdentificationKeys,
-      trusteeWrapperAdapter: new DummyTrusteeWrapperAdapter({
+      // TODO: find a way to create the correct one
+      // trusteeWrapperAdapter: new DummyTrusteeWrapperAdapter({
+      //   trusteeId: trusteeContext.uniqueId,
+      // }),
+      trusteeWrapperAdapter: new ElectionGuardTrusteeWrapperAdapter({
         trusteeId: trusteeContext.uniqueId,
+        workerUrl: "http://localhost:8000/assets/election_guard/webworker.js",
       }),
     });
 

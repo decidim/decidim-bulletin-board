@@ -110,6 +110,8 @@ Test::PrivateKeys.trustees_public_keys.each_with_index.map do |trustee_public_ke
   )
 end
 
+# dummy elections
+
 TEST_ELECTION_ID_OFFSET = 10_000
 [:created, :key_ceremony, :key_ceremony_ended, :vote, :vote_ended, :tally, :tally_ended, :results_published].each_with_index do |status, i|
   election = FactoryBot.create(:election, status, election_id: TEST_ELECTION_ID_OFFSET + i)
@@ -138,4 +140,11 @@ TEST_ELECTION_ID_OFFSET = 10_000
   next if status == :tally_ended
 
   create_publish_results_log_entry(election)
+end
+
+# electionguard elections
+
+TEST_ELECTION_ID_OFFSET_ELECTIONGUARD = 20_000
+[:created].each_with_index do |status, i|
+  FactoryBot.create(:election, status, election_id: TEST_ELECTION_ID_OFFSET_ELECTIONGUARD + i, voting_scheme: :election_guard)
 end

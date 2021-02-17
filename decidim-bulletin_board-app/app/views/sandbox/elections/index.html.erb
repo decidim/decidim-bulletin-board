@@ -13,6 +13,7 @@
         <th>Unique ID</th>
         <th>Title</th>
         <th>Status</th>
+        <th>Voting Scheme</th>
         <th>Actions</th>
       </tr>
     </thead>
@@ -22,6 +23,7 @@
           <td><%= election.unique_id %></td>
           <td><%= election.title.values.first %></td>
           <td><%= election.status %></td>
+          <td><%= election.voting_scheme_name %></td>
           <td>
             <% if election.created? %>
               <%= link_to "Start key ceremony", start_key_ceremony_sandbox_election_path(election) %>
