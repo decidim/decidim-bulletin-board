@@ -69,16 +69,16 @@ module Decidim
 
         def bulletin_board
           {
-            name: "Bulletin Board",
-            slug: "bulletin-board",
+            name: "bulletin-board",
+            pretty_name: "Bulletin Board",
             public_key: settings.bulletin_board_public_key
           }
         end
 
         def authority
           {
-            name: settings.authority_name,
-            slug: settings.authority_slug,
+            name: settings.authority_slug,
+            pretty_name: settings.authority_name,
             public_key: settings.authority_public_key
           }
         end
@@ -86,8 +86,8 @@ module Decidim
         def trustees
           election_data[:trustees].map do |trustee|
             {
-              name: trustee[:name],
-              slug: trustee[:slug],
+              name: trustee[:slug],
+              pretty_name: trustee[:name],
               public_key: trustee[:public_key]
             }
           end
@@ -102,7 +102,6 @@ module Decidim
               vote_variation: question[:max_selections] == 1 ? "one_of_m" : "n_of_m",
               name: default_text(question[:title]),
               number_elected: question[:answers].count,
-              votes_allowed: 1,
               ballot_title: text(question[:title]),
               ballot_subtitle: text(question[:description]),
               ballot_selections: contest_answers(question)
