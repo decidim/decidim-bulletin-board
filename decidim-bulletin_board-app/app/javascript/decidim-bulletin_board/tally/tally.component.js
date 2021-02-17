@@ -87,7 +87,7 @@ export class TallyComponent {
 
       onStart();
 
-      if (this.trustee.needsToBeRestored()) {
+      if (await this.trustee.needsToBeRestored()) {
         onTrusteeNeedsToBeRestored();
       } else {
         await this.trustee.runTally();
@@ -100,7 +100,7 @@ export class TallyComponent {
       const reader = new FileReader();
       reader.onload = async ({ target }) => {
         const content = target.result;
-        if (this.trustee.restore(content)) {
+        if (await this.trustee.restore(content)) {
           onRestore();
           await this.trustee.runTally();
           onComplete();

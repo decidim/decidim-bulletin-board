@@ -31,6 +31,7 @@ FactoryBot.define do
       authority_private_key { Test::PrivateKeys.authority_private_key }
       trustees_plus_keys { Trustee.first(3).zip(Test::PrivateKeys.trustees_private_keys) }
       election_id { generate(:election_id) }
+      voting_scheme { :dummy }
     end
 
     title { { en: Faker::Name.name } }
@@ -44,7 +45,7 @@ FactoryBot.define do
       election.log_entries << build(:log_entry, election: election, private_key: evaluator.authority_private_key,
                                                 message: build(:create_election_message, election_id: election.unique_id,
                                                                                          authority_client: election.authority,
-                                                                                         voting_scheme: :dummy,
+                                                                                         voting_scheme: evaluator.voting_scheme,
                                                                                          trustees_plus_keys: evaluator.trustees_plus_keys))
     end
 
