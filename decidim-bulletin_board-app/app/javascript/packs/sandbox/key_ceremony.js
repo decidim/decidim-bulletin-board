@@ -4,6 +4,7 @@ import {
   IdentificationKeys,
 } from "../decidim-bulletin_board";
 import { TrusteeWrapperAdapter as DummyTrusteeWrapperAdapter } from "voting-scheme-dummy";
+import { TrusteeWrapperAdapter as ElectionGuardTrusteeWrapperAdapter } from "voting-scheme-election_guard";
 
 $(() => {
   // UI Elements
@@ -15,6 +16,7 @@ $(() => {
   };
   const electionUniqueId = $trusteeTable.data("electionUniqueId");
   const authorityPublicKeyJSON = $trusteeTable.data("authorityPublicKey");
+  const votingSchemeName = $trusteeTable.data("votingSchemeName");
 
   $trusteeTable.find("tbody tr").each((_index, row) => {
     const $trustee = $(row);
@@ -35,6 +37,22 @@ $(() => {
     const $uploadPrivateKeyButton = $trustee.find(".upload-private-key-button");
     const $doneMessage = $trustee.find(".done-message");
 
+    // Use the correct trustee wrapper adapter
+    let trusteeWrapperAdapter;
+
+    if (votingSchemeName === "dummy") {
+      trusteeWrapperAdapter = new DummyTrusteeWrapperAdapter({
+        trusteeId: trusteeContext.uniqueId,
+      });
+    } else if (votingSchemeName === "election_guard") {
+      trusteeWrapperAdapter = new ElectionGuardTrusteeWrapperAdapter({
+        trusteeId: trusteeContext.uniqueId,
+        workerUrl: "http://localhost:8000/assets/election_guard/webworker.js",
+      });
+    } else {
+      throw new Error(`Voting scheme ${votingSchemeName} not supported.`);
+    }
+
     // Use the key ceremony component and bind all UI events
     const component = new KeyCeremonyComponent({
       bulletinBoardClientParams,
@@ -42,9 +60,7 @@ $(() => {
       electionUniqueId,
       trusteeUniqueId: trusteeContext.uniqueId,
       trusteeIdentificationKeys,
-      trusteeWrapperAdapter: new DummyTrusteeWrapperAdapter({
-        trusteeId: trusteeContext.uniqueId,
-      }),
+      trusteeWrapperAdapter,
     });
 
     const bindComponentEvents = async () => {
