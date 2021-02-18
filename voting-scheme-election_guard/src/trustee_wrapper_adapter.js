@@ -33,8 +33,6 @@ export class TrusteeWrapperAdapter {
    * @returns {Promise<Object|undefined>}
    */
   async processMessage(messageType, decodedData) {
-    console.log(messageType);
-
     const result = await this.processPythonCodeOnWorker(
       `
       import json
