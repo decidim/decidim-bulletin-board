@@ -32,7 +32,7 @@ export class TrusteeWrapperAdapter {
   /**
    * Whether the trustee wrapper is in a fresh state or no.
    *
-   * @returns {boolean}
+   * @returns {Promise<Boolean>}
    */
   isFresh() {
     return this.wrapper.isFresh();
@@ -41,7 +41,7 @@ export class TrusteeWrapperAdapter {
   /**
    * Returns the wrapper state in a string format.
    *
-   * @returns {String}
+   * @returns {Promise<String>}
    */
   backup() {
     return this.wrapper.backup();
@@ -51,7 +51,7 @@ export class TrusteeWrapperAdapter {
    * Restore the trustee state from the given state string.
    *
    * @param {string} state - As string with the wrapper state retrieved from the backup method.
-   * @returns {boolean}
+   * @returns {Promise<Boolean>}
    */
   restore(state) {
     return this.wrapper.restore(state);
@@ -59,7 +59,7 @@ export class TrusteeWrapperAdapter {
 
   /**
    * Whether the key ceremony process is done or not.
-   * @returns {Boolean}
+   * @returns {Promise<Boolean>}
    */
   isKeyCeremonyDone() {
     return this.wrapper.isKeyCeremonyDone();
@@ -67,7 +67,7 @@ export class TrusteeWrapperAdapter {
 
   /**
    * Whether the tally process is done or not.
-   * @returns {Boolean}
+   * @returns {Promise<Boolean>}
    */
   isTallyDone() {
     return this.wrapper.isTallyDone();

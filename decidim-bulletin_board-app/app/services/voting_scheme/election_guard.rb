@@ -9,12 +9,16 @@ module VotingScheme
   class ElectionGuard < Base
     RESULTS = ["tally.trustee_share", "end_tally"].freeze
 
-    delegate :restore, :backup, to: :state
+    delegate :backup, to: :state
 
     def process_message(message_identifier, message)
       return tally_cast if message_identifier.type == "start_tally"
 
-      state.process_message(message_identifier.subtype || message_identifier.type, PyCall::Dict.new(message))
+      state.process_message(message_identifier.type_subtype, PyCall::Dict.new(message))
+    end
+
+    def restore(data)
+      EGBB.BulletinBoard.restore(data)
     end
 
     private

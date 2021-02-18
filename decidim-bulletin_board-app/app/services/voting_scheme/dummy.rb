@@ -35,8 +35,7 @@ module VotingScheme
 
     def emit_response(type_subtype, response = {})
       @response = {
-        "message_id" => "#{election.unique_id}.#{type_subtype}+b.#{BulletinBoard.unique_id}",
-        "iat" => Time.now.to_i,
+        "message_type" => type_subtype,
         **response
       }
     end

@@ -65,8 +65,8 @@ FactoryBot.define do
     end
 
     factory :json_bulletin_board do
-      name { "Bulletin Board" }
-      slug { "bulletin-board" }
+      name { "bulletin-board" }
+      pretty_name { "Bulletin Board" }
       public_key { BulletinBoard.public_key.to_json }
     end
 
@@ -75,8 +75,8 @@ FactoryBot.define do
         authority { Authority.first }
       end
 
-      name { authority.name }
-      slug { authority.unique_id }
+      name { authority.unique_id }
+      pretty_name { authority.name }
       public_key { authority.public_key.to_json }
     end
 
@@ -86,8 +86,8 @@ FactoryBot.define do
         private_key { Test::PrivateKeys.trustees_private_keys.first }
       end
 
-      name { trustee.name }
-      slug { name.parameterize }
+      name { pretty_name.parameterize }
+      pretty_name { trustee.name }
       public_key { private_key.export.to_json }
     end
 

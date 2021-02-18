@@ -82,10 +82,12 @@ module Sandbox
     def questions
       @questions ||= params.require(:election).permit(questions: {})[:questions].to_h.values.map do |question|
         question.merge(
+          weight: question[:weight].to_i,
+          max_selections: question[:max_selections].to_i,
           answers: question[:answers].values.map do |answer|
             {
               slug: answer[:slug],
-              weight: answer[:weight]
+              weight: answer[:weight].to_i
             }
           end
         )
@@ -138,7 +140,7 @@ module Sandbox
         authority_api_key: authority.api_key,
         authority_name: authority.name,
         authority_private_key: Test::PrivateKeys.authority_private_key_json,
-        scheme_name: "dummy",
+        scheme_name: "election_guard",
         quorum: 2,
         number_of_trustees: 3
       )

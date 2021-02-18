@@ -81,7 +81,7 @@ export class Trustee {
       message = await this.waitForNextLogEntryResult();
     }
 
-    yield this.wrapperAdapter.backup();
+    yield await this.wrapperAdapter.backup();
     await this.processKeyCeremonyStep(message);
     this.hasSetupKeyCeremony = true;
     return this.hasSetupKeyCeremony;
@@ -99,14 +99,14 @@ export class Trustee {
       throw new Error("The key ceremony has not been setup yet");
     }
 
-    if (this.needsToBeRestored()) {
+    if (await this.needsToBeRestored()) {
       throw new Error("You need to restore the wrapper state to continue");
     }
 
     return this.waitForNextLogEntryResult().then(async (message) => {
       await this.processKeyCeremonyStep(message);
 
-      if (this.wrapperAdapter.isKeyCeremonyDone()) {
+      if (await this.wrapperAdapter.isKeyCeremonyDone()) {
         return this.tearDown();
       }
 
@@ -122,14 +122,14 @@ export class Trustee {
    *         there is a problem with the client.
    */
   async runTally() {
-    if (this.needsToBeRestored()) {
+    if (await this.needsToBeRestored()) {
       throw new Error("You need to restore the wrapper state to continue");
     }
 
     return this.waitForNextLogEntryResult().then(async (message) => {
       await this.processTallyStep(message);
 
-      if (this.wrapperAdapter.isTallyDone()) {
+      if (await this.wrapperAdapter.isTallyDone()) {
         return this.tearDown();
       }
 
@@ -140,33 +140,34 @@ export class Trustee {
   /**
    * Whether the trustee state needs to be restored or not.
    *
-   * @returns {boolean}
+   * @returns {Promise<Boolean>}
    */
-  needsToBeRestored() {
+  async needsToBeRestored() {
     const lastMessageFromTrustee = this.election.getLastMessageFromTrustee(
       this.uniqueId
     );
 
-    return lastMessageFromTrustee && this.wrapperAdapter.isFresh();
+    return lastMessageFromTrustee && (await this.wrapperAdapter.isFresh());
   }
 
   /**
    * Restore the trustee state from the given state string. It uses the last message sent to check that the state is valid.
    *
    * @param {string} wrapperState - As string with the trustee state retrieved from the backup method.
-   * @returns {boolean}
+   * @returns {Promise<Boolean>}
    */
-  restore(wrapperState) {
+  async restore(wrapperState) {
     const lastMessageFromTrustee = this.election.getLastMessageFromTrustee(
       this.uniqueId
     );
 
     this.hasSetupKeyCeremony =
       lastMessageFromTrustee &&
-      this.wrapperAdapter.restore(
+      (await this.wrapperAdapter.restore(
         wrapperState,
         lastMessageFromTrustee.messageId
-      );
+      ));
+
     return this.hasSetupKeyCeremony;
   }
 
@@ -178,23 +179,19 @@ export class Trustee {
    * @private
    * @returns {Promise<Object>}
    */
-  waitForNextLogEntryResult() {
-    return new Promise((resolve, reject) => {
+  async waitForNextLogEntryResult() {
+    await new Promise((resolve) => {
       const intervalId = setInterval(async () => {
         const { logEntries } = this.election;
 
         if (logEntries.length > this.nextLogEntryIndexToProcess) {
-          try {
-            const result = await this.processNextLogEntry();
-            resolve(result);
-          } catch (error) {
-            reject(error);
-          } finally {
-            clearInterval(intervalId);
-          }
+          clearInterval(intervalId);
+          resolve();
         }
       }, this.options.waitUntilNextCheck);
     });
+
+    return this.processNextLogEntry();
   }
 
   /**
@@ -211,6 +208,7 @@ export class Trustee {
     this.events.broadcastMessageReceived(message);
 
     const { messageIdentifier, decodedData } = await this.parser.parse(message);
+
     const result = await this.wrapperAdapter.processMessage(
       messageIdentifier.typeSubtype,
       decodedData

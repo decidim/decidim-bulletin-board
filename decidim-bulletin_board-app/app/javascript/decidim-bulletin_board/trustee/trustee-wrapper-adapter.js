@@ -20,7 +20,7 @@ export class TrusteeWrapperAdapter {
    *
    * @abstract
    * @param {String} messageId - The unique identifier of a message.
-   * @returns {boolean}
+   * @returns {Promise<Boolean>}
    */
   isFresh() {
     throw new Error("Not implemented.");
@@ -30,7 +30,7 @@ export class TrusteeWrapperAdapter {
    * Returns the wrapper state in a string format.
    *
    * @abstract
-   * @returns {String}
+   * @returns {Promise<String>}
    */
   backup() {
     throw new Error("Not implemented.");
@@ -41,7 +41,7 @@ export class TrusteeWrapperAdapter {
    *
    * @abstract
    * @param {string} state - As string with the wrapper state retrieved from the backup method.
-   * @returns {boolean}
+   * @returns {Promise<Boolean>}
    */
   restore(_state) {
     throw new Error("Not implemented.");
@@ -51,7 +51,7 @@ export class TrusteeWrapperAdapter {
    * Whether the key ceremony process is done or not.
    *
    * @abstract
-   * @returns {Boolean}
+   * @returns {Promise<Boolean>}
    */
   isKeyCeremonyDone() {
     throw new Error("Not implemented.");
@@ -61,7 +61,7 @@ export class TrusteeWrapperAdapter {
    * Whether the tally process is done or not.
    *
    * @abstract
-   * @returns {Boolean}
+   * @returns {Promise<Boolean>}
    */
   isTallyDone() {
     throw new Error("Not implemented.");

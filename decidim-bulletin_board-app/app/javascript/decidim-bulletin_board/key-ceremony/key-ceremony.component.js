@@ -91,7 +91,7 @@ export class KeyCeremonyComponent {
       const reader = new FileReader();
       reader.onload = async ({ target }) => {
         const content = target.result;
-        if (this.trustee.restore(content)) {
+        if (await this.trustee.restore(content)) {
           onRestore();
           await this.trustee.runKeyCeremony();
           onComplete();
@@ -105,7 +105,7 @@ export class KeyCeremonyComponent {
 
       onStart();
 
-      if (this.trustee.needsToBeRestored()) {
+      if (await this.trustee.needsToBeRestored()) {
         onTrusteeNeedsToBeRestored();
       } else {
         const keyCeremonySetup = this.trustee.setupKeyCeremony();
