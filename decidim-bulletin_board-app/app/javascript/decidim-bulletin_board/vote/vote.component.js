@@ -13,6 +13,7 @@ export class VoteComponent {
    *  - {String} authorityPublicKeyJSON - The authority identification public key.
    *  - {String} electionUniqueId - The unique identifier of an election.
    *  - {String} voterUniqueId - The unique identifier of a voter.
+   *  - {Object} voterWrapperAdapter - An object to interact with the voter wrapper.
    * @constructor
    */
   constructor({
@@ -20,6 +21,7 @@ export class VoteComponent {
     authorityPublicKeyJSON,
     electionUniqueId,
     voterUniqueId,
+    voterWrapperAdapter,
   }) {
     this.bulletinBoardClient = new Client(bulletinBoardClientParams);
 
@@ -33,6 +35,7 @@ export class VoteComponent {
       authorityPublicKeyJSON,
       election,
       uniqueId: voterUniqueId,
+      wrapperAdapter: voterWrapperAdapter,
     });
   }
 

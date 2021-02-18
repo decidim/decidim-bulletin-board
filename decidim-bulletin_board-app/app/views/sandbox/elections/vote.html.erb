@@ -12,7 +12,8 @@
   <div class="voter"
        data-election-unique-id="<%= election.unique_id %>"
        data-api-endpoint-url="<%= bulletin_board_server %>"
-       data-authority-public-key="<%= authority_public_key %>">
+       data-authority-public-key="<%= authority_public_key %>"
+       data-voting-scheme-name="<%= election.voting_scheme_name %>">
     <p>Voter Id: <input name="voter_id" value="<%= random_voter_id %>" style="width:20rem"></p>
     <p>
       Vote content: <br/>

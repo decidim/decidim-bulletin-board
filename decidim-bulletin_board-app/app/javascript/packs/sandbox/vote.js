@@ -1,5 +1,6 @@
 import $ from "jquery";
 import { VoteComponent } from "../decidim-bulletin_board";
+import { VoterWrapperAdapter as DummyVoterWrapperAdapter } from "voting-scheme-dummy";
 
 $(async () => {
   // UI Elements
@@ -22,7 +23,19 @@ $(async () => {
   };
   const electionUniqueId = $voter.data("electionUniqueId");
   const authorityPublicKeyJSON = $voter.data("authorityPublicKey");
+  const votingSchemeName = $voter.data("votingSchemeName");
   const voterUniqueId = $voterId.val();
+
+  // Use the correct voter wrapper adapter
+  let voterWrapperAdapter;
+
+  if (votingSchemeName === "dummy") {
+    voterWrapperAdapter = new DummyVoterWrapperAdapter({
+      voterId: voterUniqueId,
+    });
+  } else {
+    throw new Error(`Voting scheme ${votingSchemeName} not supported.`);
+  }
 
   // Use the voter component and bind all UI events
   const component = new VoteComponent({
@@ -30,6 +43,7 @@ $(async () => {
     authorityPublicKeyJSON,
     electionUniqueId,
     voterUniqueId,
+    voterWrapperAdapter,
   });
 
   await component.bindEvents({
