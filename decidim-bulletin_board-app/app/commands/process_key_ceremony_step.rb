@@ -46,17 +46,6 @@ class ProcessKeyCeremonyStep < Rectify::Command
 
   attr_accessor :trustee, :response_log_entry
 
-  def create_response_log_entry!
-    return unless response_message
-
-    @response_log_entry = LogEntry.create!(
-      election: election,
-      message_id: Decidim::BulletinBoard::MessageIdentifier.format(election.unique_id, response_message["message_type"], :bulletin_board, 0),
-      signed_data: BulletinBoard.sign(response_message.to_h.merge(iat: Time.now.to_i)),
-      bulletin_board: true
-    )
-  end
-
   def save_election!
     if response_log_entry && response_log_entry.message_identifier.type == "end_key_ceremony"
       election.key_ceremony_ended!

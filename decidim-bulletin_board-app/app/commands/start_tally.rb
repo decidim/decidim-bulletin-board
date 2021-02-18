@@ -48,15 +48,4 @@ class StartTally < Rectify::Command
   def voting_scheme
     @voting_scheme ||= voting_scheme_class.new(election, ElectionUniqueVotes.new(election))
   end
-
-  def create_response_log_entry!
-    return unless response_message
-
-    @response_log_entry = LogEntry.create!(
-      election: election,
-      message_id: response_message["message_id"],
-      signed_data: BulletinBoard.sign(response_message),
-      bulletin_board: true
-    )
-  end
 end

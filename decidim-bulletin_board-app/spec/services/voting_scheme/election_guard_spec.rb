@@ -44,11 +44,11 @@ module VotingScheme
       include_examples "receiving the public key for the trustee", 3
 
       context "when completing the whole key ceremony phase" do
-        let(:last_step) { :key_ceremony_joint_election_key }
+        let(:last_step) { :end_key_ceremony }
         let(:dont_process_count) { 2 }
 
         it "returns the joint election key message" do
-          expect(subject).to eq(election.log_entries.last.decoded_data.slice("joint_election_key"))
+          expect(JSON.parse(subject["content"])).to eq(JSON.parse(election.log_entries.last.decoded_data["content"]))
         end
       end
     end
