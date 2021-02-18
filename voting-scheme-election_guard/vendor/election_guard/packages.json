@@ -1,1 +1,49 @@
-{"dependencies": {"test": [], "numpy": [], "distlib": [], "sortedcontainers": [], "pyasn1": [], "jsons": ["typish"], "decidim-electionguard": ["electionguard"], "micropip": ["distlib"], "rsa": [], "electionguard": ["numpy", "hypothesis", "jsons", "rsa", "gmpy2", "pyasn1"], "attrs": [], "typish": [], "hypothesis": ["attrs", "sortedcontainers"], "gmpy2": []}, "import_name_to_package_name": {"numpy": "numpy", "distlib": "distlib", "sortedcontainers": "sortedcontainers", "pyasn1": "pyasn1", "jsons": "jsons", "decidim-electionguard": "decidim-electionguard", "micropip": "micropip", "rsa": "rsa", "electionguard": "electionguard", "attr": "attrs", "typish": "typish", "hypothesis": "hypothesis", "gmpy2": "gmpy2"}}
+{
+  "dependencies": {
+    "test": [],
+    "rsa": [],
+    "typish": [],
+    "numpy": [],
+    "gmpy2": [],
+    "attrs": [],
+    "electionguard": [
+      "numpy",
+      "hypothesis",
+      "jsons",
+      "rsa",
+      "gmpy2",
+      "pyasn1"
+    ],
+    "decidim-electionguard": [
+      "electionguard"
+    ],
+    "micropip": [
+      "distlib"
+    ],
+    "pyasn1": [],
+    "hypothesis": [
+      "attrs",
+      "sortedcontainers"
+    ],
+    "jsons": [
+      "typish"
+    ],
+    "sortedcontainers": [],
+    "distlib": []
+  },
+  "import_name_to_package_name": {
+    "rsa": "rsa",
+    "typish": "typish",
+    "numpy": "numpy",
+    "gmpy2": "gmpy2",
+    "attr": "attrs",
+    "electionguard": "electionguard",
+    "decidim-electionguard": "decidim-electionguard",
+    "micropip": "micropip",
+    "pyasn1": "pyasn1",
+    "hypothesis": "hypothesis",
+    "jsons": "jsons",
+    "sortedcontainers": "sortedcontainers",
+    "distlib": "distlib"
+  }
+}
