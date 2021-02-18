@@ -12,6 +12,7 @@ $(async () => {
   const $voterId = $voter.find("input");
   const $doneMessage = $voter.find(".done-message");
   const $auditMessage = $voter.find(".audit-done-message");
+  const $ballotHash = $voter.find(".ballot-hash");
 
   $vote.on("change", (event) => {
     $vote.css("border", "");
@@ -69,18 +70,21 @@ $(async () => {
         invalidVoteFn();
       }
     },
-    castOrAuditBallot() {
+    castOrAuditBallot(encryptedBallot) {
+      $ballotHash.text(
+        `Your ballot identifier is: ${encryptedBallot.ballotHash}`
+      );
       $encryptVote.prop("disabled", true);
       $castVote.show();
       $auditVote.show();
     },
-    onAuditVote(onEventTriggered) {
+    onBindAuditBallotButton(onEventTriggered) {
       $auditVote.on("click", onEventTriggered);
     },
-    onVoteValidation(onEventTriggered) {
+    onBindCastBallotButton(onEventTriggered) {
       $castVote.on("click", onEventTriggered);
     },
-    onVoteAudition(auditedVote, auditFileName) {
+    onAuditBallot(auditedVote, auditFileName) {
       const vote = JSON.stringify(auditedVote);
       const link = document.createElement("a");
 
@@ -97,7 +101,7 @@ $(async () => {
       $auditMessage.show();
       $vote.css("background", "green");
     },
-    onVoteEncrypted({ encryptedBallot }) {
+    onCastBallot({ encryptedBallot }) {
       return $.ajax({
         method: "POST",
         contentType: "application/json",
@@ -110,7 +114,7 @@ $(async () => {
         },
       });
     },
-    onComplete() {
+    onCastComplete() {
       $castVote.prop("disabled", true);
       $auditVote.prop("disabled", true);
       $doneMessage.show();
