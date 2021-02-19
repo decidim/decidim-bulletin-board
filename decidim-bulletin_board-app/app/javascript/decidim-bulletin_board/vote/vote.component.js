@@ -49,12 +49,12 @@ export class VoteComponent {
    * - {Function} onVoteEncryption - a function that is called when the vote gets encrypted
    * - {Function} castOrAuditBallot - a function that is called to cast or audit a ballot
    * - {Function} onStart - a function that is called when the vote has started.
-   * - {Function} onAuditVote - a function that is called to audit a vote before encrypting it.
-   * - {Function} onVoteAudition - a function that is called when the auditable vote is ready.
+   * - {Function} onBindAuditBallotButton - a function that called when the ballot should get audited
+   * - {Function} onBindCastBallotButton - a function that called when the ballot should get casted
+   * - {Function} onAuditBallot - a function that is called to audit a vote before encrypting it.
    * - {Function} onAuditComplete - a function that is called when the auditable vote is audited.
-   * - {Function} onVoteValidation - a function that is called to validate the vote before encrypting it.
-   * - {Function} onVoteEncrypted - a function that is called when the vote has been encrypted.
-   * - {Function} onComplete - a function that is called when the vote is done.
+   * - {Function} onCastBallot - a function that is called to cast the ballot.
+   * - {Function} onCastComplete - a function that is called when the vote is casted.
    * - {Function} onInvalid - a function that is called when the vote is not valid.
    *
    * @returns {Promise<undefined>}
@@ -65,57 +65,49 @@ export class VoteComponent {
     onStart,
     onVoteEncryption,
     castOrAuditBallot,
-    onAuditVote,
-    onVoteAudition,
+    onBindAuditBallotButton,
+    onBindCastBallotButton,
+    onAuditBallot,
+    onCastBallot,
     onAuditComplete,
-    onVoteValidation,
-    onVoteEncrypted,
-    onComplete,
+    onCastComplete,
     onInvalid,
   }) {
     onBindEncryptButton(() => {
       onStart();
 
-      onVoteEncryption((plainVote) => {
-        this.voter.encrypt(plainVote).then((encryptedVote) => {
-          castOrAuditBallot();
+      onVoteEncryption(
+        (plainVote) => {
+          this.voter
+            .encrypt(plainVote)
+            .then((encryptedBallot) => {
+              castOrAuditBallot(encryptedBallot);
+              return encryptedBallot;
+            })
+            .then((encryptedBallot) => {
+              onBindAuditBallotButton(() => {
+                const fileContent = {
+                  plainVote: encryptedBallot.ballot.auditableBallot,
+                  ballotHash: encryptedBallot.ballotHash,
+                  encryptedBallot,
+                };
+                onAuditBallot(
+                  fileContent,
+                  `${this.voter.uniqueId}-election-${this.voter.election.uniqueId}.txt`
+                );
+                onAuditComplete();
+              });
 
-          onAuditVote(
-            () => {
-              this.voter
-                .auditBallot(encryptedVote)
-                .then((auditedVote) => {
-                  onVoteAudition(
-                    auditedVote,
-                    `${this.voter.uniqueId}-election-${this.voter.election.uniqueId}.txt`
-                  );
-                })
-                .then(() => {
-                  onAuditComplete();
-                });
-            },
-            () => {
-              onInvalid();
-            }
-          );
-
-          onVoteValidation(
-            () => {
-              this.voter
-                .encryptBallot(encryptedVote)
-                .then(async (encryptedBallot) => {
-                  onVoteEncrypted(encryptedBallot);
-                })
-                .then(() => {
-                  onComplete();
-                });
-            },
-            () => {
-              onInvalid();
-            }
-          );
-        });
-      });
+              onBindCastBallotButton(() => {
+                onCastBallot(encryptedBallot.ballot.encryptedBallot);
+                onCastComplete();
+              });
+            });
+        },
+        () => {
+          onInvalid();
+        }
+      );
     });
 
     await this.voter.setup();
