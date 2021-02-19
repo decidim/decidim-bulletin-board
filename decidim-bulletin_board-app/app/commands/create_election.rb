@@ -67,7 +67,7 @@ class CreateElection < Rectify::Command
       Trustee.create!(
         name: trustee[:pretty_name],
         unique_id: trustee[:name],
-        public_key: JSON.parse(trustee[:public_key])
+        public_key: trustee[:public_key]
       )
   end
 

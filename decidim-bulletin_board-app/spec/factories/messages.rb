@@ -67,7 +67,7 @@ FactoryBot.define do
     factory :json_bulletin_board do
       name { "bulletin-board" }
       pretty_name { "Bulletin Board" }
-      public_key { BulletinBoard.public_key.to_json }
+      public_key { BulletinBoard.public_key }
     end
 
     factory :json_authority do
@@ -77,7 +77,7 @@ FactoryBot.define do
 
       name { authority.unique_id }
       pretty_name { authority.name }
-      public_key { authority.public_key.to_json }
+      public_key { authority.public_key }
     end
 
     factory :json_trustee do
@@ -88,7 +88,7 @@ FactoryBot.define do
 
       name { pretty_name.parameterize }
       pretty_name { trustee.name }
-      public_key { private_key.export.to_json }
+      public_key { private_key.export }
     end
 
     factory :description do
