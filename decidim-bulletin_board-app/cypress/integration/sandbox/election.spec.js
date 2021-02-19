@@ -14,6 +14,8 @@ describe("Election", () => {
 
       page.startVote();
       page.assertVoteHasStarted();
+      page.encryptVote();
+      page.assertBallotHashIsPresent();
       page.auditVote();
       page.assertVoteHasBeenAudited();
       page.castVote();

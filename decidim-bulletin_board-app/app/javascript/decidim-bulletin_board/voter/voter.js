@@ -65,9 +65,9 @@ export class Voter {
    *
    * @returns {Promise<Object>} - The data encrypted.
    */
-  encrypt(plainVote) {
-    const ballot = this.wrapperAdapter.encrypt(plainVote);
-    const ballotHash = this.generateBallotHash(ballot);
+  async encrypt(plainVote) {
+    const ballot = await this.wrapperAdapter.encrypt(plainVote);
+    const ballotHash = await this.generateBallotHash(ballot);
 
     return {
       ballot,

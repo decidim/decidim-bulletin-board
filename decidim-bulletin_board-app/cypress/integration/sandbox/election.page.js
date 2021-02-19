@@ -141,13 +141,31 @@ export class ElectionPage {
   }
 
   /**
+   * Encrypt a vote.
+   *
+   * @returns {undefined}
+   */
+  encryptVote() {
+    cy.findByText("Vote").click();
+    cy.findByText("Encrypt vote").should("be.visible").click();
+  }
+
+  /**
+   * Assert that the ballot hash is present
+   *
+   * @returns {undefined}
+   */
+  assertBallotHashIsPresent() {
+    cy.findByText("Encrypt vote").should("be.disabled");
+    cy.get(".ballot-hash").should("include.text", "Your ballot identifier is:");
+  }
+
+  /**
    * Audit a vote.
    *
    * @returns {undefined}
    */
   auditVote() {
-    cy.findByText("Vote").click();
-    cy.findByText("Encrypt vote").should("be.visible").click();
     cy.findByText("Audit vote").should("be.visible").click();
   }
 
