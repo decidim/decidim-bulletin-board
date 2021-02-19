@@ -18,7 +18,7 @@ export class VoterWrapperAdapter {
   }
 
   /**
-   * Process the message and update the wrapper status.
+   * Processes the message and updates the wrapper status.
    *
    * @param {String} messageType - The message type.
    * @param {Object} decodedData - An object with the data to process.
