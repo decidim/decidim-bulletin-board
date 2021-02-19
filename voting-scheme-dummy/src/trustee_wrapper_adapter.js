@@ -1,7 +1,7 @@
 import { TrusteeWrapper } from "./trustee_wrapper";
 
 /**
- * This is just a dummy implementation of a possible `TrusteeWrapper`.
+ * This is just a dummy implementation of a possible `TrusteeWrapperAdapter`.
  * It is based on the dummy voting scheme that we are using in the Bulletin Board.
  */
 export class TrusteeWrapperAdapter {

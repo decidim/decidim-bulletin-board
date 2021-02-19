@@ -68,3 +68,13 @@ export class TrusteeWrapperAdapter {
     return this.tallyDone;
   }
 }
+
+export class VoterWrapperAdapter {
+  constructor({ voterId }) {
+    this.voterId = voterId;
+  }
+
+  processMessage(messageType, message) {}
+
+  encrypt(plainVote) {}
+}

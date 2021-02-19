@@ -18,13 +18,13 @@ export class VoterWrapper {
   /**
    * Process the message and update the wrapper status.
    *
-   * @param {String} messageIdentifier - The parsed identifier of the message.
+   * @param {String} messageType - The message type.
    * @param {Object} decodedData - An object with the data to process.
    *
    * @returns {undefined}
    */
-  processMessage(messageIdentifier, decodedData) {
-    switch (messageIdentifier.type) {
+  processMessage(messageType, decodedData) {
+    switch (messageType) {
       case CREATE_ELECTION: {
         this.contests = decodedData.description.contests;
         break;

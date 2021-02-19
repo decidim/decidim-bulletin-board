@@ -1,8 +1,7 @@
-import { VoterWrapper } from "./voter_wrapper_dummy";
 import { MessageParser } from "../client/message-parser";
 
 /**
- * This is a facade class that will use the correspondig `VoterWrapper` to encrypt
+ * This is a facade class that will use the corresponding `VoterWrapper` to encrypt
  * the vote.
  */
 export class Voter {
@@ -16,17 +15,19 @@ export class Voter {
    *  - {Object} election - An object that interacts with a specific election
    *                        to get some data and perform the vote.
    *  - {String} uniqueId - The voter identifier.
+   *  - {Object} wrapperAdapter - An object to interact with the voter wrapper.
    */
   constructor({
     bulletinBoardClient,
     authorityPublicKeyJSON,
     election,
     uniqueId,
+    wrapperAdapter,
   }) {
     this.uniqueId = uniqueId;
     this.election = election;
     this.bulletinBoardClient = bulletinBoardClient;
-    this.wrapper = new VoterWrapper({ voterId: uniqueId });
+    this.wrapperAdapter = wrapperAdapter;
     this.parser = new MessageParser({ authorityPublicKeyJSON });
   }
 
@@ -48,7 +49,11 @@ export class Voter {
           const { messageIdentifier, decodedData } = await this.parser.parse(
             logEntry
           );
-          await this.wrapper.processMessage(messageIdentifier, decodedData);
+
+          await this.wrapperAdapter.processMessage(
+            messageIdentifier.typeSubtype,
+            decodedData
+          );
         }
       });
   }
@@ -56,12 +61,12 @@ export class Voter {
   /**
    * Encrypts the data using the wrapper.
    *
-   * @param {Object} data - The data to be encrypted.
+   * @param {Object} plainVote - An object with the choosen answers for each question.
+   *
    * @returns {Promise<Object>} - The data encrypted.
    */
-  async encrypt(data) {
-    const ballot = this.wrapper.encrypt(data);
-    return ballot;
+  encrypt(plainVote) {
+    return this.wrapperAdapter.encrypt(plainVote);
   }
 
   /**

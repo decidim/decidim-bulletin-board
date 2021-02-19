@@ -2,12 +2,7 @@ import {
   VoterWrapper,
   CREATE_ELECTION,
   END_KEY_CEREMONY,
-} from "./voter_wrapper_dummy";
-
-import {
-  AUTHORITY_TYPE,
-  BULLETIN_BOARD_TYPE,
-} from "../client/message-identifier";
+} from "./voter_wrapper";
 
 const contestsExample = [
   {
@@ -58,23 +53,11 @@ describe("VoterWrapper", () => {
   describe("processMessage", () => {
     describe("when it receives the CREATE_ELECTION message", () => {
       it("changes the wrapper status and stores some data", () => {
-        wrapper.processMessage(
-          {
-            electionId: "some-authority.some-id",
-            type: CREATE_ELECTION,
-            subtype: null,
-            typeSubtype: CREATE_ELECTION,
-            author: {
-              type: AUTHORITY_TYPE,
-              id: "some-authority-id",
-            },
+        wrapper.processMessage(CREATE_ELECTION, {
+          description: {
+            contests: contestsExample,
           },
-          {
-            description: {
-              contests: contestsExample,
-            },
-          }
-        );
+        });
 
         expect(wrapper.contests).toEqual(contestsExample);
         expect(wrapper.jointElectionKey).toEqual(null);
@@ -83,23 +66,11 @@ describe("VoterWrapper", () => {
 
     describe("when it receives the END_KEY_CEREMONY message", () => {
       it("changes the wrapper status and stores some data", () => {
-        wrapper.processMessage(
-          {
-            electionId: "some-authority.some-id",
-            type: END_KEY_CEREMONY,
-            subtype: null,
-            typeSubtype: END_KEY_CEREMONY,
-            author: {
-              type: BULLETIN_BOARD_TYPE,
-              id: "some-bb-id",
-            },
-          },
-          {
-            content: JSON.stringify({
-              joint_election_key: 123456789,
-            }),
-          }
-        );
+        wrapper.processMessage(END_KEY_CEREMONY, {
+          content: JSON.stringify({
+            joint_election_key: 123456789,
+          }),
+        });
 
         expect(wrapper.jointElectionKey).toEqual(123456789);
       });
