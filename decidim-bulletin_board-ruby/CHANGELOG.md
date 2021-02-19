@@ -7,13 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
-## Added
+### Added
 
 - The `Voter` returns the ballot hash after encrpyting the plain vote and before auditing or casting it
 
+### Changed
+
+- The `create_election` command now expects objects representing the parts public keys.
+
 ## [0.11.0] - 2021-02-18
 
-## Changed
+### Changed
 
 - Changed the name of some settings\* to improve the readability of the code:
   - BB settings: `bulletin_board_server`\* and `bulletin_board_public_key`\*.
