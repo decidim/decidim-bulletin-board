@@ -157,7 +157,7 @@ export class ElectionPage {
    */
   assertBallotHashIsPresent() {
     cy.findByText("Encrypt vote").should("be.disabled");
-    cy.get(".ballot-hash").should("include.text", "Your ballot identifier is:");
+    cy.findByText(/Your ballot identifier is:/).should("be.visible");
   }
 
   /**
