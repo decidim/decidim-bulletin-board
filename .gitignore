@@ -35,3 +35,5 @@
 /decidim-bulletin_board-app/cypress/screenshots/
 /decidim-bulletin_board-app/cypress/videos/
 /decidim-bulletin_board-app/cypress/downloads/
+
+/voting-scheme-dummy/dist
