@@ -54,13 +54,12 @@ export class VoterWrapper {
           return;
         }
 
-        const auditableBallot = this.createAuditableBallot(vote);
-        const castableBallot = JSON.parse(JSON.stringify(auditableBallot));
-        const encryptedBallot = JSON.stringify(
-          this.createEncryptedBallot(castableBallot)
+        const auditableData = this.createAuditableBallot(vote);
+        const encryptedData = JSON.stringify(
+          this.createEncryptedData(JSON.parse(JSON.stringify(auditableData)))
         );
 
-        return { auditableBallot, encryptedBallot };
+        return { auditableData, encryptedData };
       }
     );
   }
@@ -105,14 +104,14 @@ export class VoterWrapper {
   }
 
   /**
-   * Creates an encrypted ballot.
+   * Creates an encrypted data.
    *
    * @param {Object} vote - An object with the encrypted vote.
    *
    * @private
    * @returns {<Object>}
    */
-  createEncryptedBallot(vote) {
+  createEncryptedData(vote) {
     const encryptedBallot = this.removeAuditInformation(vote);
     return encryptedBallot;
   }

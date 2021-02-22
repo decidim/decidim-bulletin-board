@@ -78,31 +78,21 @@ export class VoteComponent {
 
       onVoteEncryption(
         (plainVote) => {
-          this.voter
-            .encrypt(plainVote)
-            .then((encryptedBallot) => {
-              castOrAuditBallot(encryptedBallot);
-              return encryptedBallot;
-            })
-            .then((encryptedBallot) => {
-              onBindAuditBallotButton(() => {
-                const fileContent = {
-                  plainVote: encryptedBallot.ballot.auditableBallot,
-                  ballotHash: encryptedBallot.ballotHash,
-                  encryptedBallot,
-                };
-                onAuditBallot(
-                  fileContent,
-                  `${this.voter.uniqueId}-election-${this.voter.election.uniqueId}.txt`
-                );
-                onAuditComplete();
-              });
-
-              onBindCastBallotButton(() => {
-                onCastBallot(encryptedBallot.ballot.encryptedBallot);
-                onCastComplete();
-              });
+          this.voter.encrypt(plainVote).then((ballot) => {
+            castOrAuditBallot(ballot);
+            onBindAuditBallotButton(() => {
+              onAuditBallot(
+                ballot,
+                `${this.voter.uniqueId}-election-${this.voter.election.uniqueId}.txt`
+              );
+              onAuditComplete();
             });
+
+            onBindCastBallotButton(() => {
+              onCastBallot(ballot);
+              onCastComplete();
+            });
+          });
         },
         () => {
           onInvalid();

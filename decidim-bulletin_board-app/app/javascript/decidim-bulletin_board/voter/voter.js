@@ -63,35 +63,34 @@ export class Voter {
    *
    * @param {Object} plainVote - An object with the choosen answers for each question.
    *
-   * @returns {Promise<Object>} - The data encrypted.
+   * @returns {Promise<Object>} - The ballot.
    */
   async encrypt(plainVote) {
-    const ballot = await this.wrapperAdapter.encrypt(plainVote);
-    const ballotHash = await this.generateBallotHash(ballot);
+    const { encryptedData, auditableData } = await this.wrapperAdapter.encrypt(
+      plainVote
+    );
+    const encryptedDataHash = await this.hash(encryptedData);
 
     return {
-      ballot,
-      ballotHash,
+      encryptedData,
+      encryptedDataHash,
+      auditableData,
     };
   }
 
   /**
-   * Generates the ballot hash from the excrpyted vote
+   * Generates the hash from the given data.
    *
-   * @param {Object} encryptedVote - The encryptedVote to be encrypted.
-   * @returns {Promise<Object>} - The data encrypted and its hashThe ballot hash.
+   * @private
+   * @param {Object} data - The data to be digested.
+   * @returns {Promise<Object>} - The hash value.
    */
-  async generateBallotHash(encryptedVote) {
-    const encryptedBallot = encryptedVote.encryptedBallot;
+  async hash(data) {
     return window.crypto.subtle
-      .digest("SHA-256", new TextEncoder().encode(encryptedBallot))
+      .digest("SHA-256", new TextEncoder().encode(data))
       .then((hashBuffer) => {
         const hashArray = Array.from(new Uint8Array(hashBuffer));
-        const encryptedBallotHash = hashArray
-          .map((b) => b.toString(16).padStart(2, "0"))
-          .join("");
-
-        return encryptedBallotHash;
+        return hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
       });
   }
 

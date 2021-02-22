@@ -30,7 +30,8 @@ export class VoterWrapperAdapter {
   }
 
   /**
-   * Encrypts the plain vote using the wrapper.
+   * Encrypts the plain vote using the wrapper and returns an object with the
+   * encrypted data and the auditable data known as ballot.
    *
    * @param {Object} plainVote - An object with the choosen answers for each question.
    *

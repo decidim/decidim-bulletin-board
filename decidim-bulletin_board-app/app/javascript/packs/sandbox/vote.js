@@ -1,6 +1,7 @@
 import $ from "jquery";
 import { VoteComponent } from "../decidim-bulletin_board";
 import { VoterWrapperAdapter as DummyVoterWrapperAdapter } from "voting-scheme-dummy";
+import { VoterWrapperAdapter as ElectionGuardVoterWrapperAdapter } from "voting-scheme-election_guard";
 
 $(async () => {
   // UI Elements
@@ -34,6 +35,11 @@ $(async () => {
     voterWrapperAdapter = new DummyVoterWrapperAdapter({
       voterId: voterUniqueId,
     });
+  } else if (votingSchemeName === "election_guard") {
+    voterWrapperAdapter = new ElectionGuardVoterWrapperAdapter({
+      voterId: voterUniqueId,
+      workerUrl: "http://localhost:8000/assets/election_guard/webworker.js",
+    });
   } else {
     throw new Error(`Voting scheme ${votingSchemeName} not supported.`);
   }
@@ -59,6 +65,7 @@ $(async () => {
       $vote.css("background", "");
       $auditMessage.hide();
       $doneMessage.hide();
+      $encryptVote.prop("disabled", true);
 
       try {
         const vote = JSON.parse($vote.val());
@@ -70,10 +77,8 @@ $(async () => {
         invalidVoteFn();
       }
     },
-    castOrAuditBallot(encryptedBallot) {
-      $ballotHash.text(
-        `Your ballot identifier is: ${encryptedBallot.ballotHash}`
-      );
+    castOrAuditBallot({ encryptedDataHash }) {
+      $ballotHash.text(`Your ballot identifier is: ${encryptedDataHash}`);
       $encryptVote.prop("disabled", true);
       $castVote.show();
       $auditVote.show();
@@ -101,7 +106,7 @@ $(async () => {
       $auditMessage.show();
       $vote.css("background", "green");
     },
-    onCastBallot({ encryptedBallot }) {
+    onCastBallot({ encryptedData: encryptedBallot }) {
       return $.ajax({
         method: "POST",
         contentType: "application/json",
