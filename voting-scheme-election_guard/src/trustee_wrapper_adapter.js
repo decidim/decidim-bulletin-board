@@ -1,8 +1,11 @@
+import { WrapperAdapter } from "./wrapper_adapter";
+
 /**
  * This implements the Electionguard Trustee Wrapper Adapter using a web worker
  * that executes python code compiled through `pyodide`.
+ * @extends WrapperAdapter
  */
-export class TrusteeWrapperAdapter {
+export class TrusteeWrapperAdapter extends WrapperAdapter {
   /**
    * Initializes the class with the given params.
    *
@@ -11,6 +14,8 @@ export class TrusteeWrapperAdapter {
    * - {String} trusteeId - The unique id of a trustee.
    */
   constructor({ trusteeId, workerUrl }) {
+    super();
+
     this.trusteeId = trusteeId;
     this.worker = new Worker(workerUrl);
 
@@ -126,31 +131,5 @@ export class TrusteeWrapperAdapter {
       trustee.is_tally_done()
     `
     );
-  }
-
-  /**
-   * Runs an arbitrary python code in the web worker.
-   *
-   * @param {String} pythonCode - A string representing valid python code.
-   * @param {Object} pythonData - An Object which values can be referenced from
-   *                              the python code using the js module.
-   * @private
-   * @returns {Promise<Object>}
-   */
-  processPythonCodeOnWorker(pythonCode, pythonData) {
-    return new Promise((resolve, reject) => {
-      this.worker.onmessage = (event) => {
-        resolve(event.data.results);
-      };
-
-      this.worker.onerror = (error) => {
-        reject(error);
-      };
-
-      this.worker.postMessage({
-        python: pythonCode,
-        ...pythonData,
-      });
-    });
   }
 }
