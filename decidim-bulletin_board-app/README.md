@@ -54,6 +54,13 @@ bundle exec rake schema:generate
 npm run schema:generate
 ```
 
+- How to use the sandbox:
+
+```
+$ bundle exec rails s    # Start rails server as usual
+$ bin/webpack --watch    # Start the webpack build in watch mode
+```
+
 ## License
 
 See [Decidim](https://github.com/decidim/decidim).
