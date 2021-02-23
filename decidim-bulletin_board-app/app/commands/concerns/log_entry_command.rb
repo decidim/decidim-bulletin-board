@@ -76,7 +76,7 @@ module LogEntryCommand
       @response_log_entry = LogEntry.create!(
         election: election,
         message_id: Decidim::BulletinBoard::MessageIdentifier.format(election.unique_id, response_message["message_type"], :bulletin_board, BulletinBoard.unique_id),
-        signed_data: BulletinBoard.sign(response_message.to_h.merge(iat: Time.current.to_i)),
+        signed_data: BulletinBoard.sign(response_message.merge(iat: Time.current.to_i)),
         bulletin_board: true
       )
     end
