@@ -18,6 +18,7 @@ export class WrapperAdapter {
       };
 
       this.worker.onerror = (error) => {
+        console.error(error);
         reject(error);
       };
 

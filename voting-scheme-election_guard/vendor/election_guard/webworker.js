@@ -1,3 +1,7 @@
+/* eslint-disable prefer-const */
+/* eslint-disable no-unused-vars */
+/* eslint-disable no-var */
+/* eslint-disable no-undef */
 self.languagePluginUrl = "./";
 importScripts("./pyodide.js");
 
@@ -12,8 +16,6 @@ var onmessage = function (e) {
       const keys = Object.keys(data);
       for (let key of keys) {
         if (key !== "python") {
-          // Keys other than python must be arguments for the python script.
-          // Set them on self, so that `from js import key` works.
           self[key] = data[key];
         }
       }
@@ -22,14 +24,6 @@ var onmessage = function (e) {
         .runPythonAsync(data.python, () => {})
         .then((results) => {
           self.postMessage({ results });
-        })
-        .catch((err) => {
-          // if you prefer messages with the error
-          self.postMessage({ error: err.message });
-          // if you prefer onerror events
-          // setTimeout(() => {
-          //   throw err;
-          // });
         });
     });
 };
