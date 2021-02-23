@@ -163,10 +163,7 @@ export class Trustee {
 
     this.hasSetupKeyCeremony =
       lastMessageFromTrustee &&
-      (await this.wrapperAdapter.restore(
-        wrapperState,
-        lastMessageFromTrustee.messageId
-      ));
+      (await this.wrapperAdapter.restore(wrapperState));
 
     return this.hasSetupKeyCeremony;
   }

@@ -12,9 +12,10 @@ module VotingScheme
     delegate :backup, to: :state
 
     def process_message(message_identifier, message)
+      result = state.process_message(message_identifier.type_subtype, PyCall::Dict.new(message))
       return tally_cast if message_identifier.type == "start_tally"
 
-      state.process_message(message_identifier.type_subtype, PyCall::Dict.new(message))
+      result
     end
 
     def restore(data)
@@ -29,7 +30,7 @@ module VotingScheme
 
     def tally_cast
       votes.each do |log_entry|
-        state.add_ballot(PyCall::Dict.new(log_entry.decoded_data[:content]))
+        state.add_ballot(log_entry.decoded_data[:content])
       end
 
       state.get_tally_cast
