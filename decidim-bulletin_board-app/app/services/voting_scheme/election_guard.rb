@@ -15,7 +15,7 @@ module VotingScheme
       result = state.process_message(message_identifier.type_subtype, PyCall::Dict.new(message))
       return tally_cast if message_identifier.type == "start_tally"
 
-      result
+      to_h(result)
     end
 
     def restore(data)
@@ -34,6 +34,14 @@ module VotingScheme
       end
 
       state.get_tally_cast
+    end
+
+    def to_h(dict)
+      return dict unless dict.is_a?(PyCall::Dict)
+
+      dict.inject({}) do |h, (k, v)|
+        h.update(k => to_h(v))
+      end
     end
   end
 end
