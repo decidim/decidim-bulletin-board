@@ -10,7 +10,7 @@ Rails.application.routes.draw do
 
   root to: "pages#index"
 
-  if Rails.env.development? || Rails.env.test?
+  if !Rails.env.production? || ENV["SANDBOX"]
     scope "/sandbox", module: :sandbox, as: :sandbox do
       resources :elections, only: [:new, :create, :index] do
         member do
