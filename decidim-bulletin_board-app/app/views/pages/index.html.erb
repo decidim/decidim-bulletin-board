@@ -13,7 +13,7 @@
   <ul>
   <li><a href="<%= documentation_path %>">API documentation</a></li>
   <li><a href="<%= graphiql_rails_path %>">GraphiQL user interface</a></li>
-  <% if Rails.env.development? %>
+  <% if try(:sandbox_elections_path) %>
     <li><a href="<%= sandbox_elections_path %>">Elections sandbox</a></li>
   <% end %>
   </ul>
