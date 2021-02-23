@@ -88,9 +88,13 @@ export class VoteComponent {
               onAuditComplete();
             });
 
-            onBindCastBallotButton(() => {
-              onCastBallot(ballot);
-              onCastComplete();
+            onBindCastBallotButton(async () => {
+              try {
+                await onCastBallot(ballot);
+                onCastComplete();
+              } catch {
+                onInvalid();
+              }
             });
           });
         },
