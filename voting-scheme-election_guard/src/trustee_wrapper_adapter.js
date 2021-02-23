@@ -83,7 +83,7 @@ export class TrusteeWrapperAdapter extends WrapperAdapter {
   backup() {
     return this.processPythonCodeOnWorker(
       `
-      trustee.backup()
+      trustee.backup().hex()
     `
     );
   }
@@ -99,7 +99,8 @@ export class TrusteeWrapperAdapter extends WrapperAdapter {
       `
       from js import state
 
-      trustee.restore(state)
+      trustee = Trustee.restore(bytes.fromhex(state))
+      True
     `,
       {
         state,
