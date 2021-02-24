@@ -82,12 +82,10 @@ module Sandbox
     def questions
       @questions ||= params.require(:election).permit(questions: {})[:questions].to_h.values.map do |question|
         question.merge(
-          weight: question[:weight].to_i,
           max_selections: question[:max_selections].to_i,
           answers: question[:answers].values.map do |answer|
             {
-              slug: answer[:slug],
-              weight: answer[:weight].to_i
+              slug: answer[:slug]
             }
           end
         )
