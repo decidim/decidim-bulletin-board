@@ -13,7 +13,7 @@ module VotingScheme
 
     def process_message(message_identifier, message)
       result = state.process_message(message_identifier.type_subtype, PyCall::Dict.new(message))
-      return tally_cast if message_identifier.type == "start_tally"
+      return to_h(tally_cast) if message_identifier.type == "start_tally"
 
       to_h(result)
     end
