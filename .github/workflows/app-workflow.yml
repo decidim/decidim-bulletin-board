@@ -136,7 +136,7 @@ jobs:
           max_attempts: 3
           command: cd decidim-bulletin_board-app && npm ci
       - name: Install ElectionGuard wrappers
-        run: sudo ./install_eg_wrappers.sh
+        run: ./install_eg_wrappers.sh
       - name: Create database
         env:
           RAILS_ENV: test
@@ -225,7 +225,7 @@ jobs:
           max_attempts: 3
           command: cd decidim-bulletin_board-app && npm ci
       - name: Install ElectionGuard wrappers
-        run: sudo ./install_eg_wrappers.sh
+        run: ./install_eg_wrappers.sh
       - name: Create database
         env:
           RAILS_ENV: test

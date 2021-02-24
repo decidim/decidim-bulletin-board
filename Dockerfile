@@ -44,8 +44,8 @@ RUN cd /code/tmp && bundle install
 # Install python dependencies
 RUN git clone https://github.com/pyenv/pyenv.git ~/.pyenv
 RUN pyenv install $PYTHON_VERSION && pyenv global $PYTHON_VERSION
-ADD decidim-bulletin_board-app/install_eg_wrappers.sh /code/tmp/install_eg_wrappers.sh
-RUN cd /code/tmp && ./install_eg_wrappers.sh
+ADD decidim-bulletin_board-app/install_eg_wrappers_no_sudo.sh /code/tmp/install_eg_wrappers_no_sudo.sh
+RUN cd /code/tmp && ./install_eg_wrappers_no_sudo.sh
 
 # Add application source code
 ADD decidim-bulletin_board-app /code/decidim-bulletin_board-app
