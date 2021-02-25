@@ -42,7 +42,7 @@ module Decidim
 
         private
 
-        attr_reader :election_data, :election_id, :election_voting_scheme_name
+        attr_reader :election_data, :election_id
 
         def message
           {
