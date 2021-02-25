@@ -73,10 +73,17 @@ module LogEntryCommand
     def create_response_log_entry!
       return unless response_message
 
+      message_id = Decidim::BulletinBoard::MessageIdentifier.format(
+        election.unique_id,
+        response_message.delete("message_type"),
+        :bulletin_board,
+        BulletinBoard.unique_id
+      )
+
       @response_log_entry = LogEntry.create!(
         election: election,
-        message_id: Decidim::BulletinBoard::MessageIdentifier.format(election.unique_id, response_message["message_type"], :bulletin_board, BulletinBoard.unique_id),
-        signed_data: BulletinBoard.sign(response_message.merge(iat: Time.current.to_i)),
+        message_id: message_id,
+        signed_data: BulletinBoard.sign(response_message.merge(message_id: message_id, iat: Time.current.to_i)),
         bulletin_board: true
       )
     end
