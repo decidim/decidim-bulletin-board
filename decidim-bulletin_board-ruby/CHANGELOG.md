@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## [0.14.0] - 2021-02-25
+
+### Changed
+
+- The `onSetup` event is no longer supported when adding the key ceremony, tally and voter components.
+
 ## [0.13.1] - 2021-02-25
 
 ### Changed
