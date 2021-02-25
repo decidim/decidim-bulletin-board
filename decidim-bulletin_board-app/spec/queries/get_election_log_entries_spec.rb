@@ -16,6 +16,7 @@ RSpec.describe "GetElectionLogEntries" do
           logEntries {
             messageId
             signedData
+            decodedData
           }
         }
       }
@@ -29,7 +30,8 @@ RSpec.describe "GetElectionLogEntries" do
           logEntries: [
             {
               messageId: first_log_entry.message_id,
-              signedData: first_log_entry.signed_data
+              signedData: first_log_entry.signed_data,
+              decodedData: first_log_entry.decoded_data.deep_symbolize_keys
             }
           ]
         }
@@ -57,26 +59,30 @@ RSpec.describe "GetElectionLogEntries" do
 
     before { tally_cast && tally_share && end_tally }
 
-    it "hides the signed data" do
+    it "hides the signed and decoded data" do
       expect(subject.deep_symbolize_keys).to include(
         data: {
           election: {
             logEntries: [
               {
                 messageId: first_log_entry.message_id,
-                signedData: first_log_entry.signed_data
+                signedData: first_log_entry.signed_data,
+                decodedData: first_log_entry.decoded_data.deep_symbolize_keys
               },
               {
                 messageId: tally_cast.message_id,
-                signedData: tally_cast.signed_data
+                signedData: tally_cast.signed_data,
+                decodedData: tally_cast.decoded_data.deep_symbolize_keys
               },
               {
                 messageId: tally_share.message_id,
-                signedData: nil
+                signedData: nil,
+                decodedData: nil
               },
               {
                 messageId: end_tally.message_id,
-                signedData: nil
+                signedData: nil,
+                decodedData: nil
               }
             ]
           }
@@ -84,27 +90,31 @@ RSpec.describe "GetElectionLogEntries" do
       )
     end
 
-    shared_examples "showing the signed data" do
-      it "shows the signed data" do
+    shared_examples "showing the signed and decoded data" do
+      it "shows the signed and decoded data" do
         expect(subject.deep_symbolize_keys).to include(
           data: {
             election: {
               logEntries: [
                 {
                   messageId: first_log_entry.message_id,
-                  signedData: first_log_entry.signed_data
+                  signedData: first_log_entry.signed_data,
+                  decodedData: first_log_entry.decoded_data.deep_symbolize_keys
                 },
                 {
                   messageId: tally_cast.message_id,
-                  signedData: tally_cast.signed_data
+                  signedData: tally_cast.signed_data,
+                  decodedData: tally_cast.decoded_data.deep_symbolize_keys
                 },
                 {
                   messageId: tally_share.message_id,
-                  signedData: tally_share.signed_data
+                  signedData: tally_share.signed_data,
+                  decodedData: tally_share.decoded_data.deep_symbolize_keys
                 },
                 {
                   messageId: end_tally.message_id,
-                  signedData: end_tally.signed_data
+                  signedData: end_tally.signed_data,
+                  decodedData: end_tally.decoded_data.deep_symbolize_keys
                 }
               ]
             }
@@ -116,13 +126,13 @@ RSpec.describe "GetElectionLogEntries" do
     context "when the client is an authority" do
       let(:context) { { api_key: election.authority.api_key } }
 
-      it_behaves_like "showing the signed data"
+      it_behaves_like "showing the signed and decoded data"
     end
 
     context "when the results are published" do
       let(:election) { create(:election, :results_published) }
 
-      it_behaves_like "showing the signed data"
+      it_behaves_like "showing the signed and decoded data"
     end
   end
 end
