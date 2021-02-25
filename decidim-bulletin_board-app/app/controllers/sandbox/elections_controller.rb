@@ -7,7 +7,7 @@ module Sandbox
     def index; end
 
     def create
-      bulletin_board_client.create_election(params[:election][:id], election_data)
+      bulletin_board_client.create_election(params[:election][:id], election_data, params[:election][:voting_scheme_name])
       go_back
     end
 

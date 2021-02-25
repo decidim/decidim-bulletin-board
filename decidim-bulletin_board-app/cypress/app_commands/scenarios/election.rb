@@ -17,9 +17,6 @@ trustees = Test::PrivateKeys.trustees_public_keys.each_with_index.map do |truste
   )
 end
 
-election = FactoryBot.create(:election, :created)
-
 {
-  election: election,
   trustees: trustees
 }
