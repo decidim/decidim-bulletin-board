@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    decidim-bulletin_board (0.13.0)
+    decidim-bulletin_board (0.13.1)
       byebug (~> 11.0)
       graphlient (~> 0.4.0)
       jwt (~> 2.2.2)
@@ -115,7 +115,7 @@ GEM
     mimemagic (0.3.5)
     mini_mime (1.0.2)
     mini_portile2 (2.5.0)
-    minitest (5.14.3)
+    minitest (5.14.4)
     multipart-post (2.1.1)
     nio4r (2.5.5)
     nokogiri (1.11.1)

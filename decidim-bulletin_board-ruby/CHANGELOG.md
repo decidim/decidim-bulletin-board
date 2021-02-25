@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## [0.13.1] - 2021-02-25
+
 ### Changed
 
 - The `create_election` method doesn't need the `weight` field for questions and answers anymore. It will use the given order to create the `sequence_order` value.
