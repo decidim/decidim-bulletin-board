@@ -44,9 +44,6 @@
               <label>Slug: <input name="election[questions][<%= question_index %>][slug]" type="text" value="question-<%= question_index + 1 %>"></label>
           </li>
           <li>
-              <label>Weight: <input name="election[questions][<%= question_index %>][weight]" type="number" value="<%= question_index %>"></label>
-          </li>
-          <li>
               <label>Maximum selections: <input name="election[questions][<%= question_index %>][max_selections]" type="number" value="1" min="1" max="4"></label>
           </li>
           <li>
@@ -63,9 +60,6 @@
                 </li>
                 <li>
                     <label>Slug: <input name="election[questions][<%= question_index %>][answers][<%= answer_index %>][slug]" type="text" value="answer-<%= question_index + 1 %>-<%= answer_index + 1 %>"></label>
-                </li>
-                <li>
-                    <label>Weight: <input name="election[questions][<%= question_index %>][answers][<%= answer_index %>][weight]" type="number" value="<%= answer_index %>"></label>
                 </li>
                 <% end %>
               </ul>

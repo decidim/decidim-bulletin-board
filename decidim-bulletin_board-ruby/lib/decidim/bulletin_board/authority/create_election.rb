@@ -94,11 +94,11 @@ module Decidim
         end
 
         def contests
-          election_data[:questions].map do |question|
+          election_data[:questions].each_with_index.map do |question, index|
             {
               "@type": "CandidateContest",
               object_id: question[:slug],
-              sequence_order: question[:weight],
+              sequence_order: index,
               vote_variation: question[:max_selections] == 1 ? "one_of_m" : "n_of_m",
               name: default_text(question[:title]),
               number_elected: question[:answers].count,
@@ -110,10 +110,10 @@ module Decidim
         end
 
         def contest_answers(question)
-          question[:answers].map do |answer|
+          question[:answers].each_with_index.map do |answer, index|
             {
               object_id: "#{question[:slug]}_#{answer[:slug]}",
-              sequence_order: answer[:weight],
+              sequence_order: index,
               candidate_id: answer[:slug]
             }
           end

@@ -35,7 +35,6 @@ module Decidim
             questions: [
               {
                 slug: "question-1",
-                weight: 0,
                 max_selections: 1,
                 title: {
                   "en": "A question",
@@ -47,18 +46,15 @@ module Decidim
                 },
                 answers: [
                   {
-                    slug: "answer-1",
-                    weight: 3
+                    slug: "answer-1"
                   },
                   {
-                    slug: "answer-2",
-                    weight: 6
+                    slug: "answer-2"
                   }
                 ]
               },
               {
                 slug: "question-2",
-                weight: 23,
                 max_selections: 2,
                 title: {
                   "en": "Another question",
@@ -70,12 +66,10 @@ module Decidim
                 },
                 answers: [
                   {
-                    slug: "answer-3",
-                    weight: 123
+                    slug: "answer-3"
                   },
                   {
-                    slug: "answer-4",
-                    weight: 0
+                    slug: "answer-4"
                   }
                 ]
               }
@@ -167,14 +161,14 @@ module Decidim
                                           ballot_subtitle: { text: [{ language: "en", value: "A question description" },
                                                                     { language: "es", value: "Una descripción de pregunta" }] },
                                           ballot_selections: [{ object_id: "question-1_answer-1",
-                                                                sequence_order: 3,
+                                                                sequence_order: 0,
                                                                 candidate_id: "answer-1" },
                                                               { object_id: "question-1_answer-2",
-                                                                sequence_order: 6,
+                                                                sequence_order: 1,
                                                                 candidate_id: "answer-2" }] },
                                         { "@type": "CandidateContest",
                                           object_id: "question-2",
-                                          sequence_order: 23,
+                                          sequence_order: 1,
                                           vote_variation: "n_of_m",
                                           name: "Another question",
                                           number_elected: 2,
@@ -183,10 +177,10 @@ module Decidim
                                           ballot_subtitle: { text: [{ language: "en", value: "Another question description" },
                                                                     { language: "es", value: "Otra descripción de pregunta" }] },
                                           ballot_selections: [{ object_id: "question-2_answer-3",
-                                                                sequence_order: 123,
+                                                                sequence_order: 0,
                                                                 candidate_id: "answer-3" },
                                                               { object_id: "question-2_answer-4",
-                                                                sequence_order: 0,
+                                                                sequence_order: 1,
                                                                 candidate_id: "answer-4" }] }] } }
           end
 
