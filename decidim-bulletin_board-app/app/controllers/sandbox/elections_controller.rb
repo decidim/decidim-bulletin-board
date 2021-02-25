@@ -7,7 +7,7 @@ module Sandbox
     def index; end
 
     def create
-      bulletin_board_client.create_election(params[:election][:id], election_data, params[:election][:voting_scheme_name])
+      bulletin_board_client.create_election(params[:election][:id], election_data)
       go_back
     end
 
@@ -140,7 +140,7 @@ module Sandbox
         authority_api_key: authority.api_key,
         authority_name: authority.name,
         authority_private_key: Test::PrivateKeys.authority_private_key_json,
-        scheme_name: "election_guard",
+        scheme_name: params.dig(:election, :voting_scheme_name) || "dummy",
         quorum: 2,
         number_of_trustees: 3
       )
