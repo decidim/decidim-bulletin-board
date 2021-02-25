@@ -3,13 +3,21 @@ import { ElectionPage } from "./election.page";
 describe("Election", () => {
   const page = new ElectionPage();
 
-  it("complete the whole process", () => {
-    page.setup(({ election, trustees }) => {
+  it("complete the whole process using the dummy voting scheme", () => {
+    const electionTitle = "My dummy election";
+    const electionUniqueId = "test-1";
+
+    page.setup(({ trustees }) => {
       page.visit();
 
+      page.setupElection({
+        title: electionTitle,
+        uniqueId: electionUniqueId,
+        votingSchemeName: "dummy",
+      });
       page.startKeyCeremony();
       page.assertKeyCeremonyHasStarted();
-      page.performKeyCeremony(election, trustees);
+      page.performKeyCeremony(electionTitle, trustees);
       page.assertKeyCeremonyHasEnded(trustees);
 
       page.startVote();
@@ -25,7 +33,7 @@ describe("Election", () => {
 
       page.startTally();
       page.assertTallyHasStarted();
-      page.performTally(election, trustees);
+      page.performTally(electionTitle, electionUniqueId, trustees);
       page.assertTallyHasEnded(trustees);
     });
   });

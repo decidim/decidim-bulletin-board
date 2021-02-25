@@ -10,10 +10,19 @@
   <form method="post" action="<%= sandbox_elections_path %>">
     <%= hidden_field_tag :authenticity_token, form_authenticity_token -%>
     <ul>
+      <li>
+        <label>
+          Voting scheme name:
+          <select name="election[voting_scheme_name]">
+            <option value="dummy">dummy</option>
+            <option value="election_guard">election_guard</option>
+          </select>
+        </label>
+      </li>
       <li><label>Election ID: <input name="election[id]" type="text" value="<%= SecureRandom.base58 %>"></label></li>
       <li><label>Default locale: <select name="election[default_locale]"><option>ca</option><option selected>en</option><option>es</option></select></label></li>
       <li>
-        <label>Title:
+        <label>Election title:
           <input name="election[title][ca]" type="text" value="Votació de prova" placeholder="ca">
           <input name="election[title][en]" type="text" value="Test election" placeholder="en">
           <input name="election[title][es]" type="text" value="Votación de prueba" placeholder="es">
@@ -67,7 +76,7 @@
         <% end %>
         </ul>
       </li>
-      <li><input type="submit"></li>
+      <li><input type="submit" value="Create"></li>
     </ul>
   </form>
 </div>

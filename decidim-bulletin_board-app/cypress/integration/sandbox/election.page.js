@@ -33,6 +33,24 @@ export class ElectionPage {
   }
 
   /**
+   * Setups an election given the corresponding params.
+   *
+   * @param {Object} electionData - Some data related to the election.
+   * @returns {undefined}
+   */
+  setupElection({ title, uniqueId, votingSchemeName }) {
+    cy.findByText("Setup new election").click();
+    cy.findByLabelText(/Voting scheme name/).select(votingSchemeName);
+    cy.findByLabelText(/Election ID/)
+      .clear()
+      .type(uniqueId);
+    cy.findAllByLabelText(/Election title/)
+      .clear()
+      .type(title);
+    cy.findByText("Create").click();
+  }
+
+  /**
    * Starts the key ceremony process.
    *
    * @returns {undefined}
@@ -57,14 +75,14 @@ export class ElectionPage {
   /**
    * Upload the trustee private keys and perform the key ceremony process.
    *
-   * @param {Object} election - An Election object.
+   * @param {String} electionTitle - The title of the election.
    * @param {Array<Object>} trustees - A collection of Trustee objects.
    *
    * @returns {undefined}
    */
-  performKeyCeremony(election, trustees) {
+  performKeyCeremony(electionTitle, trustees) {
     cy.findByText("Perform key ceremony").click().should("not.exist");
-    cy.findByText(`Key ceremony for ${election.title.en}`).should("be.visible");
+    cy.findByText(`Key ceremony for ${electionTitle}`).should("be.visible");
 
     trustees.forEach(({ unique_id, name }) => {
       cy.findByText(name)
@@ -251,14 +269,15 @@ export class ElectionPage {
   /**
    * Restore the trustee state and perform the tally process.
    *
-   * @param {Object} election - An Election object.
+   * @param {String} electionTitle - The title of the election.
+   * @param {String} electionUniqueId - The election unique id.
    * @param {Array<Object>} trustees - A collection of Trustee objects.
    *
    * @returns {undefined}
    */
-  performTally(election, trustees) {
+  performTally(electionTitle, electionUniqueId, trustees) {
     cy.findByText("Perform tally").click().should("not.exist");
-    cy.findByText(`Tally for ${election.title.en}`).should("be.visible");
+    cy.findByText(`Tally for ${electionTitle}`).should("be.visible");
 
     trustees.forEach(({ unique_id, name }) => {
       cy.findByText(name)
@@ -278,7 +297,7 @@ export class ElectionPage {
             .find(".restore-button-input")
             .attachFile(
               {
-                filePath: `../downloads/${unique_id}-election-${election.unique_id}.bak`,
+                filePath: `../downloads/${unique_id}-election-decidim-test-authority.${electionUniqueId}.bak`,
               },
               {
                 force: true,
