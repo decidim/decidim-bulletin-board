@@ -4,6 +4,16 @@
  */
 export class TrusteeWrapperAdapter {
   /**
+   * Setup the trustee wrapper.
+   *
+   * @abstract
+   * @returns {Promise<undefined>}
+   */
+  setup() {
+    throw new Error("Not implemented.");
+  }
+
+  /**
    * Process the message and update the wrapper status.
    *
    * @param {String} messageIdentifier - The parsed identifier of the message.

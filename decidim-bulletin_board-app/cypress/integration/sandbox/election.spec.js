@@ -3,17 +3,18 @@ import { ElectionPage } from "./election.page";
 describe("Election", () => {
   const page = new ElectionPage();
 
-  it("complete the whole process using the dummy voting scheme", () => {
-    const electionTitle = "My dummy election";
-    const electionUniqueId = "test-1";
-
+  const testElection = ({
+    electionTitle,
+    electionUniqueId,
+    electionVotingSchemeName,
+  }) => {
     page.setup(({ trustees }) => {
       page.visit();
 
       page.setupElection({
         title: electionTitle,
         uniqueId: electionUniqueId,
-        votingSchemeName: "dummy",
+        votingSchemeName: electionVotingSchemeName,
       });
       page.startKeyCeremony();
       page.assertKeyCeremonyHasStarted();
@@ -35,6 +36,22 @@ describe("Election", () => {
       page.assertTallyHasStarted();
       page.performTally(electionTitle, electionUniqueId, trustees);
       page.assertTallyHasEnded(trustees);
+    });
+  };
+
+  it("complete the whole process using the dummy voting scheme", () => {
+    testElection({
+      electionTitle: "My dummy election",
+      electionUniqueId: "dummy-1",
+      electionVotingSchemeName: "dummy",
+    });
+  });
+
+  it("complete the whole process using the election_guard voting scheme", () => {
+    testElection({
+      electionTitle: "My election_guard election",
+      electionUniqueId: "election_guard-1",
+      electionVotingSchemeName: "election_guard",
     });
   });
 });

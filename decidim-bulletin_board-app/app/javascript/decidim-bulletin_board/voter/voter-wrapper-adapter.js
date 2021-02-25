@@ -4,6 +4,16 @@
  */
 export class VoterWrapperAdapter {
   /**
+   * Setup the voter wrapper.
+   *
+   * @abstract
+   * @returns {Promise<undefined>}
+   */
+  setup() {
+    throw new Error("Not implemented.");
+  }
+
+  /**
    * Process the message and update the wrapper status.
    *
    * @param {String} messageType - The message type.
