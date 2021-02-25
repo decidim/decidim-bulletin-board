@@ -26,6 +26,8 @@ export class TrusteeWrapperAdapter {
     this.tallyDone = false;
   }
 
+  setup() {}
+
   processMessage(messageType, message) {
     switch (messageType) {
       case "dummy.send": {
@@ -73,6 +75,8 @@ export class VoterWrapperAdapter {
   constructor({ voterId }) {
     this.voterId = voterId;
   }
+
+  setup() {}
 
   processMessage(messageType, message) {}
 
