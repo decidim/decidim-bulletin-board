@@ -47,7 +47,7 @@ $(() => {
     } else if (votingSchemeName === "election_guard") {
       trusteeWrapperAdapter = new ElectionGuardTrusteeWrapperAdapter({
         trusteeId: trusteeContext.uniqueId,
-        workerUrl: "http://localhost:8000/assets/election_guard/webworker.js",
+        workerUrl: "/assets/election_guard/webworker.js",
       });
     } else {
       throw new Error(`Voting scheme ${votingSchemeName} not supported.`);

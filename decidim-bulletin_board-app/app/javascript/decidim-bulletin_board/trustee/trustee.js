@@ -54,7 +54,8 @@ export class Trustee {
    *
    * @returns {Promise<undefined>}
    */
-  setup() {
+  async setup() {
+    await this.wrapperAdapter.setup();
     return this.election.subscribeToLogEntriesChanges();
   }
 

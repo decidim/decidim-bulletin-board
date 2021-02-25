@@ -18,15 +18,24 @@ export class VoterWrapperAdapter extends WrapperAdapter {
 
     this.voterId = voterId;
     this.worker = new Worker(workerUrl);
+  }
 
-    this.worker.postMessage({
-      python: `
+  /**
+   * Setup the voter wrapper.
+   *
+   * @returns {Promise<undefined>}
+   */
+  setup() {
+    return this.processPythonCodeOnWorker(
+      `
         from js import voter_id
         from decidim.electionguard.voter import Voter
         voter = Voter(voter_id)
       `,
-      voter_id: this.voterId,
-    });
+      {
+        voter_id: this.voterId,
+      }
+    );
   }
 
   /**

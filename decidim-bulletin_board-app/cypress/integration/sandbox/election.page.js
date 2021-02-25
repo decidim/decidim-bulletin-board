@@ -108,7 +108,7 @@ export class ElectionPage {
             );
 
           cy.findByText("Start").click();
-          cy.findByText("Backup").click();
+          cy.findByText("Backup").click({ timeout: 60_000 });
         });
     });
   }
@@ -175,7 +175,9 @@ export class ElectionPage {
    */
   assertBallotHashIsPresent() {
     cy.findByText("Encrypt vote").should("be.disabled");
-    cy.findByText(/Your ballot identifier is:/).should("be.visible");
+    cy.findByText(/Your ballot identifier is:/, {
+      timeout: 60_000,
+    }).should("be.visible");
   }
 
   /**
@@ -207,7 +209,11 @@ export class ElectionPage {
   castVote() {
     cy.findByText("Vote").click();
     cy.findByText("Encrypt vote").should("be.visible").click();
-    cy.findByText("Cast vote").should("be.visible").click();
+    cy.findByText("Cast vote", {
+      timeout: 60_000,
+    })
+      .should("be.visible")
+      .click();
   }
 
   /**
@@ -283,7 +289,9 @@ export class ElectionPage {
       cy.findByText(name)
         .parent("tr")
         .within((trusteeRow) => {
-          cy.findByText("Start").click();
+          cy.findByText("Start").click({
+            timeout: 60_000,
+          });
 
           // Ensure that the button is present before starting to upload the trustee state
           cy.findByText("Restore").should("be.visible");

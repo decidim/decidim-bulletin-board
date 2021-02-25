@@ -18,15 +18,24 @@ export class TrusteeWrapperAdapter extends WrapperAdapter {
 
     this.trusteeId = trusteeId;
     this.worker = new Worker(workerUrl);
+  }
 
-    this.worker.postMessage({
-      python: `
+  /**
+   * Setup the trustee wrapper.
+   *
+   * @returns {Promise<undefined>}
+   */
+  setup() {
+    return this.processPythonCodeOnWorker(
+      `
         from js import trustee_id
         from decidim.electionguard.trustee import Trustee
         trustee = Trustee(trustee_id)
       `,
-      trustee_id: this.trusteeId,
-    });
+      {
+        trustee_id: this.trusteeId,
+      }
+    );
   }
 
   /**

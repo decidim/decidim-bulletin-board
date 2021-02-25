@@ -18,6 +18,13 @@ export class TrusteeWrapperAdapter {
   }
 
   /**
+   * Setup the trustee wrapper.
+   *
+   * @returns {Promise<undefined>}
+   */
+  setup() {}
+
+  /**
    * Process the message and update the wrapper status.
    *
    * @param {String} messageType - The message type.
