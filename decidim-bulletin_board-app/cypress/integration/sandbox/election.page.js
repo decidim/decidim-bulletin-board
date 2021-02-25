@@ -108,7 +108,14 @@ export class ElectionPage {
             );
 
           cy.findByText("Start").click();
-          cy.findByText("Backup").click({ timeout: 60_000 });
+        });
+    });
+
+    trustees.forEach(({ name }) => {
+      cy.findByText(name)
+        .parent("tr")
+        .within(() => {
+          cy.findByText("Backup").click({ timeout: 120_000 });
         });
     });
   }

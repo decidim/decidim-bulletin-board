@@ -62,19 +62,6 @@ $(() => {
     const bindComponentEvents = async () => {
       await component.bindEvents({
         onEvent(_event) {},
-        onSetup() {
-          $startButton.show();
-          $generateBackupButton.on("click", (event) => {
-            $generateBackupButton.attr(
-              "href",
-              `data:text/plain;charset=utf-8,{"trusteeId":"${trusteeContext.uniqueId}","electionId":"${electionUniqueId}","status":1,"electionTrusteesCount":3,"processedMessages":[]}`
-            );
-            $generateBackupButton.attr(
-              "download",
-              `${trusteeContext.uniqueId}-election-${electionUniqueId}.bak`
-            );
-          });
-        },
         onBindStartButton(onEventTriggered) {
           $startButton.on("click", onEventTriggered);
         },
@@ -99,6 +86,18 @@ $(() => {
           $generateBackupButton.hide();
           $restoreButton.hide();
         },
+      });
+
+      $startButton.show();
+      $generateBackupButton.on("click", (event) => {
+        $generateBackupButton.attr(
+          "href",
+          `data:text/plain;charset=utf-8,{"trusteeId":"${trusteeContext.uniqueId}","electionId":"${electionUniqueId}","status":1,"electionTrusteesCount":3,"processedMessages":[]}`
+        );
+        $generateBackupButton.attr(
+          "download",
+          `${trusteeContext.uniqueId}-election-${electionUniqueId}.bak`
+        );
       });
     };
 

@@ -54,19 +54,16 @@ $(async () => {
   });
 
   await component.bindEvents({
-    onSetup() {
-      $encryptVote.removeAttr("disabled");
-    },
     onBindEncryptButton(onEventTriggered) {
       $encryptVote.on("click", onEventTriggered);
     },
-    onStart() {},
-    onVoteEncryption(validVoteFn, invalidVoteFn) {
+    onStart() {
       $vote.css("background", "");
       $auditMessage.hide();
       $doneMessage.hide();
       $encryptVote.prop("disabled", true);
-
+    },
+    onVoteEncryption(validVoteFn, invalidVoteFn) {
       try {
         const vote = JSON.parse($vote.val());
         if (!vote) {

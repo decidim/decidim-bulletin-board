@@ -44,7 +44,6 @@ export class VoteComponent {
    *
    * @method bindEvents
    * @param {Object} eventCallbacks - An object that contains event callback functions.
-   * - {Function} onSetup - a function that is called when the voter is set up.
    * - {Function} onBindEncryptButton - a function that receives a callback function that will be called when encrypting the vote must be started
    * - {Function} onVoteEncryption - a function that is called when the vote gets encrypted
    * - {Function} castOrAuditBallot - a function that is called to cast or audit a ballot
@@ -60,7 +59,6 @@ export class VoteComponent {
    * @returns {Promise<undefined>}
    */
   async bindEvents({
-    onSetup,
     onBindEncryptButton,
     onStart,
     onVoteEncryption,
@@ -73,9 +71,11 @@ export class VoteComponent {
     onCastComplete,
     onInvalid,
   }) {
-    onBindEncryptButton(() => {
-      onStart();
+    const onSetupDone = this.voter.setup();
 
+    onBindEncryptButton(async () => {
+      onStart();
+      await onSetupDone;
       onVoteEncryption(
         (plainVote) => {
           this.voter.encrypt(plainVote).then((ballot) => {
@@ -103,8 +103,5 @@ export class VoteComponent {
         }
       );
     });
-
-    await this.voter.setup();
-    onSetup();
   }
 }

@@ -86,9 +86,6 @@ $(() => {
           $backupButton.attr("download", backupFilename);
           $backupButton.on("click", onEventTriggered);
         },
-        onSetup() {
-          $startButton.show();
-        },
         onRestore() {
           $restoreButton.hide();
         },
@@ -108,6 +105,8 @@ $(() => {
           $backupButton.hide();
         },
       });
+
+      $startButton.show();
     };
 
     $trustee.on("change", ".private-key-input", async (event) => {
