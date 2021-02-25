@@ -5,9 +5,10 @@ module Decidim
     module Authority
       # This class handles the creation of an election.
       class CreateElection < Decidim::BulletinBoard::Command
-        def initialize(election_id, election_data)
+        def initialize(election_id, election_data, election_voting_scheme_name)
           @election_id = election_id
           @election_data = election_data
+          @election_voting_scheme_name = election_voting_scheme_name
         end
 
         # Returns the message_id related to the operation
@@ -42,7 +43,7 @@ module Decidim
 
         private
 
-        attr_reader :election_data, :election_id
+        attr_reader :election_data, :election_id, :election_voting_scheme_name
 
         def message
           {
@@ -62,7 +63,7 @@ module Decidim
 
         def scheme
           {
-            name: settings.scheme_name,
+            name: election_voting_scheme_name,
             quorum: settings.quorum
           }
         end

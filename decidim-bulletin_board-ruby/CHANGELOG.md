@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Changed
+
+- The method `create_election` from the `Client` now accepts the voting scheme name as a param.
+
 ## [0.13.0] - 2021-02-23
 
 ## [0.12.1] - 2021-02-22

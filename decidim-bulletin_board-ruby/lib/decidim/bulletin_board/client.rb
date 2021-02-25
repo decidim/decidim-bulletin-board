@@ -29,8 +29,8 @@ module Decidim
                :authority_public_key, :authority_name, :authority_slug,
                :scheme_name, :number_of_trustees, :quorum, to: :settings
 
-      def create_election(election_id, election_data)
-        create_election = configure Authority::CreateElection.new(election_id, election_data)
+      def create_election(election_id, election_data, election_voting_scheme_name)
+        create_election = configure Authority::CreateElection.new(election_id, election_data, election_voting_scheme_name)
         yield create_election.message_id if block_given?
         create_election.on(:ok) { |election| return election }
         create_election.on(:error) { |error_message| raise StandardError, error_message }
