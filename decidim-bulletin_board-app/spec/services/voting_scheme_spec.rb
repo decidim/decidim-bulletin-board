@@ -27,9 +27,10 @@ RSpec.describe VotingScheme do
     subject { described_class.results_message?(voting_scheme, type_subtype) }
 
     let(:voting_scheme) { "dummy" }
-    let(:type_subtype) { "tally.share" }
+    let(:type_subtype) { "end_tally" }
 
     it { expect(subject).to be_truthy }
+
 
     context "when asking for a non-result message" do
       let(:type_subtype) { "start_tally" }
@@ -37,10 +38,28 @@ RSpec.describe VotingScheme do
       it { expect(subject).to be_falsey }
     end
 
-    context "when asking for a scheme that doesn't consider it result" do
+    context "when asking for the tally shares message" do
+      let(:type_subtype) { "tally.share" }
+
+      it { expect(subject).to be_truthy }
+    end
+
+    context "when using the election_guard voting scheme" do
       let(:voting_scheme) { "election_guard" }
 
-      it { expect(subject).to be_falsey }
+      it { expect(subject).to be_truthy }
+
+      context "when asking for a non-result message" do
+        let(:type_subtype) { "start_tally" }
+
+        it { expect(subject).to be_falsey }
+      end
+
+      context "when asking for the tally shares message" do
+        let(:type_subtype) { "tally.trustee_share" }
+
+        it { expect(subject).to be_truthy }
+      end
     end
   end
 end
