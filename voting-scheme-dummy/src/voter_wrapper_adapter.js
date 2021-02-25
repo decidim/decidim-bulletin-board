@@ -18,6 +18,13 @@ export class VoterWrapperAdapter {
   }
 
   /**
+   * Setup the voter wrapper.
+   *
+   * @returns {Promise<undefined>}
+   */
+  setup() {}
+
+  /**
    * Processes the message and updates the wrapper status.
    *
    * @param {String} messageType - The message type.
