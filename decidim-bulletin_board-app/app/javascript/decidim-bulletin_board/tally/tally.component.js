@@ -57,7 +57,6 @@ export class TallyComponent {
    *
    * @method bindEvents
    * @param {Object} eventCallbacks - An object that contains event callback functions.
-   * - {Function} onSetup - a function that is called when the trustee is set up.
    * - {Function} onEvent - a function that is called when an event is emitted from the trustee.
    * - {Function} onBindRestoreButton - a function that receives a callback function that will be called when
    *                                    the restore process must be started.
@@ -71,7 +70,6 @@ export class TallyComponent {
    * @returns {Promise<undefined>}
    */
   async bindEvents({
-    onSetup,
     onEvent,
     onBindRestoreButton,
     onBindStartButton,
@@ -80,12 +78,15 @@ export class TallyComponent {
     onStart,
     onTrusteeNeedsToBeRestored,
   }) {
+    const onSetupDone = this.trustee.setup();
+
     this.trustee.events.subscribe(onEvent);
 
     onBindStartButton(async (event) => {
+      onStart();
       event.preventDefault();
 
-      onStart();
+      await onSetupDone;
 
       if (await this.trustee.needsToBeRestored()) {
         onTrusteeNeedsToBeRestored();
@@ -95,7 +96,8 @@ export class TallyComponent {
       }
     });
 
-    onBindRestoreButton((event) => {
+    onBindRestoreButton(async (event) => {
+      await onSetupDone;
       const file = event.target.files[0];
       const reader = new FileReader();
       reader.onload = async ({ target }) => {
@@ -108,8 +110,5 @@ export class TallyComponent {
       };
       reader.readAsText(file);
     });
-
-    await this.trustee.setup();
-    onSetup();
   }
 }
