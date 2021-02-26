@@ -13,7 +13,7 @@ class ProcessKeyCeremonyStep < Rectify::Command
     @client = @trustee = trustee
     @message_id = message_id
     @signed_data = signed_data
-    @response_log_entry = nil
+    @response_log_entries = nil
   end
 
   # Executes the command. Broadcasts these events:
@@ -35,7 +35,7 @@ class ProcessKeyCeremonyStep < Rectify::Command
 
       log_entry.election = election
       log_entry.save!
-      create_response_log_entry!
+      create_response_log_entries!
       save_election!
     end
 
@@ -44,10 +44,10 @@ class ProcessKeyCeremonyStep < Rectify::Command
 
   private
 
-  attr_accessor :trustee, :response_log_entry
+  attr_accessor :trustee, :response_log_entries
 
   def save_election!
-    if response_log_entry && response_log_entry.message_identifier.type == "end_key_ceremony"
+    if response_log_entries && response_log_entries.any? { |le| le.message_identifier.type == "end_key_ceremony" }
       election.key_ceremony_ended!
     else
       election.save!

@@ -8,7 +8,7 @@ module LogEntryCommand
   included do
     include HasMessageIdentifier
 
-    attr_accessor :client, :signed_data, :error, :response_message
+    attr_accessor :client, :signed_data, :error, :response_messages
 
     delegate :decoded_data, to: :log_entry
 
@@ -62,7 +62,7 @@ module LogEntryCommand
     end
 
     def process_message
-      @response_message = voting_scheme.process_message(message_identifier, log_entry.decoded_data.deep_dup)
+      @response_messages = voting_scheme.process_message(message_identifier, log_entry.decoded_data.deep_dup)
       election.voting_scheme_state = voting_scheme.backup
       true
     rescue VotingScheme::RejectedMessage => e
@@ -70,22 +70,24 @@ module LogEntryCommand
       false
     end
 
-    def create_response_log_entry!
-      return unless response_message
+    def create_response_log_entries!
+      return unless response_messages
 
-      message_id = Decidim::BulletinBoard::MessageIdentifier.format(
-        election.unique_id,
-        response_message.delete("message_type"),
-        :bulletin_board,
-        BulletinBoard.unique_id
-      )
+      @response_log_entries = response_messages.map do |response_message|
+        message_id = Decidim::BulletinBoard::MessageIdentifier.format(
+          election.unique_id,
+          response_message.delete("message_type"),
+          :bulletin_board,
+          BulletinBoard.unique_id
+        )
 
-      @response_log_entry = LogEntry.create!(
-        election: election,
-        message_id: message_id,
-        signed_data: BulletinBoard.sign(response_message.merge(message_id: message_id, iat: Time.current.to_i)),
-        bulletin_board: true
-      )
+        LogEntry.create!(
+          election: election,
+          message_id: message_id,
+          signed_data: BulletinBoard.sign(response_message.merge(message_id: message_id, iat: Time.current.to_i)),
+          bulletin_board: true
+        )
+      end
     end
 
     def invalid_timestamp?

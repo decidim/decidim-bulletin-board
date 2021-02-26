@@ -12,10 +12,10 @@ module VotingScheme
     delegate :backup, to: :state
 
     def process_message(message_identifier, message)
-      result = state.process_message(message_identifier.type_subtype, PyCall::Dict.new(message))
+      results = state.process_message(message_identifier.type_subtype, PyCall::Dict.new(message))
       return to_h(tally_cast) if message_identifier.type == "start_tally"
 
-      to_h(result)
+      results.map { |r| to_h(r) }
     end
 
     def restore(data)

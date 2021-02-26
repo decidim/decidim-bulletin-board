@@ -34,7 +34,7 @@ class StartKeyCeremony < Rectify::Command
 
       log_entry.election = election
       log_entry.save!
-      create_response_log_entry!
+      create_response_log_entries!
       election.key_ceremony!
     end
 
@@ -45,14 +45,16 @@ class StartKeyCeremony < Rectify::Command
 
   attr_accessor :authority
 
-  def create_response_log_entry!
-    return unless response_message
+  def create_response_log_entries!
+    return unless response_messages
 
-    @response_log_entry = LogEntry.create!(
-      election: election,
-      message_id: response_message["message_id"],
-      signed_data: BulletinBoard.sign(response_message),
-      bulletin_board: true
-    )
+    @response_log_entries = response_messages.map do |response_message|
+      LogEntry.create!(
+        election: election,
+        message_id: response_message["message_id"],
+        signed_data: BulletinBoard.sign(response_message),
+        bulletin_board: true
+      )
+    end
   end
 end
