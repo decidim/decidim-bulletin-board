@@ -7,6 +7,7 @@ describe("Election", () => {
     electionTitle,
     electionUniqueId,
     electionVotingSchemeName,
+    numberOfVotes,
   }) => {
     page.setup(({ trustees }) => {
       page.visit();
@@ -27,8 +28,10 @@ describe("Election", () => {
       page.assertBallotHashIsPresent();
       page.auditVote();
       page.assertVoteHasBeenAudited();
-      page.castVote();
-      page.assertVoteHasBeenCasted();
+      for (let i = 0; i < numberOfVotes; i++) {
+        page.castVote();
+        page.assertVoteHasBeenCasted();
+      }
       page.endVote();
       page.assertVoteHasEnded();
 
@@ -36,6 +39,11 @@ describe("Election", () => {
       page.assertTallyHasStarted();
       page.performTally(electionTitle, electionUniqueId, trustees);
       page.assertTallyHasEnded(trustees);
+
+      page.publishResults();
+      page.assertResultsPublished();
+      page.viewResults(electionTitle);
+      page.assertCorrectResults();
     });
   };
 
@@ -44,6 +52,7 @@ describe("Election", () => {
       electionTitle: "My dummy election",
       electionUniqueId: "dummy-1",
       electionVotingSchemeName: "dummy",
+      numberOfVotes: 10,
     });
   });
 
@@ -52,6 +61,7 @@ describe("Election", () => {
       electionTitle: "My election_guard election",
       electionUniqueId: "election_guard-1",
       electionVotingSchemeName: "election_guard",
+      numberOfVotes: 2,
     });
   });
 });

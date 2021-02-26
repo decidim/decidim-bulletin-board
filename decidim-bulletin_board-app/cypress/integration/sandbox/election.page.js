@@ -18,6 +18,7 @@ export class ElectionPage {
     // Clear the IndexDB database every test so we always start fresh
     window.indexedDB.deleteDatabase(IDENTIFICATION_KEYS_DATABASE_NAME);
 
+    this.castedVotes = [];
     cy.appScenario("election").then((scenarioData) => {
       onSetupFn(scenarioData);
     });
@@ -215,6 +216,12 @@ export class ElectionPage {
    */
   castVote() {
     cy.findByText("Vote").click();
+    cy.findByLabelText(/Vote content/)
+      //.get("textarea")
+      .invoke("text")
+      .then((vote) => {
+        this.castedVotes.push(Object.values(JSON.parse(vote)).flat());
+      });
     cy.findByText("Encrypt vote").should("be.visible").click();
     cy.findByText("Cast vote", {
       timeout: 60_000,
@@ -344,5 +351,56 @@ export class ElectionPage {
     cy.findByText("tally_ended").should("be.visible");
 
     cy.log("Tally ended");
+  }
+
+  /**
+   * Publish the election results.
+   *
+   * @returns {undefined}
+   */
+  publishResults() {
+    cy.findByText("tally_ended").should("be.visible");
+    cy.findByText("Publish results").click().should("not.exist");
+  }
+
+  /**
+   * Assert that the election results have been published.
+   *
+   * @returns {undefined}
+   */
+  assertResultsPublished() {
+    cy.findByText("tally_ended").should("not.exist");
+    cy.findByText("results_published").should("be.visible");
+
+    cy.log("Results published");
+  }
+
+  /**
+   * View the election results.
+   * @param {String} electionTitle - The title of the election.
+   *
+   * @returns {undefined}
+   */
+  viewResults(electionTitle) {
+    cy.findByText("View results").click().should("not.exist");
+    cy.findByText(`Results for ${electionTitle}`).should("be.visible");
+  }
+
+  /**
+   * Assert that the election results are correct.
+   *
+   * @returns {undefined}
+   */
+  assertCorrectResults() {
+    const flatVotes = this.castedVotes.flat();
+    const totals = {};
+
+    for (i in flatVotes) {
+      totals[flatVotes[i]] = (totals[flatVotes[i]] || 0) + 1; //increments count if element already exists
+    }
+
+    for (answer in Object.keys(totals)) {
+      cy.findByText(`${answer}: ${totals[answer]}`).should("be.visible");
+    }
   }
 }
