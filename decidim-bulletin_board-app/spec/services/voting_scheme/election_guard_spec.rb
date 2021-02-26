@@ -9,7 +9,9 @@ module VotingScheme
     let(:election) { build(:election_guard_election, last_step: last_step) }
 
     describe "process_message" do
-      subject { instance.process_message(Decidim::BulletinBoard::MessageIdentifier.new(log_entry.message_id), log_entry.decoded_data) }
+      subject do
+        instance.process_message(Decidim::BulletinBoard::MessageIdentifier.new(log_entry.message_id), log_entry.decoded_data)
+      end
 
       before do
         election.log_entries.excluding(election.log_entries.last(dont_process_count)).each do |log_entry|
@@ -30,7 +32,7 @@ module VotingScheme
 
       shared_examples "receiving the public key for the trustee" do |trustee_number|
         context "when receiving the public key for the trustee #{trustee_number}" do
-          let(:last_step) { :key_ceremony_trustees_public_keys }
+          let(:last_step) { :"key_ceremony.trustee_election_keys" }
           let(:dont_process_count) { 4 - trustee_number }
 
           it "updates the wrapper state" do
@@ -45,10 +47,10 @@ module VotingScheme
 
       context "when completing the whole key ceremony phase" do
         let(:last_step) { :end_key_ceremony }
-        let(:dont_process_count) { 2 }
+        let(:dont_process_count) { 1 }
 
         it "returns the joint election key message" do
-          expect(JSON.parse(subject["content"])).to eq(JSON.parse(election.log_entries.last.decoded_data["content"]))
+          expect(JSON.parse(election.log_entries.last.decoded_data["content"])["joint_key"]).not_to eq(nil)
         end
       end
     end
