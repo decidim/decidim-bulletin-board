@@ -15,10 +15,11 @@
        data-authority-public-key="<%= authority_public_key %>"
        data-voting-scheme-name="<%= election.voting_scheme_name %>">
     <p>Voter Id: <input name="voter_id" value="<%= random_voter_id %>" style="width:20rem"></p>
-    <p>
-      Vote content: <br/>
+
+    <label>Vote content:
       <textarea cols="100" rows="5"><%= base_vote %></textarea>
-    </p>
+    </label>
+
 
     <p><button class="encrypt-vote">Encrypt vote</button></p>
     <p class="ballot-hash"></p>
