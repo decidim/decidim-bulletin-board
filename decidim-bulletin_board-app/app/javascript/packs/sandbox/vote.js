@@ -34,6 +34,7 @@ $(async () => {
   if (votingSchemeName === "dummy") {
     voterWrapperAdapter = new DummyVoterWrapperAdapter({
       voterId: voterUniqueId,
+      waitTime: 100, //0.1s
     });
   } else if (votingSchemeName === "election_guard") {
     voterWrapperAdapter = new ElectionGuardVoterWrapperAdapter({

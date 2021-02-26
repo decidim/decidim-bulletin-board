@@ -9,10 +9,11 @@ export const END_KEY_CEREMONY = "end_key_ceremony";
 export const WAIT_TIME_MS = 500; // 0.5s
 
 export class VoterWrapper {
-  constructor({ voterId }) {
+  constructor({ voterId, waitTime }) {
     this.voterId = voterId;
     this.jointElectionKey = null;
     this.contests = {};
+    this.waitTime = waitTime ?? WAIT_TIME_MS;
   }
 
   /**
