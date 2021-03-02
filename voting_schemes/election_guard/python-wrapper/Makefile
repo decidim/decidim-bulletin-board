@@ -19,6 +19,7 @@ install-deps:
 	python -m pip install --upgrade pip
 	pip install pipenv
 	pipenv install --dev
+	python -m pip install --user --upgrade twine
 
 format:
 	pipenv run black .
@@ -50,4 +51,7 @@ test_voter:
 	pipenv run python -m unittest tests/test_voter.py
 
 package:
-	pipenv run python setup.py sdist
+	pipenv run python setup.py sdist bdist_wheel
+
+publish:
+	python -m twine upload --username __token__ --password ${PYPI_TOKEN} dist/*
