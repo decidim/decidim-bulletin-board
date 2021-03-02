@@ -34,7 +34,7 @@ class ProcessTallyStep < Rectify::Command
 
       log_entry.election = election
       log_entry.save!
-      create_response_log_entry!
+      create_response_log_entries!
       save_election!
     end
 
@@ -47,10 +47,10 @@ class ProcessTallyStep < Rectify::Command
     @voting_scheme ||= voting_scheme_class.new(election, ElectionUniqueVotes.new(election))
   end
 
-  attr_accessor :trustee, :response_log_entry
+  attr_accessor :trustee, :response_log_entries
 
   def save_election!
-    if response_log_entry && response_log_entry.message_identifier.type == "end_tally"
+    if response_log_entries && response_log_entries.any? { |le| le.message_identifier.type == "end_tally" }
       election.tally_ended!
     else
       election.save!
