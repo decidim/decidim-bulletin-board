@@ -19,9 +19,9 @@ module Decidim
   module BulletinBoard
     # The Bulletin Board client
     class Client
-      def initialize(config = Decidim::BulletinBoard)
+      def initialize(config = Decidim::BulletinBoard, file_path = nil)
         @settings = Settings.new(config)
-        @graphql = Graphql::Factory.client_for(settings)
+        @graphql = file_path.present? ? Graphql::Factory.client_for_file(settings, file_path) : Graphql::Factory.client_for(settings)
       end
 
       delegate :configured?,

@@ -3,11 +3,16 @@ import { VoteComponent } from "../decidim-bulletin_board";
 import { VoterWrapperAdapter as DummyVoterWrapperAdapter } from "voting-scheme-dummy";
 import { VoterWrapperAdapter as ElectionGuardVoterWrapperAdapter } from "voting-scheme-election_guard";
 
+const STORE_ACTION = "store";
+const CAST_ACTION = "cast";
+let performedAction = "";
+
 $(async () => {
   // UI Elements
   const $voter = $(".voter");
   const $encryptVote = $voter.find(".encrypt-vote");
   const $castVote = $voter.find(".cast-vote");
+  const $storeVote = $voter.find(".store-vote");
   const $auditVote = $voter.find(".audit-vote");
   const $vote = $voter.find("textarea");
   const $voterId = $voter.find("input");
@@ -79,12 +84,21 @@ $(async () => {
       $encryptVote.prop("disabled", true);
       $castVote.show();
       $auditVote.show();
+      $storeVote.show();
     },
     onBindAuditBallotButton(onEventTriggered) {
       $auditVote.on("click", onEventTriggered);
     },
     onBindCastBallotButton(onEventTriggered) {
+      $castVote.on("click", () => {
+        setPerformedAction(CAST_ACTION);
+      });
       $castVote.on("click", onEventTriggered);
+
+      $storeVote.on("click", () => {
+        setPerformedAction(STORE_ACTION);
+      });
+      $storeVote.on("click", onEventTriggered);
     },
     onAuditBallot(auditedVote, auditFileName) {
       const vote = JSON.stringify(auditedVote);
@@ -110,6 +124,7 @@ $(async () => {
         data: JSON.stringify({
           voter_id: $voterId.val(),
           encrypted_ballot: encryptedBallot,
+          store_to_file: performedAction === STORE_ACTION,
         }), // eslint-disable-line camelcase
         headers: {
           "X-CSRF-Token": $("meta[name=csrf-token]").attr("content"),
@@ -119,6 +134,7 @@ $(async () => {
     onCastComplete() {
       $castVote.prop("disabled", true);
       $auditVote.prop("disabled", true);
+      $storeVote.prop("disabled", true);
       $doneMessage.show();
       $vote.css("background", "green");
     },
@@ -127,3 +143,7 @@ $(async () => {
     },
   });
 });
+
+const setPerformedAction = (action) => {
+  performedAction = action;
+};
