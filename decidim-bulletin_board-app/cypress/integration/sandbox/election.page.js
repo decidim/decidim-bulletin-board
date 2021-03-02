@@ -217,7 +217,6 @@ export class ElectionPage {
   castVote() {
     cy.findByText("Vote").click();
     cy.findByLabelText(/Vote content/)
-      //.get("textarea")
       .invoke("text")
       .then((vote) => {
         this.castedVotes.push(Object.values(JSON.parse(vote)).flat());
