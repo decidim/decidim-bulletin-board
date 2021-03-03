@@ -3,7 +3,7 @@ on:
   pull_request:
     paths:
       - ".github/workflows/app-workflow.yml"
-      - "voting-scheme-dummy/**"
+      - "voting_schemes/dummy/js-adapter/**"
   push:
     branches:
       - master
@@ -17,7 +17,7 @@ env:
 
 defaults:
   run:
-    working-directory: ./voting-scheme-dummy
+    working-directory: ./voting_schemes/dummy/js-adapter
 
 jobs:
   lint:
@@ -33,19 +33,18 @@ jobs:
       - name: Recover packages cache
         uses: actions/cache@v1
         with:
-          path: ./voting-scheme-dummy/node_modules
-          key: ${{ runner.OS }}-voting-scheme-dummy-js-deps-${{ hashFiles('voting-scheme-dummy/package-lock.json') }}
+          path: ./voting_schemes/dummy/js-adapter/node_modules
+          key: ${{ runner.OS }}-voting_schemes/dummy/js-adapter-js-deps-${{ hashFiles('voting_schemes/dummy/js-adapter/package-lock.json') }}
           restore-keys: |
-            ${{ runner.OS }}-voting-scheme-dummy-js-deps-${{ env.cache-name }}-
-            ${{ runner.OS }}-voting-scheme-dummy-js-deps-
-            ${{ runner.OS }}-voting-scheme-dummy-js-
+            ${{ runner.OS }}-voting_schemes/dummy/js-adapter-js-deps-${{ env.cache-name }}-
+            ${{ runner.OS }}-voting_schemes/dummy/js-adapter-js-deps-
+            ${{ runner.OS }}-voting_schemes/dummy/js-adapter-js-
       - name: Install Javascript deps
         uses: nick-invision/retry@v1
         with:
           timeout_minutes: 10
           max_attempts: 3
-          command: cd voting-scheme-dummy && npm ci
-        name: Lint Ruby files
+          command: cd voting_schemes/dummy/js-adapter && npm ci
       - run: npm run lint
         name: Lint JS files
       - run: npm run format
@@ -64,17 +63,17 @@ jobs:
       - name: Recover packages cache
         uses: actions/cache@v1
         with:
-          path: ./voting-scheme-dummy/node_modules
-          key: ${{ runner.OS }}-voting-scheme-dummy-js-deps-${{ hashFiles('voting-scheme-dummy/package-lock.json') }}
+          path: ./voting_schemes/dummy/js-adapter/node_modules
+          key: ${{ runner.OS }}-voting_schemes/dummy/js-adapter-js-deps-${{ hashFiles('voting_schemes/dummy/js-adapter/package-lock.json') }}
           restore-keys: |
-            ${{ runner.OS }}-voting-scheme-dummy-js-deps-${{ env.cache-name }}-
-            ${{ runner.OS }}-voting-scheme-dummy-js-deps-
-            ${{ runner.OS }}-voting-scheme-dummy-js-
+            ${{ runner.OS }}-voting_schemes/dummy/js-adapter-js-deps-${{ env.cache-name }}-
+            ${{ runner.OS }}-voting_schemes/dummy/js-adapter-js-deps-
+            ${{ runner.OS }}-voting_schemes/dummy/js-adapter-js-
       - name: Install Javascript deps
         uses: nick-invision/retry@v1
         with:
           timeout_minutes: 10
           max_attempts: 3
-          command: cd voting-scheme-dummy && npm ci
+          command: cd voting_schemes/dummy/js-adapter && npm ci
       - name: Run Jest tests
         run: npm run test
