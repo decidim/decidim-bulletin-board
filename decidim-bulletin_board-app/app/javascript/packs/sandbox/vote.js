@@ -3,10 +3,6 @@ import { VoteComponent } from "../decidim-bulletin_board";
 import { VoterWrapperAdapter as DummyVoterWrapperAdapter } from "voting-scheme-dummy";
 import { VoterWrapperAdapter as ElectionGuardVoterWrapperAdapter } from "voting-scheme-election_guard";
 
-const STORE_ACTION = "store";
-const CAST_ACTION = "cast";
-let performedAction = "";
-
 $(async () => {
   // UI Elements
   const $voter = $(".voter");
@@ -19,6 +15,12 @@ $(async () => {
   const $doneMessage = $voter.find(".done-message");
   const $auditMessage = $voter.find(".audit-done-message");
   const $ballotHash = $voter.find(".ballot-hash");
+  const STORE_ACTION = "store";
+  const CAST_ACTION = "cast";
+  let performedAction = "";
+  const setPerformedAction = (action) => {
+    performedAction = action;
+  };
 
   $vote.on("change", (event) => {
     $vote.css("border", "");
@@ -90,15 +92,15 @@ $(async () => {
       $auditVote.on("click", onEventTriggered);
     },
     onBindCastBallotButton(onEventTriggered) {
-      $castVote.on("click", () => {
+      $castVote.on("click", (event) => {
         setPerformedAction(CAST_ACTION);
+        onEventTriggered(event);
       });
-      $castVote.on("click", onEventTriggered);
 
-      $storeVote.on("click", () => {
+      $storeVote.on("click", (event) => {
         setPerformedAction(STORE_ACTION);
+        onEventTriggered(event);
       });
-      $storeVote.on("click", onEventTriggered);
     },
     onAuditBallot(auditedVote, auditFileName) {
       const vote = JSON.stringify(auditedVote);
@@ -143,7 +145,3 @@ $(async () => {
     },
   });
 });
-
-const setPerformedAction = (action) => {
-  performedAction = action;
-};

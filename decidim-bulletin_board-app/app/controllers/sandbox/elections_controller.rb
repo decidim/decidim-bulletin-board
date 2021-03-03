@@ -25,7 +25,7 @@ module Sandbox
 
     def vote
       return unless request.post?
-      return file_client.cast_vote(election_id, params[:voter_id], params[:encrypted_ballot]) if params[:store_to_file]
+      return file_client.cast_vote(election_id, params[:voter_id], params[:encrypted_ballot]) if params[:store_to_file].present?
 
       bulletin_board_client.cast_vote(election_id, params[:voter_id], params[:encrypted_ballot])
     end
@@ -133,7 +133,7 @@ module Sandbox
     end
 
     def file_client
-      @file_client ||= Decidim::BulletinBoard::Client.new(bulletin_board_settings, "storage/input.csv")
+      @file_client ||= Decidim::BulletinBoard::FileClient.new("storage/input.csv", bulletin_board_settings)
     end
 
     def bulletin_board_settings
