@@ -65,4 +65,5 @@ Rails.application.configure do
 
   # Allow accessing with .lvh.me URLs
   config.hosts << /[a-z0-9-]+\.lvh\.me/
+  config.hosts << /[a-z0-9-]+\.apps.codespaces.githubusercontent.com/
 end
