@@ -8,6 +8,7 @@ require "graphlient"
 require "wisper"
 
 require "decidim/bulletin_board/client"
+require "decidim/bulletin_board/file_client"
 require "decidim/bulletin_board/engine"
 require "decidim/bulletin_board/jwk_utils"
 require "decidim/bulletin_board/message_identifier"
