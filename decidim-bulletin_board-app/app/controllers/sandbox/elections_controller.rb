@@ -33,6 +33,14 @@ module Sandbox
       bulletin_board_client.cast_vote(election_id, params[:voter_id], params[:encrypted_ballot])
     end
 
+    def generate_bulk_votes
+      number_of_votes_to_generate.times do
+        file_client.cast_vote(election_id, SecureRandom.hex, random_encrypted_vote)
+      end
+
+      go_back
+    end
+
     def end_vote
       bulletin_board_client.end_vote(election_id)
       go_back
@@ -170,6 +178,38 @@ module Sandbox
 
     def random_voter_id
       @random_voter_id ||= SecureRandom.hex
+    end
+
+    def number_of_votes_to_generate
+      params[:number_of_votes].presence || 10
+    end
+
+    def random_encrypted_vote
+      {
+        ballot_style: "ballot-style",
+        contests: election.manifest[:description][:contests].map do |contest|
+          current_selections = 0
+          {
+            object_id: contest[:object_id],
+            ballot_selections: contest[:ballot_selections].map do |ballot_selection|
+              answer = random_answer(current_selections > contest[:number_elected])
+              current_selections += answer
+              {
+                object_id: ballot_selection[:object_id],
+                ciphertext: answer + (rand * 500).floor * joint_election_key
+              }
+            end
+          }
+        end
+      }.to_json
+    end
+
+    def random_answer(max_reached)
+      max_reached ? 0 : rand(0..1)
+    end
+
+    def joint_election_key
+      @joint_election_key ||= JSON.parse(election.log_entries.where(message_type: "end_key_ceremony").last.decoded_data["content"])["joint_election_key"]
     end
   end
 end

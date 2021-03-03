@@ -33,8 +33,10 @@
               <%= link_to "Start vote", start_vote_sandbox_election_path(election) %>
             <% elsif election.vote? %>
               <%= link_to "Vote", vote_sandbox_election_path(election) %> |
-              <%= link_to "End vote", end_vote_sandbox_election_path(election) %>
-            <% elsif election.vote_ended? %>
+              <%= link_to "End vote", end_vote_sandbox_election_path(election) %>  |
+              <%= link_to "Generate bulk votes", generate_bulk_votes_sandbox_election_path(election) %>
+            <% end %>
+            <% if election.vote_ended? %>
               <%= link_to "Start tally", start_tally_sandbox_election_path(election) %>
             <% elsif election.tally? %>
               <%= link_to "Perform tally", tally_sandbox_election_path(election) %>
