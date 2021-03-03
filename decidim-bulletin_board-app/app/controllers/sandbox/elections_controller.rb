@@ -7,6 +7,8 @@ module Sandbox
     helper_method :base_vote, :random_voter_id
     helper_method :election_results
 
+    BULK_VOTES_FILE = "storage/bulk_votes.csv"
+
     def index; end
 
     def create
@@ -34,6 +36,8 @@ module Sandbox
     end
 
     def generate_bulk_votes
+      delete_bulk_votes_file
+
       number_of_votes_to_generate.times do
         file_client.cast_vote(election_id, SecureRandom.hex, random_encrypted_vote)
       end
@@ -150,7 +154,7 @@ module Sandbox
     end
 
     def file_client
-      @file_client ||= Decidim::BulletinBoard::FileClient.new("storage/input.csv", bulletin_board_settings)
+      @file_client ||= Decidim::BulletinBoard::FileClient.new(BULK_VOTES_FILE, bulletin_board_settings)
     end
 
     def bulletin_board_settings
@@ -178,6 +182,10 @@ module Sandbox
 
     def random_voter_id
       @random_voter_id ||= SecureRandom.hex
+    end
+
+    def delete_bulk_votes_file
+      File.delete(BULK_VOTES_FILE) if File.exist?(BULK_VOTES_FILE)
     end
 
     def number_of_votes_to_generate
