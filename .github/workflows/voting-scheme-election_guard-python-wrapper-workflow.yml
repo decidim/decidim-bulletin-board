@@ -30,6 +30,6 @@ jobs:
         with:
           python-version: ${{ env.PYTHON_VERSION }}
       - name: Install dependencies
-        run: make install
+        run: make install-linux
       - name: Run tests
         run: make test
