@@ -111,7 +111,6 @@ $(async () => {
         data: JSON.stringify({
           voter_id: $voterId.val(),
           encrypted_ballot: encryptedBallot,
-          store_to_file: performedAction === STORE_ACTION,
         }), // eslint-disable-line camelcase
         headers: {
           "X-CSRF-Token": $("meta[name=csrf-token]").attr("content"),
