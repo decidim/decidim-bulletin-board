@@ -1,7 +1,7 @@
 import $ from "jquery";
 import { TallyComponent, IdentificationKeys } from "../decidim-bulletin_board";
-import { TrusteeWrapperAdapter as DummyTrusteeWrapperAdapter } from "voting-scheme-dummy";
-import { TrusteeWrapperAdapter as ElectionGuardTrusteeWrapperAdapter } from "voting-scheme-election_guard";
+import { TrusteeWrapperAdapter as DummyTrusteeWrapperAdapter } from "bulletin_board-dummy-adapter";
+import { TrusteeWrapperAdapter as ElectionGuardTrusteeWrapperAdapter } from "bulletin_board-election_guard-adapter";
 
 $(() => {
   // UI Elements

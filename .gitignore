@@ -36,5 +36,7 @@
 /decidim-bulletin_board-app/cypress/videos/
 /decidim-bulletin_board-app/cypress/downloads/
 
-/voting-scheme-dummy/dist
-/voting-scheme-election_guard/dist
+/voting_schemes/dummy/js-adapter/dist
+/voting_schemes/dummy/js-adapter/node_modules
+/voting_schemes/election_guard/js-adapter/dist
+/voting_schemes/election_guard/js-adapter/node_modules

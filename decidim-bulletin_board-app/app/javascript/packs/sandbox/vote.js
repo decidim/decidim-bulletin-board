@@ -1,7 +1,7 @@
 import $ from "jquery";
 import { VoteComponent } from "../decidim-bulletin_board";
-import { VoterWrapperAdapter as DummyVoterWrapperAdapter } from "voting-scheme-dummy";
-import { VoterWrapperAdapter as ElectionGuardVoterWrapperAdapter } from "voting-scheme-election_guard";
+import { VoterWrapperAdapter as DummyVoterWrapperAdapter } from "bulletin_board-dummy-adapter";
+import { VoterWrapperAdapter as ElectionGuardVoterWrapperAdapter } from "bulletin_board-election_guard-adapter";
 
 $(async () => {
   // UI Elements
