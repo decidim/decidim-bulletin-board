@@ -15,16 +15,18 @@ if (process.argv.length < 3) {
 
 const path = process.argv[2];
 
-fs.access(path, fs.F_OK, (error) => {
+fs.access(path, fs.F_OK, async (error) => {
   if (error) {
     console.error(error);
     process.exit(1);
   }
 
   if (isElectionLogFile(path)) {
-    electionVerify(path);
+    await electionVerify(path);
+    process.exit(0);
   } else if (isAuditBallotFile(path)) {
     ballotVerify(path);
+    process.exit(0);
   } else {
     console.error(`File ${path} not supported.`);
     process.exit(1);
