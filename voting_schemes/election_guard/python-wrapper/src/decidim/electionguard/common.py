@@ -112,7 +112,7 @@ class Wrapper(Generic[C]):
     def process_message(self, message_type: str, message: Content) -> Content:
         if self.step.skip_message(message_type):
             log.warning(f"{self.__class__.__name__} skipping message `{message_type}`")
-            return
+            return []
 
         results, next_step = self.step.process_message(
             message_type, message, self.context
