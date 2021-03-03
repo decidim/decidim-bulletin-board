@@ -8,19 +8,12 @@ $(async () => {
   const $voter = $(".voter");
   const $encryptVote = $voter.find(".encrypt-vote");
   const $castVote = $voter.find(".cast-vote");
-  const $storeVote = $voter.find(".store-vote");
   const $auditVote = $voter.find(".audit-vote");
   const $vote = $voter.find("textarea");
   const $voterId = $voter.find("input");
   const $doneMessage = $voter.find(".done-message");
   const $auditMessage = $voter.find(".audit-done-message");
   const $ballotHash = $voter.find(".ballot-hash");
-  const STORE_ACTION = "store";
-  const CAST_ACTION = "cast";
-  let performedAction = "";
-  const setPerformedAction = (action) => {
-    performedAction = action;
-  };
 
   $vote.on("change", (event) => {
     $vote.css("border", "");
@@ -87,21 +80,12 @@ $(async () => {
       $encryptVote.prop("disabled", true);
       $castVote.show();
       $auditVote.show();
-      $storeVote.show();
     },
     onBindAuditBallotButton(onEventTriggered) {
       $auditVote.on("click", onEventTriggered);
     },
     onBindCastBallotButton(onEventTriggered) {
-      $castVote.on("click", (event) => {
-        setPerformedAction(CAST_ACTION);
-        onEventTriggered(event);
-      });
-
-      $storeVote.on("click", (event) => {
-        setPerformedAction(STORE_ACTION);
-        onEventTriggered(event);
-      });
+      $castVote.on("click", onEventTriggered);
     },
     onAuditBallot(auditedVote, auditFileName) {
       const vote = JSON.stringify(auditedVote);
@@ -137,7 +121,6 @@ $(async () => {
     onCastComplete() {
       $castVote.prop("disabled", true);
       $auditVote.prop("disabled", true);
-      $storeVote.prop("disabled", true);
       $doneMessage.show();
       $vote.css("background", "green");
     },
