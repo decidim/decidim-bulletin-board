@@ -7,3 +7,4 @@
 //= link sandbox/key_ceremony.css
 //= link sandbox/tally.css
 //= link sandbox/vote.css
+//= link sandbox/index.css

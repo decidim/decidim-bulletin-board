@@ -6,8 +6,10 @@ module Sandbox
     helper_method :bulletin_board_server, :authority_slug, :authority_public_key
     helper_method :base_vote, :random_voter_id
     helper_method :election_results
+    helper_method :default_bulk_votes_number
 
     BULK_VOTES_FILE = "storage/bulk_votes.csv"
+    DEFAULT_BULK_VOTES_NUMBER = 1000
 
     def index; end
 
@@ -41,8 +43,6 @@ module Sandbox
       number_of_votes_to_generate.times do
         file_client.cast_vote(election_id, SecureRandom.hex, random_encrypted_vote)
       end
-
-      go_back
     end
 
     def end_vote
@@ -189,7 +189,11 @@ module Sandbox
     end
 
     def number_of_votes_to_generate
-      params[:number_of_votes].presence || 10
+      params[:number_of_votes]&.to_i || 1000
+    end
+
+    def default_bulk_votes_number
+      DEFAULT_BULK_VOTES_NUMBER
     end
 
     def random_encrypted_vote
