@@ -11,10 +11,12 @@ export class VoterWrapperAdapter {
    * @constructor
    * @param {Object} params - An object that contains the initialization params.
    * - {String} voterId - The unique id of a trustee.
+   * - {String} waitTime - The time to wait to simulate the real encryption time.
+   * -
    */
-  constructor({ voterId }) {
+  constructor({ voterId, waitTime }) {
     this.voterId = voterId;
-    this.wrapper = new VoterWrapper({ voterId });
+    this.wrapper = new VoterWrapper({ voterId, waitTime });
   }
 
   /**

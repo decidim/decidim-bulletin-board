@@ -23,6 +23,7 @@ Rails.application.routes.draw do
           get :start_tally
           get :tally
           get :publish_results
+          get :results
         end
       end
     end

@@ -2,7 +2,10 @@
 
 module Sandbox
   class ElectionsController < ApplicationController
-    helper_method :elections, :election, :base_vote, :random_voter_id, :bulletin_board_server, :authority_slug, :authority_public_key
+    helper_method :elections, :election
+    helper_method :bulletin_board_server, :authority_slug, :authority_public_key
+    helper_method :base_vote, :random_voter_id
+    helper_method :election_results
 
     def index; end
 
@@ -46,10 +49,16 @@ module Sandbox
       go_back
     end
 
+    def results
+      @election_results = bulletin_board_client.get_election_results(election_id)
+    end
+
     private
 
     delegate :authority, to: :election
     delegate :bulletin_board_server, :authority_slug, to: :bulletin_board_client
+
+    attr_reader :election_results
 
     def election_data
       @election_data ||= params.require(:election).permit(:default_locale, title: {}).to_h.merge(
@@ -148,7 +157,8 @@ module Sandbox
       @base_vote ||= election.manifest[:description][:contests].map do |contest|
         [
           contest[:object_id],
-          contest[:ballot_selections].sample(contest[:number_elected]).map { |ballot_selection| ballot_selection[:object_id] }
+          contest[:ballot_selections].sample(Random.rand(contest[:number_elected]))
+                                     .map { |ballot_selection| ballot_selection[:object_id] }
         ]
       end.to_h.to_json
     end

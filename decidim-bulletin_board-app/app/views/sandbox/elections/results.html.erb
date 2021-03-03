@@ -1,0 +1,22 @@
+<%= stylesheet_link_tag "sandbox/tally" %>
+
+<div class="intro">
+  <div class="version">Bulletin Board Version <%= Decidim::BulletinBoard::VERSION %></div>
+
+  <h1>Results for <%= election.title.values.first %></h1>
+</div>
+
+<div class="info">
+  <%= link_to "Back", sandbox_elections_path %>
+
+  <h2>Results</h2>
+
+  <% election_results.each do |question, answers| %>
+    <h4><%= question %></h4>
+    <ul>
+      <% answers.each do |answer, votes| %>
+        <li><%= answer %>: <%= votes %></li>
+      <% end %>
+    </ul>
+  <% end %>
+</div>
