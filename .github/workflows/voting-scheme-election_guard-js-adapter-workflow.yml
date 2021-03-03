@@ -1,4 +1,4 @@
-name: "[CI] Dummy Voting ElectionGuard JS Adapter"
+name: "[CI] ElectionGuard Voting Scheme JS Adapter"
 on:
   pull_request:
     paths:

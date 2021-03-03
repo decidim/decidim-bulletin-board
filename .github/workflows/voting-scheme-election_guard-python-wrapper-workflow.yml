@@ -1,4 +1,4 @@
-name: "[CI] Dummy Voting ElectionGuard Python Wrapper"
+name: "[CI] ElectionGuard Voting Scheme Python Wrapper"
 on:
   pull_request:
     paths:
