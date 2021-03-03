@@ -10,10 +10,31 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_02_11_173543) do
+ActiveRecord::Schema.define(version: 2021_03_03_141159) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "active_storage_attachments", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "record_type", null: false
+    t.bigint "record_id", null: false
+    t.bigint "blob_id", null: false
+    t.datetime "created_at", null: false
+    t.index ["blob_id"], name: "index_active_storage_attachments_on_blob_id"
+    t.index ["record_type", "record_id", "name", "blob_id"], name: "index_active_storage_attachments_uniqueness", unique: true
+  end
+
+  create_table "active_storage_blobs", force: :cascade do |t|
+    t.string "key", null: false
+    t.string "filename", null: false
+    t.string "content_type"
+    t.text "metadata"
+    t.bigint "byte_size", null: false
+    t.string "checksum", null: false
+    t.datetime "created_at", null: false
+    t.index ["key"], name: "index_active_storage_blobs_on_key", unique: true
+  end
 
   create_table "clients", force: :cascade do |t|
     t.string "type", null: false
@@ -48,6 +69,7 @@ ActiveRecord::Schema.define(version: 2021_02_11_173543) do
     t.string "unique_id", null: false
     t.binary "voting_scheme_state"
     t.integer "status", default: 0, null: false
+    t.string "verifiable_results_hash"
     t.index ["authority_id"], name: "index_elections_on_authority_id"
     t.index ["unique_id"], name: "index_elections_on_unique_id", unique: true
   end
@@ -56,7 +78,7 @@ ActiveRecord::Schema.define(version: 2021_02_11_173543) do
     t.bigint "election_id", null: false
     t.bigint "client_id"
     t.text "signed_data", null: false
-    t.text "chained_hash", null: false
+    t.string "chained_hash", null: false
     t.string "message_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
@@ -82,6 +104,7 @@ ActiveRecord::Schema.define(version: 2021_02_11_173543) do
     t.index ["election_id"], name: "index_pending_messages_on_election_id"
   end
 
+  add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "election_trustees", "clients", column: "trustee_id"
   add_foreign_key "election_trustees", "elections"
   add_foreign_key "elections", "clients", column: "authority_id"
