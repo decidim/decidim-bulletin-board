@@ -32,7 +32,6 @@ module Sandbox
 
     def vote
       return unless request.post?
-      return file_client.cast_vote(election_id, params[:voter_id], params[:encrypted_ballot]) if params[:store_to_file].present?
 
       bulletin_board_client.cast_vote(election_id, params[:voter_id], params[:encrypted_ballot])
     end
@@ -174,7 +173,7 @@ module Sandbox
       @base_vote ||= election.manifest[:description][:contests].map do |contest|
         [
           contest[:object_id],
-          contest[:ballot_selections].sample(Random.rand(contest[:number_elected]))
+          contest[:ballot_selections].sample(Random.rand(contest[:number_elected]+1))
                                      .map { |ballot_selection| ballot_selection[:object_id] }
         ]
       end.to_h.to_json
