@@ -101,7 +101,7 @@ module Decidim
       def publish_results(election_id)
         publish_results = configure Authority::PublishResults.new(election_id)
         yield publish_results.message_id if block_given?
-        publish_results.on(:ok) { |status| return status }
+        publish_results.on(:ok) { |pending_message| return pending_message }
         publish_results.on(:error) { |error_message| raise StandardError, error_message }
         publish_results.call
       end

@@ -33,7 +33,7 @@ module Decidim
           response = graphql.query do
             mutation do
               publishResults(messageId: args[:message_id], signedData: args[:signed_data]) do
-                election do
+                pendingMessage do
                   status
                 end
                 error
@@ -43,7 +43,7 @@ module Decidim
 
           return broadcast(:error, response.data.publish_results.error) if response.data.publish_results.error.present?
 
-          broadcast(:ok, response.data.publish_results.election)
+          broadcast(:ok, response.data.publish_results.pending_message)
         rescue Graphlient::Errors::ServerError
           broadcast(:error, "Sorry, something went wrong")
         end
