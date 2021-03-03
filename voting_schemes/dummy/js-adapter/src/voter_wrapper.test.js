@@ -91,7 +91,7 @@ describe("VoterWrapper", () => {
           "question-2": ["question-2-answer-2"],
         });
 
-        expect(response.encryptedBallot).toEqual(
+        expect(response.encryptedData).toEqual(
           `{"ballot_style":"ballot-style","contests":[{"object_id":"question-1","ballot_selections":[{"object_id":"question-1-answer-1","ciphertext":${
             250 * 123456789 + 1
           }},{"object_id":"question-1-answer-2","ciphertext":${
@@ -110,7 +110,7 @@ describe("VoterWrapper", () => {
           "question-2": ["question-2-answer-2"],
         });
 
-        expect(response.auditableBallot).toEqual({
+        expect(response.auditableData).toEqual({
           ballot_style: "ballot-style",
           contests: [
             {

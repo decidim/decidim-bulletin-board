@@ -1,0 +1,35 @@
+name: "[CI] ElectionGuard Voting Scheme Python Wrapper"
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/app-workflow.yml"
+      - "voting_schemes/election_guard/python-wrapper/**"
+  push:
+    branches:
+      - master
+
+env:
+  CI: "true"
+  SIMPLECOV: "true"
+  ACTIONS_ALLOW_UNSECURE_COMMANDS: "true"
+  PYTHON_VERSION: "3.8"
+
+defaults:
+  run:
+    working-directory: ./voting_schemes/election_guard/python-wrapper
+
+jobs:
+  tests:
+    name: Test code
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2.0.0
+        with:
+          fetch-depth: 1
+      - uses: actions/setup-python@v2
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - name: Install dependencies
+        run: make install-linux
+      - name: Run tests
+        run: make test
