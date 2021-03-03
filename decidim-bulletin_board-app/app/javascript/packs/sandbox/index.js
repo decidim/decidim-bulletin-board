@@ -7,13 +7,17 @@ $(async () => {
 
   $showInputButton.on("click", (event) => {
     $(event.target).hide();
-    $(event.target).siblings(".generate-votes-input-section").css("display", "inline");
+    $(event.target)
+      .siblings(".generate-votes-input-section")
+      .css("display", "inline");
   });
 
   $generateVotesButton.on("click", (event) => {
     const electionId = $(event.target).closest(".election").data("id");
-    const votesToGenerate = $(event.target).siblings(".generate-votes-input").val();
-    $(event.target).html(`Generating ${votesToGenerate} votes...`)
+    const votesToGenerate = $(event.target)
+      .siblings(".generate-votes-input")
+      .val();
+    $(event.target).html(`Generating ${votesToGenerate} votes...`);
     $(event.target).prop("disabled", true);
 
     $.ajax({
@@ -27,7 +31,7 @@ $(async () => {
         "X-CSRF-Token": $("meta[name=csrf-token]").attr("content"),
       },
     })
-    .done(() => $(event.target).html(`${votesToGenerate} votes generated!`))
-    .fail(() => $(event.target).html(`Failed, retry!`))
+      .done(() => $(event.target).html(`${votesToGenerate} votes generated!`))
+      .fail(() => $(event.target).html(`Failed, retry!`));
   });
 });
