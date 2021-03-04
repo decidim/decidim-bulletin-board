@@ -6,6 +6,10 @@ module Sandbox
     helper_method :bulletin_board_server, :authority_slug, :authority_public_key
     helper_method :base_vote, :random_voter_id
     helper_method :election_results
+    helper_method :default_bulk_votes_number
+
+    BULK_VOTES_FILE = "storage/bulk_votes.csv"
+    DEFAULT_BULK_VOTES_NUMBER = 1000
 
     def index; end
 
@@ -28,9 +32,16 @@ module Sandbox
 
     def vote
       return unless request.post?
-      return file_client.cast_vote(election_id, params[:voter_id], params[:encrypted_ballot]) if params[:store_to_file].present?
 
       bulletin_board_client.cast_vote(election_id, params[:voter_id], params[:encrypted_ballot])
+    end
+
+    def generate_bulk_votes
+      delete_bulk_votes_file
+
+      number_of_votes_to_generate.times do
+        file_client.cast_vote(election_id, SecureRandom.hex, random_encrypted_vote)
+      end
     end
 
     def end_vote
@@ -142,7 +153,7 @@ module Sandbox
     end
 
     def file_client
-      @file_client ||= Decidim::BulletinBoard::FileClient.new("storage/input.csv", bulletin_board_settings)
+      @file_client ||= Decidim::BulletinBoard::FileClient.new(BULK_VOTES_FILE, bulletin_board_settings)
     end
 
     def bulletin_board_settings
@@ -162,7 +173,7 @@ module Sandbox
       @base_vote ||= election.manifest[:description][:contests].map do |contest|
         [
           contest[:object_id],
-          contest[:ballot_selections].sample(Random.rand(contest[:number_elected]))
+          contest[:ballot_selections].sample(Random.rand(contest[:number_elected] + 1))
                                      .map { |ballot_selection| ballot_selection[:object_id] }
         ]
       end.to_h.to_json
@@ -170,6 +181,46 @@ module Sandbox
 
     def random_voter_id
       @random_voter_id ||= SecureRandom.hex
+    end
+
+    def delete_bulk_votes_file
+      File.delete(BULK_VOTES_FILE) if File.exist?(BULK_VOTES_FILE)
+    end
+
+    def number_of_votes_to_generate
+      params[:number_of_votes]&.to_i || 1000
+    end
+
+    def default_bulk_votes_number
+      DEFAULT_BULK_VOTES_NUMBER
+    end
+
+    def random_encrypted_vote
+      {
+        ballot_style: "ballot-style",
+        contests: election.manifest[:description][:contests].map do |contest|
+          current_selections = 0
+          {
+            object_id: contest[:object_id],
+            ballot_selections: contest[:ballot_selections].map do |ballot_selection|
+              answer = random_answer(current_selections > contest[:number_elected])
+              current_selections += answer
+              {
+                object_id: ballot_selection[:object_id],
+                ciphertext: answer + (rand * 500).floor * joint_election_key
+              }
+            end
+          }
+        end
+      }.to_json
+    end
+
+    def random_answer(max_reached)
+      max_reached ? 0 : rand(0..1)
+    end
+
+    def joint_election_key
+      @joint_election_key ||= JSON.parse(election.log_entries.where(message_type: "end_key_ceremony").last.decoded_data["content"])["joint_election_key"]
     end
   end
 end

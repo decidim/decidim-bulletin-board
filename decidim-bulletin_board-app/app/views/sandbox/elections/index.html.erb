@@ -1,3 +1,5 @@
+<%= stylesheet_link_tag "sandbox/index" %>
+
 <div class="intro">
   <div class="version">Bulletin Board Version <%= Decidim::BulletinBoard::VERSION %></div>
 
@@ -19,7 +21,7 @@
     </thead>
     <tbody>
       <% elections.each do |election| %>
-        <tr>
+        <tr class="election" data-id="<%= election.id %>">
           <td><%= election.unique_id %></td>
           <td><%= election.title.values.first %></td>
           <td><%= election.status %></td>
@@ -33,7 +35,12 @@
               <%= link_to "Start vote", start_vote_sandbox_election_path(election) %>
             <% elsif election.vote? %>
               <%= link_to "Vote", vote_sandbox_election_path(election) %> |
-              <%= link_to "End vote", end_vote_sandbox_election_path(election) %>
+              <%= link_to "End vote", end_vote_sandbox_election_path(election) %>  |
+              <button class="show-input-button"> Generate bulk votes </button>
+              <div class="generate-votes-input-section">
+                <input class="generate-votes-input" type="number" placeholder="How many votes?" value="<%= default_bulk_votes_number %>"/>
+                <button class="generate-votes-button">Generate votes</button>
+              </div>
             <% elsif election.vote_ended? %>
               <%= link_to "Start tally", start_tally_sandbox_election_path(election) %>
             <% elsif election.tally? %>
@@ -50,3 +57,6 @@
 
   <%= link_to "Setup new election", new_sandbox_election_path %>
 </div>
+
+
+<%= javascript_packs_with_chunks_tag "sandbox/index" %>
