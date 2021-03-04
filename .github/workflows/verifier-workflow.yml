@@ -1,0 +1,79 @@
+name: "[CI] Verifier"
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/app-workflow.yml"
+      - "verifier/**"
+  push:
+    branches:
+      - master
+
+env:
+  CI: "true"
+  SIMPLECOV: "true"
+  RUBY_VERSION: 2.6.6
+  ACTIONS_ALLOW_UNSECURE_COMMANDS: "true"
+  NODE_VERSION: "15"
+
+defaults:
+  run:
+    working-directory: ./verifier
+
+jobs:
+  lint:
+    name: Lint code
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2.0.0
+        with:
+          fetch-depth: 1
+      - uses: actions/setup-node@v2-beta
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - name: Recover packages cache
+        uses: actions/cache@v1
+        with:
+          path: ./verifier/node_modules
+          key: ${{ runner.OS }}-verifier-js-deps-${{ hashFiles('verifier/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.OS }}-verifier-js-deps-${{ env.cache-name }}-
+            ${{ runner.OS }}-verifier-js-deps-
+            ${{ runner.OS }}-verifier-js-
+      - name: Install Javascript deps
+        uses: nick-invision/retry@v1
+        with:
+          timeout_minutes: 10
+          max_attempts: 3
+          command: cd verifier && npm ci
+      - run: npm run lint
+        name: Lint JS files
+      - run: npm run format
+        name: Format JS files
+  unit-tests:
+    name: Unit tests
+    needs: lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2.0.0
+        with:
+          fetch-depth: 1
+      - uses: actions/setup-node@v2-beta
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - name: Recover packages cache
+        uses: actions/cache@v1
+        with:
+          path: ./verifier/node_modules
+          key: ${{ runner.OS }}-verifier-js-deps-${{ hashFiles('verifier/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.OS }}-verifier-js-deps-${{ env.cache-name }}-
+            ${{ runner.OS }}-verifier-js-deps-
+            ${{ runner.OS }}-verifier-js-
+      - name: Install Javascript deps
+        uses: nick-invision/retry@v1
+        with:
+          timeout_minutes: 10
+          max_attempts: 3
+          command: cd verifier && npm ci
+      - name: Run Jest tests
+        run: npm run test
