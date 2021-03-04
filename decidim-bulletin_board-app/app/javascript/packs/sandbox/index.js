@@ -21,7 +21,7 @@ $(async () => {
     $(event.target).prop("disabled", true);
 
     $.ajax({
-      url: `${electionId}/generate_bulk_votes`,
+      url: `/sandbox/elections/${electionId}/generate_bulk_votes`,
       method: "POST",
       contentType: "application/json",
       data: JSON.stringify({
