@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "csv"
+
 module Decidim
   module BulletinBoard
     module Graphql
@@ -16,8 +18,8 @@ module Decidim
           body["variables"] = variables if variables.any?
           body["operationName"] = operation_name if operation_name
 
-          File.open(file_name, "a+") do |f|
-            f.puts "#{JSON.generate(body)};#{context[:headers]["Authorization"]}"
+          CSV.open(file_name, "a+") do |csv|
+            csv << [JSON.generate(body), context[:headers]["Authorization"]]
           end
 
           { "data" => { "vote" => {} } }
