@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "test/private_keys"
+
 module Sandbox
   class ElectionsController < ApplicationController
     helper_method :elections, :election
