@@ -127,8 +127,6 @@ FactoryBot.define do
   end
 
   factory :log_entry, traits: [:message_model] do
-    content_hash { Digest::SHA256.hexdigest(message["content"]) if message["content"] }
-
     trait :by_trustee do
       client { Trustee.first }
       private_key { Test::PrivateKeys.trustees_private_keys.first }
