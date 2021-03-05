@@ -155,7 +155,7 @@ module Decidim
                                           sequence_order: 0,
                                           vote_variation: "one_of_m",
                                           name: "A question",
-                                          number_elected: 2,
+                                          number_elected: 1,
                                           ballot_title: { text: [{ language: "en", value: "A question" },
                                                                  { language: "es", value: "Una pregunta" }] },
                                           ballot_subtitle: { text: [{ language: "en", value: "A question description" },
