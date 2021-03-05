@@ -3,7 +3,7 @@ on:
   pull_request:
     paths:
       - ".github/workflows/app-workflow.yml"
-      - "voting_schemes/election_guard/js-adapter/**"
+      - "voting_schemes/electionguard/js-adapter/**"
   push:
     branches:
       - develop
@@ -18,7 +18,7 @@ env:
 
 defaults:
   run:
-    working-directory: ./voting_schemes/election_guard/js-adapter
+    working-directory: ./voting_schemes/electionguard/js-adapter
 
 jobs:
   lint:
@@ -34,18 +34,18 @@ jobs:
       - name: Recover packages cache
         uses: actions/cache@v1
         with:
-          path: ./voting_schemes/election_guard/js-adapter/node_modules
-          key: ${{ runner.OS }}-voting_schemes/election_guard/js-adapter-js-deps-${{ hashFiles('voting_schemes/election_guard/js-adapter/package-lock.json') }}
+          path: ./voting_schemes/electionguard/js-adapter/node_modules
+          key: ${{ runner.OS }}-voting_schemes/electionguard/js-adapter-js-deps-${{ hashFiles('voting_schemes/electionguard/js-adapter/package-lock.json') }}
           restore-keys: |
-            ${{ runner.OS }}-voting_schemes/election_guard/js-adapter-js-deps-${{ env.cache-name }}-
-            ${{ runner.OS }}-voting_schemes/election_guard/js-adapter-js-deps-
-            ${{ runner.OS }}-voting_schemes/election_guard/js-adapter-js-
+            ${{ runner.OS }}-voting_schemes/electionguard/js-adapter-js-deps-${{ env.cache-name }}-
+            ${{ runner.OS }}-voting_schemes/electionguard/js-adapter-js-deps-
+            ${{ runner.OS }}-voting_schemes/electionguard/js-adapter-js-
       - name: Install Javascript deps
         uses: nick-invision/retry@v1
         with:
           timeout_minutes: 10
           max_attempts: 3
-          command: cd voting_schemes/election_guard/js-adapter && npm ci
+          command: cd voting_schemes/electionguard/js-adapter && npm ci
       - run: npm run lint
         name: Lint JS files
       - run: npm run format
@@ -64,17 +64,17 @@ jobs:
       - name: Recover packages cache
         uses: actions/cache@v1
         with:
-          path: ./voting_schemes/election_guard/js-adapter/node_modules
-          key: ${{ runner.OS }}-voting_schemes/election_guard/js-adapter-js-deps-${{ hashFiles('voting_schemes/election_guard/js-adapter/package-lock.json') }}
+          path: ./voting_schemes/electionguard/js-adapter/node_modules
+          key: ${{ runner.OS }}-voting_schemes/electionguard/js-adapter-js-deps-${{ hashFiles('voting_schemes/electionguard/js-adapter/package-lock.json') }}
           restore-keys: |
-            ${{ runner.OS }}-voting_schemes/election_guard/js-adapter-js-deps-${{ env.cache-name }}-
-            ${{ runner.OS }}-voting_schemes/election_guard/js-adapter-js-deps-
-            ${{ runner.OS }}-voting_schemes/election_guard/js-adapter-js-
+            ${{ runner.OS }}-voting_schemes/electionguard/js-adapter-js-deps-${{ env.cache-name }}-
+            ${{ runner.OS }}-voting_schemes/electionguard/js-adapter-js-deps-
+            ${{ runner.OS }}-voting_schemes/electionguard/js-adapter-js-
       - name: Install Javascript deps
         uses: nick-invision/retry@v1
         with:
           timeout_minutes: 10
           max_attempts: 3
-          command: cd voting_schemes/election_guard/js-adapter && npm ci
+          command: cd voting_schemes/electionguard/js-adapter && npm ci
       - name: Run Jest tests
         run: npm run test

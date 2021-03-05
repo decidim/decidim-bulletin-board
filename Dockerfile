@@ -25,7 +25,7 @@ RUN mkdir -p /code/tmp
 
 # Add local npm dependencies
 ADD voting_schemes/dummy/js-adapter /code/voting_schemes/dummy/js-adapter
-ADD voting_schemes/election_guard/js-adapter /code/voting_schemes/election_guard/js-adapter
+ADD voting_schemes/electionguard/js-adapter /code/voting_schemes/electionguard/js-adapter
 
 # Install npm dependencies
 ADD decidim-bulletin_board-app/package-lock.json /code/tmp/package.json
@@ -42,7 +42,7 @@ ADD decidim-bulletin_board-app/Gemfile.lock /code/tmp/Gemfile.lock
 RUN cd /code/tmp && bundle install
 
 # Add local python dependencies
-ADD voting_schemes/election_guard/python-wrapper /code/voting_schemes/election_guard/python-wrapper
+ADD voting_schemes//python-wrapper /code/voting_schemes/electionguard/python-wrapper
 
 # Install python dependencies
 RUN git clone https://github.com/pyenv/pyenv.git ~/.pyenv

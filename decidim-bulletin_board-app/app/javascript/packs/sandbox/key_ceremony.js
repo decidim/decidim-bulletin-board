@@ -4,7 +4,7 @@ import {
   IdentificationKeys,
 } from "../decidim-bulletin_board";
 import { TrusteeWrapperAdapter as DummyTrusteeWrapperAdapter } from "bulletin_board-dummy-adapter";
-import { TrusteeWrapperAdapter as ElectionGuardTrusteeWrapperAdapter } from "bulletin_board-election_guard-adapter";
+import { TrusteeWrapperAdapter as ElectionGuardTrusteeWrapperAdapter } from "bulletin_board-electionguard-adapter";
 
 $(() => {
   // UI Elements
@@ -44,10 +44,10 @@ $(() => {
       trusteeWrapperAdapter = new DummyTrusteeWrapperAdapter({
         trusteeId: trusteeContext.uniqueId,
       });
-    } else if (votingSchemeName === "election_guard") {
+    } else if (votingSchemeName === "electionguard") {
       trusteeWrapperAdapter = new ElectionGuardTrusteeWrapperAdapter({
         trusteeId: trusteeContext.uniqueId,
-        workerUrl: "/assets/election_guard/webworker.js",
+        workerUrl: "/assets/electionguard/webworker.js",
       });
     } else {
       throw new Error(`Voting scheme ${votingSchemeName} not supported.`);

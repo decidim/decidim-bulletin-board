@@ -3,7 +3,7 @@ on:
   pull_request:
     paths:
       - ".github/workflows/app-workflow.yml"
-      - "voting_schemes/election_guard/python-wrapper/**"
+      - "voting_schemes/electionguard/python-wrapper/**"
   push:
     branches:
       - develop
@@ -17,7 +17,7 @@ env:
 
 defaults:
   run:
-    working-directory: ./voting_schemes/election_guard/python-wrapper
+    working-directory: ./voting_schemes/electionguard/python-wrapper
 
 jobs:
   tests:

@@ -2,12 +2,12 @@
 
 require "voting_scheme/base"
 require "voting_scheme/dummy"
-require "voting_scheme/election_guard"
+require "voting_scheme/electionguard"
 
 module VotingScheme
   VOTING_SCHEME = {
     dummy: Dummy,
-    election_guard: ElectionGuard
+    electionguard: ElectionGuard
   }.freeze
 
   def self.from_name(name)
