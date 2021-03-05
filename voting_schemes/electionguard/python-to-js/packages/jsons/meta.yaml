@@ -1,0 +1,11 @@
+package:
+  name: jsons
+  version: 1.2.0
+source:
+  sha256: 7ed8ea50dff03bef3ed44c4ea34bb72015fbdff02d069e2f9e81eb67224e1514
+  url: file:dist/jsons-1.2.0.tar.gz
+  patches:
+  - patches/no-multiprocessing.patch
+requirements:
+  run:
+  - typish

@@ -1,0 +1,13 @@
+package:
+  name: hypothesis
+  version: 5.36.0
+source:
+  sha256: a473b8428d13a695129e94bf17c43fa6c8a75449ef9121edb32b5ccaf862f16b
+  url: https://files.pythonhosted.org/packages/39/56/41c79c860c2e47efdadc80d98d5645af1c1e87ff907ff5ea945ac827e24b/hypothesis-5.36.0.tar.gz
+requirements:
+  run:
+  - attrs
+  - sortedcontainers
+test:
+  imports:
+  - hypothesis

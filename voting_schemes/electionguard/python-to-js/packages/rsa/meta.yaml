@@ -1,0 +1,9 @@
+package:
+  name: rsa
+  version: '4.6'
+source:
+  sha256: 109ea5a66744dd859bf16fe904b8d8b627adafb9408753161e766a92e7d681fa
+  url: https://files.pythonhosted.org/packages/a2/d5/04b8a9719149583fec76efdff2e7a81c6e3cc34909ee818d3fbf115edc2e/rsa-4.6.tar.gz
+test:
+  imports:
+  - rsa

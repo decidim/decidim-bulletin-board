@@ -1,0 +1,22 @@
+#!/bin/sh
+
+SHARED_FOLDER=${1:-/host-tmp}
+HOST_SHARED_FOLDER=${1:-/tmp}
+
+# Copy bulletin_board-electionguard package source to the packages folder
+cd ../python-wrapper
+make install-linux package
+cp dist/bulletin_board-electionguard-*.tar.gz ../python-to-js/packages/bulletin_board-electionguard/
+
+# Copy everything needed to compile to the shared folder
+mkdir -p $SHARED_FOLDER/electionguard
+rm -rf $SHARED_FOLDER/electionguard/*
+cp -rf .. $SHARED_FOLDER/electionguard/
+
+# Build packages with Pyodide
+docker run --rm --mount type=bind,source=$HOST_SHARED_FOLDER/electionguard,target=/electionguard -it iodide/pyodide:0.16.1 /electionguard/python-to-js/build-pyodide
+
+# Move generated files to the vendor folder of the js-adapter
+rm -rf ../js-adapter/vendor/electionguard/*
+cp -rf $SHARED_FOLDER/electionguard/python-to-js/output/* ../js-adapter/vendor/electionguard/
+rm -rf $SHARED_FOLDER/electionguard

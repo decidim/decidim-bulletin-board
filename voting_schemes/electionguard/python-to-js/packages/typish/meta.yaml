@@ -1,0 +1,7 @@
+package:
+  name: typish
+  version: 1.9.1
+source:
+  sha256: 61aa0ac1c5e56092e95bc0bd32a8cc25fe173971cae91ab6ada2e63e10ce44ee
+  url: file:dist/typish-1.9.1.tar.gz
+  

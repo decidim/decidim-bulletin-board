@@ -1,0 +1,20 @@
+package:
+  name: electionguard
+  version: 1.1.15
+source:
+  sha256: 094e7d284de9b22bdea695e631584f3c6bdfb02f1b49c541a79eb61f6693a08b
+  url: https://files.pythonhosted.org/packages/96/7b/33400aa38fa806d8b2c7ac3afd42dd0e4ba04109d620c12d81e690987c3a/electionguard-1.1.15.tar.gz
+  patches:
+  - patches/no-cryptography.patch
+  - patches/no-multiprocessing.patch
+requirements:
+  run:
+  - numpy
+  - hypothesis
+  - jsons
+  - rsa
+  - gmpy2
+  - pyasn1
+  test:
+  imports:
+  - electionguard
