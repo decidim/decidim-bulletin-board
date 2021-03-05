@@ -28,6 +28,6 @@ class LogEntry < ApplicationRecord
   end
 
   def previous_hash
-    election.log_entries.last&.chained_hash || election.unique_id
+    LogEntry.where(election: election).order(id: :desc).pick(:chained_hash) || election.unique_id
   end
 end
