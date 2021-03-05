@@ -4,11 +4,11 @@ require "rails_helper"
 require "./spec/commands/shared/log_entry_validations"
 
 RSpec.describe PublishResults do
-  subject { described_class.call(client, message_id, signed_data) }
+  subject(:command) { described_class.call(client, message_id, signed_data) }
 
   include_context "with a signed message"
 
-  let!(:election) { create(:election, election_status) }
+  let(:election) { Election.find_by(status: election_status) }
   let(:election_status) { :tally_ended }
   let(:client) { Authority.first }
   let(:message_type) { :publish_results_message }
@@ -27,7 +27,40 @@ RSpec.describe PublishResults do
   end
 
   it "changes the election status" do
-    expect { subject }.to change { Election.last.status }.from("tally_ended").to("results_published")
+    expect { subject }.to change { election.reload.status }.from("tally_ended").to("results_published")
+  end
+
+  it "generates the verifiable results file" do
+    expect { subject }.to change { election.reload.verifiable_results.attached? }.from(false).to(true)
+  end
+
+  it "generates the verifiable results file hash" do
+    expect { subject }.to change { election.reload.verifiable_results_hash }.from(nil)
+  end
+
+  describe "verifiable results file contents" do
+    it "creates one file per each election status" do
+      subject
+      election.verifiable_results.open do |file|
+        expect(`tar -tf #{file.path} | wc -l`.to_i).to eq(Election.statuses.count)
+      end
+    end
+
+    it "creates one line per each election log entry" do
+      subject
+      election.verifiable_results.open do |file|
+        expect(`tar -axf #{file.path} -O | zcat | wc -l`.to_i).to eq(election.log_entries.count)
+      end
+    end
+
+    it "each line has the log entry required data" do
+      subject
+      election.verifiable_results.open do |file|
+        `tar -axf #{file.path} -O | zcat`.split("\n").zip(election.log_entries.order(id: :asc)).each do |line, log_entry|
+          expect(JSON.parse(line)).to include(log_entry.slice(:message_id, :signed_data, :chained_hash, :content_hash))
+        end
+      end
+    end
   end
 
   shared_examples "publishing results fails" do

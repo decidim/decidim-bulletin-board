@@ -15,8 +15,8 @@ module Decidim
         let(:bulletin_board_response) do
           {
             publishResults: {
-              election: {
-                status: "results_published"
+              pendingMessage: {
+                status: "enqueued"
               }
             }
           }
@@ -32,8 +32,8 @@ module Decidim
           end
 
           it "uses the graphql client to publish the election results and returns its result" do
-            subject.on(:ok) do |election|
-              expect(election.status).to eq("results_published")
+            subject.on(:ok) do |pending_message|
+              expect(pending_message.status).to eq("enqueued")
             end
             subject.call
           end

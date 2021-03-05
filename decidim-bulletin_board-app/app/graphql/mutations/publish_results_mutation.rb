@@ -5,7 +5,7 @@ module Mutations
     argument :message_id, String, required: true
     argument :signed_data, String, required: true
 
-    field :election, Types::ElectionType, null: true
+    field :pending_message, Types::PendingMessageType, null: true
     field :error, String, null: true
 
     def resolve(message_id:, signed_data:)
@@ -15,12 +15,9 @@ module Mutations
 
       result = { error: "There was an error publishing the election's results." }
 
-      PublishResults.call(authority, message_id, signed_data) do
-        on(:ok) do |election|
-          result = { election: election }
-        end
-        on(:invalid) do |error|
-          result = { error: error }
+      EnqueueMessage.call(authority, message_id, signed_data, PublishResultsJob) do
+        on(:ok) do |pending_message|
+          result = { pending_message: pending_message }
         end
       end
 
