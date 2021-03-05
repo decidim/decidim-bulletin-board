@@ -10,8 +10,15 @@ module Mutations
       <<~GQL
         mutation($messageId: String!, $signedData: String!) {
           publishResults(messageId: $messageId, signedData: $signedData) {
-            election {
+            pendingMessage {
               id
+              client {
+                id
+              }
+              election {
+                id
+              }
+              signedData
               status
             }
             error
@@ -27,20 +34,31 @@ module Mutations
     let(:payload) { build(:publish_results_message, election: election) }
     let(:message_id) { payload["message_id"] }
 
-    it "changes the election status" do
-      expect { subject }.to change { Election.last.status }.from("tally_ended").to("results_published")
+    it "adds the message to the pending messages table" do
+      expect { subject }.to change(PendingMessage, :count).by(1)
     end
 
-    it "returns an election status" do
+    it "enqueues a key ceremony job to process the message", :jobs do
       subject
+      expect(PublishResultsJob).to have_been_enqueued
+    end
 
+    it "returns a pending message" do
+      subject
       json = JSON.parse(response.body, symbolize_names: true)
       data = json.dig(:data, :publishResults)
 
       expect(data).to include(
-        election: {
-          id: election.unique_id,
-          status: "results_published"
+        pendingMessage: {
+          id: be_present,
+          client: {
+            id: authority.unique_id
+          },
+          election: {
+            id: election.unique_id
+          },
+          signedData: signed_data,
+          status: "enqueued"
         },
         error: nil
       )
@@ -49,8 +67,8 @@ module Mutations
     context "when the authority is not authorized" do
       let(:headers) { {} }
 
-      it "doesn't open the ballot box" do
-        expect { subject }.not_to change(election, :status)
+      it "doesn't create a pending message" do
+        expect { subject }.not_to change(PendingMessage, :count)
       end
 
       it "returns an error message" do
@@ -59,7 +77,7 @@ module Mutations
         data = json.dig(:data, :publishResults)
 
         expect(data).to include(
-          election: nil,
+          pendingMessage: nil,
           error: "Authority not found"
         )
       end

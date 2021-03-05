@@ -229,14 +229,14 @@ module Decidim
         end
 
         let(:election_id) { "decidim-test-authority.1" }
-        let(:result) { [:ok, "results_published"] }
+        let(:result) { [:ok, double(status: "enqueued")] }
 
         it "yields the message_id" do
           expect { |block| instance.publish_results(election_id, &block) }.to yield_with_args("a.message+id")
         end
 
         it "calls the PublishResults command and returns the result" do
-          expect(subject).to eq("results_published")
+          expect(subject.status).to eq("enqueued")
         end
 
         context "when something went wrong" do

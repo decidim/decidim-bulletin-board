@@ -105,6 +105,12 @@ FactoryBot.define do
     trait :results_published do
       tally_ended
       status { :results_published }
+
+      after(:build) do |election, _evaluator|
+        verifiable_results_path = File.expand_path("assets/verifiable-results.tar", __dir__)
+        election.verifiable_results.attach(io: File.open(verifiable_results_path), filename: "verifiable-results.tar")
+        election.verifiable_results_hash = Digest::SHA256.base64digest(File.open(verifiable_results_path).read)
+      end
     end
   end
 

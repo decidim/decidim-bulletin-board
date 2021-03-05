@@ -93,10 +93,6 @@ def create_publish_results_log_entry(election)
                     election: election,
                     message: FactoryBot.build(:publish_results_message,
                                               election: election))
-
-  election.verifiable_results.attach(io: File.open("db/seeds/verifiable-results.tar"), filename: "verifiable-results.tar")
-  election.verifiable_results_hash = Digest::SHA256.base64digest(File.open("db/seeds/verifiable-results.tar").read)
-  election.save!
 end
 
 Authority.create!(
