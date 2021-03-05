@@ -3,7 +3,7 @@
 class Election < ApplicationRecord
   belongs_to :authority
   has_many :election_trustees
-  has_many :trustees, through: :election_trustees
+  has_many :trustees, -> { order(id: :asc) }, through: :election_trustees
   has_many :log_entries, -> { order(id: :asc) }
 
   has_one_attached :verifiable_results
