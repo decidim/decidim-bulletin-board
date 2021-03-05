@@ -18,7 +18,7 @@ module Decidim
           body["variables"] = variables if variables.any?
           body["operationName"] = operation_name if operation_name
 
-          CSV.open(file_name, "a+") do |csv|
+          CSV.open(file_name, "a+", col_sep: ";") do |csv|
             csv << [JSON.generate(body), context[:headers]["Authorization"]]
           end
 

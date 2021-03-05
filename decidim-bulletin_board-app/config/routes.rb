@@ -20,6 +20,7 @@ Rails.application.routes.draw do
           get :vote
           post :vote
           post :generate_bulk_votes
+          get :download_bulk_votes
           get :end_vote
           get :start_tally
           get :tally

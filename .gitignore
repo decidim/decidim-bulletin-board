@@ -22,6 +22,9 @@
 /decidim-bulletin_board-app/storage/*
 !/decidim-bulletin_board-app/storage/.keep
 
+# Ignore generated votes file
+/decidim-bulletin_board-app/bulk_votes.csv
+
 /decidim-bulletin_board-app/public/assets
 /decidim-bulletin_board-app/.byebug_history
 

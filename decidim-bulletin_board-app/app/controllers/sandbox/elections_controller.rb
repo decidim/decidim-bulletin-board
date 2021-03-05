@@ -10,7 +10,8 @@ module Sandbox
     helper_method :election_results
     helper_method :default_bulk_votes_number
 
-    BULK_VOTES_FILE = "storage/bulk_votes.csv"
+    BULK_VOTES_FILE_NAME = "bulk_votes.csv"
+    BULK_VOTES_FILE_PATH = Rails.root.join(BULK_VOTES_FILE_NAME)
     DEFAULT_BULK_VOTES_NUMBER = 1000
 
     def index; end
@@ -44,6 +45,14 @@ module Sandbox
       number_of_votes_to_generate.times do
         file_client.cast_vote(election_id, SecureRandom.hex, random_encrypted_vote)
       end
+    end
+
+    def download_bulk_votes
+      send_file(
+        BULK_VOTES_FILE_PATH,
+        filename: BULK_VOTES_FILE_NAME,
+        type: "text/csv"
+      )
     end
 
     def end_vote
@@ -155,7 +164,7 @@ module Sandbox
     end
 
     def file_client
-      @file_client ||= Decidim::BulletinBoard::FileClient.new(BULK_VOTES_FILE, bulletin_board_settings)
+      @file_client ||= Decidim::BulletinBoard::FileClient.new(BULK_VOTES_FILE_PATH, bulletin_board_settings)
     end
 
     def bulletin_board_settings
@@ -186,7 +195,7 @@ module Sandbox
     end
 
     def delete_bulk_votes_file
-      File.delete(BULK_VOTES_FILE) if File.exist?(BULK_VOTES_FILE)
+      File.delete(BULK_VOTES_FILE_PATH) if File.exist?(BULK_VOTES_FILE_PATH)
     end
 
     def number_of_votes_to_generate
