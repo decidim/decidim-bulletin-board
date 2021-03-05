@@ -3,7 +3,7 @@
 require "jsonl"
 require "byebug"
 
-class ElectionGuardTestData
+class ElectionguardTestData
   class Messages
     include Enumerable
 

@@ -13,7 +13,7 @@ RSpec.describe VotingScheme do
     context "when asking for electionguard" do
       let(:voting_scheme) { "electionguard" }
 
-      it { expect(subject).to eq(VotingScheme::ElectionGuard) }
+      it { expect(subject).to eq(VotingScheme::Electionguard) }
     end
 
     context "when asking for another voting scheme" do

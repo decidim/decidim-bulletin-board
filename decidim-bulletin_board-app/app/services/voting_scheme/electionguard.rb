@@ -2,11 +2,11 @@
 
 require "pycall/dict"
 require "pycall"
-EGBB = PyCall.import_module("decidim.electionguard.bulletin_board")
+EGBB = PyCall.import_module("bulletin_board.electionguard.bulletin_board")
 
 module VotingScheme
   # An implementation of the ElectionGuard voting scheme, using PyCall to execute the ElectionGuard python code
-  class ElectionGuard < Base
+  class Electionguard < Base
     RESULTS = ["tally.trustee_share", "end_tally"].freeze
 
     delegate :backup, to: :state

@@ -3,7 +3,7 @@
 require "rails_helper"
 
 module VotingScheme
-  RSpec.describe ElectionGuard do
+  RSpec.describe Electionguard do
     subject(:instance) { described_class.new(election) }
 
     let(:election) { build(:electionguard_election, last_step: last_step) }

@@ -3,18 +3,18 @@
 require_relative "../support/electionguard_test_data"
 
 FactoryBot.define do
-  ELECTION_STEPS = ElectionGuardTestData.election_steps
-  ELECTION_TITLE = ElectionGuardTestData.election_title
-  ELECTION_TRUSTEES_IDS = ElectionGuardTestData.trustee_ids
-  CREATE_ELECTION_MESSAGE = ElectionGuardTestData.create_election_message
+  ELECTION_STEPS = ElectionguardTestData.election_steps
+  ELECTION_TITLE = ElectionguardTestData.election_title
+  ELECTION_TRUSTEES_IDS = ElectionguardTestData.trustee_ids
+  CREATE_ELECTION_MESSAGE = ElectionguardTestData.create_election_message
 
-  TRUSTEE_ELECTION_KEYS_MESSAGES = ElectionGuardTestData.trustee_election_keys
+  TRUSTEE_ELECTION_KEYS_MESSAGES = ElectionguardTestData.trustee_election_keys
 
-  TRUSTEE_PARTIAL_ELECTION_KEYS_MESSAGES = ElectionGuardTestData.trustee_partial_election_keys
+  TRUSTEE_PARTIAL_ELECTION_KEYS_MESSAGES = ElectionguardTestData.trustee_partial_election_keys
 
-  TRUSTEE_VERIFICATION_MESSAGES = ElectionGuardTestData.trustee_verifications
+  TRUSTEE_VERIFICATION_MESSAGES = ElectionguardTestData.trustee_verifications
 
-  END_KEY_CEREMONY_MESSAGE = ElectionGuardTestData.end_key_ceremony
+  END_KEY_CEREMONY_MESSAGE = ElectionguardTestData.end_key_ceremony
 
   factory :electionguard_election, class: "Election" do
     transient do

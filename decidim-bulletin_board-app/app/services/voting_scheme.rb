@@ -7,7 +7,7 @@ require "voting_scheme/electionguard"
 module VotingScheme
   VOTING_SCHEME = {
     dummy: Dummy,
-    electionguard: ElectionGuard
+    electionguard: Electionguard
   }.freeze
 
   def self.from_name(name)
