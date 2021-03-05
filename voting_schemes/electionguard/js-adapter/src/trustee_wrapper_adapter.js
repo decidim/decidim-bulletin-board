@@ -29,7 +29,7 @@ export class TrusteeWrapperAdapter extends WrapperAdapter {
     return this.processPythonCodeOnWorker(
       `
         from js import trustee_id
-        from decidim.electionguard.trustee import Trustee
+        from bulletin_board.electionguard.trustee import Trustee
         trustee = Trustee(trustee_id)
       `,
       {
@@ -59,16 +59,14 @@ export class TrusteeWrapperAdapter extends WrapperAdapter {
       }
     );
 
-    if (result) {
+    if (result && result[0]) {
       // eslint-disable-next-line camelcase
-      const { message_type, content } = result;
+      const { message_type, content } = result[0];
       return {
         messageType: message_type,
         content,
       };
     }
-
-    return result;
   }
 
   /**

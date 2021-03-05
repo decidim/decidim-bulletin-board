@@ -29,7 +29,7 @@ export class VoterWrapperAdapter extends WrapperAdapter {
     return this.processPythonCodeOnWorker(
       `
         from js import voter_id
-        from decidim.electionguard.voter import Voter
+        from bulletin_board.electionguard.voter import Voter
         voter = Voter(voter_id)
       `,
       {
@@ -59,16 +59,14 @@ export class VoterWrapperAdapter extends WrapperAdapter {
       }
     );
 
-    if (result) {
+    if (result && result[0]) {
       // eslint-disable-next-line camelcase
-      const { message_type, content } = result;
+      const { message_type, content } = result[0];
       return {
         messageType: message_type,
         content,
       };
     }
-
-    return result;
   }
 
   /**
