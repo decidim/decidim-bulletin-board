@@ -6,7 +6,8 @@ on:
       - "voting_schemes/election_guard/js-adapter/**"
   push:
     branches:
-      - master
+      - develop
+      - main
 
 env:
   CI: "true"

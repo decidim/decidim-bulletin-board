@@ -6,7 +6,8 @@ on:
       - "voting_schemes/dummy/js-adapter/**"
   push:
     branches:
-      - master
+      - develop
+      - main
 
 env:
   CI: "true"
