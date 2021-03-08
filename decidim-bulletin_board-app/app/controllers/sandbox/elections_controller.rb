@@ -11,7 +11,7 @@ module Sandbox
     helper_method :default_bulk_votes_number
 
     BULK_VOTES_FILE_NAME = "bulk_votes.csv"
-    BULK_VOTES_FILE_PATH = Rails.root.join(BULK_VOTES_FILE_NAME)
+    BULK_VOTES_FILE_PATH = Rails.root.join("tmp", BULK_VOTES_FILE_NAME)
     DEFAULT_BULK_VOTES_NUMBER = 1000
 
     def index; end
