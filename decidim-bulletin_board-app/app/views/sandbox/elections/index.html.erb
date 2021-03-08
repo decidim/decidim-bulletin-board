@@ -41,6 +41,7 @@
                 <input class="generate-votes-input" type="number" placeholder="How many votes?" value="<%= default_bulk_votes_number %>"/>
                 <button class="generate-votes-button">Generate votes</button>
               </div>
+              <%= link_to "Download votes", download_bulk_votes_sandbox_election_path(election), class: "download-votes-button", download: 'bulk_votes.csv' %>
             <% elsif election.vote_ended? %>
               <%= link_to "Start tally", start_tally_sandbox_election_path(election) %>
             <% elsif election.tally? %>

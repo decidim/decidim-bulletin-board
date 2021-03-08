@@ -4,6 +4,7 @@ $(async () => {
   // UI Elements
   const $showInputButton = $(".show-input-button");
   const $generateVotesButton = $(".generate-votes-button");
+  const $downloadVotesButton = $(".download-votes-button");
 
   $showInputButton.on("click", (event) => {
     $(event.target).hide();
@@ -31,7 +32,10 @@ $(async () => {
         "X-CSRF-Token": $("meta[name=csrf-token]").attr("content"),
       },
     })
-      .done(() => $(event.target).html(`${votesToGenerate} votes generated!`))
+      .done(() => {
+        $(event.target).closest(".generate-votes-input-section").hide();
+        $downloadVotesButton.css("display", "inline");
+      })
       .fail(() => $(event.target).html(`Failed, retry!`));
   });
 });
