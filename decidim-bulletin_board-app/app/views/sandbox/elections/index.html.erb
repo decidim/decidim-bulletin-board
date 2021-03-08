@@ -36,7 +36,7 @@
             <% elsif election.vote? %>
               <%= link_to "Vote", vote_sandbox_election_path(election) %> |
               <%= link_to "End vote", end_vote_sandbox_election_path(election) %>  |
-              <%= link_to "Load test stats", load_test_stats_sandbox_election_path(election), download: "load_test_stats.json" %>  |
+              <%= link_to "Load test stats", load_test_stats_sandbox_election_path(election), download: Sandbox::GenerateLoadTestStats::STATS_OUTPUT_FILE_NAME %>  |
               <button class="show-input-button"> Generate bulk votes </button>
               <div class="generate-votes-input-section">
                 <input class="generate-votes-input" type="number" placeholder="How many votes?" value="<%= default_bulk_votes_number %>"/>
