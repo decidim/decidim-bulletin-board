@@ -1,0 +1,12 @@
+{
+	"python.venvPath": "./venv",
+	"typeCheckingMode": "basic",
+	"executionEnvironments": [
+		{
+			"root": "src"
+	  	}
+	],
+	"reportMissingImports": false,
+	"reportMissingTypeStubs": false,
+}
+

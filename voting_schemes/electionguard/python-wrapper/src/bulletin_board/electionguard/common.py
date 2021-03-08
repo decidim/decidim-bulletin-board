@@ -1,16 +1,29 @@
-from dataclasses import dataclass
+from __future__ import annotations
+
 import json
-from electionguard.election import CiphertextElectionContext
-from electionguard.manifest import Manifest, InternalManifest, ElectionType
-from electionguard.election_builder import ElectionBuilder
-from typing import Generic, List, Optional, Tuple, TypeVar, TypedDict
 import logging as log
-from .utils import complete_election_description, InvalidElectionDescription
+from pathlib import Path
+from typing import Generic, List, Optional, Tuple, Type, TypedDict, TypeVar
+
+from electionguard.election import CiphertextElectionContext
+from electionguard.election_builder import ElectionBuilder
+from electionguard.manifest import InternalManifest, Manifest
+
+from .utils import InvalidElectionDescription, complete_election_description
 
 try:
-    import cPickle as pickle
+    import cPickle as pickle  # type: ignore
 except:  # noqa: E722
     import pickle
+
+
+X = TypeVar("X")
+
+
+def unwrap(x: Optional[X], message="You messed up") -> X:
+    if x is None:
+        raise Exception(message)
+    return x
 
 
 class Context:
@@ -39,9 +52,12 @@ class Context:
 C = TypeVar("C", bound=Context)
 
 
-@dataclass
-class Content(TypedDict):
-    content: object
+class Message(TypedDict):
+    message_type: str
+
+
+class Content(Message):
+    content: str
 
 
 class ElectionStep(Generic[C]):
@@ -57,13 +73,13 @@ class ElectionStep(Generic[C]):
         return self.message_type != message_type
 
     def process_message(
-        self, message_type: str, message: Content, context: C
-    ) -> Tuple[List[Content], Optional[ElectionType]]:
+        self, message_type: str, message: Optional[Message] | dict, context: C
+    ) -> Tuple[List[Message], Optional[ElectionStep]]:
         raise NotImplementedError()
 
 
 class Recorder:
-    def __init__(self, output_path: str):
+    def __init__(self, output_path: str | Path):
         self.output_path = output_path
 
     def __enter__(self):
@@ -77,8 +93,8 @@ class Recorder:
         self,
         wrapper_name: str,
         message_type: str,
-        message: Optional[Content],
-        responses: List[Content],
+        message: Optional[Message | dict],
+        responses: List[Message],
     ):
         json.dump(
             {
@@ -92,7 +108,12 @@ class Recorder:
         self.file.write("\n")
 
 
+T = TypeVar("T", bound="Wrapper")
+
+
 class Wrapper(Generic[C]):
+    starting_step: Optional[ElectionStep[C]] = None
+
     def __init__(
         self, context: C, step: ElectionStep[C], recorder: Optional[Recorder] = None
     ) -> None:
@@ -103,7 +124,9 @@ class Wrapper(Generic[C]):
     def skip_message(self, message_type: str) -> bool:
         return self.step.skip_message(message_type)
 
-    def process_message(self, message_type: str, message: Content) -> Content:
+    def process_message(
+        self, message_type: str, message: Optional[Message] | dict
+    ) -> List[Message]:
         if self.step.skip_message(message_type):
             log.warning(f"{self.__class__.__name__} skipping message `{message_type}`")
             return []
@@ -126,7 +149,7 @@ class Wrapper(Generic[C]):
         return responses
 
     def is_fresh(self) -> bool:
-        return isinstance(self.step, self.starting_step)
+        return type(self.step) is self.__class__.starting_step
 
     def is_key_ceremony_done(self) -> bool:
         raise NotImplementedError
@@ -134,8 +157,9 @@ class Wrapper(Generic[C]):
     def is_tally_done(self) -> bool:
         raise NotImplementedError
 
-    def backup(self) -> str:
+    def backup(self) -> bytes:
         return pickle.dumps(self)
 
-    def restore(backup: str):  # returns an instance of myself
+    @classmethod
+    def restore(cls: Type[T], backup: bytes) -> T:
         return pickle.loads(backup)

@@ -1,7 +1,8 @@
-from typing import TypeVar, Type
-from electionguard.serializable import write_json_object, write_json, read_json
-from .serializable import monkey_patch_serialization
+from typing import Type, TypeVar
 
+from electionguard.serializable import read_json, write_json, write_json_object
+
+from .serializable import monkey_patch_serialization
 
 monkey_patch_serialization()
 
@@ -10,7 +11,7 @@ def serialize(obj, include_private: bool = False) -> str:
     return write_json(obj, not include_private)
 
 
-def serialize_as_dict(obj, include_private: bool = False) -> dict:
+def serialize_as_dict(obj, include_private: bool = False) -> object:
     return write_json_object(obj, not include_private)
 
 

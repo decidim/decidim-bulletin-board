@@ -1,7 +1,12 @@
 import unittest
+
 from bulletin_board.electionguard.bulletin_board import BulletinBoard
-from bulletin_board.electionguard.messages import TrusteePartialKeys, TrusteeVerification
+from bulletin_board.electionguard.messages import (
+    TrusteePartialKeys,
+    TrusteeVerification,
+)
 from bulletin_board.electionguard.utils import serialize
+
 from .utils import create_election_test_message, trustees_public_keys
 
 
@@ -29,6 +34,7 @@ class TestBulletinBoard(unittest.TestCase):
                 },
             )
 
+        msg = []
         for trustee in election_message["trustees"]:
             msg = self.bulletin_board.process_message(
                 "key_ceremony.trustee_verification",

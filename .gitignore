@@ -44,3 +44,5 @@
 
 # Ignore sed backup files
 *.bak
+=======
+.env

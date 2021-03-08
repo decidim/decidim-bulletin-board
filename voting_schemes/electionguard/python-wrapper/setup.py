@@ -12,5 +12,13 @@ setup(
     package_dir={"": "src", "tests": "tests"},
     packages=find_packages("src", "tests"),
     install_requires=["electionguard==1.1.16", "jsons==1.2"],
-    dependency_links=[os.path.join(os.getcwd(), "..", "electionguard-python", "dist", "electionguard-1.1.16-py3-none-any.whl")]
+    dependency_links=[
+        os.path.join(
+            os.getcwd(),
+            "..",
+            "electionguard-python",
+            "dist",
+            "electionguard-1.1.16-py3-none-any.whl",
+        )
+    ],
 )

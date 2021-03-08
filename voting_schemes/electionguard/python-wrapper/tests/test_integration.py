@@ -1,23 +1,31 @@
-from typing import List
-import unittest
-from random import choice, sample
 import json
+import unittest
 from pathlib import Path
-from electionguard.ballot import CiphertextBallot
+from random import choice, sample
+from typing import List
+
 from bulletin_board.electionguard.bulletin_board import BulletinBoard
 from bulletin_board.electionguard.common import Recorder
+from bulletin_board.electionguard.tally_decryptor import TallyResults
 from bulletin_board.electionguard.trustee import Trustee
-from bulletin_board.electionguard.voter import Voter
 from bulletin_board.electionguard.utils import InvalidBallot
+from bulletin_board.electionguard.voter import Voter
+
 from .utils import (
     create_election_test_message,
-    start_vote_message,
     end_vote_message,
     start_tally_message,
+    start_vote_message,
 )
 
-
 NUMBER_OF_VOTERS = 10
+
+
+def display_results(results: TallyResults):
+    for question_id, question in results.items():
+        print(f"Question {question_id}:")
+        for selection_id, tally in question.items():
+            print(f"Option {selection_id}: " + str(tally))
 
 
 class TestIntegration(unittest.TestCase):
@@ -31,6 +39,16 @@ class TestIntegration(unittest.TestCase):
             self.cast_votes()
             self.decrypt_tally()
             self.publish_and_verify()
+
+    def test_without_all_trustees(self):
+        self.reset_state = False
+        self.show_output = True
+        self.configure_election()
+        self.key_ceremony()
+        self.encrypt_ballots()
+        self.cast_votes()
+        self.decrypt_tally_without_all_trustees()
+        self.publish_and_verify()
 
     def test_without_state(self):
         self.reset_state = True
@@ -46,16 +64,15 @@ class TestIntegration(unittest.TestCase):
         if self.show_output:
             if output:
                 print("\n____ " + step + " ____")
-                print(repr(output))
+                # print(repr(output))
                 print("‾‾‾‾ " + step + " ‾‾‾‾")
             else:
                 print("\n---- " + step + " ----")
 
         if self.reset_state:
-            self.bulletin_board = self.bulletin_board.backup()
-            self.trustees = [trustee.backup() for trustee in self.trustees]
-            self.bulletin_board = BulletinBoard.restore(self.bulletin_board)
-            self.trustees = [Trustee.restore(trustee) for trustee in self.trustees]
+            trustee_backups = [trustee.backup() for trustee in self.trustees]
+            self.bulletin_board = BulletinBoard.restore(self.bulletin_board.backup())
+            self.trustees = [Trustee.restore(trustee) for trustee in trustee_backups]
 
     def configure_election(self, recorder=None):
         self.election_message = create_election_test_message()
@@ -167,7 +184,8 @@ class TestIntegration(unittest.TestCase):
             for contest in self.election_message["description"]["contests"]
         ]
 
-        self.encrypted_ballots: List[CiphertextBallot] = []
+        self.encrypted_ballots: List[str] = []
+        ballot = dict()
         for voter in self.voters:
             voter.process_message("create_election", self.election_message)
             voter.process_message(
@@ -189,7 +207,7 @@ class TestIntegration(unittest.TestCase):
         self.bulletin_board.process_message("start_vote", start_vote_message())
         self.checkpoint("START VOTE")
 
-        self.accepted_ballots: List[CiphertextBallot] = []
+        self.accepted_ballots: List[str] = []
 
         for encrypted_ballot in self.encrypted_ballots:
             voter_id = json.loads(encrypted_ballot)["object_id"]
@@ -209,7 +227,42 @@ class TestIntegration(unittest.TestCase):
         self.bulletin_board.process_message("start_tally", start_tally_message())
         self.checkpoint("START TALLY")
 
-        for ballot in self.accepted_ballots:
+        self.bulletin_board.add_ballots(self.accepted_ballots)
+
+        tally_cast = self.bulletin_board.get_tally_cast()
+
+        self.checkpoint("TALLY CAST", tally_cast)
+
+        trustees_shares = [
+            trustee.process_message(tally_cast["message_type"], tally_cast)[0]
+            for trustee in self.trustees
+        ]
+
+        self.checkpoint("TRUSTEE SHARES", trustees_shares)
+
+        end_tally = dict()
+        for share in trustees_shares:
+            res = self.bulletin_board.process_message(share["message_type"], share)
+            if len(res) > 0:
+                end_tally: dict = res[0]  # type: ignore
+
+        self.checkpoint("END TALLY", end_tally)
+
+        for trustee in self.trustees:
+            assert trustee.is_key_ceremony_done()
+            assert not trustee.is_tally_done()
+            trustee.process_message(end_tally["message_type"], end_tally)
+            assert trustee.is_key_ceremony_done()
+            assert trustee.is_tally_done()
+
+        if self.show_output:
+            display_results(end_tally["results"])
+
+    def decrypt_tally_without_all_trustees(self):
+        self.bulletin_board.process_message("start_tally", start_tally_message())
+        self.checkpoint("START TALLY")
+
+        for ballot in self.accepted_ballots[0:2]:
             self.bulletin_board.add_ballot(ballot)
 
         tally_cast = self.bulletin_board.get_tally_cast()
@@ -223,10 +276,28 @@ class TestIntegration(unittest.TestCase):
 
         self.checkpoint("TRUSTEE SHARES", trustees_shares)
 
-        for share in trustees_shares:
-            res = self.bulletin_board.process_message(share["message_type"], share)
+        for share in trustees_shares[:2]:  # skip last trustee
+            self.bulletin_board.process_message(share["message_type"], share)
+            for trustee in self.trustees[:2]:
+                trustee.process_message(share["message_type"], share)
+
+        # Notify trustees that they need to compensate
+        compensations = []
+        for trustee in self.trustees[:2]:
+            for compensation in trustee.process_message("tally.compensate", None):
+                compensations.append(compensation)
+
+        self.checkpoint("TRUSTEES COMPENSATED", compensations)
+
+        end_tally = dict()
+        for compensation in compensations:
+            res = self.bulletin_board.process_message(
+                "tally.compensation", compensation
+            )
             if len(res) > 0:
-                end_tally = res[0]
+                end_tally: dict = res[0]  # type: ignore
+
+        assert end_tally is not dict(), "Never got the end tally"
 
         self.checkpoint("END TALLY", end_tally)
 
@@ -238,10 +309,7 @@ class TestIntegration(unittest.TestCase):
             assert trustee.is_tally_done()
 
         if self.show_output:
-            for question_id, question in end_tally["results"].items():
-                print(f"Question {question_id}:")
-                for selection_id, tally in question.items():
-                    print(f"Option {selection_id}: " + str(tally))
+            display_results(end_tally["results"])
 
     def publish_and_verify(self):
         # see publish.py
