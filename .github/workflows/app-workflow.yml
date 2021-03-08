@@ -6,7 +6,8 @@ on:
       - "decidim-bulletin_board-app/**"
   push:
     branches:
-      - master
+      - develop
+      - main
 
 env:
   CI: "true"

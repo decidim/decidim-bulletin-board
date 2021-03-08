@@ -6,7 +6,8 @@ on:
       - "voting_schemes/election_guard/python-wrapper/**"
   push:
     branches:
-      - master
+      - develop
+      - main
 
 env:
   CI: "true"
