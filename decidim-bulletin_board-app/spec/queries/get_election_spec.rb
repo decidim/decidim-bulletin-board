@@ -99,7 +99,7 @@ RSpec.describe "GetElection" do
               }
             end,
             verifiableResultsHash: "DEUES1tHaoxDH4FKS1NLB3SCTSbycqfAARsLrqL1wmE=",
-            verifiableResultsUrl: match(%r{/rails/active_storage/blobs/.*/verifiable-results.tar/})
+            verifiableResultsUrl: match(%r{/rails/active_storage/blobs/.*/verifiable-results\.tar})
           }
         }
       )
