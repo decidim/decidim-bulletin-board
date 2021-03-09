@@ -4,10 +4,17 @@ module Sandbox
   class GenerateVotesJob < ApplicationJob
     def perform(number_of_votes, election_id, file_path, client_settings = {})
       @election_id = election_id
-      client = Decidim::BulletinBoard::FileClient.new(file_path, OpenStruct.new(client_settings))
+      voter_adapter = VotingScheme.from_election(election)[:voter].new(election)
 
+      %w(create_election end_key_ceremony).each do |message_type|
+        log_entry = log_entry_for(message_type)
+        voter_adapter.process_message(log_entry.message_identifier, log_entry.decoded_data)
+      end
+
+      client = Decidim::BulletinBoard::FileClient.new(file_path, OpenStruct.new(client_settings))
       number_of_votes.times do
-        client.cast_vote(election_id, SecureRandom.hex, random_encrypted_vote)
+        encrypted_ballot = voter_adapter.encrypt(random_plaintext_ballot)
+        client.cast_vote(election_id, SecureRandom.hex, encrypted_ballot)
       end
     end
 
@@ -15,36 +22,22 @@ module Sandbox
 
     private
 
-    def random_encrypted_vote
-      {
-        ballot_style: "ballot-style",
-        contests: election.manifest[:description][:contests].map do |contest|
-          current_selections = 0
-          {
-            object_id: contest[:object_id],
-            ballot_selections: contest[:ballot_selections].map do |ballot_selection|
-              answer = random_answer(current_selections > contest[:number_elected])
-              current_selections += answer
-              {
-                object_id: ballot_selection[:object_id],
-                ciphertext: answer + (rand * 500).floor * joint_election_key
-              }
-            end
-          }
-        end
-      }.to_json
-    end
-
-    def random_answer(max_reached)
-      max_reached ? 0 : rand(0..1)
-    end
-
-    def joint_election_key
-      @joint_election_key ||= JSON.parse(election.log_entries.where(message_type: "end_key_ceremony").last.decoded_data["content"])["joint_election_key"]
+    def random_plaintext_ballot
+      election.manifest[:description][:contests].map do |contest|
+        [
+          contest[:object_id],
+          contest[:ballot_selections].sample(Random.rand(contest[:number_elected] + 1))
+                                     .map { |ballot_selection| ballot_selection[:object_id] }
+        ]
+      end.to_h
     end
 
     def election
       @election ||= Election.find_by(id: election_id)
+    end
+
+    def log_entry_for(message_type)
+      election.log_entries.where(message_type: message_type).last
     end
   end
 end

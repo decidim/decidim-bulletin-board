@@ -20,6 +20,10 @@ module VotingScheme
     }
   end
 
+  def self.from_election(election)
+    from_name(election.voting_scheme_name)
+  end
+
   def self.bulletin_board_adapter(scheme_name)
     "#{VOTING_SCHEME[scheme_name.to_sym]}::BulletinBoard".constantize if VOTING_SCHEME[scheme_name.to_sym].present?
   end
