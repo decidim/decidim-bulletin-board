@@ -8,7 +8,7 @@ module Sandbox
     helper_method :bulletin_board_server, :authority_slug, :authority_public_key
     helper_method :base_vote, :random_voter_id
     helper_method :election_results
-    helper_method :default_bulk_votes_number
+    helper_method :default_bulk_votes_number, :bulk_votes_file_name, :bulk_votes_file_exists?, :generated_votes_number
 
     BULK_VOTES_FILE_NAME = "bulk_votes.csv"
     BULK_VOTES_FILE_PATH = Rails.root.join("tmp", BULK_VOTES_FILE_NAME)
@@ -42,12 +42,12 @@ module Sandbox
     def generate_bulk_votes
       delete_bulk_votes_file
 
-      number_of_votes_to_generate.times do
-        file_client.cast_vote(election_id, SecureRandom.hex, random_encrypted_vote)
-      end
+      GenerateVotesJob.perform_later(number_of_votes_to_generate, election.id, BULK_VOTES_FILE_PATH.to_s, bulletin_board_settings_hash)
     end
 
     def download_bulk_votes
+      return head(:not_foud) unless bulk_votes_file_exists?
+
       send_file(
         BULK_VOTES_FILE_PATH,
         filename: BULK_VOTES_FILE_NAME,
@@ -168,7 +168,11 @@ module Sandbox
     end
 
     def bulletin_board_settings
-      @bulletin_board_settings ||= OpenStruct.new(
+      @bulletin_board_settings ||= OpenStruct.new(bulletin_board_settings_hash)
+    end
+
+    def bulletin_board_settings_hash
+      @bulletin_board_settings_hash ||= {
         bulletin_board_server: api_endpoint_url,
         bulletin_board_public_key: BulletinBoard.public_key,
         authority_api_key: authority.api_key,
@@ -177,7 +181,7 @@ module Sandbox
         scheme_name: params.dig(:election, :voting_scheme_name) || "dummy",
         quorum: 2,
         number_of_trustees: 3
-      )
+      }
     end
 
     def base_vote
@@ -195,7 +199,7 @@ module Sandbox
     end
 
     def delete_bulk_votes_file
-      File.delete(BULK_VOTES_FILE_PATH) if File.exist?(BULK_VOTES_FILE_PATH)
+      File.delete(BULK_VOTES_FILE_PATH) if bulk_votes_file_exists?
     end
 
     def number_of_votes_to_generate
@@ -206,32 +210,16 @@ module Sandbox
       DEFAULT_BULK_VOTES_NUMBER
     end
 
-    def random_encrypted_vote
-      {
-        ballot_style: "ballot-style",
-        contests: election.manifest[:description][:contests].map do |contest|
-          current_selections = 0
-          {
-            object_id: contest[:object_id],
-            ballot_selections: contest[:ballot_selections].map do |ballot_selection|
-              answer = random_answer(current_selections > contest[:number_elected])
-              current_selections += answer
-              {
-                object_id: ballot_selection[:object_id],
-                ciphertext: answer + (rand * 500).floor * joint_election_key
-              }
-            end
-          }
-        end
-      }.to_json
+    def bulk_votes_file_name
+      BULK_VOTES_FILE_NAME
     end
 
-    def random_answer(max_reached)
-      max_reached ? 0 : rand(0..1)
+    def bulk_votes_file_exists?
+      File.exist?(BULK_VOTES_FILE_PATH)
     end
 
-    def joint_election_key
-      @joint_election_key ||= JSON.parse(election.log_entries.where(message_type: "end_key_ceremony").last.decoded_data["content"])["joint_election_key"]
+    def generated_votes_number
+      `wc -l "#{BULK_VOTES_FILE_PATH}"`.strip.split(" ")[0].to_i
     end
   end
 end
