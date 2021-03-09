@@ -104,7 +104,7 @@ module LogEntryCommand
     end
 
     def voting_scheme
-      @voting_scheme ||= voting_scheme_class.new(election)
+      @voting_scheme ||= voting_scheme_class[:bulletin_board].new(election)
     end
 
     def voting_scheme_class

@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require "voting_scheme/base"
-require "voting_scheme/dummy"
-require "voting_scheme/electionguard"
+require "voting_scheme/bulletin_board"
+require "voting_scheme/dummy/bulletin_board"
+require "voting_scheme/electionguard/bulletin_board"
 
 module VotingScheme
   VOTING_SCHEME = {
@@ -11,7 +11,9 @@ module VotingScheme
   }.freeze
 
   def self.from_name(name)
-    VOTING_SCHEME[name.to_sym]
+    {
+      bulletin_board: "#{VOTING_SCHEME[name.to_sym]}::BulletinBoard".constantize
+    }
   end
 
   def self.results_message?(voting_scheme_name, type_subtype)

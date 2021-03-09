@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module VotingScheme
-  class Base
+  class BulletinBoard
     def initialize(election, votes = nil)
       @election = election
       @votes = votes

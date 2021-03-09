@@ -8,12 +8,12 @@ RSpec.describe VotingScheme do
 
     let(:voting_scheme) { "dummy" }
 
-    it { expect(subject).to eq(VotingScheme::Dummy) }
+    it { expect(subject).to eq({ bulletin_board: VotingScheme::Dummy::BulletinBoard }) }
 
     context "when asking for electionguard" do
       let(:voting_scheme) { "electionguard" }
 
-      it { expect(subject).to eq(VotingScheme::Electionguard) }
+      it { expect(subject).to eq({ bulletin_board: VotingScheme::Electionguard::BulletinBoard }) }
     end
 
     context "when asking for another voting scheme" do
