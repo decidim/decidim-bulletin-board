@@ -17,6 +17,10 @@ module VotingScheme
     def backup
       Marshal.dump(state)
     end
+
+    def self.results_message?(voting_scheme_name, type_subtype)
+      VotingScheme.from_name(voting_scheme_name)[:bulletin_board]::RESULTS.include?(type_subtype)
+    end
   end
 
   class RejectedMessage < StandardError
