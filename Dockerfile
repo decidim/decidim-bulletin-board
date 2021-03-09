@@ -42,7 +42,7 @@ ADD decidim-bulletin_board-app/Gemfile.lock /code/tmp/Gemfile.lock
 RUN cd /code/tmp && bundle install
 
 # Add local python dependencies
-ADD voting_schemes//python-wrapper /code/voting_schemes/electionguard/python-wrapper
+ADD voting_schemes/electionguard/python-wrapper /code/voting_schemes/electionguard/python-wrapper
 
 # Install python dependencies
 RUN git clone https://github.com/pyenv/pyenv.git ~/.pyenv
