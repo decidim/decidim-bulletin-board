@@ -16,6 +16,8 @@ module Sandbox
       end
 
       number_of_votes.times do
+        # We encrypt all the votes with the same voter adapter
+        # since having votes from different voters is not crucial for the load tests
         encrypted_ballot = voter_adapter.encrypt(random_plaintext_ballot)
         client.cast_vote(election_id, voter_id, encrypted_ballot)
       end
