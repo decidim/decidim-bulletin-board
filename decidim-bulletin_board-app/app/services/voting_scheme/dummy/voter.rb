@@ -9,20 +9,6 @@ module VotingScheme
     class Voter < VotingScheme::Voter
       include Dummy
 
-      def process_message(message_identifier, message)
-        method_name = :"process_#{message_identifier.type}_message"
-        content = parse_content(message)
-        return [] unless respond_to?(method_name, true)
-
-        @response = nil
-        method(method_name).call(message_identifier, message, content)
-        if @response
-          [@response]
-        else
-          []
-        end
-      end
-
       def encrypt(vote)
         {
           ballot_style: "ballot-style",
