@@ -4,7 +4,7 @@ module VotingScheme
   module Dummy
     # A dummy implementation of a voter adapter, only for tests purposes.
     # It uses a very basic math to perform simple but unsecure encryption operations,
-    # similar to a real voting scheme implementation. 
+    # similar to a real voting scheme implementation.
 
     class Voter < VotingScheme::Voter
       include Dummy
