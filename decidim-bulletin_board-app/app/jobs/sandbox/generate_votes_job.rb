@@ -14,12 +14,11 @@ module Sandbox
         log_entry = log_entry_for(message_type)
         voter_adapter.process_message(log_entry.message_identifier, log_entry.decoded_data)
       end
-
       number_of_votes.times do
         # We encrypt all the votes with the same voter adapter
         # since having votes from different voters is not crucial for the load tests
         encrypted_ballot = voter_adapter.encrypt(random_plaintext_ballot)
-        client.cast_vote(election_id, voter_id, encrypted_ballot)
+        client.cast_vote(election.unique_id.split(".").last, SecureRandom.hex, encrypted_ballot)
       end
     end
 
@@ -38,11 +37,7 @@ module Sandbox
     end
 
     def voter_adapter
-      @voter_adapter ||= VotingScheme.from_election(election)[:voter].new(election, voter_id)
-    end
-
-    def voter_id
-      @voter_id ||= SecureRandom.hex
+      @voter_adapter ||= VotingScheme.from_election(election)[:voter].new(election, SecureRandom.hex)
     end
 
     def election
