@@ -14,7 +14,7 @@ build:
     -I../../../libgmp/gmp-6.2.1
 test:
   imports:
-  - gmpy2
+    - gmpy2
 requirements:
   run:
     - libgmp

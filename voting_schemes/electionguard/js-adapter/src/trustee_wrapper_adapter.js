@@ -59,9 +59,9 @@ export class TrusteeWrapperAdapter extends WrapperAdapter {
       }
     );
 
-    if (result && result[0]) {
+    if (result && result.length > 0) {
       // eslint-disable-next-line camelcase
-      const { message_type, content } = result[0];
+      const [{ message_type, content }] = result;
       return {
         messageType: message_type,
         content,
