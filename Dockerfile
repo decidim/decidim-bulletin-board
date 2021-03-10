@@ -59,5 +59,7 @@ WORKDIR /code/decidim-bulletin_board-app
 RUN npm install --global yarn
 RUN bundle exec rake assets:precompile
 
+ADD voting_schemes/electionguard/js-adapter/vendor/electionguard /code/decidim-bulletin_board-app/public/assets/electionguard
+
 # Run rails server
 CMD ["bin/rails", "server"]
