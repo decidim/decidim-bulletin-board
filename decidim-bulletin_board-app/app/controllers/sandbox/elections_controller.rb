@@ -55,6 +55,14 @@ module Sandbox
       )
     end
 
+    def load_test_stats
+      Sandbox::GenerateLoadTestStats.new(election.id).call
+      send_file(
+        Sandbox::GenerateLoadTestStats::STATS_OUTPUT_FILE_PATH,
+        type: "application/json"
+      )
+    end
+
     def end_vote
       bulletin_board_client.end_vote(election_id)
       go_back
