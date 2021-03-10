@@ -14,6 +14,7 @@ $(async () => {
   const $doneMessage = $voter.find(".done-message");
   const $auditMessage = $voter.find(".audit-done-message");
   const $ballotHash = $voter.find(".ballot-hash");
+  const $benchmark = $voter.find(".benchmark");
 
   $vote.on("change", (event) => {
     $vote.css("border", "");
@@ -30,6 +31,7 @@ $(async () => {
 
   // Use the correct voter wrapper adapter
   let voterWrapperAdapter;
+  let encryptStart;
 
   if (votingSchemeName === "dummy") {
     voterWrapperAdapter = new DummyVoterWrapperAdapter({
@@ -70,12 +72,16 @@ $(async () => {
         if (!vote) {
           invalidVoteFn();
         }
+        encryptStart = new Date();
         validVoteFn(vote);
       } catch (_error) {
         invalidVoteFn();
       }
     },
     castOrAuditBallot({ encryptedDataHash }) {
+      $benchmark.text(
+        `The encryption took ${(new Date() - encryptStart) / 1000} seconds.`
+      );
       $ballotHash.text(`Your ballot identifier is: ${encryptedDataHash}`);
       $encryptVote.prop("disabled", true);
       $castVote.show();
