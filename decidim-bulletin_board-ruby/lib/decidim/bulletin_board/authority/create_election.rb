@@ -101,7 +101,7 @@ module Decidim
               sequence_order: index,
               vote_variation: question[:max_selections] == 1 ? "one_of_m" : "n_of_m",
               name: default_text(question[:title]),
-              number_elected: question[:answers].count,
+              number_elected: question[:max_selections],
               ballot_title: text(question[:title]),
               ballot_subtitle: text(question[:description]),
               ballot_selections: contest_answers(question)
