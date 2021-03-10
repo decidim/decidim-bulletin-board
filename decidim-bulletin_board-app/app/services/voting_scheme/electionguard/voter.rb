@@ -25,7 +25,7 @@ module VotingScheme
       private
 
       def state
-        @state ||= EGV.Voter.new(SecureRandom.hex)
+        @state ||= EGV.Voter.new(voter_id)
       end
     end
   end

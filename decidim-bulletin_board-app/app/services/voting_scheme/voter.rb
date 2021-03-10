@@ -2,11 +2,12 @@
 
 module VotingScheme
   class Voter
-    def initialize(election)
+    def initialize(election, voter_id)
       @election = election
+      @voter_id = voter_id
     end
 
-    attr_reader :election
+    attr_reader :election, :voter_id
 
     def process_message(_message_type, _message)
       raise StandardError, "Not implemented"

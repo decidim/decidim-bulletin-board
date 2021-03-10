@@ -4,21 +4,24 @@ module Sandbox
   class GenerateVotesJob < ApplicationJob
     def perform(number_of_votes, election_id, file_path, client_settings = {})
       @election_id = election_id
-      voter_adapter = VotingScheme.from_election(election)[:voter].new(election)
+      @file_path = file_path
+      @client_settings = client_settings
 
+      # Send to the adapter:
+      # - the 'create_election' to provide the details of the election
+      # - the 'end_key_ceremony' to provide the joint key
       %w(create_election end_key_ceremony).each do |message_type|
         log_entry = log_entry_for(message_type)
         voter_adapter.process_message(log_entry.message_identifier, log_entry.decoded_data)
       end
 
-      client = Decidim::BulletinBoard::FileClient.new(file_path, OpenStruct.new(client_settings))
       number_of_votes.times do
         encrypted_ballot = voter_adapter.encrypt(random_plaintext_ballot)
-        client.cast_vote(election_id, SecureRandom.hex, encrypted_ballot)
+        client.cast_vote(election_id, voter_id, encrypted_ballot)
       end
     end
 
-    attr_reader :election_id
+    attr_reader :election_id, :file_path, :client_settings
 
     private
 
@@ -32,8 +35,20 @@ module Sandbox
       end.to_h
     end
 
+    def voter_adapter
+      @voter_adapter ||= VotingScheme.from_election(election)[:voter].new(election, voter_id)
+    end
+
+    def voter_id
+      @voter_id ||= SecureRandom.hex
+    end
+
     def election
       @election ||= Election.find_by(id: election_id)
+    end
+
+    def client
+      @client ||= Decidim::BulletinBoard::FileClient.new(file_path, OpenStruct.new(client_settings))
     end
 
     def log_entry_for(message_type)
