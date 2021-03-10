@@ -38,5 +38,5 @@
 
 /voting_schemes/dummy/js-adapter/dist
 /voting_schemes/dummy/js-adapter/node_modules
-/voting_schemes/election_guard/js-adapter/dist
-/voting_schemes/election_guard/js-adapter/node_modules
+/voting_schemes/electionguard/js-adapter/dist
+/voting_schemes/electionguard/js-adapter/node_modules

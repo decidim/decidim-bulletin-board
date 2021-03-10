@@ -1,7 +1,7 @@
 import $ from "jquery";
 import { VoteComponent } from "../decidim-bulletin_board";
 import { VoterWrapperAdapter as DummyVoterWrapperAdapter } from "bulletin_board-dummy-adapter";
-import { VoterWrapperAdapter as ElectionGuardVoterWrapperAdapter } from "bulletin_board-election_guard-adapter";
+import { VoterWrapperAdapter as ElectionGuardVoterWrapperAdapter } from "bulletin_board-electionguard-adapter";
 
 $(async () => {
   // UI Elements
@@ -38,10 +38,10 @@ $(async () => {
       voterId: voterUniqueId,
       waitTime: 100,
     });
-  } else if (votingSchemeName === "election_guard") {
+  } else if (votingSchemeName === "electionguard") {
     voterWrapperAdapter = new ElectionGuardVoterWrapperAdapter({
       voterId: voterUniqueId,
-      workerUrl: "/assets/election_guard/webworker.js",
+      workerUrl: "/assets/electionguard/webworker.js",
     });
   } else {
     throw new Error(`Voting scheme ${votingSchemeName} not supported.`);

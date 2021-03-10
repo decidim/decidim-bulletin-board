@@ -1,0 +1,19 @@
+#!/bin/sh
+
+PY2JS=/electionguard/python-to-js
+PYODIDE=/src/pyodide
+
+# Add extra packages to be compiled
+cp -rf $PY2JS/packages $PYODIDE
+
+# Compile choosen packages with Pyodide
+cd $PYODIDE
+PYODIDE_PACKAGES="pyasn1,libgmp,gmpy2,micropip,numpy,attrs,sortedcontainers,hypothesis,jsons,typish,rsa,electionguard,bulletin_board-electionguard" make
+
+# Add overriden files
+cp -rf $PY2JS/override/* $PYODIDE/build/
+
+# Move generated files back to the host
+rm -rf $PY2JS/output
+mkdir -p $PY2JS/output
+cp $PYODIDE/build/* $PY2JS/output

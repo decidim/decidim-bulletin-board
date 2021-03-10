@@ -1,0 +1,13 @@
+diff --git a/setup.py b/setup.py
+index 11ea90f..bd74e9d 100644
+--- a/setup.py
++++ b/setup.py
+@@ -306,6 +306,8 @@ gmpy2_ext = Extension('gmpy2',
+                       extra_objects = extras,
+                       extra_link_args = my_extra_link_args)
+ 
++os.environ['CC'] = 'emcc'
++
+ setup(name = "gmpy2",
+       version = "2.0.8",
+       maintainer = "Case Van Horsen",

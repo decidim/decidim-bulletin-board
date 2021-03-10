@@ -56,11 +56,11 @@ describe("Election", () => {
     });
   });
 
-  it("complete the whole process using the election_guard voting scheme", () => {
+  it("complete the whole process using the electionguard voting scheme", () => {
     testElection({
-      electionTitle: "My election_guard election",
-      electionUniqueId: "election_guard-1",
-      electionVotingSchemeName: "election_guard",
+      electionTitle: "My ElectionGuard election",
+      electionUniqueId: "electionguard-1",
+      electionVotingSchemeName: "electionguard",
       numberOfVotes: 2,
     });
   });
