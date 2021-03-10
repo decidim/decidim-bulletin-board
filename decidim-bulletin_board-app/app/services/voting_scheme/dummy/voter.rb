@@ -7,6 +7,8 @@ module VotingScheme
     # similar to a real voting scheme implementation. 
 
     class Voter < VotingScheme::Voter
+      include Dummy
+
       def process_message(message_identifier, message)
         method_name = :"process_#{message_identifier.type}_message"
         content = parse_content(message)
@@ -40,10 +42,6 @@ module VotingScheme
       end
 
       private
-
-      def parse_content(message)
-        JSON.parse(message.delete(:content) || "null")&.with_indifferent_access
-      end
 
       def process_create_election_message(_message_identifier, message, _content); end
 

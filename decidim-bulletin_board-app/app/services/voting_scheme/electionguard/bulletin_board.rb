@@ -8,6 +8,8 @@ module VotingScheme
   module Electionguard
     # An implementation of the ElectionGuard bulletin board adapter, using PyCall to execute the ElectionGuard python code
     class BulletinBoard < VotingScheme::BulletinBoard
+      include Electionguard
+
       RESULTS = ["tally.trustee_share", "end_tally"].freeze
 
       delegate :backup, to: :state
@@ -35,14 +37,6 @@ module VotingScheme
         end
 
         state.get_tally_cast
-      end
-
-      def to_h(dict)
-        return dict unless dict.is_a?(PyCall::Dict)
-
-        dict.inject({}) do |h, (k, v)|
-          h.update(k => to_h(v))
-        end
       end
     end
   end

@@ -7,14 +7,14 @@ module VotingScheme
     end
 
     attr_reader :election
-  end
 
-  def process_message(_message_type, _message)
-    raise StandardError, "Not implemented"
-  end
+    def process_message(_message_type, _message)
+      raise StandardError, "Not implemented"
+    end
 
-  def encrypt(_plaintext)
-    raise StandardError, "Not implemented"
+    def encrypt(_plaintext)
+      raise StandardError, "Not implemented"
+    end
   end
 
   class RejectedMessage < StandardError

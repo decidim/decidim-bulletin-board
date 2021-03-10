@@ -16,6 +16,8 @@ module VotingScheme
     #   calculating the inverse power with the number of trustees: R = ((S1 * S2 * ... * Sn) / JK) ** (1/n)
 
     class BulletinBoard < VotingScheme::BulletinBoard
+      include Dummy
+
       RESULTS = ["tally.share", "end_tally"].freeze
 
       def process_message(message_identifier, message)
@@ -33,10 +35,6 @@ module VotingScheme
       end
 
       private
-
-      def parse_content(message)
-        JSON.parse(message.delete(:content) || "null")&.with_indifferent_access
-      end
 
       def emit_response(type_subtype, response = {})
         @response = {
