@@ -28,7 +28,6 @@
 /decidim-bulletin_board-app/public/packs
 /decidim-bulletin_board-app/public/packs-test
 /decidim-bulletin_board-app/node_modules
-/decidim-bulletin_board-app/.rubocop-https---raw-githubusercontent-com-decidim-decidim-*
 /decidim-bulletin_board-app/spec/examples.txt
 /decidim-bulletin_board-app/coverage
 /decidim-bulletin_board-app/electionguard.log
@@ -40,3 +39,6 @@
 /voting_schemes/dummy/js-adapter/node_modules
 /voting_schemes/electionguard/js-adapter/dist
 /voting_schemes/electionguard/js-adapter/node_modules
+
+# Ignore rubocop rules from decidim
+.rubocop-https---raw-githubusercontent-com-decidim-decidim-*

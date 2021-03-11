@@ -8,6 +8,12 @@ PATH
       rails (>= 5.0.0)
       wisper (~> 2.0.0)
 
+PATH
+  remote: ../voting_schemes/dummy/ruby-adapter
+  specs:
+    decidim-bulletin_board-dummy (0.1.0)
+      decidim-bulletin_board (= 0.14.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -342,6 +348,7 @@ DEPENDENCIES
   cypress-on-rails (~> 1.0)
   database_cleaner-active_record
   decidim-bulletin_board!
+  decidim-bulletin_board-dummy!
   factory_bot_rails
   faker (~> 2.14)
   graphiql-rails
@@ -384,4 +391,4 @@ RUBY VERSION
    ruby 2.6.6p146
 
 BUNDLED WITH
-   2.2.0
+   2.2.13

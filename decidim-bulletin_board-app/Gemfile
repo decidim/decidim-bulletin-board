@@ -46,6 +46,7 @@ gem "sprockets-es6"
 gem "factory_bot_rails"
 
 gem "decidim-bulletin_board", path: "../decidim-bulletin_board-ruby"
+gem "decidim-bulletin_board-dummy", path: "../voting_schemes/dummy/ruby-adapter"
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console

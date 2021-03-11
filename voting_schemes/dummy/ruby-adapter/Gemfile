@@ -2,7 +2,7 @@
 
 source "https://rubygems.org"
 
-# Specify your gem's dependencies in decidim-bulletin_board.gemspec
+# Specify your gem's dependencies in decidim-bulletin_board-dummy.gemspec
 gemspec
 
 gem "rubocop", "~> 0.92.0"

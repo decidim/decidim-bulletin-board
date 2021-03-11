@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-require_relative "lib/decidim/bulletin_board/version"
+require_relative "lib/decidim/bulletin_board/dummy/version"
 
 Gem::Specification.new do |s|
-  s.name = "decidim-bulletin_board"
-  s.version = Decidim::BulletinBoard::VERSION
+  s.name = "decidim-bulletin_board-dummy"
+  s.version = Decidim::BulletinBoard::Dummy::VERSION
   s.authors = ["David Morcillo", "Svenja Schäfer", "Leonardo Diez", "Agustí B.R."]
   s.email = ["david@codegram.com", "svenja@codegram.com", "leo@codegram.com", "agusti@codegram.com"]
 
@@ -23,15 +23,5 @@ Gem::Specification.new do |s|
   s.executables = s.files.grep(%r{^exe/}) { |f| File.basename(f) }
   s.require_paths = ["lib"]
 
-  s.add_dependency "rails", ">= 5.0.0"
-
-  s.add_dependency "byebug", "~> 11.0"
-  s.add_dependency "graphlient", "~> 0.4.0"
-  s.add_dependency "jwt", "~> 2.2.2"
-  s.add_dependency "wisper", "~> 2.0.0"
-
-  s.add_development_dependency "rake", "~> 13.0"
-  s.add_development_dependency "rspec", "~> 3.7"
-  s.add_development_dependency "webmock", "~> 3.6"
-  s.add_development_dependency "wisper-rspec", "~> 1.1.0"
+  s.add_dependency "decidim-bulletin_board", "= 0.14.0"
 end
