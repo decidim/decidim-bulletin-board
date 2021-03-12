@@ -9,7 +9,6 @@ source:
     - patches/no-multiprocessing.patch
 requirements:
   run:
-    - numpy
     - hypothesis
     - jsons
     - rsa
