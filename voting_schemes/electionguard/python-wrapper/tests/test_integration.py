@@ -184,16 +184,8 @@ class TestIntegration(unittest.TestCase):
                 )
                 for contest in possible_answers
             )
-            self.encrypted_ballots.append(voter.encrypt(ballot))
-
-        voter = Voter("a-voter", recorder=recorder)
-        voter.process_message("create_election", self.election_message)
-        voter.process_message(
-            self.joint_election_key["message_type"], self.joint_election_key
-        )
-        voter.process_message("start_vote", start_vote_message())
-        encrypted_ballot = voter.encrypt(ballot, True)
-        self.encrypted_ballots.append(encrypted_ballot)
+            auditable_data, encrypted_data = voter.encrypt(ballot)
+            self.encrypted_ballots.append(encrypted_data)
 
     def cast_votes(self):
         self.bulletin_board.process_message("start_vote", start_vote_message())
