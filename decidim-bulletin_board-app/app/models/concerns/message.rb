@@ -11,7 +11,7 @@ module Message
     end
 
     def visible_for_all?
-      !VotingScheme.results_message?(
+      !VotingScheme::BulletinBoard.results_message?(
         election.voting_scheme_name, message_identifier.type_subtype
       ) || election.results_published?
     end
