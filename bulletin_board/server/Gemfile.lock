@@ -1,5 +1,5 @@
 PATH
-  remote: ../decidim-bulletin_board-ruby
+  remote: ../../decidim-bulletin_board-ruby
   specs:
     decidim-bulletin_board (0.14.0)
       byebug (~> 11.0)
@@ -9,7 +9,7 @@ PATH
       wisper (~> 2.0.0)
 
 PATH
-  remote: ../voting_schemes/dummy/ruby-adapter
+  remote: ../../voting_schemes/dummy/ruby-adapter
   specs:
     decidim-bulletin_board-dummy (0.1.0)
       decidim-bulletin_board (= 0.14.0)

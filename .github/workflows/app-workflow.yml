@@ -159,8 +159,6 @@ jobs:
         uses: codecov/codecov-action@v1
         with:
           directory: ./bulletin_board/server/coverage
-      - name: Run Jest tests
-        run: npm run test
   e2e-test:
     name: E2E tests
     needs: unit-tests
