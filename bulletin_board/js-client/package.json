@@ -17,7 +17,6 @@
     "@apollo/client": "^3.2.7",
     "core-js": "^3.8.3",
     "graphql": "^15.4.0",
-    "graphql-ruby-client": "^1.8.1",
     "node-jose": "^2.0.0",
     "regenerator-runtime": "^0.13.7",
     "rxjs": "^6.6.3",
