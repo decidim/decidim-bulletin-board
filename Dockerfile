@@ -28,8 +28,8 @@ ADD voting_schemes/dummy/js-adapter /code/voting_schemes/dummy/js-adapter
 ADD voting_schemes/electionguard/js-adapter /code/voting_schemes/electionguard/js-adapter
 
 # Install npm dependencies
-ADD decidim-bulletin_board-app/package-lock.json /code/tmp/package.json
-ADD decidim-bulletin_board-app/package.json /code/tmp/package.json
+ADD bulletin_board/server/package-lock.json /code/tmp/package.json
+ADD bulletin_board/server/package.json /code/tmp/package.json
 RUN cd /code/tmp && npm i
 
 # Add local ruby dependencies
@@ -37,8 +37,8 @@ ADD decidim-bulletin_board-ruby /code/decidim-bulletin_board-ruby
 
 # Install ruby dependencies
 RUN gem install bundler
-ADD decidim-bulletin_board-app/Gemfile /code/tmp/Gemfile
-ADD decidim-bulletin_board-app/Gemfile.lock /code/tmp/Gemfile.lock
+ADD bulletin_board/server/Gemfile /code/tmp/Gemfile
+ADD bulletin_board/server/Gemfile.lock /code/tmp/Gemfile.lock
 RUN cd /code/tmp && bundle install
 
 # Add local python dependencies
@@ -47,19 +47,19 @@ ADD voting_schemes/electionguard/python-wrapper /code/voting_schemes/electiongua
 # Install python dependencies
 RUN git clone https://github.com/pyenv/pyenv.git ~/.pyenv
 RUN pyenv install $PYTHON_VERSION && pyenv global $PYTHON_VERSION
-ADD decidim-bulletin_board-app/install_eg_wrappers_no_sudo.sh /code/tmp/install_eg_wrappers_no_sudo.sh
+ADD bulletin_board/server/install_eg_wrappers_no_sudo.sh /code/tmp/install_eg_wrappers_no_sudo.sh
 RUN cd /code/tmp && ./install_eg_wrappers_no_sudo.sh
 
 # Add application source code
-ADD decidim-bulletin_board-app /code/decidim-bulletin_board-app
-RUN cp -r /code/tmp/node_modules /code/decidim-bulletin_board-app
-WORKDIR /code/decidim-bulletin_board-app
+ADD bulletin_board/server /code/bulletin_board/server
+RUN cp -r /code/tmp/node_modules /code/bulletin_board/server
+WORKDIR /code/bulletin_board/server
 
 # Precompile assets
 RUN npm install --global yarn
 RUN bundle exec rake assets:precompile
 
-ADD voting_schemes/electionguard/js-adapter/vendor/electionguard /code/decidim-bulletin_board-app/public/assets/electionguard
+ADD voting_schemes/electionguard/js-adapter/vendor/electionguard /code/bulletin_board/server/public/assets/electionguard
 
 # Run rails server
 CMD ["bin/rails", "server"]

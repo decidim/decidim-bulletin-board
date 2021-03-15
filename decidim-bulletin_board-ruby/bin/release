@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cd ../decidim-bulletin_board-app && \
+cd ../bulletin_board/server && \
 bundle install && \
 npm run release && \
 cd ../decidim-bulletin_board-ruby && \

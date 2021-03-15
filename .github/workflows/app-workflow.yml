@@ -3,7 +3,7 @@ on:
   pull_request:
     paths:
       - ".github/workflows/app-workflow.yml"
-      - "decidim-bulletin_board-app/**"
+      - "bulletin_board/server/**"
   push:
     branches:
       - develop
@@ -18,7 +18,7 @@ env:
 
 defaults:
   run:
-    working-directory: ./decidim-bulletin_board-app
+    working-directory: ./bulletin_board/server
 
 jobs:
   lint:
@@ -37,33 +37,33 @@ jobs:
       - name: Recover gems cache
         uses: actions/cache@v1
         with:
-          path: ./decidim-bulletin_board-app/vendor/bundle
-          key: ${{ runner.OS }}-decidim-bulletin_board-app-deps-${{ hashFiles('decidim-bulletin_board-app/Gemfile.lock') }}
+          path: ./bulletin_board/server/vendor/bundle
+          key: ${{ runner.OS }}-server-deps-${{ hashFiles('bulletin_board/server/Gemfile.lock') }}
           restore-keys: |
-            ${{ runner.OS }}-decidim-bulletin_board-app-deps-${{ env.cache-name }}-
-            ${{ runner.OS }}-decidim-bulletin_board-app-deps-
-            ${{ runner.OS }}-decidim-bulletin_board-app-
+            ${{ runner.OS }}-server-deps-${{ env.cache-name }}-
+            ${{ runner.OS }}-server-deps-
+            ${{ runner.OS }}-server-
       - name: Install Ruby deps
         uses: nick-invision/retry@v1
         with:
           timeout_minutes: 10
           max_attempts: 3
-          command: cd decidim-bulletin_board-app && bundle install --path vendor/bundle --jobs 4 --retry 3
+          command: cd bulletin_board/server && bundle install --path vendor/bundle --jobs 4 --retry 3
       - name: Recover packages cache
         uses: actions/cache@v1
         with:
-          path: ./decidim-bulletin_board-app/node_modules
-          key: ${{ runner.OS }}-decidim-bulletin_board-app-js-deps-${{ hashFiles('decidim-bulletin_board-app/package-lock.json') }}
+          path: ./bulletin_board/server/node_modules
+          key: ${{ runner.OS }}-server-js-deps-${{ hashFiles('bulletin_board/server/package-lock.json') }}
           restore-keys: |
-            ${{ runner.OS }}-decidim-bulletin_board-app-js-deps-${{ env.cache-name }}-
-            ${{ runner.OS }}-decidim-bulletin_board-app-js-deps-
-            ${{ runner.OS }}-decidim-bulletin_board-app-js-
+            ${{ runner.OS }}-server-js-deps-${{ env.cache-name }}-
+            ${{ runner.OS }}-server-js-deps-
+            ${{ runner.OS }}-server-js-
       - name: Install Javascript deps
         uses: nick-invision/retry@v1
         with:
           timeout_minutes: 10
           max_attempts: 3
-          command: cd decidim-bulletin_board-app && npm ci
+          command: cd bulletin_board/server && npm ci
       - name: Install Rubocop
         run: gem install rubocop
       - run: bundle exec rubocop -P
@@ -109,33 +109,33 @@ jobs:
       - name: Recover gems cache
         uses: actions/cache@v1
         with:
-          path: ./decidim-bulletin_board-app/vendor/bundle
-          key: ${{ runner.OS }}-decidim-bulletin_board-app-deps-${{ hashFiles('decidim-bulletin_board-app/Gemfile.lock') }}
+          path: ./bulletin_board/server/vendor/bundle
+          key: ${{ runner.OS }}-server-deps-${{ hashFiles('bulletin_board/server/Gemfile.lock') }}
           restore-keys: |
-            ${{ runner.OS }}-decidim-bulletin_board-app-deps-${{ env.cache-name }}-
-            ${{ runner.OS }}-decidim-bulletin_board-app-deps-
-            ${{ runner.OS }}-decidim-bulletin_board-app-
+            ${{ runner.OS }}-server-deps-${{ env.cache-name }}-
+            ${{ runner.OS }}-server-deps-
+            ${{ runner.OS }}-server-
       - name: Install Ruby deps
         uses: nick-invision/retry@v1
         with:
           timeout_minutes: 10
           max_attempts: 3
-          command: cd decidim-bulletin_board-app && bundle install --path vendor/bundle --jobs 4 --retry 3
+          command: cd bulletin_board/server && bundle install --path vendor/bundle --jobs 4 --retry 3
       - name: Recover packages cache
         uses: actions/cache@v1
         with:
-          path: ./decidim-bulletin_board-app/node_modules
-          key: ${{ runner.OS }}-decidim-bulletin_board-app-js-deps-${{ hashFiles('decidim-bulletin_board-app/package-lock.json') }}
+          path: ./bulletin_board/server/node_modules
+          key: ${{ runner.OS }}-server-js-deps-${{ hashFiles('bulletin_board/server/package-lock.json') }}
           restore-keys: |
-            ${{ runner.OS }}-decidim-bulletin_board-app-js-deps-${{ env.cache-name }}-
-            ${{ runner.OS }}-decidim-bulletin_board-app-js-deps-
-            ${{ runner.OS }}-decidim-bulletin_board-app-js-
+            ${{ runner.OS }}-server-js-deps-${{ env.cache-name }}-
+            ${{ runner.OS }}-server-js-deps-
+            ${{ runner.OS }}-server-js-
       - name: Install Javascript deps
         uses: nick-invision/retry@v1
         with:
           timeout_minutes: 10
           max_attempts: 3
-          command: cd decidim-bulletin_board-app && npm ci
+          command: cd bulletin_board/server && npm ci
       - name: Install ElectionGuard wrappers
         run: ./install_eg_wrappers.sh
       - name: Create database
@@ -158,7 +158,7 @@ jobs:
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v1
         with:
-          directory: ./decidim-bulletin_board-app/coverage
+          directory: ./bulletin_board/server/coverage
       - name: Run Jest tests
         run: npm run test
   e2e-test:
@@ -198,33 +198,33 @@ jobs:
       - name: Recover gems cache
         uses: actions/cache@v1
         with:
-          path: ./decidim-bulletin_board-app/vendor/bundle
-          key: ${{ runner.OS }}-decidim-bulletin_board-app-deps-${{ hashFiles('decidim-bulletin_board-app/Gemfile.lock') }}
+          path: ./bulletin_board/server/vendor/bundle
+          key: ${{ runner.OS }}-server-deps-${{ hashFiles('bulletin_board/server/Gemfile.lock') }}
           restore-keys: |
-            ${{ runner.OS }}-decidim-bulletin_board-app-deps-${{ env.cache-name }}-
-            ${{ runner.OS }}-decidim-bulletin_board-app-deps-
-            ${{ runner.OS }}-decidim-bulletin_board-app-
+            ${{ runner.OS }}-server-deps-${{ env.cache-name }}-
+            ${{ runner.OS }}-server-deps-
+            ${{ runner.OS }}-server-
       - name: Install Ruby deps
         uses: nick-invision/retry@v1
         with:
           timeout_minutes: 10
           max_attempts: 3
-          command: cd decidim-bulletin_board-app && bundle install --path vendor/bundle --jobs 4 --retry 3
+          command: cd bulletin_board/server && bundle install --path vendor/bundle --jobs 4 --retry 3
       - name: Recover packages cache
         uses: actions/cache@v1
         with:
-          path: ./decidim-bulletin_board-app/node_modules
-          key: ${{ runner.OS }}-decidim-bulletin_board-app-js-deps-${{ hashFiles('decidim-bulletin_board-app/package-lock.json') }}
+          path: ./bulletin_board/server/node_modules
+          key: ${{ runner.OS }}-server-js-deps-${{ hashFiles('bulletin_board/server/package-lock.json') }}
           restore-keys: |
-            ${{ runner.OS }}-decidim-bulletin_board-app-js-deps-${{ env.cache-name }}-
-            ${{ runner.OS }}-decidim-bulletin_board-app-js-deps-
-            ${{ runner.OS }}-decidim-bulletin_board-app-js-
+            ${{ runner.OS }}-server-js-deps-${{ env.cache-name }}-
+            ${{ runner.OS }}-server-js-deps-
+            ${{ runner.OS }}-server-js-
       - name: Install Javascript deps
         uses: nick-invision/retry@v1
         with:
           timeout_minutes: 10
           max_attempts: 3
-          command: cd decidim-bulletin_board-app && npm ci
+          command: cd bulletin_board/server && npm ci
       - name: Install ElectionGuard wrappers
         run: ./install_eg_wrappers.sh
       - name: Create database
@@ -248,16 +248,16 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: cypress screenshots
-          path: decidim-bulletin_board-app/cypress/screenshots/
+          path: bulletin_board/server/cypress/screenshots/
       - name: Upload artifacts (videos)
         if: ${{ always() }}
         uses: actions/upload-artifact@v2
         with:
           name: cypress videos
-          path: decidim-bulletin_board-app/cypress/videos/
+          path: bulletin_board/server/cypress/videos/
       - name: Upload artifacts (downloads)
         if: ${{ always() }}
         uses: actions/upload-artifact@v2
         with:
           name: cypress downloads
-          path: decidim-bulletin_board-app/cypress/downloads/
+          path: bulletin_board/server/cypress/downloads/
