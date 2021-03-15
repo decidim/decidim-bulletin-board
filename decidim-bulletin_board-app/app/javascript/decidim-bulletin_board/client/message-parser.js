@@ -80,7 +80,7 @@ export class MessageParser {
     for (const trustee of trustees) {
       promises.push(
         this.loadKey(trustee).then((key) => {
-          result[TRUSTEE_TYPE][trustee.name] = key;
+          result[TRUSTEE_TYPE][trustee.slug] = key;
         })
       );
     }

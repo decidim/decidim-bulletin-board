@@ -57,7 +57,7 @@ module LogEntryCommand
 
     def valid_author?(valid, ignore_author_id: false)
       run_validations do
-        "Invalid message author" unless valid && (message_identifier.author_id == client.unique_id || ignore_author_id)
+        "Invalid message author" unless valid && (client.author?(message_identifier) || ignore_author_id)
       end
     end
 

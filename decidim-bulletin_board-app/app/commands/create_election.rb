@@ -63,12 +63,16 @@ class CreateElection < Rectify::Command
   end
 
   def find_or_create_trustee(trustee)
-    Trustee.where(name: trustee[:pretty_name]).or(Trustee.where(public_key: trustee[:public_key])).first ||
+    Trustee.find_by(unique_id: unique_trustee_id(trustee[:slug]), public_key: trustee[:public_key]) ||
       Trustee.create!(
-        name: trustee[:pretty_name],
-        unique_id: trustee[:name],
+        name: trustee[:name],
+        unique_id: unique_trustee_id(trustee[:slug]),
         public_key: trustee[:public_key]
       )
+  end
+
+  def unique_trustee_id(trustee_name)
+    "#{authority.unique_id}.#{trustee_name}"
   end
 
   def trustees

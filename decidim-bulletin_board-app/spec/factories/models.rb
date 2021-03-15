@@ -34,7 +34,7 @@ FactoryBot.define do
       voting_scheme { :dummy }
     end
 
-    title { { en: Faker::Name.name } }
+    title { { en: Faker::Lorem.question } }
     authority { Authority.first }
     status { :created }
     unique_id { [authority.unique_id, election_id].join(".") }
@@ -55,12 +55,12 @@ FactoryBot.define do
       end
 
       status { :key_ceremony }
-      voting_scheme_state { Marshal.dump(joint_election_key: 1, trustees: trustees_done.map(&:unique_id)) }
+      voting_scheme_state { Marshal.dump(joint_election_key: 1, trustees: trustees_done.map(&:slug)) }
     end
 
     trait :key_ceremony_ended do
       status { :key_ceremony_ended }
-      voting_scheme_state { Marshal.dump(joint_election_key: 1, trustees: trustees_plus_keys.map(&:first).map(&:unique_id)) }
+      voting_scheme_state { Marshal.dump(joint_election_key: 1, trustees: trustees_plus_keys.map(&:first).map(&:slug)) }
     end
 
     trait :vote do
@@ -84,9 +84,9 @@ FactoryBot.define do
       after(:build) do |election, evaluator|
         joint_shares = Test::Elections.build_cast(election) { 1 }
         election.voting_scheme_state = Marshal.dump(joint_election_key: Test::Elections.joint_election_key,
-                                                    trustees: evaluator.trustees_plus_keys.map(&:first).map(&:unique_id),
+                                                    trustees: evaluator.trustees_plus_keys.map(&:first).map(&:slug),
                                                     joint_shares: joint_shares,
-                                                    shares: evaluator.trustees_done.map(&:unique_id))
+                                                    shares: evaluator.trustees_done.map(&:slug))
       end
     end
 
@@ -96,9 +96,9 @@ FactoryBot.define do
       after(:build) do |election, evaluator|
         joint_shares = Test::Elections.build_cast(election) { Random.random_number(99) + Random.random_number(13) * Test::Elections.joint_election_key }
         election.voting_scheme_state = Marshal.dump(joint_election_key: Test::Elections.joint_election_key,
-                                                    trustees: evaluator.trustees_plus_keys.map(&:first).map(&:unique_id),
+                                                    trustees: evaluator.trustees_plus_keys.map(&:first).map(&:slug),
                                                     joint_shares: joint_shares,
-                                                    shares: evaluator.trustees_plus_keys.map(&:first).map(&:unique_id))
+                                                    shares: evaluator.trustees_plus_keys.map(&:first).map(&:slug))
       end
     end
 
