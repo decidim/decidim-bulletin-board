@@ -1,8 +1,9 @@
 diff --git a/src/electionguard/rsa.py b/src/electionguard/rsa.py
-index 265d2b8..1beb2dc 100644
+index 63b5855..4bbb478 100644
 --- a/src/electionguard/rsa.py
 +++ b/src/electionguard/rsa.py
 @@ -1,21 +1,9 @@
+-from typing import Optional, NamedTuple
 -from cryptography.hazmat.backends import default_backend
 -from cryptography.hazmat.primitives.asymmetric.rsa import (
 -    generate_private_key,
@@ -19,7 +20,6 @@ index 265d2b8..1beb2dc 100644
 -    PrivateFormat,
 -    PublicFormat,
 -)
--from typing import Optional, NamedTuple
 +import rsa.prime
 +from gmpy2 import is_prime
 +rsa.prime.is_prime = is_prime
@@ -29,10 +29,11 @@ index 265d2b8..1beb2dc 100644
  
  PUBLIC_EXPONENT = 65537
  KEY_SIZE = 4096
-@@ -39,23 +27,11 @@ def rsa_keypair() -> RSAKeyPair:
+@@ -38,24 +26,11 @@ def rsa_keypair() -> RSAKeyPair:
+ 
      :return: RSA key pair
      """
- 
+-
 -    private_key: RSAPrivateKeyWithSerialization = generate_private_key(
 -        public_exponent=PUBLIC_EXPONENT, key_size=KEY_SIZE, backend=default_backend()
 -    )
@@ -40,24 +41,24 @@ index 265d2b8..1beb2dc 100644
 -        encoding=Encoding.PEM,
 -        format=PrivateFormat.TraditionalOpenSSL,
 -        encryption_algorithm=NoEncryption(),
--    )
--    private_key_string = str(private_key_bytes, ISO_ENCODING)
--
--    public_key: RSAPublicKey = private_key.public_key()
--    public_key_bytes = public_key.public_bytes(
--        encoding=Encoding.PEM, format=PublicFormat.SubjectPublicKeyInfo
 +    public, private = rsa.newkeys(KEY_SIZE, exponent=PUBLIC_EXPONENT)
 +    return RSAKeyPair(
 +        str(private.save_pkcs1(), ISO_ENCODING),
 +        str(public.save_pkcs1(), ISO_ENCODING)
      )
+-    private_key_string = str(private_key_bytes, ISO_ENCODING)
+-
+-    public_key: RSAPublicKey = private_key.public_key()
+-    public_key_bytes = public_key.public_bytes(
+-        encoding=Encoding.PEM, format=PublicFormat.SubjectPublicKeyInfo
+-    )
 -    public_key_string = str(public_key_bytes, ISO_ENCODING)
 -
 -    return RSAKeyPair(private_key_string, public_key_string)
  
  
  def rsa_encrypt(message: str, public_key: str) -> Optional[str]:
-@@ -67,11 +43,11 @@ def rsa_encrypt(message: str, public_key: str) -> Optional[str]:
+@@ -67,11 +42,11 @@ def rsa_encrypt(message: str, public_key: str) -> Optional[str]:
      :return: Encrypted message
      """
      data = bytes(public_key, ISO_ENCODING)
@@ -71,7 +72,7 @@ index 265d2b8..1beb2dc 100644
      return str(ciphertext, ISO_ENCODING)
  
  
-@@ -85,22 +61,11 @@ def rsa_decrypt(encrypted_message: str, private_key: str) -> Optional[str]:
+@@ -85,12 +60,10 @@ def rsa_decrypt(encrypted_message: str, private_key: str) -> Optional[str]:
      """
  
      data = bytes(private_key, ISO_ENCODING)
@@ -86,13 +87,3 @@ index 265d2b8..1beb2dc 100644
      except ValueError:
          return None
      hex_str = plaintext.hex()
-     return hex_str
--
--
--def count_set_bits(n: int) -> int:
--    """Count set bits for a particular integer"""
--    count = 0
--    while n:
--        count += n & 1
--        n >>= 1
--    return count

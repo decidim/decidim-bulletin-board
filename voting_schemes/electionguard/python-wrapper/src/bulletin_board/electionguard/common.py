@@ -2,12 +2,8 @@ from dataclasses import dataclass
 import json
 import time
 from pathlib import Path
-from electionguard.election import (
-    CiphertextElectionContext,
-    ElectionDescription,
-    ElectionType,
-    InternalElectionDescription,
-)
+from electionguard.election import CiphertextElectionContext
+from electionguard.manifest import Manifest, InternalManifest, ElectionType
 from electionguard.election_builder import ElectionBuilder
 from typing import Generic, List, Optional, Tuple, TypeVar, TypedDict
 import logging as log
@@ -20,15 +16,15 @@ except:  # noqa: E722
 
 
 class Context:
-    election: ElectionDescription
+    election: Manifest
     election_builder: ElectionBuilder
-    election_metadata: InternalElectionDescription
+    election_metadata: InternalManifest
     election_context: CiphertextElectionContext
     number_of_guardians: int
     quorum: int
 
     def build_election(self, election_creation: dict):
-        self.election = ElectionDescription.from_json_object(
+        self.election = Manifest.from_json_object(
             complete_election_description(election_creation["description"])
         )
 
