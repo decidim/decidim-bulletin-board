@@ -1,8 +1,8 @@
-name: "[CI] Application"
+name: "[CI] Server"
 on:
   pull_request:
     paths:
-      - ".github/workflows/app-workflow.yml"
+      - ".github/workflows/server-workflow.yml"
       - "bulletin_board/server/**"
   push:
     branches:

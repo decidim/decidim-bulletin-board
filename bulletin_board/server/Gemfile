@@ -45,7 +45,8 @@ gem "sprockets-es6"
 
 gem "factory_bot_rails"
 
-gem "decidim-bulletin_board", path: "../../decidim-bulletin_board-ruby"
+gem "decidim-bulletin_board", path: "../ruby-client"
+
 gem "voting_schemes-dummy", path: "../../voting_schemes/dummy/ruby-adapter"
 gem "voting_schemes-electionguard", path: "../../voting_schemes/electionguard/ruby-adapter"
 

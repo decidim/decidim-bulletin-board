@@ -2,8 +2,8 @@ name: "[CI] Ruby Client"
 on:
   pull_request:
     paths:
-      - ".github/workflows/ruby-workflow.yml"
-      - "decidim-bulletin_board-ruby/**"
+      - ".github/workflows/ruby-client-workflow.yml"
+      - "bulletin_board/ruby-client/**"
   push:
     branches:
       - develop
@@ -16,7 +16,7 @@ env:
 
 defaults:
   run:
-    working-directory: ./decidim-bulletin_board-ruby
+    working-directory: ./bulletin_board/ruby-client
 
 jobs:
   lint:
@@ -32,18 +32,18 @@ jobs:
       - name: Recover dependency cache
         uses: actions/cache@v1
         with:
-          path: ./decidim-bulletin_board-ruby/vendor/bundle
-          key: ${{ runner.OS }}-decidim-bulletin_board-ruby-deps-${{ hashFiles('decidim-bulletin_board-ruby/Gemfile.lock') }}
+          path: ./bulletin_board/ruby-client/vendor/bundle
+          key: ${{ runner.OS }}-ruby-client-deps-${{ hashFiles('bulletin_board/ruby-client/Gemfile.lock') }}
           restore-keys: |
-            ${{ runner.OS }}-decidim-bulletin_board-ruby-deps-${{ env.cache-name }}-
-            ${{ runner.OS }}-decidim-bulletin_board-ruby-deps-
-            ${{ runner.OS }}-decidim-bulletin_board-ruby-
+            ${{ runner.OS }}-ruby-client-deps-${{ env.cache-name }}-
+            ${{ runner.OS }}-ruby-client-deps-
+            ${{ runner.OS }}-ruby-client-
       - name: Install Ruby deps
         uses: nick-invision/retry@v1
         with:
           timeout_minutes: 10
           max_attempts: 3
-          command: cd decidim-bulletin_board-ruby && bundle install --path vendor/bundle --jobs 4 --retry 3
+          command: cd bulletin_board/ruby-client && bundle install --path vendor/bundle --jobs 4 --retry 3
       - name: Install Rubocop
         run: gem install rubocop
       - run: bundle exec rubocop -P
@@ -62,17 +62,17 @@ jobs:
       - name: Recover dependency cache
         uses: actions/cache@v1
         with:
-          path: ./decidim-bulletin_board-ruby/vendor/bundle
-          key: ${{ runner.OS }}-decidim-bulletin_board-ruby-deps-${{ hashFiles('decidim-bulletin_board-ruby/Gemfile.lock') }}
+          path: ./bulletin_board/ruby-client/vendor/bundle
+          key: ${{ runner.OS }}-ruby-client-deps-${{ hashFiles('bulletin_board/ruby-client/Gemfile.lock') }}
           restore-keys: |
-            ${{ runner.OS }}-decidim-bulletin_board-ruby-deps-${{ env.cache-name }}-
-            ${{ runner.OS }}-decidim-bulletin_board-ruby-deps-
-            ${{ runner.OS }}-decidim-bulletin_board-ruby-
+            ${{ runner.OS }}-ruby-client-deps-${{ env.cache-name }}-
+            ${{ runner.OS }}-ruby-client-deps-
+            ${{ runner.OS }}-ruby-client-
       - name: Install Ruby deps
         uses: nick-invision/retry@v1
         with:
           timeout_minutes: 10
           max_attempts: 3
-          command: cd decidim-bulletin_board-ruby && bundle install --path vendor/bundle --jobs 4 --retry 3
+          command: cd bulletin_board/ruby-client && bundle install --path vendor/bundle --jobs 4 --retry 3
       - name: Run tests
         run: bundler exec rake

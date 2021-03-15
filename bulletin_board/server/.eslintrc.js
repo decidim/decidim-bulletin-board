@@ -2,15 +2,14 @@ module.exports = {
   env: {
     browser: true,
     es2021: true,
-    "jest/globals": true,
     jasmine: true,
-    $: true,
   },
   globals: {
     cy: false,
+    $: false,
   },
   extends: ["standard", "prettier"],
-  plugins: ["jest", "jasmine"],
+  plugins: ["jasmine"],
   parserOptions: {
     ecmaVersion: 12,
     sourceType: "module",
