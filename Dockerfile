@@ -30,8 +30,8 @@ RUN cd /code/tmp && npm i
 
 # Add local ruby dependencies
 ADD bulletin_board/ruby-client /code/ruby-client
-ADD voting_schemes/dummy/ruby-client /voting_schemes/dummy/ruby-client
-ADD voting_schemes/electionguard/ruby-client /voting_schemes/electionguard/ruby-client
+ADD voting_schemes/dummy/ruby-adapter /voting_schemes/dummy/ruby-adapter
+ADD voting_schemes/electionguard/ruby-adapter /voting_schemes/electionguard/ruby-adapter
 
 # Install ruby dependencies
 RUN gem install bundler
