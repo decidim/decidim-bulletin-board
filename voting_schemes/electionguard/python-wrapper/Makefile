@@ -18,6 +18,7 @@ install-apt:
 install-deps:
 	python3 -m pip install --upgrade pip
 	pip install pipenv
+	cd ../electionguard-python && make environment build
 	pipenv install --dev
 	python3 -m pip install --user --upgrade twine
 
