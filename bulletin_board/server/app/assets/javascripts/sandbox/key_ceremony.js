@@ -1,8 +1,16 @@
 //= require jquery
+
 //= require decidim/bulletin_board/decidim-bulletin_board
+//= require voting_schemes/dummy/dummy
 
 $(() => {
-  const { IdentificationKeys } = window.decidimBulletinBoard;
+  const {
+    IdentificationKeys,
+    KeyCeremonyComponent,
+  } = window.decidimBulletinBoard;
+  const {
+    TrusteeWrapperAdapter: DummyTrusteeWrapperAdapter,
+  } = window.dummyVotingScheme;
 
   // UI Elements
   const $trusteeTable = $(".trustee-table");

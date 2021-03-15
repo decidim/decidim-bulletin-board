@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "decidim/bulletin_board/dummy"
+require "voting_schemes/dummy"
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure

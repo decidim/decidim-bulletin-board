@@ -1,6 +1,6 @@
-# Decidim::BulletinBoard::Dummy
+# VotingSchemes::Dummy
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/decidim/bulletin_board/dummy`. To experiment with that code, run `bin/console` for an interactive prompt.
+Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/voting_schemes/dummy`. To experiment with that code, run `bin/console` for an interactive prompt.
 
 TODO: Delete this and the text above, and describe your gem
 
@@ -9,7 +9,7 @@ TODO: Delete this and the text above, and describe your gem
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'decidim-bulletin_board-dummy'
+gem 'voting_schemes-dummy'
 ```
 
 And then execute:
@@ -18,7 +18,7 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install decidim-bulletin_board-dummy
+    $ gem install voting_schemes-dummy
 
 ## Usage
 
@@ -32,4 +32,4 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/decidim-bulletin_board-dummy.
+Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/voting_schemes-dummy.

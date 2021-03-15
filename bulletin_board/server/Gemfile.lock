@@ -11,8 +11,8 @@ PATH
 PATH
   remote: ../../voting_schemes/dummy/ruby-adapter
   specs:
-    decidim-bulletin_board-dummy (0.1.0)
-      decidim-bulletin_board (= 0.14.0)
+    voting_schemes-dummy (0.1.0)
+      rails (>= 5.0.0)
 
 GEM
   remote: https://rubygems.org/
@@ -348,7 +348,6 @@ DEPENDENCIES
   cypress-on-rails (~> 1.0)
   database_cleaner-active_record
   decidim-bulletin_board!
-  decidim-bulletin_board-dummy!
   factory_bot_rails
   faker (~> 2.14)
   graphiql-rails
@@ -382,6 +381,7 @@ DEPENDENCIES
   sprockets-es6
   turbolinks (~> 5)
   tzinfo-data
+  voting_schemes-dummy!
   web-console (>= 3.3.0)
   webpacker (~> 6.0.0.pre.2)
   wisper-rspec

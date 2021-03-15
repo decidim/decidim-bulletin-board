@@ -1,9 +1,14 @@
-import $ from "jquery";
-import { VoteComponent } from "../decidim-bulletin_board";
-import { VoterWrapperAdapter as DummyVoterWrapperAdapter } from "bulletin_board-dummy-adapter";
-import { VoterWrapperAdapter as ElectionGuardVoterWrapperAdapter } from "bulletin_board-electionguard-adapter";
+//= require jquery
 
-$(async () => {
+//= require decidim/bulletin_board/decidim-bulletin_board
+//= require voting_schemes/dummy/dummy
+
+$(() => {
+  const { VoteComponent } = window.decidimBulletinBoard;
+  const {
+    VoterWrapperAdapter: DummyVoterWrapperAdapter,
+  } = window.dummyVotingScheme;
+
   // UI Elements
   const $voter = $(".voter");
   const $encryptVote = $voter.find(".encrypt-vote");
@@ -56,7 +61,7 @@ $(async () => {
     voterWrapperAdapter,
   });
 
-  await component.bindEvents({
+  component.bindEvents({
     onBindEncryptButton(onEventTriggered) {
       $encryptVote.on("click", onEventTriggered);
     },
