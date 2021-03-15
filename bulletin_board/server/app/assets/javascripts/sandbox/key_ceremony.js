@@ -1,12 +1,9 @@
-import $ from "jquery";
-import {
-  KeyCeremonyComponent,
-  IdentificationKeys,
-} from "../decidim-bulletin_board";
-import { TrusteeWrapperAdapter as DummyTrusteeWrapperAdapter } from "bulletin_board-dummy-adapter";
-import { TrusteeWrapperAdapter as ElectionGuardTrusteeWrapperAdapter } from "bulletin_board-electionguard-adapter";
+//= require jquery
+//= require decidim/bulletin_board/decidim-bulletin_board
 
 $(() => {
+  const { IdentificationKeys } = window.decidimBulletinBoard;
+
   // UI Elements
   const $trusteeTable = $(".trustee-table");
 

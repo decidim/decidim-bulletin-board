@@ -4,6 +4,7 @@ module.exports = {
     es2021: true,
     "jest/globals": true,
     jasmine: true,
+    $: true,
   },
   globals: {
     cy: false,

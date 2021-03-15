@@ -1,4 +1,4 @@
-import $ from "jquery";
+//= require jquery
 
 $(async () => {
   // UI Elements
