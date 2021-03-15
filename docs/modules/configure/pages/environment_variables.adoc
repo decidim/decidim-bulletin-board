@@ -6,9 +6,6 @@ We try to let most of the things defined through Environment Variables, as https
 |===
 |Name |Value
 
-|CORS_ORIGIN_ALLOWED
-|The domains allowed to access to the API. Use `*` for public Bulletin Boards.
-
 |DATABASE_URL
 |Connection string for the Postgres database
 
