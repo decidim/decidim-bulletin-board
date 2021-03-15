@@ -1,1 +1,48 @@
-{"dependencies": {"test": [], "jsons": ["typish"], "bulletin_board-electionguard": ["electionguard"], "pyasn1": [], "electionguard": ["hypothesis", "jsons", "rsa", "gmpy2", "pyasn1"], "distlib": [], "numpy": [], "attrs": [], "typish": [], "sortedcontainers": [], "rsa": [], "hypothesis": ["attrs", "sortedcontainers"], "gmpy2": [], "micropip": ["distlib"]}, "import_name_to_package_name": {"jsons": "jsons", "bulletin_board-electionguard": "bulletin_board-electionguard", "pyasn1": "pyasn1", "electionguard": "electionguard", "distlib": "distlib", "numpy": "numpy", "attr": "attrs", "typish": "typish", "sortedcontainers": "sortedcontainers", "rsa": "rsa", "hypothesis": "hypothesis", "gmpy2": "gmpy2", "micropip": "micropip"}}
+{
+  "dependencies": {
+    "test": [],
+    "jsons": [
+      "typish"
+    ],
+    "bulletin_board-electionguard": [
+      "electionguard"
+    ],
+    "pyasn1": [],
+    "electionguard": [
+      "hypothesis",
+      "jsons",
+      "rsa",
+      "gmpy2",
+      "pyasn1"
+    ],
+    "distlib": [],
+    "numpy": [],
+    "attrs": [],
+    "typish": [],
+    "sortedcontainers": [],
+    "rsa": [],
+    "hypothesis": [
+      "attrs",
+      "sortedcontainers"
+    ],
+    "gmpy2": [],
+    "micropip": [
+      "distlib"
+    ]
+  },
+  "import_name_to_package_name": {
+    "jsons": "jsons",
+    "bulletin_board-electionguard": "bulletin_board-electionguard",
+    "pyasn1": "pyasn1",
+    "electionguard": "electionguard",
+    "distlib": "distlib",
+    "numpy": "numpy",
+    "attr": "attrs",
+    "typish": "typish",
+    "sortedcontainers": "sortedcontainers",
+    "rsa": "rsa",
+    "hypothesis": "hypothesis",
+    "gmpy2": "gmpy2",
+    "micropip": "micropip"
+  }
+}
