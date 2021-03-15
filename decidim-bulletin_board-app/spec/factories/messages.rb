@@ -65,8 +65,8 @@ FactoryBot.define do
     end
 
     factory :json_bulletin_board do
-      name { "bulletin-board" }
-      pretty_name { "Bulletin Board" }
+      slug { "bulletin-board" }
+      name { "Bulletin Board" }
       public_key { BulletinBoard.public_key }
     end
 
@@ -75,8 +75,8 @@ FactoryBot.define do
         authority { Authority.first }
       end
 
-      name { authority.unique_id }
-      pretty_name { authority.name }
+      slug { authority.unique_id }
+      name { authority.name }
       public_key { authority.public_key }
     end
 

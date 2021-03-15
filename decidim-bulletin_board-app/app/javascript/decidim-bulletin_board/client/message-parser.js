@@ -66,7 +66,7 @@ export class MessageParser {
     }
 
     const result = {
-      [AUTHORITY_TYPE]: { [authority.name]: this.authorityPublicKey },
+      [AUTHORITY_TYPE]: { [authority.slug]: this.authorityPublicKey },
       [BULLETIN_BOARD_TYPE]: {},
       [TRUSTEE_TYPE]: {},
     };
@@ -74,7 +74,7 @@ export class MessageParser {
     const promises = [];
     promises.push(
       this.loadKey(bulletin_board).then((key) => {
-        result[BULLETIN_BOARD_TYPE][bulletin_board.name] = key;
+        result[BULLETIN_BOARD_TYPE][bulletin_board.slug] = key;
       })
     );
     for (const trustee of trustees) {
