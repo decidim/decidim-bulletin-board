@@ -18,5 +18,5 @@ docker run --rm --mount type=bind,source=$HOST_SHARED_FOLDER/electionguard,targe
 
 # Move generated files to the vendor folder of the js-adapter
 rm -rf ../js-adapter/vendor/electionguard/*
-cp -rf $SHARED_FOLDER/electionguard/python-to-js/output/* ../js-adapter/vendor/electionguard/
+cp -rf $SHARED_FOLDER/electionguard/python-to-js/output/* ../ruby-adapter/public/assets/electionguard/
 rm -rf $SHARED_FOLDER/electionguard

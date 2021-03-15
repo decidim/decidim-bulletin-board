@@ -14,6 +14,12 @@ PATH
     voting_schemes-dummy (0.1.0)
       rails (>= 5.0.0)
 
+PATH
+  remote: ../../voting_schemes/electionguard/ruby-adapter
+  specs:
+    voting_schemes-electionguard (0.1.0)
+      rails (>= 5.0.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -382,6 +388,7 @@ DEPENDENCIES
   turbolinks (~> 5)
   tzinfo-data
   voting_schemes-dummy!
+  voting_schemes-electionguard!
   web-console (>= 3.3.0)
   webpacker (~> 6.0.0.pre.2)
   wisper-rspec

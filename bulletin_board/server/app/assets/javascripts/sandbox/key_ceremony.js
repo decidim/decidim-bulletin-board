@@ -1,7 +1,9 @@
 //= require jquery
 
 //= require decidim/bulletin_board/decidim-bulletin_board
+
 //= require voting_schemes/dummy/dummy
+//= require voting_schemes/electionguard/electionguard
 
 $(() => {
   const {
@@ -11,6 +13,9 @@ $(() => {
   const {
     TrusteeWrapperAdapter: DummyTrusteeWrapperAdapter,
   } = window.dummyVotingScheme;
+  const {
+    TrusteeWrapperAdapter: ElectionGuardTrusteeWrapperAdapter,
+  } = window.electionGuardVotingScheme;
 
   // UI Elements
   const $trusteeTable = $(".trustee-table");
