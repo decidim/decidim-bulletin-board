@@ -49,14 +49,14 @@ RSpec.describe PublishResults do
     it "creates one line per each election log entry" do
       subject
       election.verifiable_results.open do |file|
-        expect(`tar -axf #{file.path} -O | zcat | wc -l`.to_i).to eq(election.log_entries.count)
+        expect(`tar -xf #{file.path} -O | zcat | wc -l`.to_i).to eq(election.log_entries.count)
       end
     end
 
     it "each line has the log entry required data" do
       subject
       election.verifiable_results.open do |file|
-        `tar -axf #{file.path} -O | zcat`.split("\n").zip(election.log_entries.order(id: :asc)).each do |line, log_entry|
+        `tar -xf #{file.path} -O | zcat`.split("\n").zip(election.log_entries.order(id: :asc)).each do |line, log_entry|
           expect(JSON.parse(line)).to include(log_entry.slice(:message_id, :signed_data, :chained_hash, :content_hash))
         end
       end
