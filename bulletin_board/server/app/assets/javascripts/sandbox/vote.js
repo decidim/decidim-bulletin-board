@@ -2,12 +2,16 @@
 
 //= require decidim/bulletin_board/decidim-bulletin_board
 //= require voting_schemes/dummy/dummy
+//= require voting_schemes/electionguard/electionguard
 
 $(() => {
   const { VoteComponent } = window.decidimBulletinBoard;
   const {
     VoterWrapperAdapter: DummyVoterWrapperAdapter,
   } = window.dummyVotingScheme;
+  const {
+    VoterWrapperAdapter: ElectionGuardVoterWrapperAdapter,
+  } = window.electionGuardVotingScheme;
 
   // UI Elements
   const $voter = $(".voter");
