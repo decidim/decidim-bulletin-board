@@ -40,3 +40,5 @@
 /voting_schemes/dummy/js-adapter/node_modules
 /voting_schemes/electionguard/js-adapter/dist
 /voting_schemes/electionguard/js-adapter/node_modules
+
+/bulletin_board/js-client/node_modules

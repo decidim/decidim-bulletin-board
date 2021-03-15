@@ -4,10 +4,11 @@ const path = require("path");
 
 module.exports = {
   mode: "production",
-  entry: "./app/javascript/packs/decidim-bulletin_board.js",
+  entry: "./src/index.js",
   output: {
     path: path.resolve(
       __dirname,
+      "..",
       "..",
       "decidim-bulletin_board-ruby",
       "app",
