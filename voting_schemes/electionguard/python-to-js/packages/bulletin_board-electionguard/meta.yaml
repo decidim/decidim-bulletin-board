@@ -2,7 +2,7 @@ package:
   name: bulletin_board-electionguard
   version: 0.1.0
 source:
-  url: file:///src/pyodide/packages/bulletin_board-electionguard/bulletin_board-electionguard-0.1.0.tar.gz
+  url: file:dist/bulletin_board-electionguard-0.1.0.tar.gz
 requirements:
   run:
     - electionguard
