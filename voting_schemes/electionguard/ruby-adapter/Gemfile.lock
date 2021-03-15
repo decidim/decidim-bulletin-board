@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    voting_schemes-dummy (0.1.0)
+    voting_schemes-electionguard (0.1.0)
       rails (>= 5.0.0)
 
 GEM
@@ -70,6 +70,7 @@ GEM
     builder (3.2.4)
     concurrent-ruby (1.1.8)
     crass (1.0.6)
+    diff-lcs (1.4.4)
     erubi (1.10.0)
     faker (2.15.1)
       i18n (>= 1.6, < 2)
@@ -130,6 +131,19 @@ GEM
     rake (13.0.3)
     regexp_parser (2.1.1)
     rexml (3.2.4)
+    rspec (3.10.0)
+      rspec-core (~> 3.10.0)
+      rspec-expectations (~> 3.10.0)
+      rspec-mocks (~> 3.10.0)
+    rspec-core (3.10.1)
+      rspec-support (~> 3.10.0)
+    rspec-expectations (3.10.1)
+      diff-lcs (>= 1.2.0, < 2.0)
+      rspec-support (~> 3.10.0)
+    rspec-mocks (3.10.2)
+      diff-lcs (>= 1.2.0, < 2.0)
+      rspec-support (~> 3.10.0)
+    rspec-support (3.10.2)
     rubocop (0.92.0)
       parallel (~> 1.10)
       parser (>= 2.7.1.5)
@@ -169,10 +183,12 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
+  rake (~> 13.0)
+  rspec (~> 3.7)
   rubocop (~> 0.92.0)
   rubocop-faker (~> 1.1.0)
   rubocop-rspec (~> 1.44.1)
-  voting_schemes-dummy!
+  voting_schemes-electionguard!
 
 BUNDLED WITH
    2.2.13

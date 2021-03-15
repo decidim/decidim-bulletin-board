@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "voting_schemes/dummy"
+require "voting_schemes/electionguard"
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure

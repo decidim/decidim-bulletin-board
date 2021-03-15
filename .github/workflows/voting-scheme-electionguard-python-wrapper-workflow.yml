@@ -2,7 +2,7 @@ name: "[CI] ElectionGuard Voting Scheme Python Wrapper"
 on:
   pull_request:
     paths:
-      - ".github/workflows/app-workflow.yml"
+      - ".github/workflows/voting-scheme-electionguard-python-wrapper-workflow.yml"
       - "voting_schemes/electionguard/python-wrapper/**"
   push:
     branches:

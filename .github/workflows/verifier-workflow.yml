@@ -2,7 +2,7 @@ name: "[CI] Verifier"
 on:
   pull_request:
     paths:
-      - ".github/workflows/app-workflow.yml"
+      - ".github/workflows/verifier-workflow.yml"
       - "verifier/**"
   push:
     branches:

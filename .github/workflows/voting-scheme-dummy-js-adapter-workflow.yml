@@ -2,7 +2,7 @@ name: "[CI] Dummy Voting Scheme JS Adapter"
 on:
   pull_request:
     paths:
-      - ".github/workflows/app-workflow.yml"
+      - ".github/workflows/voting-scheme-dummy-js-adapter-workflow.yml"
       - "voting_schemes/dummy/js-adapter/**"
   push:
     branches:

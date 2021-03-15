@@ -23,17 +23,15 @@ RUN curl -fsSL https://deb.nodesource.com/setup_15.x | bash - && apt-get install
 # Create the source folder
 RUN mkdir -p /code/tmp
 
-# Add local npm dependencies
-ADD voting_schemes/dummy/js-adapter /code/voting_schemes/dummy/js-adapter
-ADD voting_schemes/electionguard/js-adapter /code/voting_schemes/electionguard/js-adapter
-
 # Install npm dependencies
 ADD bulletin_board/server/package-lock.json /code/tmp/package.json
 ADD bulletin_board/server/package.json /code/tmp/package.json
 RUN cd /code/tmp && npm i
 
 # Add local ruby dependencies
-ADD decidim-bulletin_board-ruby /code/decidim-bulletin_board-ruby
+ADD bulletin_board/ruby-client /code/ruby-client
+ADD voting_schemes/dummy/ruby-client /voting_schemes/dummy/ruby-client
+ADD voting_schemes/electionguard/ruby-client /voting_schemes/electionguard/ruby-client
 
 # Install ruby dependencies
 RUN gem install bundler
@@ -42,7 +40,7 @@ ADD bulletin_board/server/Gemfile.lock /code/tmp/Gemfile.lock
 RUN cd /code/tmp && bundle install
 
 # Add local python dependencies
-ADD voting_schemes/electionguard/python-wrapper /code/voting_schemes/electionguard/python-wrapper
+ADD voting_schemes/electionguard/python-wrapper /voting_schemes/electionguard/python-wrapper
 
 # Install python dependencies
 RUN git clone https://github.com/pyenv/pyenv.git ~/.pyenv
@@ -58,8 +56,6 @@ WORKDIR /code/bulletin_board/server
 # Precompile assets
 RUN npm install --global yarn
 RUN bundle exec rake assets:precompile
-
-ADD voting_schemes/electionguard/js-adapter/vendor/electionguard /code/bulletin_board/server/public/assets/electionguard
 
 # Run rails server
 CMD ["bin/rails", "server"]

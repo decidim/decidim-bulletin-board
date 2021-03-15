@@ -1,9 +1,9 @@
-name: "[CI] Ruby Client"
+name: "[CI] Dummy Voting Scheme Ruby Adapter"
 on:
   pull_request:
     paths:
-      - ".github/workflows/ruby-client-workflow.yml"
-      - "bulletin_board/ruby-client/**"
+      - ".github/workflows/voting-scheme-dummy-ruby-adapter-workflow.yml"
+      - "voting_schemes/dummy/ruby-adapter/**"
   push:
     branches:
       - develop
@@ -16,7 +16,7 @@ env:
 
 defaults:
   run:
-    working-directory: ./bulletin_board/ruby-client
+    working-directory: ./voting_schemes/dummy/ruby-adapter
 
 jobs:
   lint:
@@ -32,18 +32,18 @@ jobs:
       - name: Recover dependency cache
         uses: actions/cache@v1
         with:
-          path: ./bulletin_board/ruby-client/vendor/bundle
-          key: ${{ runner.OS }}-ruby-client-deps-${{ hashFiles('bulletin_board/ruby-client/Gemfile.lock') }}
+          path: ./voting_schemes/dummy/ruby-adapter/vendor/bundle
+          key: ${{ runner.OS }}-dummy-ruby-adapter-deps-${{ hashFiles('voting_schemes/dummy/ruby-adapter/Gemfile.lock') }}
           restore-keys: |
-            ${{ runner.OS }}-ruby-client-deps-${{ env.cache-name }}-
-            ${{ runner.OS }}-ruby-client-deps-
-            ${{ runner.OS }}-ruby-client-
+            ${{ runner.OS }}-dummy-ruby-adapter-deps-${{ env.cache-name }}-
+            ${{ runner.OS }}-dummy-ruby-adapter-deps-
+            ${{ runner.OS }}-dummy-ruby-adapter-
       - name: Install Ruby deps
         uses: nick-invision/retry@v1
         with:
           timeout_minutes: 10
           max_attempts: 3
-          command: cd bulletin_board/ruby-client && bundle install --path vendor/bundle --jobs 4 --retry 3
+          command: cd voting_schemes/dummy/ruby-adapter && bundle install --path vendor/bundle --jobs 4 --retry 3
       - name: Install Rubocop
         run: gem install rubocop
       - run: bundle exec rubocop -P
@@ -62,17 +62,17 @@ jobs:
       - name: Recover dependency cache
         uses: actions/cache@v1
         with:
-          path: ./bulletin_board/ruby-client/vendor/bundle
-          key: ${{ runner.OS }}-ruby-client-deps-${{ hashFiles('bulletin_board/ruby-client/Gemfile.lock') }}
+          path: ./voting_schemes/dummy/ruby-adapter/vendor/bundle
+          key: ${{ runner.OS }}-dummy-ruby-adapter-deps-${{ hashFiles('voting_schemes/dummy/ruby-adapter/Gemfile.lock') }}
           restore-keys: |
-            ${{ runner.OS }}-ruby-client-deps-${{ env.cache-name }}-
-            ${{ runner.OS }}-ruby-client-deps-
-            ${{ runner.OS }}-ruby-client-
+            ${{ runner.OS }}-dummy-ruby-adapter-deps-${{ env.cache-name }}-
+            ${{ runner.OS }}-dummy-ruby-adapter-deps-
+            ${{ runner.OS }}-dummy-ruby-adapter-
       - name: Install Ruby deps
         uses: nick-invision/retry@v1
         with:
           timeout_minutes: 10
           max_attempts: 3
-          command: cd bulletin_board/ruby-client && bundle install --path vendor/bundle --jobs 4 --retry 3
+          command: cd voting_schemes/dummy/ruby-adapter && bundle install --path vendor/bundle --jobs 4 --retry 3
       - name: Run tests
         run: bundler exec rspec

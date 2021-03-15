@@ -1,8 +1,8 @@
-name: "[CI] ElectionGuard Voting Scheme JS Adapter"
+name: "[CI] Electionguard Voting Scheme JS Adapter"
 on:
   pull_request:
     paths:
-      - ".github/workflows/app-workflow.yml"
+      - ".github/workflows/voting-scheme-electionguard-js-adapter-workflow.yml"
       - "voting_schemes/electionguard/js-adapter/**"
   push:
     branches:

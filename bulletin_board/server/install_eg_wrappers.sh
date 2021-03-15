@@ -9,5 +9,5 @@ echo "Update Pip"
 python3 -m pip install cryptography==3.2.1
 
 echo "Install Decidim ElectionGuard wrappers from the same repository"
-cd ../voting_schemes/electionguard/python-wrapper
+cd ../../voting_schemes/electionguard/python-wrapper
 python3 setup.py install
