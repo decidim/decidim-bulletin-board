@@ -40,16 +40,6 @@ test-bulletin-board: test_bulletin_board
 test_bulletin_board:
 	pipenv run python -m unittest tests/test_bulletin_board.py
 
-trustee: test_trustee
-test-trustee: test_trustee
-test_trustee:
-	pipenv run python -m unittest tests/test_trustee.py
-
-voter: test_voter
-test-voter: test_voter
-test_voter:
-	pipenv run python -m unittest tests/test_voter.py
-
 package:
 	pipenv run python setup.py sdist bdist_wheel
 

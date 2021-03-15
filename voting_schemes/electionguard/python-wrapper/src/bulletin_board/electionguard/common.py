@@ -1,7 +1,5 @@
 from dataclasses import dataclass
 import json
-import time
-from pathlib import Path
 from electionguard.election import CiphertextElectionContext
 from electionguard.manifest import Manifest, InternalManifest, ElectionType
 from electionguard.election_builder import ElectionBuilder
@@ -65,8 +63,8 @@ class ElectionStep(Generic[C]):
 
 
 class Recorder:
-    def __init__(self, output_path: Path):
-        self.output_path = output_path / f"{time.time()}.jsonl"
+    def __init__(self, output_path: str):
+        self.output_path = output_path
 
     def __enter__(self):
         self.file = open(self.output_path, "w")
