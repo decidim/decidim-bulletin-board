@@ -3,7 +3,7 @@
 set -e
 
 echo "Installing ElectionGuard dependencies"
-#sudo apt-get install -y libgmp-dev libmpfr-dev libmpc-dev libffi-dev
+sudo apt-get install -y libgmp-dev libmpfr-dev libmpc-dev libffi-dev
 
 echo "Update Pip"
 python3 -m pip install cryptography==3.2.1
