@@ -1,8 +1,8 @@
 {
   "schema": "http://localhost:8000/api",
-  "documents": "./app/**/*.gql",
+  "documents": "../js-client/**/*.gql",
   "generates": {
-    "./app/javascript/decidim-bulletin_board/types.d.ts": {
+    "../js-client/src/types.d.ts": {
       "plugins": [
         "typescript"
       ]
