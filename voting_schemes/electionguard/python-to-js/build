@@ -3,11 +3,16 @@
 SHARED_FOLDER=${1:-/host-tmp}
 HOST_SHARED_FOLDER=${1:-/tmp}
 
+# Copy electionguard package source to the packages folder
+cd ../electionguard-python
+make build
+cp dist/electionguard-*.tar.gz ../python-to-js/packages/electionguard/dist/
+
 # Copy bulletin_board-electionguard package source to the packages folder
 cd ../python-wrapper
 make install-linux 
 make package
-cp dist/bulletin_board-electionguard-*.tar.gz ../python-to-js/packages/bulletin_board-electionguard/
+cp dist/bulletin_board-electionguard-*.tar.gz ../python-to-js/packages/bulletin_board-electionguard/dist/
 
 # Copy everything needed to compile to the shared folder
 mkdir -p $SHARED_FOLDER/electionguard

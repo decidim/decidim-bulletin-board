@@ -7,20 +7,19 @@ from electionguard.ballot import (
 )
 from electionguard.ballot_validator import ballot_is_valid_for_election
 from electionguard.decrypt_with_shares import decrypt_selection_with_decryption_shares
-from electionguard.elgamal import elgamal_combine_public_keys
-from electionguard.group import ElementModP
-from electionguard.key_ceremony import PublicKeySet
+from electionguard.key_ceremony import combine_election_public_keys, ElectionPublicKey
 from electionguard.tally import (
     CiphertextTally,
     PlaintextTallySelection,
+    PlaintextTallyContest
 )
 from electionguard.types import CONTEST_ID, GUARDIAN_ID, SELECTION_ID
 from electionguard.utils import get_optional
 from .common import Content, Context, ElectionStep, Wrapper
 from .messages import (
+    TrusteeElectionKey,
     TrusteePartialKeys,
     TrusteeVerification,
-    JointElectionKey,
     TrusteeShare,
 )
 from .utils import (
@@ -32,12 +31,12 @@ from .dummy_scheduler import DummyScheduler
 
 
 class BulletinBoardContext(Context):
-    public_keys: Dict[GUARDIAN_ID, ElementModP]
+    trustee_election_keys: Dict[GUARDIAN_ID, TrusteeElectionKey]
     tally: CiphertextTally
     shares: Dict[GUARDIAN_ID, Dict]
 
     def __init__(self):
-        self.public_keys = {}
+        self.trustee_election_keys = {}
         self.has_joint_key = False
         self.shares = {}
 
@@ -76,13 +75,12 @@ class ProcessTrusteeElectionKeys(ElectionStep):
         message: Content,
         context: BulletinBoardContext,
     ) -> Tuple[List[Content], Optional[ElectionStep]]:
-        content = deserialize(message["content"], PublicKeySet)
-        guardian_id = content.owner_id
-        guardian_public_key = content.election_public_key
-        context.public_keys[guardian_id] = guardian_public_key
+        content = deserialize(message["content"], TrusteeElectionKey)
+        guardian_id = content.public_key_set.owner_id
+        context.trustee_election_keys[guardian_id] = content
         # TO-DO: verify keys?
 
-        if len(context.public_keys) == context.number_of_guardians:
+        if len(context.trustee_election_keys) == context.number_of_guardians:
             return [], ProcessTrusteeElectionPartialKeys()
         else:
             return [], None
@@ -133,15 +131,30 @@ class ProcessTrusteeVerification(ElectionStep):
         if len(self.verifications_received) < context.number_of_guardians:
             return [], None
 
-        joint_key = elgamal_combine_public_keys(context.public_keys.values())
-        context.election_builder.set_public_key(get_optional(joint_key))
+        election_commitments = {
+            guardian_id: trustee_election_key.coefficient_validation_set.coefficient_commitments
+            for guardian_id, trustee_election_key in context.trustee_election_keys.items()
+        }
+
+        election_public_keys = {
+            guardian_id: ElectionPublicKey(
+                owner_id=trustee_election_key.public_key_set.owner_id,
+                key=trustee_election_key.public_key_set.election_public_key,
+                proof=trustee_election_key.public_key_set.election_public_key_proof
+            )
+            for guardian_id, trustee_election_key in context.trustee_election_keys.items()
+        }
+
+        election_joint_key = combine_election_public_keys(election_commitments, election_public_keys)
+        context.election_builder.set_public_key(get_optional(election_joint_key.joint_public_key))
+        context.election_builder.set_commitment_hash(get_optional(election_joint_key.commitment_hash))
         context.election_metadata, context.election_context = get_optional(
             context.election_builder.build()
         )
         return [
             {
                 "message_type": "end_key_ceremony",
-                "content": serialize(JointElectionKey(joint_key=joint_key)),
+                "content": serialize(election_joint_key)
             }
         ], ProcessStartVote()
 
@@ -209,10 +222,13 @@ class ProcessTrusteeShare(ElectionStep):
 
         tally_shares = self._prepare_shares_for_decryption(context.shares)
         results: Dict[CONTEST_ID, Dict[SELECTION_ID, int]] = {}
+        content: Dict[CONTEST_ID, PlaintextTallyContest] = {}
 
-        for contest in context.tally.cast.values():
+        for contest in context.tally.contests.values():
             results[contest.object_id] = {}
-            for selection in contest.tally_selections.values():
+            selections: Dict[SELECTION_ID, PlaintextTallySelection] = {}
+
+            for selection in contest.selections.values():
                 selection_results: PlaintextTallySelection = (
                     decrypt_selection_with_decryption_shares(
                         selection,
@@ -220,11 +236,17 @@ class ProcessTrusteeShare(ElectionStep):
                         context.election_context.crypto_extended_base_hash,
                     )
                 )
+                selections[selection.object_id] = selection_results
+
                 results[contest.object_id][
                     selection.object_id
                 ] = selection_results.tally
 
-        return [{"message_type": "end_tally", "results": results}], None
+            content[contest.object_id] = PlaintextTallyContest(
+                contest.object_id, selections
+            )
+
+        return [{"message_type": "end_tally", "content": serialize(content), "results": results}], None
 
     def _prepare_shares_for_decryption(self, tally_shares):
         shares = defaultdict(dict)
@@ -251,5 +273,5 @@ class BulletinBoard(Wrapper[BulletinBoardContext]):
     def get_tally_cast(self) -> Dict:
         return {
             "message_type": "tally.cast",
-            "content": serialize(self.context.tally.cast),
+            "content": serialize(self.context.tally.contests),
         }

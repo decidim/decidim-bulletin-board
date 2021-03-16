@@ -9,7 +9,7 @@ pytest = "*"
 black = "*"
 
 [packages]
-electionguard = '==1.1.15'
+electionguard = {path = "./../electionguard-python/dist/electionguard-1.1.16-py3-none-any.whl"}
 jsons = '==1.2'
 
 [requires]
