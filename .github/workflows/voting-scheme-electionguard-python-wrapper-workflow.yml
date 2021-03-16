@@ -1,0 +1,43 @@
+name: "[CI] ElectionGuard Voting Scheme Python Wrapper"
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/voting-scheme-electionguard-python-wrapper-workflow.yml"
+      - "voting_schemes/electionguard/python-wrapper/**"
+  push:
+    branches:
+      - develop
+      - main
+
+env:
+  CI: "true"
+  SIMPLECOV: "true"
+  ACTIONS_ALLOW_UNSECURE_COMMANDS: "true"
+  PYTHON_VERSION: "3.8"
+
+defaults:
+  run:
+    working-directory: ./voting_schemes/electionguard/python-wrapper
+
+jobs:
+  tests:
+    name: Test code
+    runs-on: ubuntu-latest
+    steps:
+      - uses: rokroskar/workflow-run-cleanup-action@v0.3.2
+        if: "github.ref != 'refs/heads/develop'"
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 1
+          submodules: true
+      - uses: actions/setup-python@v2
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - name: Add Poetry to path
+        run: echo "$HOME/.poetry/bin" >> $GITHUB_PATH
+      - name: Install dependencies
+        run: make install-linux
+      - name: Run tests
+        run: make test

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cd decidim-bulletin_board-app
+cd bulletin_board/server
 
 # Install app dependencies
 MAKEFLAGS=-j4 gem install sassc # install sassc faster

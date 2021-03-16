@@ -1,0 +1,42 @@
+<%= stylesheet_link_tag "sandbox/vote" %>
+
+<div class="intro">
+  <div class="version">Bulletin Board Version <%= Decidim::BulletinBoard::VERSION %></div>
+
+  <h1>Vote for <%= election.title.values.first %></h1>
+</div>
+
+<div class="info">
+  <%= link_to "Back", sandbox_elections_path %>
+
+  <div class="voter"
+       data-election-unique-id="<%= election.unique_id %>"
+       data-api-endpoint-url="<%= bulletin_board_server %>"
+       data-authority-public-key="<%= authority_public_key %>"
+       data-voting-scheme-name="<%= election.voting_scheme_name %>">
+    <p>Voter Id: <input name="voter_id" value="<%= random_voter_id %>" style="width:20rem"></p>
+
+    <label>Vote content:
+      <textarea cols="100" rows="5"><%= base_vote %></textarea>
+    </label>
+
+    <p>
+      <button class="encrypt-vote">Encrypt vote</button>
+    </p>
+    <p class="benchmark"></p>
+    <p class="ballot-hash"></p>
+    <p>
+      <button class="audit-vote">Audit vote</button>
+      <button class="cast-vote">Cast vote</button>
+    </p>
+    <p>
+      <span class="done-message">Your vote has been casted successfully</span>
+      <span class="audit-done-message">Your vote has been audited successfully</span>
+    </p>
+    <p>
+      <a href="">Refresh</a>
+    </p>
+  </div>
+</div>
+
+<%= javascript_include_tag "sandbox/vote" %>

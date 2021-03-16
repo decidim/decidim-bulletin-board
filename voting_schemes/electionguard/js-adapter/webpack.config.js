@@ -6,8 +6,17 @@ module.exports = {
   mode: "production",
   entry: "./src/index.js",
   output: {
-    path: path.resolve(__dirname, "dist"),
-    filename: "electionguard-voting-scheme.js",
+    path: path.resolve(
+      __dirname,
+      "..",
+      "ruby-adapter",
+      "app",
+      "assets",
+      "javascripts",
+      "voting_schemes",
+      "electionguard"
+    ),
+    filename: "electionguard.js",
     library: "electionGuardVotingScheme",
     libraryTarget: "window",
   },

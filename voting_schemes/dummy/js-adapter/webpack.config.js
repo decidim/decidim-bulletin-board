@@ -6,8 +6,17 @@ module.exports = {
   mode: "production",
   entry: "./src/index.js",
   output: {
-    path: path.resolve(__dirname, "dist"),
-    filename: "dummy-voting-scheme.js",
+    path: path.resolve(
+      __dirname,
+      "..",
+      "ruby-adapter",
+      "app",
+      "assets",
+      "javascripts",
+      "voting_schemes",
+      "dummy"
+    ),
+    filename: "dummy.js",
     library: "dummyVotingScheme",
     libraryTarget: "window",
   },

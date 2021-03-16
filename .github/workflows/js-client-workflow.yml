@@ -1,0 +1,87 @@
+name: "[CI] JS Client"
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/js-client-workflow.yml"
+      - "bulletin_board/js-client/**"
+  push:
+    branches:
+      - develop
+      - main
+
+env:
+  CI: "true"
+  SIMPLECOV: "true"
+  ACTIONS_ALLOW_UNSECURE_COMMANDS: "true"
+  NODE_VERSION: "15"
+
+defaults:
+  run:
+    working-directory: ./bulletin_board/js-client
+
+jobs:
+  lint:
+    name: Lint code
+    runs-on: ubuntu-latest
+    steps:
+      - uses: rokroskar/workflow-run-cleanup-action@v0.3.2
+        if: "github.ref != 'refs/heads/develop'"
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+      - uses: actions/checkout@v2.0.0
+        with:
+          fetch-depth: 1
+      - uses: actions/setup-node@v2-beta
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - name: Recover packages cache
+        uses: actions/cache@v1
+        with:
+          path: ./bulletin_board/js-client/node_modules
+          key: ${{ runner.OS }}-js-client-deps-${{ hashFiles('bulletin_board/js-client/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.OS }}-js-client-deps-${{ env.cache-name }}-
+            ${{ runner.OS }}-js-client-deps-
+            ${{ runner.OS }}-js-client-
+      - name: Install Javascript deps
+        uses: nick-invision/retry@v1
+        with:
+          timeout_minutes: 10
+          max_attempts: 3
+          command: cd bulletin_board/js-client && npm ci
+      - run: npm run lint
+        name: Lint JS files
+      - run: npm run format
+        name: Format JS files
+  unit-tests:
+    name: Unit tests
+    needs: lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: rokroskar/workflow-run-cleanup-action@v0.3.2
+        if: "github.ref != 'refs/heads/develop'"
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+      - uses: actions/checkout@v2.0.0
+        with:
+          fetch-depth: 1
+      - uses: actions/setup-node@v2-beta
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - name: Recover packages cache
+        uses: actions/cache@v1
+        with:
+          path: ./bulletin_board/js-client/node_modules
+          key: ${{ runner.OS }}-js-client-deps-${{ hashFiles('bulletin_board/js-client/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.OS }}-js-client-deps-${{ env.cache-name }}-
+            ${{ runner.OS }}-js-client-deps-
+            ${{ runner.OS }}-js-client-
+      - name: Install Javascript deps
+        uses: nick-invision/retry@v1
+        with:
+          timeout_minutes: 10
+          max_attempts: 3
+          command: cd bulletin_board/js-client && npm ci
+      - name: Run Jest tests
+        run: npm run test

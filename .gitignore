@@ -5,38 +5,42 @@
 #   git config --global core.excludesfile '~/.gitignore_global'
 
 # Ignore bundler config.
-/decidim-bulletin_board-app/.bundle
+/bulletin_board/server/.bundle
 
 # Ignore all logfiles and tempfiles.
-/decidim-bulletin_board-app/log/*
-/decidim-bulletin_board-app/tmp/*
-!/decidim-bulletin_board-app/log/.keep
-!/decidim-bulletin_board-app/tmp/.keep
+/bulletin_board/server/log/*
+/bulletin_board/server/tmp/*
+!/bulletin_board/server/log/.keep
+!/bulletin_board/server/tmp/.keep
 
 # Ignore pidfiles, but keep the directory.
-/decidim-bulletin_board-app/tmp/pids/*
-!/decidim-bulletin_board-app/tmp/pids/
-!/decidim-bulletin_board-app/tmp/pids/.keep
+/bulletin_board/server/tmp/pids/*
+!/bulletin_board/server/tmp/pids/
+!/bulletin_board/server/tmp/pids/.keep
 
 # Ignore uploaded files in development.
-/decidim-bulletin_board-app/storage/*
-!/decidim-bulletin_board-app/storage/.keep
+/bulletin_board/server/storage/*
+!/bulletin_board/server/storage/.keep
 
-/decidim-bulletin_board-app/public/assets
-/decidim-bulletin_board-app/.byebug_history
+/bulletin_board/server/public/assets
+/bulletin_board/server/.byebug_history
 
-/decidim-bulletin_board-app/public/packs
-/decidim-bulletin_board-app/public/packs-test
-/decidim-bulletin_board-app/node_modules
-/decidim-bulletin_board-app/.rubocop-https---raw-githubusercontent-com-decidim-decidim-*
-/decidim-bulletin_board-app/spec/examples.txt
-/decidim-bulletin_board-app/coverage
-/decidim-bulletin_board-app/electionguard.log
-/decidim-bulletin_board-app/cypress/screenshots/
-/decidim-bulletin_board-app/cypress/videos/
-/decidim-bulletin_board-app/cypress/downloads/
+/bulletin_board/server/public/packs
+/bulletin_board/server/public/packs-test
+/bulletin_board/server/node_modules
+/bulletin_board/server/spec/examples.txt
+/bulletin_board/server/coverage
+/bulletin_board/server/electionguard.log
+/bulletin_board/server/cypress/screenshots/
+/bulletin_board/server/cypress/videos/
+/bulletin_board/server/cypress/downloads/
 
 /voting_schemes/dummy/js-adapter/dist
 /voting_schemes/dummy/js-adapter/node_modules
 /voting_schemes/electionguard/js-adapter/dist
 /voting_schemes/electionguard/js-adapter/node_modules
+
+/bulletin_board/js-client/node_modules
+
+# Ignore rubocop rules from decidim
+.rubocop-https---raw-githubusercontent-com-decidim-decidim-*

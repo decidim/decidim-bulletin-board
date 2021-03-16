@@ -1,0 +1,86 @@
+name: "[CI] ElectionGuard Voting Scheme Ruby Adapter"
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/voting-scheme-electionguard-ruby-adapter-workflow.yml"
+      - "voting_schemes/electionguard/ruby-adapter/**"
+  push:
+    branches:
+      - develop
+      - main
+
+env:
+  CI: "true"
+  SIMPLECOV: "true"
+  RUBY_VERSION: 2.6.6
+
+defaults:
+  run:
+    working-directory: ./voting_schemes/electionguard/ruby-adapter
+
+jobs:
+  lint:
+    name: Lint code
+    runs-on: ubuntu-latest
+    steps:
+      - uses: rokroskar/workflow-run-cleanup-action@v0.3.2
+        if: "github.ref != 'refs/heads/develop'"
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+      - uses: actions/checkout@v2.0.0
+        with:
+          fetch-depth: 1
+      - uses: ruby/setup-ruby@master
+        with:
+          ruby-version: ${{ env.RUBY_VERSION }}
+      - name: Recover dependency cache
+        uses: actions/cache@v1
+        with:
+          path: ./voting_schemes/electionguard/ruby-adapter/vendor/bundle
+          key: ${{ runner.OS }}-electionguard-ruby-adapter-deps-${{ hashFiles('voting_schemes/electionguard/ruby-adapter/Gemfile.lock') }}
+          restore-keys: |
+            ${{ runner.OS }}-electionguard-ruby-adapter-deps-${{ env.cache-name }}-
+            ${{ runner.OS }}-electionguard-ruby-adapter-deps-
+            ${{ runner.OS }}-electionguard-ruby-adapter-
+      - name: Install Ruby deps
+        uses: nick-invision/retry@v1
+        with:
+          timeout_minutes: 10
+          max_attempts: 3
+          command: cd voting_schemes/electionguard/ruby-adapter && bundle install --path vendor/bundle --jobs 4 --retry 3
+      - name: Install Rubocop
+        run: gem install rubocop
+      - run: bundle exec rubocop -P
+        name: Lint Ruby files
+  rspec-test:
+    name: RSpec tests
+    needs: lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: rokroskar/workflow-run-cleanup-action@v0.3.2
+        if: "github.ref != 'refs/heads/develop'"
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+      - uses: actions/checkout@v2.0.0
+        with:
+          fetch-depth: 1
+      - uses: ruby/setup-ruby@master
+        with:
+          ruby-version: ${{ env.RUBY_VERSION }}
+      - name: Recover dependency cache
+        uses: actions/cache@v1
+        with:
+          path: ./voting_schemes/electionguard/ruby-adapter/vendor/bundle
+          key: ${{ runner.OS }}-electionguard-ruby-adapter-deps-${{ hashFiles('voting_schemes/electionguard/ruby-adapter/Gemfile.lock') }}
+          restore-keys: |
+            ${{ runner.OS }}-electionguard-ruby-adapter-deps-${{ env.cache-name }}-
+            ${{ runner.OS }}-electionguard-ruby-adapter-deps-
+            ${{ runner.OS }}-electionguard-ruby-adapter-
+      - name: Install Ruby deps
+        uses: nick-invision/retry@v1
+        with:
+          timeout_minutes: 10
+          max_attempts: 3
+          command: cd voting_schemes/electionguard/ruby-adapter && bundle install --path vendor/bundle --jobs 4 --retry 3
+      - name: Run tests
+        run: bundler exec rspec
