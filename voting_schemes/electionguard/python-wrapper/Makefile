@@ -16,10 +16,10 @@ install-apt:
 	sudo apt-get install libmpc-dev
 
 install-deps:
-	python -m pip install --upgrade pip
+	python3 -m pip install --upgrade pip
 	pip install pipenv
 	pipenv install --dev
-	python -m pip install --user --upgrade twine
+	python3 -m pip install --user --upgrade twine
 
 format:
 	pipenv run black .

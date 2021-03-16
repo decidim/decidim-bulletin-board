@@ -24,7 +24,7 @@ class TestBulletinBoard(unittest.TestCase):
                 "key_ceremony.trustee_partial_election_keys",
                 {
                     "content": serialize(
-                        TrusteePartialKeys(guardian_id=trustee["name"], partial_keys=[])
+                        TrusteePartialKeys(guardian_id=trustee["slug"], partial_keys=[])
                     )
                 },
             )
@@ -35,7 +35,7 @@ class TestBulletinBoard(unittest.TestCase):
                 {
                     "content": serialize(
                         TrusteeVerification(
-                            guardian_id=trustee["name"], verifications=[]
+                            guardian_id=trustee["slug"], verifications=[]
                         )
                     )
                 },

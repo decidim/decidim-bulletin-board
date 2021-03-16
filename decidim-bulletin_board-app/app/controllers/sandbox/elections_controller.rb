@@ -113,7 +113,7 @@ module Sandbox
       @trustees ||= Trustee.first(3).map do |trustee|
         {
           name: trustee.name,
-          slug: trustee.unique_id,
+          slug: trustee.slug,
           public_key: trustee.public_key
         }
       end

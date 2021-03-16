@@ -8,9 +8,9 @@ def create_election_test_message():
     return {
         "scheme": {"name": "electionguard", "quorum": 2},
         "trustees": [
-            {"name": "alicia", "public_key": "..."},
-            {"name": "bob", "public_key": "..."},
-            {"name": "clara", "public_key": "..."},
+            {"slug": "alicia", "public_key": "..."},
+            {"slug": "bob", "public_key": "..."},
+            {"slug": "clara", "public_key": "..."},
         ],
         "description": {
             "name": {"text": [{"value": "Test election", "language": "en"}]},

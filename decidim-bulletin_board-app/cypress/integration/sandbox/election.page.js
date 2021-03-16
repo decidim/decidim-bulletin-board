@@ -101,7 +101,9 @@ export class ElectionPage {
             .find(".private-key-input")
             .attachFile(
               {
-                filePath: `../../lib/assets/${unique_id}-private-key.jwk`,
+                filePath: `../../lib/assets/${unique_id
+                  .split(/[. ]+/)
+                  .pop()}-private-key.jwk`,
               },
               {
                 force: true,
@@ -318,7 +320,9 @@ export class ElectionPage {
             .find(".restore-button-input")
             .attachFile(
               {
-                filePath: `../downloads/${unique_id}-election-decidim-test-authority.${electionUniqueId}.bak`,
+                filePath: `../downloads/${unique_id
+                  .split(/[. ]+/)
+                  .pop()}-election-decidim-test-authority.${electionUniqueId}.bak`,
               },
               {
                 force: true,
@@ -395,7 +399,7 @@ export class ElectionPage {
     const totals = {};
 
     for (i in flatVotes) {
-      totals[flatVotes[i]] = (totals[flatVotes[i]] || 0) + 1; //increments count if element already exists
+      totals[flatVotes[i]] = (totals[flatVotes[i]] || 0) + 1; // increments count if element already exists
     }
 
     for (answer in Object.keys(totals)) {
