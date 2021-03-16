@@ -28,11 +28,15 @@ class ElectionguardTestData
     end
 
     def outputs
-      map { |m| m["out"] }
+      flat_map { |m| m["out"] }
     end
 
-    def contents
+    def input_contents
       inputs.map { |m| m["content"] && JSON.parse(m["content"]) }
+    end
+
+    def output_contents
+      outputs.map { |m| m["content"] && JSON.parse(m["content"]) }
     end
   end
 
@@ -57,19 +61,19 @@ class ElectionguardTestData
   end
 
   def self.trustee_ids
-    messages.by("Trustee").of_type("key_ceremony.trustee_election_keys").contents.map { |x| x["owner_id"] }.uniq.sort
+    messages.by("Trustee").of_type("start_key_ceremony").output_contents.map { |x| x["public_key_set"]["owner_id"] }.uniq.sort
   end
 
   def self.trustee_election_keys
-    messages.by("Trustee").of_type("key_ceremony.trustee_election_keys").inputs.group_by { |x| JSON.parse(x["content"])["owner_id"] }.map { |_k, v| v[0] }.sort_by { |x| JSON.parse(x["content"])["owner_id"] }
+    messages.by("Trustee").of_type("start_key_ceremony").outputs.sort_by { |x| JSON.parse(x["content"])["public_key_set"]["owner_id"] }
   end
 
   def self.trustee_partial_election_keys
-    messages.by("Trustee").of_type("key_ceremony.trustee_partial_election_keys").inputs.group_by { |x| JSON.parse(x["content"])["guardian_id"] }.map { |_k, v| v[0] }.sort_by { |x| JSON.parse(x["content"])["guardian_id"] }
+    messages.by("Trustee").of_type("key_ceremony.trustee_election_keys").outputs.sort_by { |x| JSON.parse(x["content"])["guardian_id"] }
   end
 
   def self.trustee_verifications
-    messages.by("Trustee").of_type("key_ceremony.trustee_verification").inputs.group_by { |x| JSON.parse(x["content"])["guardian_id"] }.map { |_k, v| v[0] }.sort_by { |x| JSON.parse(x["content"])["guardian_id"] }
+    messages.by("Trustee").of_type("key_ceremony.trustee_partial_election_keys").outputs.sort_by { |x| JSON.parse(x["content"])["guardian_id"] }
   end
 
   def self.end_key_ceremony
