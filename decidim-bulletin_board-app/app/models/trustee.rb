@@ -5,7 +5,7 @@ class Trustee < Client
   has_many :elections, through: :election_trustees
 
   def slug
-    unique_id.split(".").last
+    unique_id.split(".", 2).last
   end
 
   def author?(message_identifier)
