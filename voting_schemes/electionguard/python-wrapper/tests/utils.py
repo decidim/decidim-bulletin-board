@@ -144,11 +144,9 @@ INTEGRATION_RESULTS_MESSAGES = read_messages(Path(".") / "integration_results.js
 
 
 def integration_results_messages(message_type):
-    return [
-        message["out"]
-        for message in INTEGRATION_RESULTS_MESSAGES
-        if message["message_type"] == message_type
-    ]
+    return sum((message["out"]
+                for message in INTEGRATION_RESULTS_MESSAGES
+                if message["message_type"] == message_type), [])
 
 
 def integration_results_message(message_type):
