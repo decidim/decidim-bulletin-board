@@ -75,7 +75,7 @@ FactoryBot.define do
         authority { Authority.first }
       end
 
-      slug { authority.unique_id }
+      slug { authority.slug }
       name { authority.name }
       public_key { authority.public_key }
     end
@@ -166,7 +166,7 @@ FactoryBot.define do
         authority { Authority.first }
       end
 
-      message_id { "#{election.unique_id}.start_key_ceremony+a.#{authority.unique_id}" }
+      message_id { "#{election.unique_id}.start_key_ceremony+a.#{authority.slug}" }
     end
 
     factory :key_ceremony_message, parent: :message do
@@ -207,7 +207,7 @@ FactoryBot.define do
         election { create(:election) }
       end
 
-      message_id { "#{election.unique_id}.end_key_ceremony+b.#{BulletinBoard.unique_id}" }
+      message_id { "#{election.unique_id}.end_key_ceremony+b.#{BulletinBoard.slug}" }
       content { build(:joint_election_message_content, *content_traits, election: election).to_json }
     end
 
@@ -225,7 +225,7 @@ FactoryBot.define do
         authority { Authority.first }
       end
 
-      message_id { "#{election.unique_id}.start_vote+a.#{authority.unique_id}" }
+      message_id { "#{election.unique_id}.start_vote+a.#{authority.slug}" }
     end
 
     factory :vote_message, parent: :message do
@@ -272,7 +272,7 @@ FactoryBot.define do
         authority { Authority.first }
       end
 
-      message_id { "#{election.unique_id}.end_vote+a.#{authority.unique_id}" }
+      message_id { "#{election.unique_id}.end_vote+a.#{authority.slug}" }
     end
 
     factory :start_tally_message, parent: :message do
@@ -281,7 +281,7 @@ FactoryBot.define do
         authority { Authority.first }
       end
 
-      message_id { "#{election.unique_id}.start_tally+a.#{authority.unique_id}" }
+      message_id { "#{election.unique_id}.start_tally+a.#{authority.slug}" }
     end
 
     factory :tally_cast_message, parent: :message do
@@ -290,7 +290,7 @@ FactoryBot.define do
         joint_election_key { Test::Elections.joint_election_key }
       end
 
-      message_id { "#{election.unique_id}.tally.cast+b.#{BulletinBoard.unique_id}" }
+      message_id { "#{election.unique_id}.tally.cast+b.#{BulletinBoard.slug}" }
       content { Test::Elections.build_cast(election) { Random.random_number(99) + Random.random_number(13) * joint_election_key }.to_json }
     end
 
@@ -345,7 +345,7 @@ FactoryBot.define do
         tally_cast { Test::Elections.build_cast(election) { Random.random_number(99) + Random.random_number(13) * joint_election_key } }
       end
 
-      message_id { "#{election.unique_id}.end_tally+b.#{BulletinBoard.unique_id}" }
+      message_id { "#{election.unique_id}.end_tally+b.#{BulletinBoard.slug}" }
 
       after(:build) do |message, evaluator|
         message[:results] = evaluator.tally_cast.map do |question, answers|
@@ -368,7 +368,7 @@ FactoryBot.define do
         authority { Authority.first }
       end
 
-      message_id { "#{election.unique_id}.publish_results+a.#{authority.unique_id}" }
+      message_id { "#{election.unique_id}.publish_results+a.#{authority.slug}" }
     end
   end
 end
