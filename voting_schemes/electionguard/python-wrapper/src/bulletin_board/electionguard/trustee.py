@@ -3,17 +3,17 @@ from electionguard.decryption_share import (
     CiphertextDecryptionContest,
     CiphertextDecryptionSelection,
 )
-from electionguard.key_ceremony import PublicKeySet
 from electionguard.guardian import Guardian
+from electionguard.key_ceremony import ElectionJointKey
 from electionguard.tally import CiphertextTallyContest
 from electionguard.types import CONTEST_ID, GUARDIAN_ID, SELECTION_ID
 from electionguard.utils import get_optional
 from typing import Dict, Set, List, Optional, Literal, Tuple
 from .common import Context, ElectionStep, Wrapper, Content
 from .messages import (
+    TrusteeElectionKey,
     TrusteePartialKeys,
     TrusteeVerification,
-    JointElectionKey,
     TrusteeShare,
 )
 from .utils import pair_with_object_id, serialize, deserialize
@@ -65,7 +65,10 @@ class ProcessStartKeyCeremony(ElectionStep):
         return [
             {
                 "message_type": "key_ceremony.trustee_election_keys",
-                "content": serialize(context.guardian.share_public_keys()),
+                "content": serialize(TrusteeElectionKey(
+                    public_key_set=context.guardian.share_public_keys(),
+                    coefficient_validation_set=context.guardian.share_coefficient_validation_set()
+                )),
             }
         ], ProcessTrusteeElectionKeys()
 
@@ -80,12 +83,12 @@ class ProcessTrusteeElectionKeys(ElectionStep):
         message: Content,
         context: TrusteeContext,
     ) -> Tuple[List[Content], Optional[ElectionStep]]:
-        content = deserialize(message["content"], PublicKeySet)
+        content = deserialize(message["content"], TrusteeElectionKey)
 
-        if content.owner_id == context.guardian_id:
+        if content.public_key_set.owner_id == context.guardian_id:
             self.mine_received = True
         else:
-            context.guardian.save_guardian_public_keys(content)
+            context.guardian.save_guardian_public_keys(content.public_key_set)
 
         if not self.mine_received or not context.guardian.all_public_keys_received():
             return [], None
@@ -191,8 +194,9 @@ class ProcessEndKeyCeremony(ElectionStep):
         message: Content,
         context: TrusteeContext,
     ) -> Tuple[List[Content], ElectionStep]:
-        joint_key = deserialize(message["content"], JointElectionKey)
-        context.election_builder.set_public_key(get_optional(joint_key.joint_key))
+        election_joint_key = deserialize(message["content"], ElectionJointKey)
+        context.election_builder.set_public_key(get_optional(election_joint_key.joint_public_key))
+        context.election_builder.set_commitment_hash(get_optional(election_joint_key.commitment_hash))
         context.election_metadata, context.election_context = get_optional(
             context.election_builder.build()
         )
@@ -224,7 +228,7 @@ class ProcessTallyCast(ElectionStep):
                         context.guardian, selection, context.election_context
                     )
                 )
-                for (_, selection) in contest.tally_selections.items()
+                for (_, selection) in contest.selections.items()
             )
 
             contests[contest.object_id] = CiphertextDecryptionContest(
