@@ -68,7 +68,7 @@ class BulletinBoard
       true
     end
 
-    def unique_id
+    def slug
       name.parameterize
     end
 
