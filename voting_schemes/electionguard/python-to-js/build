@@ -14,7 +14,7 @@ cd ../python-wrapper
 if [ $OS = "Linux" ]; then
   make install-linux
 else
- make install-mac
+  make install-mac
 fi
 make package
 cp dist/bulletin_board-electionguard-*.tar.gz ../python-to-js/packages/bulletin_board-electionguard/dist/

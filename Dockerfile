@@ -45,8 +45,8 @@ ADD voting_schemes/electionguard/python-wrapper /voting_schemes/electionguard/py
 # Install python dependencies
 RUN git clone https://github.com/pyenv/pyenv.git ~/.pyenv
 RUN pyenv install $PYTHON_VERSION && pyenv global $PYTHON_VERSION
-ADD bulletin_board/server/install_eg_wrappers_no_sudo.sh /code/bulletin_board/tmp/install_eg_wrappers_no_sudo.sh
-RUN cd /code/bulletin_board/tmp && ./install_eg_wrappers_no_sudo.sh
+ADD bulletin_board/server/install_eg_wrappers.sh /code/bulletin_board/tmp/install_eg_wrappers.sh
+RUN cd /code/bulletin_board/tmp && ./install_eg_wrappers.sh
 
 # Add application source code
 ADD bulletin_board/server /code/bulletin_board/server

@@ -9,8 +9,7 @@ module.exports = {
     path: path.resolve(
       __dirname,
       "..",
-
-      "decidim-bulletin_board-ruby",
+      "ruby-client",
       "app",
       "assets",
       "javascripts",
