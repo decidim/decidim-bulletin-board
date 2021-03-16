@@ -60,6 +60,10 @@ module Decidim
         @message_id
       end
 
+      def unique_trustee_id(authority_slug, trustee_name)
+        "#{authority_slug}.#{trustee_name}"
+      end
+
       class << self
         def format(unique_election_id, type_subtype, author_type, author_id)
           "#{unique_election_id}.#{type_subtype}+#{INVERTED_AUTHOR_TYPE[author_type]}.#{author_id}"

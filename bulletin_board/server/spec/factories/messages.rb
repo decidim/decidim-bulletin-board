@@ -65,8 +65,8 @@ FactoryBot.define do
     end
 
     factory :json_bulletin_board do
-      name { "bulletin-board" }
-      pretty_name { "Bulletin Board" }
+      slug { "bulletin-board" }
+      name { "Bulletin Board" }
       public_key { BulletinBoard.public_key }
     end
 
@@ -75,8 +75,8 @@ FactoryBot.define do
         authority { Authority.first }
       end
 
-      name { authority.unique_id }
-      pretty_name { authority.name }
+      slug { authority.unique_id }
+      name { authority.name }
       public_key { authority.public_key }
     end
 
@@ -86,8 +86,8 @@ FactoryBot.define do
         private_key { Test::PrivateKeys.trustees_private_keys.first }
       end
 
-      name { pretty_name.parameterize }
-      pretty_name { trustee.name }
+      slug { name.parameterize }
+      name { trustee.name }
       public_key { private_key.export }
     end
 
@@ -179,9 +179,9 @@ FactoryBot.define do
       message_id do
         case voting_scheme
         when :dummy
-          "#{election.unique_id}.key_ceremony.step_1+t.#{trustee.unique_id}"
+          "#{election.unique_id}.key_ceremony.step_1+t.#{trustee.slug}"
         else
-          "#{election.unique_id}.key_ceremony.trustee_election_keys+t.#{trustee.unique_id}"
+          "#{election.unique_id}.key_ceremony.trustee_election_keys+t.#{trustee.slug}"
         end
       end
       content { build(:key_ceremony_message_content, *content_traits, election: election, trustee: trustee).to_json }
@@ -193,7 +193,7 @@ FactoryBot.define do
         trustee { Trustee.first }
       end
 
-      owner_id { trustee.unique_id }
+      owner_id { trustee.slug }
       sequence_order { election.manifest["trustees"].find_index { |trustee_json| trustee_json["name"] == trustee.name } }
       election_public_key { Test::Elections.trustees_election_keys.first }
 
@@ -303,7 +303,7 @@ FactoryBot.define do
         election_public_key { Test::Elections.trustees_election_keys.first }
       end
 
-      message_id { "#{election.unique_id}.tally.share+t.#{trustee.unique_id}" }
+      message_id { "#{election.unique_id}.tally.share+t.#{trustee.slug}" }
       content { build(:tally_share_message_content, *content_traits, election: election, trustee: trustee, tally_cast: tally_cast, election_public_key: election_public_key).to_json }
     end
 
@@ -316,7 +316,7 @@ FactoryBot.define do
         election_public_key { Test::Elections.trustees_election_keys.first }
       end
 
-      owner_id { trustee.unique_id }
+      owner_id { trustee.slug }
 
       trait :invalid do
         owner_id { "wrong_trustee" }

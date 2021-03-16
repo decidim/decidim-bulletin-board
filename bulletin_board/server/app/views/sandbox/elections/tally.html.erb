@@ -27,7 +27,7 @@
     </thead>
     <tbody>
       <% election.trustees.each do |trustee| %>
-        <tr data-unique-id="<%= trustee.unique_id %>" data-public-key="<%= trustee.public_key.to_json %>">
+        <tr data-unique-id="<%= trustee.slug %>" data-public-key="<%= trustee.public_key.to_json %>">
           <td><%= trustee.unique_id %></td>
           <td><%= trustee.name %></td>
           <td>

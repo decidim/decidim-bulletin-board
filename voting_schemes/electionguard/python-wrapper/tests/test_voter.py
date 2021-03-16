@@ -4,6 +4,7 @@ from .utils import (
     joint_election_key_test_message,
     deterministic_encrypted_ballot,
     remove_unused,
+    joint_election_key_test_number
 )
 from bulletin_board.electionguard.voter import Voter
 
@@ -43,7 +44,7 @@ class TestVoter(unittest.TestCase):
             "end_key_ceremony", joint_election_key_test_message()
         )
 
-        encrypted_ballot = self.voter.encrypt(
+        auditable_data, encrypted_ballot = self.voter.encrypt(
             {
                 "question1": ["question1-no-selection"],
                 "question2": [
@@ -51,7 +52,7 @@ class TestVoter(unittest.TestCase):
                     "question2-fourth-project-selection",
                 ],
             },
-            deterministic=True,
+            master_nonce=joint_election_key_test_number(),
         )
 
         self.assertEqual(

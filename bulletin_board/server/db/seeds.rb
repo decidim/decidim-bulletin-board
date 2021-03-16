@@ -105,6 +105,7 @@ Authority.create!(
 Test::PrivateKeys.trustees_public_keys.each_with_index.map do |trustee_public_key, index|
   Trustee.create!(
     name: "Decidim Test Trustee #{index + 1}",
+    unique_id: "decidim-test-authority.decidim-test-trustee-#{index + 1}",
     public_key: trustee_public_key,
     public_key_thumbprint: Decidim::BulletinBoard::JwkUtils.thumbprint(trustee_public_key)
   )

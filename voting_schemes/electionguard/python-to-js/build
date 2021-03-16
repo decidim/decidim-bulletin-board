@@ -5,7 +5,8 @@ HOST_SHARED_FOLDER=${1:-/tmp}
 
 # Copy bulletin_board-electionguard package source to the packages folder
 cd ../python-wrapper
-make install-linux package
+make install-linux 
+make package
 cp dist/bulletin_board-electionguard-*.tar.gz ../python-to-js/packages/bulletin_board-electionguard/
 
 # Copy everything needed to compile to the shared folder

@@ -42,7 +42,7 @@ class ProcessCreateElection(ElectionStep):
         context.build_election(message)
 
         guardian_ids: List[GUARDIAN_ID] = [
-            trustee["name"] for trustee in message["trustees"]
+            trustee["slug"] for trustee in message["trustees"]
         ]
         context.guardian_ids = set(guardian_ids)
         order = guardian_ids.index(context.guardian_id)

@@ -10,6 +10,10 @@ class Client < ApplicationRecord
     self.unique_id ||= name&.parameterize
   end
 
+  def author?(message_identifier)
+    message_identifier.author_id == self.unique_id
+  end
+
   def authority?
     false
   end
