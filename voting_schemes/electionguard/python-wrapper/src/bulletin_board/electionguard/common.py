@@ -1,13 +1,7 @@
 from dataclasses import dataclass
 import json
-import time
-from pathlib import Path
-from electionguard.election import (
-    CiphertextElectionContext,
-    ElectionDescription,
-    ElectionType,
-    InternalElectionDescription,
-)
+from electionguard.election import CiphertextElectionContext
+from electionguard.manifest import Manifest, InternalManifest, ElectionType
 from electionguard.election_builder import ElectionBuilder
 from typing import Generic, List, Optional, Tuple, TypeVar, TypedDict
 import logging as log
@@ -20,15 +14,15 @@ except:  # noqa: E722
 
 
 class Context:
-    election: ElectionDescription
+    election: Manifest
     election_builder: ElectionBuilder
-    election_metadata: InternalElectionDescription
+    election_metadata: InternalManifest
     election_context: CiphertextElectionContext
     number_of_guardians: int
     quorum: int
 
     def build_election(self, election_creation: dict):
-        self.election = ElectionDescription.from_json_object(
+        self.election = Manifest.from_json_object(
             complete_election_description(election_creation["description"])
         )
 
@@ -69,8 +63,8 @@ class ElectionStep(Generic[C]):
 
 
 class Recorder:
-    def __init__(self, output_path: Path):
-        self.output_path = output_path / f"{time.time()}.jsonl"
+    def __init__(self, output_path: str):
+        self.output_path = output_path
 
     def __enter__(self):
         self.file = open(self.output_path, "w")
@@ -84,14 +78,14 @@ class Recorder:
         wrapper_name: str,
         message_type: str,
         message: Optional[Content],
-        result: Optional[Content],
+        responses: List[Content],
     ):
         json.dump(
             {
                 "wrapper": wrapper_name,
                 "in": message,
                 "message_type": message_type,
-                "out": result,
+                "out": responses,
             },
             self.file,
         )
@@ -114,23 +108,22 @@ class Wrapper(Generic[C]):
             log.warning(f"{self.__class__.__name__} skipping message `{message_type}`")
             return []
 
-        results, next_step = self.step.process_message(
+        responses, next_step = self.step.process_message(
             message_type, message, self.context
         )
 
         if self.recorder:
-            for result in results:
-                self.recorder.record(
-                    self.__class__.__name__,
-                    message_type=message_type,
-                    message=message,
-                    result=result,
-                )
+            self.recorder.record(
+                self.__class__.__name__,
+                message_type=message_type,
+                message=message,
+                responses=responses,
+            )
 
         if next_step:
             self.step = next_step
 
-        return results
+        return responses
 
     def is_fresh(self) -> bool:
         return isinstance(self.step, self.starting_step)

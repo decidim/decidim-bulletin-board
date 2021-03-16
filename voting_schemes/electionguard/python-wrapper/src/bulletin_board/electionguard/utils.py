@@ -55,6 +55,7 @@ def complete_election_description(election_description: dict) -> dict:
             },
             "election_scope_id": "test-election",
             "type": "special",
+            "spec_version": "v0.95",
             "geopolitical_units": [
                 {
                     "object_id": "a-place",

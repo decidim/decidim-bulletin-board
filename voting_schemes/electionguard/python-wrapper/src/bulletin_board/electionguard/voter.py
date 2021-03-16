@@ -4,17 +4,17 @@ from electionguard.ballot import (
     PlaintextBallotSelection,
 )
 from electionguard.encrypt import encrypt_ballot, selection_from
-from electionguard.group import ElementModQ, ElementModP
+from electionguard.group import ElementModQ
+from electionguard.key_ceremony import ElectionJointKey
 from electionguard.utils import get_optional
 from typing import List, Tuple
 
 from .common import Context, ElectionStep, Wrapper, Content
-from .messages import JointElectionKey
 from .utils import MissingJointKey, deserialize, serialize, remove_nonces
 
 
 class VoterContext(Context):
-    joint_key: ElementModP = None
+    election_joint_key: ElectionJointKey = None
 
 
 class ProcessCreateElection(ElectionStep):
@@ -33,8 +33,9 @@ class ProcessEndKeyCeremony(ElectionStep):
     def process_message(
         self, message_type: str, message: Content, context: VoterContext
     ) -> Tuple[List[Content], ElectionStep]:
-        context.joint_key = deserialize(message["content"], JointElectionKey).joint_key
-        context.election_builder.set_public_key(get_optional(context.joint_key))
+        context.election_joint_key = deserialize(message["content"], ElectionJointKey)
+        context.election_builder.set_public_key(get_optional(context.election_joint_key.joint_public_key))
+        context.election_builder.set_commitment_hash(get_optional(context.election_joint_key.commitment_hash))
         context.election_metadata, context.election_context = get_optional(
             context.election_builder.build()
         )
@@ -58,7 +59,7 @@ class Voter(Wrapper[VoterContext]):
         self.ballot_id = ballot_id
 
     def encrypt(self, ballot: dict, master_nonce: int = None) -> dict:
-        if not self.context.joint_key:
+        if not self.context.election_joint_key:
             raise MissingJointKey()
 
         ballot_style: str = self.context.election.ballot_styles[0].object_id

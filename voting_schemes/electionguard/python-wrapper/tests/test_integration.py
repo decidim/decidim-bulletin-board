@@ -22,9 +22,7 @@ NUMBER_OF_VOTERS = 10
 
 class TestIntegration(unittest.TestCase):
     def test_complete(self):
-        out = Path("./integration_results")
-        out.mkdir(parents=True, exist_ok=True)
-        with Recorder(output_path=out) as recorder:
+        with Recorder(output_path=Path(".") / "integration_results.jsonl") as recorder:
             self.reset_state = False
             self.show_output = True
             self.configure_election(recorder)
@@ -79,12 +77,14 @@ class TestIntegration(unittest.TestCase):
         for trustee in self.trustees:
             trustee.process_message("create_election", self.election_message)
 
+        self.checkpoint("CREATE ELECTION")
+
         trustees_public_keys = [
             trustee.process_message("start_key_ceremony", None)[0]
             for trustee in self.trustees
         ]
 
-        self.checkpoint("CREATE ELECTION")
+        self.checkpoint("PUBLIC KEYS", trustees_public_keys)
 
         for public_keys in trustees_public_keys:
             self.bulletin_board.process_message(
@@ -106,8 +106,6 @@ class TestIntegration(unittest.TestCase):
                 ),
             )
         )
-
-        self.checkpoint("PUBLIC KEYS", trustees_public_keys)
 
         for partial_public_keys in trustees_partial_public_keys:
             self.bulletin_board.process_message(
