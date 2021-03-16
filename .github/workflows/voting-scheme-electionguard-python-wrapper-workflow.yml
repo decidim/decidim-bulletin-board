@@ -24,6 +24,10 @@ jobs:
     name: Test code
     runs-on: ubuntu-latest
     steps:
+      - uses: rokroskar/workflow-run-cleanup-action@v0.3.2
+        if: "github.ref != 'refs/heads/develop'"
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
       - uses: actions/checkout@v2
         with:
           fetch-depth: 1
