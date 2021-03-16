@@ -79,7 +79,7 @@ export class VoterWrapperAdapter extends WrapperAdapter {
    * @returns {Promise<Object|undefined>}
    */
   async encrypt(plainVote) {
-    const encryptedData = await this.processPythonCodeOnWorker(
+    const [auditableData, encryptedData] = await this.processPythonCodeOnWorker(
       `
       from js import plain_vote
       voter.encrypt(plain_vote)
@@ -89,7 +89,6 @@ export class VoterWrapperAdapter extends WrapperAdapter {
       }
     );
 
-    // TODO: Wrapper doesn't return the `auditableData` at the moment.
-    return { auditableData: null, encryptedData };
+    return { auditableData, encryptedData };
   }
 }

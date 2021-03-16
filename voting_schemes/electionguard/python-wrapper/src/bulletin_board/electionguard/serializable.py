@@ -15,8 +15,6 @@ old_set_deserializers = electionguard.serializable.set_deserializers
 def monkey_patch_serialization():
     electionguard.serializable.set_serializers = set_serializers
     electionguard.serializable.set_deserializers = set_deserializers
-    # Remove nonces when serializing to JSON
-    electionguard.serializable.KEYS_TO_REMOVE += ["nonce"]
 
 
 # patch from https://github.com/microsoft/electionguard-python/pull/154

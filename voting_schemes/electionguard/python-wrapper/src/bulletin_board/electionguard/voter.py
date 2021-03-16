@@ -10,7 +10,7 @@ from typing import List, Tuple
 
 from .common import Context, ElectionStep, Wrapper, Content
 from .messages import JointElectionKey
-from .utils import MissingJointKey, deserialize, serialize
+from .utils import MissingJointKey, deserialize, serialize, remove_nonces
 
 
 class VoterContext(Context):
@@ -57,7 +57,7 @@ class Voter(Wrapper[VoterContext]):
         super().__init__(VoterContext(), ProcessCreateElection(), recorder=recorder)
         self.ballot_id = ballot_id
 
-    def encrypt(self, ballot: dict, deterministic: bool = False) -> dict:
+    def encrypt(self, ballot: dict, master_nonce: int = None) -> dict:
         if not self.context.joint_key:
             raise MissingJointKey()
 
@@ -76,18 +76,19 @@ class Voter(Wrapper[VoterContext]):
 
         plaintext_ballot = PlaintextBallot(self.ballot_id, ballot_style, contests)
 
-        # TODO: store the audit information somewhere
-
-        encrypted_ballot = serialize(
-            encrypt_ballot(
-                plaintext_ballot,
-                self.context.election_metadata,
-                self.context.election_context,
-                ElementModQ(0),
-                self.context.joint_key if deterministic else None,
-                True,
-            )
+        ciphered_ballot = encrypt_ballot(
+            plaintext_ballot,
+            self.context.election_metadata,
+            self.context.election_context,
+            ElementModQ(0),
+            ElementModQ(master_nonce) if master_nonce else None,
+            False,
         )
-        # TODO: return both auditable and encrypted ballot
 
-        return encrypted_ballot
+        auditable_data = serialize({
+            "ciphered_ballot": ciphered_ballot,
+            "plaintext_ballot": plaintext_ballot
+        })
+        remove_nonces(ciphered_ballot)
+
+        return auditable_data, serialize(ciphered_ballot)

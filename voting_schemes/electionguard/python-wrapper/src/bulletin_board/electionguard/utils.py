@@ -81,3 +81,11 @@ def complete_election_description(election_description: dict) -> dict:
         contest["electoral_district_id"] = "a-place"
 
     return complete_description
+
+
+def remove_nonces(ciphered_ballot):
+    ciphered_ballot.nonce = None
+    for contest in ciphered_ballot.contests:
+        contest.nonce = None
+        for ballot_selection in contest.ballot_selections:
+            ballot_selection.nonce = None
