@@ -13,6 +13,7 @@ from electionguard.key_ceremony import PublicKeySet
 from electionguard.tally import (
     CiphertextTally,
     PlaintextTallySelection,
+    PlaintextTallyContest
 )
 from electionguard.types import CONTEST_ID, GUARDIAN_ID, SELECTION_ID
 from electionguard.utils import get_optional
@@ -209,9 +210,12 @@ class ProcessTrusteeShare(ElectionStep):
 
         tally_shares = self._prepare_shares_for_decryption(context.shares)
         results: Dict[CONTEST_ID, Dict[SELECTION_ID, int]] = {}
+        content: Dict[CONTEST_ID, PlaintextTallyContest] = {}
 
         for contest in context.tally.cast.values():
             results[contest.object_id] = {}
+            selections: Dict[SELECTION_ID, PlaintextTallySelection] = {}
+
             for selection in contest.tally_selections.values():
                 selection_results: PlaintextTallySelection = (
                     decrypt_selection_with_decryption_shares(
@@ -220,11 +224,17 @@ class ProcessTrusteeShare(ElectionStep):
                         context.election_context.crypto_extended_base_hash,
                     )
                 )
+                selections[selection.object_id] = selection_results
+
                 results[contest.object_id][
                     selection.object_id
                 ] = selection_results.tally
 
-        return [{"message_type": "end_tally", "results": results}], None
+            content[contest.object_id] = PlaintextTallyContest(
+                contest.object_id, selections
+            )
+
+        return [{"message_type": "end_tally", "content": serialize(content), "results": results}], None
 
     def _prepare_shares_for_decryption(self, tally_shares):
         shares = defaultdict(dict)
