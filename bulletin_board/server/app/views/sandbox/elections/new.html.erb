@@ -33,7 +33,7 @@
       <li>
         <h2>Questions</h2>
         <ul>
-        <% 3.times.each_with_index do |question_index| %>
+        <% 2.times.each_with_index do |question_index| %>
           <li><h3>Question #<%= question_index + 1 %></h3></li>
           <li>
               <label>Title:
@@ -58,7 +58,7 @@
           <li>
               <h4>Answers: </h4>
               <ul>
-                <% 3.times.each_with_index do |answer_index| %>
+                <% 2.times.each_with_index do |answer_index| %>
                 <li><h5>Answer #<%= question_index + 1 %>.<%= answer_index + 1 %></h5></li>
                 <li>
                     <label>Title:

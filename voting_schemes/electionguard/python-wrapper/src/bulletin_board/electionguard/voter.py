@@ -10,6 +10,7 @@ from electionguard.utils import get_optional
 from typing import List, Tuple
 
 from .common import Context, ElectionStep, Wrapper, Content
+from .messages import KeyCeremonyResults
 from .utils import MissingJointKey, deserialize, serialize, remove_nonces
 
 
@@ -33,7 +34,7 @@ class ProcessEndKeyCeremony(ElectionStep):
     def process_message(
         self, message_type: str, message: Content, context: VoterContext
     ) -> Tuple[List[Content], ElectionStep]:
-        context.election_joint_key = deserialize(message["content"], ElectionJointKey)
+        context.election_joint_key = deserialize(message["content"], KeyCeremonyResults).election_joint_key
         context.election_builder.set_public_key(get_optional(context.election_joint_key.joint_public_key))
         context.election_builder.set_commitment_hash(get_optional(context.election_joint_key.commitment_hash))
         context.election_metadata, context.election_context = get_optional(
