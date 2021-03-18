@@ -86,6 +86,7 @@ release: check_clean_repo \
 	build_voting_scheme_dummy_ruby_library \
 	build_voting_scheme_electionguard_ruby_library \
 	check_release_flag \
+	update_changelog \
 	commit_and_push \
 	release_gems
 
@@ -95,6 +96,9 @@ bump_versions: bump_version_bulletin_board_client_js_library \
 	bump_version_voting_scheme_dummy_ruby_library \
 	bump_version_voting_scheme_electionguard_js_library \
 	bump_version_voting_scheme_electionguard_ruby_library
+
+update_changelog:
+	sed -i.bak -E "s/## Unreleased/## Unreleased\n\n## [${VERSION}] - `date +'%Y-%m-%d'`/g" CHANGELOG.md
 
 commit_and_push:
 	git commit -am "chore: bump to version ${VERSION}"
