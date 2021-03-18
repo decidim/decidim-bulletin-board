@@ -1,9 +1,9 @@
 package:
   name: rsa
-  version: "4.6"
+  version: "4.7.2"
 source:
-  sha256: 109ea5a66744dd859bf16fe904b8d8b627adafb9408753161e766a92e7d681fa
-  url: https://files.pythonhosted.org/packages/a2/d5/04b8a9719149583fec76efdff2e7a81c6e3cc34909ee818d3fbf115edc2e/rsa-4.6.tar.gz
+  sha256: 9d689e6ca1b3038bc82bf8d23e944b6b6037bc02301a574935b2dd946e0353b9
+  url: https://files.pythonhosted.org/packages/db/b5/475c45a58650b0580421746504b680cd2db4e81bc941e94ca53785250269/rsa-4.7.2.tar.gz
 test:
   imports:
     - rsa
