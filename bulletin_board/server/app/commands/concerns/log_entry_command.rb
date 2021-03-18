@@ -78,7 +78,7 @@ module LogEntryCommand
           election.unique_id,
           response_message.delete("message_type"),
           :bulletin_board,
-          BulletinBoard.slug
+          BulletinBoard.unique_id
         )
 
         LogEntry.create!(

@@ -47,7 +47,7 @@ end
 def create_election_step(election, evaluator)
   create_election_message = CREATE_ELECTION_MESSAGE.deep_dup
   create_election_message["iat"] = Time.current.to_i
-  create_election_message["message_id"] = "#{election.unique_id}.create_election+a.#{election.authority.slug}"
+  create_election_message["message_id"] = "#{election.unique_id}.create_election+a.#{election.authority.unique_id}"
 
   evaluator.trustees_plus_keys.map(&:first).each_with_index do |trustee, order|
     create_election_message["trustees"][order]["public_key"] = trustee.public_key
@@ -60,7 +60,7 @@ end
 def start_key_ceremony_step(election, evaluator)
   start_key_ceremony_message = {}
   start_key_ceremony_message["iat"] = Time.current.to_i
-  start_key_ceremony_message["message_id"] = "#{election.unique_id}.start_key_ceremony+a.#{election.authority.slug}"
+  start_key_ceremony_message["message_id"] = "#{election.unique_id}.start_key_ceremony+a.#{election.authority.unique_id}"
 
   election.log_entries << FactoryBot.build(:log_entry, election: election, client: election.authority,
                                                        private_key: evaluator.authority_private_key, message: start_key_ceremony_message)
@@ -71,11 +71,11 @@ def trustee_election_keys_step(election, evaluator)
     trustee, private_key = evaluator.trustees_plus_keys[order]
     content = JSON.parse(message["content"])
 
-    raise "Mismatched trustee #{trustee.slug} vs msg #{content["public_key_set"]["owner_id"]}" if trustee.slug != content["public_key_set"]["owner_id"]
+    raise "Mismatched trustee #{trustee.unique_id} vs msg #{content["public_key_set"]["owner_id"]}" if trustee.unique_id != content["public_key_set"]["owner_id"]
 
     trustee_public_key_message = message.deep_dup
     trustee_public_key_message["iat"] = Time.current.to_i
-    trustee_public_key_message["message_id"] = "#{election.unique_id}.key_ceremony.trustee_election_keys+t.#{trustee.slug}"
+    trustee_public_key_message["message_id"] = "#{election.unique_id}.key_ceremony.trustee_election_keys+t.#{trustee.unique_id}"
 
     election.log_entries << FactoryBot.build(:log_entry, election: election, client: trustee,
                                                          private_key: private_key, message: trustee_public_key_message)
@@ -86,11 +86,11 @@ def trustee_partial_election_keys_step(election, evaluator)
   TRUSTEE_PARTIAL_ELECTION_KEYS_MESSAGES.each_with_index do |message, order|
     trustee, private_key = evaluator.trustees_plus_keys[order]
 
-    raise "Mismatched trustee #{trustee.slug} vs msg #{JSON.parse(message["content"])["guardian_id"]}" if trustee.slug != JSON.parse(message["content"])["guardian_id"]
+    raise "Mismatched trustee #{trustee.unique_id} vs msg #{JSON.parse(message["content"])["guardian_id"]}" if trustee.unique_id != JSON.parse(message["content"])["guardian_id"]
 
     trustee_partial_public_key_message = message.deep_dup
     trustee_partial_public_key_message["iat"] = Time.current.to_i
-    trustee_partial_public_key_message["message_id"] = "#{election.unique_id}.key_ceremony.trustee_partial_election_keys+t.#{trustee.slug}"
+    trustee_partial_public_key_message["message_id"] = "#{election.unique_id}.key_ceremony.trustee_partial_election_keys+t.#{trustee.unique_id}"
 
     election.log_entries << FactoryBot.build(:log_entry, election: election, client: trustee,
                                                          private_key: private_key, message: trustee_partial_public_key_message)
@@ -101,11 +101,11 @@ def trustee_verification_step(election, evaluator)
   TRUSTEE_VERIFICATION_MESSAGES.each_with_index do |message, order|
     trustee, private_key = evaluator.trustees_plus_keys[order]
 
-    raise "Mismatched trustee #{trustee.slug} vs msg #{JSON.parse(message["content"])["guardian_id"]}" if trustee.slug != JSON.parse(message["content"])["guardian_id"]
+    raise "Mismatched trustee #{trustee.unique_id} vs msg #{JSON.parse(message["content"])["guardian_id"]}" if trustee.unique_id != JSON.parse(message["content"])["guardian_id"]
 
     trustee_verification_message = message.deep_dup
     trustee_verification_message["iat"] = Time.current.to_i
-    trustee_verification_message["message_id"] = "#{election.unique_id}.key_ceremony.trustee_verification+t.#{trustee.slug}"
+    trustee_verification_message["message_id"] = "#{election.unique_id}.key_ceremony.trustee_verification+t.#{trustee.unique_id}"
 
     election.log_entries << FactoryBot.build(:log_entry, election: election, client: trustee,
                                                          private_key: private_key, message: trustee_verification_message)
@@ -115,7 +115,7 @@ end
 def end_key_ceremony_step(election, _evaluator)
   end_key_ceremony_message = END_KEY_CEREMONY_MESSAGE.deep_dup
   end_key_ceremony_message["iat"] = Time.current.to_i
-  end_key_ceremony_message["message_id"] = "#{election.unique_id}.end_key_ceremony+b.#{BulletinBoard.slug}"
+  end_key_ceremony_message["message_id"] = "#{election.unique_id}.end_key_ceremony+b.#{BulletinBoard.unique_id}"
 
   election.log_entries << FactoryBot.build(:log_entry, election: election, bulletin_board: true,
                                                        signed_data: BulletinBoard.sign(end_key_ceremony_message), message: end_key_ceremony_message)
