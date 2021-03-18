@@ -4,7 +4,6 @@ from electionguard.decryption_share import (
     CiphertextDecryptionSelection,
 )
 from electionguard.guardian import Guardian
-from electionguard.key_ceremony import ElectionJointKey
 from electionguard.tally import CiphertextTallyContest
 from electionguard.types import CONTEST_ID, GUARDIAN_ID, SELECTION_ID
 from electionguard.utils import get_optional
@@ -15,6 +14,7 @@ from .messages import (
     TrusteePartialKeys,
     TrusteeVerification,
     TrusteeShare,
+    KeyCeremonyResults
 )
 from .utils import pair_with_object_id, serialize, deserialize
 
@@ -194,9 +194,9 @@ class ProcessEndKeyCeremony(ElectionStep):
         message: Content,
         context: TrusteeContext,
     ) -> Tuple[List[Content], ElectionStep]:
-        election_joint_key = deserialize(message["content"], ElectionJointKey)
-        context.election_builder.set_public_key(get_optional(election_joint_key.joint_public_key))
-        context.election_builder.set_commitment_hash(get_optional(election_joint_key.commitment_hash))
+        key_ceremony_results = deserialize(message["content"], KeyCeremonyResults)
+        context.election_builder.set_public_key(get_optional(key_ceremony_results.election_joint_key.joint_public_key))
+        context.election_builder.set_commitment_hash(get_optional(key_ceremony_results.election_joint_key.commitment_hash))
         context.election_metadata, context.election_context = get_optional(
             context.election_builder.build()
         )

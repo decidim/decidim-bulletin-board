@@ -1,9 +1,11 @@
 from dataclasses import dataclass
 from electionguard.decryption_share import CiphertextDecryptionContest
+from electionguard.election import ElectionConstants, CiphertextElectionContext
 from electionguard.group import ElementModP
 from electionguard.key_ceremony import (
     CoefficientValidationSet,
     PublicKeySet,
+    ElectionJointKey,
     ElectionPartialKeyVerification,
     ElectionPartialKeyBackup,
 )
@@ -35,3 +37,10 @@ class TrusteeShare(Serializable):
     guardian_id: GUARDIAN_ID
     public_key: ElementModP
     contests: Dict[CONTEST_ID, CiphertextDecryptionContest]
+
+
+@dataclass
+class KeyCeremonyResults(Serializable):
+    election_joint_key: ElectionJointKey
+    constants: ElectionConstants
+    context: CiphertextElectionContext

@@ -7,6 +7,7 @@ from electionguard.ballot import (
 )
 from electionguard.ballot_validator import ballot_is_valid_for_election
 from electionguard.decrypt_with_shares import decrypt_selection_with_decryption_shares
+from electionguard.election import ElectionConstants
 from electionguard.key_ceremony import combine_election_public_keys, ElectionPublicKey
 from electionguard.tally import (
     CiphertextTally,
@@ -21,6 +22,7 @@ from .messages import (
     TrusteePartialKeys,
     TrusteeVerification,
     TrusteeShare,
+    KeyCeremonyResults
 )
 from .utils import (
     InvalidBallot,
@@ -154,7 +156,11 @@ class ProcessTrusteeVerification(ElectionStep):
         return [
             {
                 "message_type": "end_key_ceremony",
-                "content": serialize(election_joint_key)
+                "content": serialize(KeyCeremonyResults(
+                    election_joint_key=election_joint_key,
+                    constants=ElectionConstants(),
+                    context=context.election_context
+                ))
             }
         ], ProcessStartVote()
 
