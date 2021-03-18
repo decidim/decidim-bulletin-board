@@ -44,3 +44,6 @@
 
 # Ignore rubocop rules from decidim
 .rubocop-https---raw-githubusercontent-com-decidim-decidim-*
+
+# Ignore sed backup files
+*.bak
