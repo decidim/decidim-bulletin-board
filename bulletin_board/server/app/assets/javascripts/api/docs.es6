@@ -12,14 +12,14 @@ const fetcherFactory = (path) => {
       data: JSON.stringify({ query }),
       method: "POST",
       contentType: "application/json",
-      dataType: "json"
+      dataType: "json",
     });
   };
-}
+};
 
 window.renderDocumentation = (path) => {
   ReactDOM.render(
     <GraphQLDocs.GraphQLDocs fetcher={fetcherFactory(path)} />,
-    document.getElementById("documentation"),
+    document.getElementById("documentation")
   );
 };
