@@ -216,7 +216,7 @@ bump_version_voting_scheme_dummy_ruby_library:
 	bundle install
 
 release_voting_scheme_dummy_gem:
-	cd ${VOTING_SCHEME_DUMMY_RUBY_LIBRARY_PATH} &&  && gem push pkg/voting_schemes-dummy-${VERSION}.gem
+	cd ${VOTING_SCHEME_DUMMY_RUBY_LIBRARY_PATH} && gem push pkg/voting_schemes-dummy-${VERSION}.gem
 
 # VOTING SCHEME ELECTIONGUARD
 
@@ -247,4 +247,4 @@ build_voting_scheme_electionguard_ruby_library:
 	cd ${VOTING_SCHEME_ELECTIONGUARD_RUBY_LIBRARY_PATH} && bundle exec rake build
 
 release_voting_scheme_electionguard_gem:
-	cd ${VOTING_SCHEME_ELECTIONGUARD_RUBY_LIBRARY_PATH} &&  && gem push pkg/voting_schemes-electionguard-${VERSION}.gem
+	cd ${VOTING_SCHEME_ELECTIONGUARD_RUBY_LIBRARY_PATH} && gem push pkg/voting_schemes-electionguard-${VERSION}.gem

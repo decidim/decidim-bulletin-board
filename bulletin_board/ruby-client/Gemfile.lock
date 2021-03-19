@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    decidim-bulletin_board (0.14.0)
+    decidim-bulletin_board (0.15.0)
       byebug (~> 11.0)
       graphlient (~> 0.4.0)
       jwt (~> 2.2.2)
@@ -96,7 +96,7 @@ GEM
       faraday (>= 1.0)
       faraday_middleware
       graphql-client
-    graphql (1.12.5)
+    graphql (1.12.6)
     graphql-client (0.16.0)
       activesupport (>= 3.0)
       graphql (~> 1.8)
@@ -117,8 +117,8 @@ GEM
     mini_portile2 (2.5.0)
     minitest (5.14.4)
     multipart-post (2.1.1)
-    nio4r (2.5.5)
-    nokogiri (1.11.1)
+    nio4r (2.5.7)
+    nokogiri (1.11.2)
       mini_portile2 (~> 2.5.0)
       racc (~> 1.4)
     parallel (1.20.1)

@@ -1,6 +1,6 @@
 {
   "name": "bulletin_board-dummy-adapter",
-  "version": "0.0.1",
+  "version": "0.15.0",
   "description": "",
   "main": "src/index.js",
   "scripts": {
