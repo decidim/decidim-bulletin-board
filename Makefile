@@ -121,12 +121,15 @@ check_release_flag:
 check_electionguard_python_submodule_update:
 	git submodule init && git submodule update
 
+clone_electionguard_python_repository:
+	git clone https://github.com/microsoft/electionguard-python ${ELECTIONGUARD_PYTHON_PATH}
+
 # ELECTIONGUARD PYTHON
 
-install_electionguard_python_dependencies: check_electionguard_python_submodule_update
+install_electionguard_python_dependencies: clone_electionguard_python_repository
 	cd ${ELECTIONGUARD_PYTHON_PATH} && make environment
 
-build_electionguard_python: check_electionguard_python_submodule_update
+build_electionguard_python:
 	cd ${ELECTIONGUARD_PYTHON_PATH} && make build
 
 # ELECTIONGUARD PYTHON WRAPPER

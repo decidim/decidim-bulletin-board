@@ -10,47 +10,56 @@ ENV PYENV_ROOT /root/.pyenv
 ENV PATH $PYENV_ROOT/shims:$PYENV_ROOT/bin:$PATH
 ENV PYTHON_VERSION=3.8.2
 ENV PYTHON_CONFIGURE_OPTS='--enable-shared'
+ENV HOME /root
+ENV PATH="$HOME/.poetry/bin:$PATH"
 
 # Install system dependencies
 RUN apt-get update && \
-  apt-get install -y postgresql postgresql-client postgresql-contrib libpq-dev \
+  apt-get install -y sudo postgresql postgresql-client postgresql-contrib libpq-dev \
   redis-server memcached imagemagick ffmpeg mupdf mupdf-tools libxml2-dev \
-  vim git curl
+  vim git curl pipenv
 
 # Install node
 RUN curl -fsSL https://deb.nodesource.com/setup_15.x | bash - && apt-get install -y nodejs
 
-# Create the source folder
-RUN mkdir -p /code/bulletin_board/tmp
+# Install python and poetry
+RUN git clone https://github.com/pyenv/pyenv.git ~/.pyenv && \
+  pyenv install $PYTHON_VERSION && pyenv global $PYTHON_VERSION
+RUN curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python -
 
-# Install npm dependencies
-ADD bulletin_board/server/package-lock.json /code/bulletin_board/tmp/package.json
-ADD bulletin_board/server/package.json /code/bulletin_board/tmp/package.json
-RUN cd /code/bulletin_board/tmp && npm i
-
-# Add local ruby dependencies
-ADD bulletin_board/ruby-client /code/bulletin_board/ruby-client
-ADD voting_schemes/dummy/ruby-adapter /code/voting_schemes/dummy/ruby-adapter
-ADD voting_schemes/electionguard/ruby-adapter /code/voting_schemes/electionguard/ruby-adapter
-
-# Install ruby dependencies
+# Install bundler
 RUN gem install bundler
-ADD bulletin_board/server/Gemfile /code/bulletin_board/tmp/Gemfile
-ADD bulletin_board/server/Gemfile.lock /code/bulletin_board/tmp/Gemfile.lock
-RUN cd /code/bulletin_board/tmp && bundle install
 
-# Add local python dependencies
-ADD voting_schemes/electionguard/python-wrapper /voting_schemes/electionguard/python-wrapper
+# Create the source folder
+RUN mkdir -p /code
 
-# Install python dependencies
-RUN git clone https://github.com/pyenv/pyenv.git ~/.pyenv
-RUN pyenv install $PYTHON_VERSION && pyenv global $PYTHON_VERSION
-ADD bulletin_board/server/install_eg_wrappers.sh /code/bulletin_board/tmp/install_eg_wrappers.sh
-RUN cd /code/bulletin_board/tmp && ./install_eg_wrappers.sh
+# Add Makefile
+ADD Makefile /code/Makefile
+
+# Add local dependencies
+ADD bulletin_board/js-client /code/bulletin_board/js-client
+ADD bulletin_board/ruby-client /code/bulletin_board/ruby-client
+ADD voting_schemes/dummy/js-adapter /code/voting_schemes/dummy/js-adapter
+ADD voting_schemes/dummy/ruby-adapter /code/voting_schemes/dummy/ruby-adapter
+ADD voting_schemes/electionguard/js-adapter /code/voting_schemes/electionguard/js-adapter
+ADD voting_schemes/electionguard/ruby-adapter /code/voting_schemes/electionguard/ruby-adapter
+ADD voting_schemes/electionguard/python-wrapper /code/voting_schemes/electionguard/python-wrapper
+ADD voting_schemes/electionguard/python-to-js /code/voting_schemes/electionguard/python-to-js
+
+# Add dependencies manifests
+ADD bulletin_board/server/package-lock.json /code/bulletin_board/server/package-lock.json
+ADD bulletin_board/server/package.json /code/bulletin_board/server/package.json
+ADD bulletin_board/server/Gemfile.lock /code/bulletin_board/server/Gemfile.lock
+ADD bulletin_board/server/Gemfile /code/bulletin_board/server/Gemfile
+
+# Install all dependencies
+RUN cd /code && make install
+
+# Build all artifacts
+RUN cd /code && make build
 
 # Add application source code
 ADD bulletin_board/server /code/bulletin_board/server
-RUN cp -r /code/bulletin_board/tmp/node_modules /code/bulletin_board/server
 WORKDIR /code/bulletin_board/server
 
 # Precompile assets
