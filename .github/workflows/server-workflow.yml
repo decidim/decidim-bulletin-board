@@ -147,8 +147,8 @@ jobs:
           command: cd bulletin_board/server && npm ci
       - name: Add Poetry to path
         run: echo "$HOME/.poetry/bin" >> $GITHUB_PATH
-      - name: Install ElectionGuard wrappers
-        run: ./install_eg_wrappers.sh
+      - name: Install Python dependencies
+        run: cd ../.. && make install_electionguard_python_dependencies
       - name: Create database
         env:
           RAILS_ENV: test

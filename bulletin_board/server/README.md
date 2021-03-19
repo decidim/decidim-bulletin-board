@@ -29,12 +29,6 @@ rails db:create
 rails db:migrate
 ```
 
-Also, install the wrappers python package:
-
-```
-./install_eg_wrappers.sh
-```
-
 - How to run the rubocop linter
 
 ```
