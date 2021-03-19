@@ -122,7 +122,7 @@ check_electionguard_python_submodule_update:
 	git submodule init && git submodule update
 
 clone_electionguard_python_repository:
-	git clone https://github.com/microsoft/electionguard-python ${ELECTIONGUARD_PYTHON_PATH}
+	if !(test -d "${ELECTIONGUARD_PYTHON_PATH}"); then git clone https://github.com/microsoft/electionguard-python ${ELECTIONGUARD_PYTHON_PATH}; fi
 
 # ELECTIONGUARD PYTHON
 
