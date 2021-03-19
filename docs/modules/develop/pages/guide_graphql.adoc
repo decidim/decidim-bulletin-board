@@ -1,30 +1,30 @@
-## About the GraphQL API
+== About the GraphQL API
 
-[Decidim Bulletin Board](https://github.com/decidim/decidim-bulletin-board) comes with an API that follows the [GraphQL](https://graphql.org/) specification.
+https://github.com/decidim/decidim-bulletin-board[Decidim Bulletin Board] comes with an API that follows the https://graphql.org/[GraphQL] specification.
 
-Typically (although some particular installations may change that) you will find 3 relevant folders:
+Typically, (although some particular installations may change that) you will find 3 relevant folders:
 
 * `URL/api` The route where to make requests. Request are usually in the POST format.
-* `URL/api/docs` This documentation, every Decidim site should provide one.
-* `URL/api/graphiql` [GraphiQL](https://github.com/graphql/graphiql) is a in-browser IDE for exploring GraphQL APIs. Some Decidim Bulletin Board installations may choose to remove access to this tool. In that case you can use a [standalone version](https://electronjs.org/apps/graphiql) and use any `URL/api` as the endpoint
+* `URL/api/docs` Every Decidim instance should provide one.
+* `URL/api/graphiql` https://github.com/graphql/graphiql[GraphiQL] is an in-browser IDE for exploring GraphQL APIs. Some Decidim Bulletin Board installations may choose to remove access to this tool. In that case you can use a https://electronjs.org/apps/graphiql[standalone version] and use any `URL/api` as the endpoint.
 
-### Using the GraphQL API
+=== Using the GraphQL API
 
-The GraphQL format is a JSON formatted text that is specified in a query. Response is a JSON object as well. For details about specification check the official [GraphQL site](https://graphql.org/learn/).
+The GraphQL format is a JSON formatted text that is specified in a query. The response is a JSON object as well. For details about specification, check the official https://graphql.org/learn/[GraphQL site].
 
 The most practical way to experiment with GraphQL is to use the in-browser IDE GraphiQL. It provides access to the documentation and auto-complete (use CTRL-Space) for writing queries.
 
-### Usage limits
+=== Usage limits
 
 Decidim Bulletin Board is just a Rails application, meaning that any particular installation may implement custom limits in order to access the API (and the application in general).
 
-### Decidim Bulletin Board structure, Types, collections and Polymorphism
+=== Decidim Bulletin Board structure, Types, collections and Polymorphism
 
 There are no endpoints in the GraphQL specification, instead objects are organized according to their "Type".
 
 These objects can be grouped in a single, complex query. Also, objects may accept parameters, which are "Types" as well.
 
-Each "Type" is just a pre-defined structure with fields, or just an Scalar (Strings, Integers, Booleans, ...).
+Each "Type" is a pre-defined structure with fields, or just an Scalar (Strings, Integers, Booleans, ...).
 
 For instance, to obtain *all the clients registered in the Bulletin Board*, we could execute the next query:
 
@@ -39,7 +39,7 @@ query {
 }
 ```
 
-Response should look like:
+Where the response should look like:
 
 ```
 {
@@ -74,11 +74,11 @@ Response should look like:
 }
 ```
 
-#### What happened?
+=== What happened?
 
-In the former query, each keyword represents a type, the words `id`, `name`, `publicKey`, `type` are scalars, all of them Strings.
+In the former query, each keyword represents a type, the words `id`, `name`, `publicKey`, `type` are scalars, all of them strings.
 
-The other keywords however, are objects representing certain entities:
+The other keywords however, are objects, representing certain entities:
 
 - `clients` is a type that represents a collection of clients. It accepts arguments (`filter` and `order`), which are other object types as well. `id`, `name`, `publicKey` and `type` are the fields of the client.
 

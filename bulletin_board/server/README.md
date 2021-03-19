@@ -17,7 +17,7 @@ First, clone the repository and enter in the new folder:
 
 ```
 git clone git@github.com:decidim/decidim-bulletin-board.git
-cd decidim-bulletin-board
+cd decidim-bulletin-board/server
 ```
 
 Now, execute these commands:
@@ -52,13 +52,6 @@ bundle exec rspec
 ```
 bundle exec rake schema:generate
 npm run schema:generate
-```
-
-- How to use the sandbox:
-
-```
-$ bundle exec rails s    # Start rails server as usual
-$ bin/webpack --watch    # Start the webpack build in watch mode
 ```
 
 ## License

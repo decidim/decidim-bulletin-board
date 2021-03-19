@@ -5,50 +5,44 @@
 
 Decidim Bulletin Board is an independent application designed to provide services to Decidim instances to allow them to celebrate secure end-to-end auditable votings. But it can't be used as a standalone application, since it doesn't offer a user interface for administrators to define elections nor for voters to cast their votes.
 
-If you want to start your own installation of Decidim Bulletin Board, you need to clone this repo. Keep reading to find out how to install Decidim Bulletin Board.
+If you want to start your own installation of the Decidim Bulletin Board, you need to clone this repo. Keep reading to find out how to install and setup a Decidim Bulletin Board.
 
-== Clone the Decidim Bulletin Board repository
+== Installing
 
-The Decidim Bulletin Board repository includes the main Rails application, but also the Ruby client and the JS client to be used inside Decidim apps, and additional projects for the different voting schemes implemented.
+To start developing or using the Bulletin Board, follow the instructions in our xref:develop:guide.adoc[development guide].
 
-So, to be able to run the application, first you have to clone the repository:
+== Setup Decidim Bulletin Board
 
-[source,console]
+=== Annotation
+
+The Bulletin Board requires that all messages should be signed to be published. Thus, all involved parts of an election (authority, trustees and the bulletin board itself) should have identification keys.
+
+=== Bulletin Board Identification key pair
+
+To generate a new identification key pair, run:
+
+[source,bash]
 ----
-git clone https://github.com/decidim/decidim-bulletin-board
-cd decidim-bulletin-board
-----
-
-And then you have to enter to the Rails application directory:
-
-[source,console]
-----
-cd decidim-bulletin-board-app
-bundle install
-npm install
+bin/rails client:generate_identification_private_key
 ----
 
-== Initializing your app for local development
+This task will output the generated private key. You should copy the private key and store that value on the environment variable IDENTIFICATION_PRIVATE_KEY.
 
-Now, you should setup your database:
+Ensure that the private key is not lost between deployments and servers reboots and that it can be accessed by the application only.
 
-[source,console]
+=== Adding an authority as a client of the Bulletin Board
+
+As an administrator of the Decidim Bulletin Board, you'll receive the name of the Decidim instance (**Authority name**) and the public key (type: string, no spaces allowed) of this authority. In order to allow an authority to connect to this Bulletin Board instance, run:
+
+[source,bash]
 ----
-bin/rails db:create db:migrate db:seed
-----
-
-This will also create some default data so you can start testing the app.
-
-This data won't be created in production environments, if you still want to do it, run: `$ SEED=true rails db:setup`.
-
-Now, you can start your server!
-
-[source,console]
-----
-bin/rails s
+bin/rails 'client:add_authority[Authority name, public key]'
 ----
 
-Visit http://localhost:8000 to see your app running.
+"Authority name" needs to be replaced by the authority name of the Decidim instance.
+"public key" needs to be replaced by the public key of the authority.
+
+As a result of this process, you will obtain an API Key that you will have to send back to the Decidim authority.
 
 === Further configuration
 

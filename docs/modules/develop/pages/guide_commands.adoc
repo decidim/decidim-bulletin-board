@@ -1,0 +1,37 @@
+= Commands
+
+Here are some useful commands and tools for working in this project:
+
+== JavaScript linter
+
+https://eslint.org/docs/user-guide/command-line-interface[eslint] and https://prettier.io/[prettier] are used to ensure homogeneous formatting of JavaScript code.
+
+To lint and try to fix linting errors, run:
+
+[source,console]
+----
+npm run lint
+npm run format
+----
+
+== Rubocop
+
+RuboCop is a code analyzer tool we use at Decidim to enforce our code formatting guidelines.
+
+[source,console]
+----
+# Run Rubocop
+bundle exec rubocop
+# Run Rubocop and automatically correct offenses
+bundle exec rubocop -a
+----
+
+== Update GraphQL schema 
+
+To update the GraphQL schema definition, start the server and in a new tab and inside **bulletin_board/server**:
+
+[source,console]
+----
+bundle exec rake schema:generate
+npm run schema:generate
+----
