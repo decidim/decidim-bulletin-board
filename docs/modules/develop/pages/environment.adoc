@@ -1,5 +1,60 @@
 = Development environment
 
-To start working with the Bulletin Board you will need to install all the dependencies for the server. These are explained in the https://github.com/decidim/decidim-bulletin_board/blob/main/README.md[README file of the web application]. This server will include test data that can be used by Decidim or the elections sandbox to test the different parts of the system.
+**Important: The Bulletin Board depends on the existence of a Decidim installation.**
 
-Also, this application includes Visual Studio Code Dev Containers to simplify the environment setup.
+To start working with the Bulletin Board you will need to install all the dependencies for the server. 
+
+== Dependencies
+
+* Ruby version: 2.6
+* Rails version: 6
+* Python version: 3.8.2
+
+=== System dependencies
+
+* Python gmpy2 package dependencies: libgmp, libmpfr and libmpc
+
+== Installation
+
+Clone the repository, enter into the new folder and setup the application:
+
+[source,console]
+----
+git clone git@github.com:decidim/decidim-bulletin-board.git
+cd decidim-bulletin-board/server
+bundle install
+npm install
+----
+
+Now, you should setup your database:
+
+[source,console]
+----
+bin/rails db:create db:migrate db:seed
+----
+
+This will also create some default data so you can start testing the app.
+
+This data won't be created in production environments, if you still want to do it, run: `$ SEED=true rails db:setup`.
+
+To install the python wrappers for ElectionGuard, run:
+
+[source,console]
+----
+./install_eg_wrappers.sh
+----
+
+Now, you can start your server!
+
+[source,console]
+----
+bin/rails s
+----
+
+Visit http://localhost:8000 to see your app running or http://localhost:8000/sandbox/elections to test the voting process. On http://localhost:8000/api/graphiql, you can access the GraphiQL, an in-browser IDE to explore GraphQL APIs.
+
+=== Further configuration
+
+For further development, check the xref:develop:guide_commands.adoc[commands] docs.
+
+Helpful: This application includes Visual Studio Code Dev Containers to simplify the environment setup.

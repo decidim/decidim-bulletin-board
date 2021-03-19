@@ -1,18 +1,38 @@
 = How to test the Bulletin Board
 
-The Bulletin Board is composed of several parts, so there are different tests suites for each part:
+The Bulletin Board is composed of several parts, so there are different tests suites for each part.
 
 * The Rails app has a suite of unit and integration tests for the API server.
-
 * The client gem has a suite of integration tests, mocking the server responses.
+
+To run the whole suite for the app or ruby client, simply run from inside **/bulletin_board/server** or **bulletin_board/ruby-client**:
+
+`bundle exec rspec spec`
 
 * The client JS library also has its own test suite to test the trustee and voter components behaviour.
 
+You can run the tests from inside **bulletin_board/js-client** using:
+
+`npm run test`
+
 * Each voting scheme has its own integration tests to ensure that the trustee, voter and bulletin board wrappers work well together.
+
+The **js-adapter** and **ruby-adapter** follow the same test structure as explained before. To run the **python-wrapper** tests, you have to use `make`:
+
+`make test`
 
 == Testing end to end integration
 
 The development application includes a sandbox that can be used to test all the parts working together. This application is used by automated tests to perform holistic integration tests.
+
+1. Start the server with:
+
+** `bin/rails s -e test -p 5017` 
+
+2. Start the test with:
+
+** `npm run e2e:tests`
+
 
 == Stress tests ==
 

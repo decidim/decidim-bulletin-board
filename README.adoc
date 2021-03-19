@@ -1,0 +1,16 @@
+= Decidim Bulletin Board
+
+Decidim Bulletin Board is written in Ruby on Rails and JavaScript, designed to provide services to https://decidim.org[Decidim] instances to allow them to run secure, end-to-end, auditable votings. Although it can't be used as a standalone application, since it doesn't offer a user interface for administrators to define elections nor for voters to cast their votes, you can see how it works in the https://decidim-bulletin-board-staging.herokuapp.com/sandbox/elections[sandbox].
+
+== Overview
+
+This repository follows the monorepo pattern and includes the following projects:
+
+- **bulletin_board/server**: A Ruby on Rails application that contains the Bulletin Board service. You can check the project details https://github.com/decidim/decidim-bulletin-board/blob/develop/bulletin_board/server/README.md[here].
+- **bulletin_board/ruby-client**: A Ruby gem that can be included in other applications to interact with the Bulletin Board application. You can check the project details https://github.com/decidim/decidim-bulletin-board/blob/develop/bulletin_board/ruby-client/README.md[here].
+- **verifier**: A command line application to audit ballots and verify the election results.
+- **voting_schemes**: Implementation of different cryptographic voting schemes to be used to run the elections. Currently, it includes the Dummy scheme, used only for testing purposes, and the ElectionGuard scheme, based on the Python implementation of the protocol.
+
+## License
+
+See https://github.com/decidim/decidim[Decidim].

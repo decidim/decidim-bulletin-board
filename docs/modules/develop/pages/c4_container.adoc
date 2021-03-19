@@ -16,7 +16,7 @@ Person_Ext(visitor_user, "Visitor User", "Anonymous, non registered user.")
 Person(system_user, "System Administration User", "The system administrator responsible of registering authorities (Decidim instances).")
 
 System_Boundary(decidim_bulletin_board_system, "Decidim Bulletin Board"){
-    Container(web_api, "GraphQL API", "Ruby on Rails 6", "Provide an API that allows Decidim instances to celebrate end-to-end auditable elections providing an append-only log with cryptographic capabilities.")
+    Container(web_api, "GraphQL API", "Ruby on Rails 6", "Provide an API that allows Decidim instances to run end-to-end auditable elections providing an append-only log with cryptographic capabilities.")
     Container(tasks, "Command line tasks", "Ruby on Rails 6", "Allows to register Decidim instances as authorities.")
     Container(worker, "Worker", "Ruby on Rails 6", "ActiveJob queues for asynchronous jobs. Works for processing most of the received messages.")
     ContainerDb(rel_db, "Relational Database", "PostgreSQL", "Stores clients, elections and log entries")

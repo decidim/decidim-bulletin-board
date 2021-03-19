@@ -2,8 +2,11 @@
 
 * xref:develop:guide_architecture.adoc[Architecture]
 * xref:develop:environment.adoc[Development environment]
+* xref:develop:guide_commands.adoc[Commands]
+* xref:develop:guide_graphql.adoc[GraphQL]
 
 == Good to know
 
+* We have a https://decidim-bulletin-board-staging.herokuapp.com/sandbox/elections[sandbox] with a simple UI to run a whole election (Dummy Scheme and ElectionGuard)
 * We follow https://12factor.net/[12factor recommendations]
 * For testing, refer to the xref:develop:testing.adoc[testing] guide.
