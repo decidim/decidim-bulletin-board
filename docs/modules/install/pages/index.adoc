@@ -3,7 +3,7 @@
 
 == What is and what isn't Decidim Bulletin Board?
 
-Decidim Bulletin Board is an independent application designed to provide services to Decidim instances to allow them to celebrate secure end-to-end auditable votings. But it can't be used as a standalone application, since it doesn't offer a user interface for administrators to define elections nor for voters to cast their votes.
+Decidim Bulletin Board is an independent application designed to provide services to Decidim instances to allow them to run secure, end-to-end, auditable votings. But it can't be used as a standalone application, since it doesn't offer a user interface for administrators to define elections nor for voters to cast their votes.
 
 If you want to start your own installation of the Decidim Bulletin Board, you need to clone this repo. Keep reading to find out how to install and setup a Decidim Bulletin Board.
 
