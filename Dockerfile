@@ -1,22 +1,6 @@
 # This stage builds the electionguard-python and python-wrapper packages
-FROM ruby:2.6.6 as electionguard-builder
+FROM codegram/ruby-node-python:0.0.1 as electionguard-builder
 LABEL author="david@codegram.com"
-
-ARG DEBIAN_FRONTEND=noninteractive
-
-ENV PYTHON_VERSION=3.8.2
-ENV PYTHON_CONFIGURE_OPTS='--enable-shared'
-ENV PYENV_ROOT /root/.pyenv
-ENV PATH="$HOME/.poetry/bin:$PATH"
-ENV PATH $PYENV_ROOT/shims:$PYENV_ROOT/bin:/root/.poetry/bin:$PATH
-
-# Install system dependencies
-RUN apt-get update && apt-get install -y sudo pipenv git
-
-# Install python and poetry
-RUN git clone https://github.com/pyenv/pyenv.git ~/.pyenv && \
-  pyenv install $PYTHON_VERSION && pyenv global $PYTHON_VERSION
-RUN curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python -
 
 # Create the source folder
 RUN mkdir -p /code
@@ -54,35 +38,18 @@ RUN make
 # Override some files in the pyodide build
 RUN cp -rf /code/voting_schemes/electionguard/python-to-js/override/* /src/pyodide/build/
 
-FROM ruby:2.6.6
+FROM codegram/ruby-node-python:0.0.1
 LABEL author="david@codegram.com"
-
-ARG DEBIAN_FRONTEND=noninteractive
 
 # Environment variables
 ENV SECRET_KEY_BASE 1234
 ENV RAILS_ENV production
-ENV PYTHON_VERSION=3.8.2
-ENV PYTHON_CONFIGURE_OPTS='--enable-shared'
-ENV PYENV_ROOT /root/.pyenv
-ENV PATH $PYENV_ROOT/shims:$PYENV_ROOT/bin:/root/.poetry/bin:$PATH
 
 # Install system dependencies
 RUN apt-get update && \
-  apt-get install -y sudo postgresql postgresql-client postgresql-contrib libpq-dev \
+  apt-get install -y postgresql postgresql-client postgresql-contrib libpq-dev \
   redis-server memcached imagemagick ffmpeg mupdf mupdf-tools libxml2-dev \
-  vim git curl pipenv
-
-# Install node
-RUN curl -fsSL https://deb.nodesource.com/setup_15.x | bash - && apt-get install -y nodejs
-
-# Install python and poetry
-RUN git clone https://github.com/pyenv/pyenv.git ~/.pyenv && \
-  pyenv install $PYTHON_VERSION && pyenv global $PYTHON_VERSION
-RUN curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python -
-
-# Install bundler
-RUN gem install bundler
+  vim curl
 
 # Create the source folder
 RUN mkdir -p /code
