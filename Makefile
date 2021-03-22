@@ -95,7 +95,8 @@ bump_versions: bump_version_bulletin_board_client_js_library \
 	bump_version_voting_scheme_dummy_js_library \
 	bump_version_voting_scheme_dummy_ruby_library \
 	bump_version_voting_scheme_electionguard_js_library \
-	bump_version_voting_scheme_electionguard_ruby_library
+	bump_version_voting_scheme_electionguard_ruby_library \
+	bump_version_bulletin_board_server
 
 update_changelog:
 	sed -i.bak -E "s/## Unreleased/## Unreleased\n\n## [${VERSION}] - `date +'%Y-%m-%d'`/g" CHANGELOG.md
@@ -155,6 +156,9 @@ install_bulletin_board_server_python_dependencies: build_electionguard_python_wr
 
 test_bulletin_board_server:
 	cd ${BULLETIN_BOARD_SERVER_PATH} && bundle exec rspec && npm run e2e:tests
+
+bump_version_bulletin_board_server:
+	cd ${BULLETIN_BOARD_SERVER_PATH} && bundle
 
 # BULLETIN BOARD CLIENT
 
