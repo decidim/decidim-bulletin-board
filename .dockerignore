@@ -42,3 +42,9 @@
 /voting_schemes/electionguard/js-adapter/node_modules
 
 /bulletin_board/js-client/node_modules
+
+
+# Ignore python-to-js artifacts
+
+/voting_schemes/electionguard/python-to-js/packages/bulletin_board-electionguard/dist
+/voting_schemes/electionguard/python-to-js/packages/electionguard/dist

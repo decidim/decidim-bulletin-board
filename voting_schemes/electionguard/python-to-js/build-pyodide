@@ -7,8 +7,7 @@ PYODIDE=/src/pyodide
 cp -rf $PY2JS/packages $PYODIDE
 
 # Compile choosen packages with Pyodide
-cd $PYODIDE
-PYODIDE_PACKAGES="pyasn1,libgmp,gmpy2,micropip,attrs,sortedcontainers,hypothesis,jsons,typish,rsa,electionguard,bulletin_board-electionguard" make
+cd $PYODIDE && make
 
 # Add overriden files
 cp -rf $PY2JS/override/* $PYODIDE/build/

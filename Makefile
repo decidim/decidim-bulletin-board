@@ -66,8 +66,7 @@ clean:
 	rm -rf ${ELECTIONGUARD_PYTHON_TO_JS_PATH}/packages/bulletin_board-electionguard/dist/
 	rm -rf ${ELECTIONGUARD_PYTHON_TO_JS_PATH}/packages/electionguard/dist/
 
-build: build_electionguard_python_to_js \
-  ${BULLETIN_BOARD_CLIENT_JS_LIBRARY_OUTPUT} \
+build: ${BULLETIN_BOARD_CLIENT_JS_LIBRARY_OUTPUT} \
 	${VOTING_SCHEME_DUMMY_JS_LIBRARY_OUTPUT} \
 	${VOTING_SCHEME_ELECTIONGUARD_JS_LIBRARY_OUTPUT}
 
@@ -130,7 +129,7 @@ clone_electionguard_python_repository:
 install_electionguard_python_dependencies: clone_electionguard_python_repository
 	cd ${ELECTIONGUARD_PYTHON_PATH} && make environment
 
-build_electionguard_python:
+build_electionguard_python: install_electionguard_python_dependencies
 	cd ${ELECTIONGUARD_PYTHON_PATH} && make build
 
 # ELECTIONGUARD PYTHON WRAPPER
@@ -151,7 +150,7 @@ install_bulletin_board_server_js_dependencies:
 install_bulletin_board_server_ruby_dependencies:
 	cd ${BULLETIN_BOARD_SERVER_PATH} && bundle install
 
-install_bulletin_board_server_python_dependencies: build_electionguard_python_wrapper
+install_bulletin_board_server_python_dependencies:
 	cd ${ELECTIONGUARD_PYTHON_WRAPPER_PATH} && python3 -m pip install cryptography==3.2.1 && python3 setup.py install
 
 test_bulletin_board_server:
