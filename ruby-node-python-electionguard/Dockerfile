@@ -1,5 +1,4 @@
-# This stage builds the electionguard-python and python-wrapper packages
-FROM ruby:2.6.6 as electionguard-builder
+FROM ruby:2.6.6
 LABEL author="david@codegram.com"
 
 ARG DEBIAN_FRONTEND=noninteractive
@@ -14,7 +13,7 @@ ENV PATH $PYENV_ROOT/shims:$PYENV_ROOT/bin:/root/.poetry/bin:$PATH
 RUN gem install bundler
 
 # Install system dependencies
-RUN apt-get update && apt-get install -y sudo pipenv git
+RUN apt-get update && apt-get install -y sudo pipenv git vim curl
 
 # Install python and poetry
 RUN git clone https://github.com/pyenv/pyenv.git ~/.pyenv && \
@@ -23,3 +22,12 @@ RUN curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-
 
 # Install node
 RUN curl -fsSL https://deb.nodesource.com/setup_15.x | bash - && apt-get install -y nodejs
+
+# Create the source folder
+RUN mkdir -p /code
+
+# Add the source files
+ADD Makefile /code/Makefile
+
+# Build electionguard
+RUN cd /code && make build_electionguard_python

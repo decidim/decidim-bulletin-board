@@ -14,9 +14,6 @@ help:
 
 # CONSTANTS
 
-ELECTIONGUARD_PYTHON_PATH = \
-	voting_schemes/electionguard/electionguard-python
-
 ELECTIONGUARD_PYTHON_WRAPPER_PATH = \
 	voting_schemes/electionguard/python-wrapper
 
@@ -46,8 +43,7 @@ VOTING_SCHEME_ELECTIONGUARD_JS_LIBRARY_OUTPUT = \
 
 # TASKS
 
-install: install_electionguard_python_dependencies \
-	install_bulletin_board_server_js_dependencies \
+install: install_bulletin_board_server_js_dependencies \
 	install_bulletin_board_server_ruby_dependencies \
 	install_bulletin_board_server_python_dependencies \
 	install_bulletin_board_client_js_dependencies \
@@ -121,20 +117,9 @@ check_release_flag:
 check_electionguard_python_submodule_update:
 	git submodule init && git submodule update
 
-clone_electionguard_python_repository:
-	if !(test -d "${ELECTIONGUARD_PYTHON_PATH}"); then git clone https://github.com/microsoft/electionguard-python ${ELECTIONGUARD_PYTHON_PATH}; fi
-
-# ELECTIONGUARD PYTHON
-
-install_electionguard_python_dependencies: clone_electionguard_python_repository
-	cd ${ELECTIONGUARD_PYTHON_PATH} && make environment
-
-build_electionguard_python: install_electionguard_python_dependencies
-	cd ${ELECTIONGUARD_PYTHON_PATH} && make build
-
 # ELECTIONGUARD PYTHON WRAPPER
 
-build_electionguard_python_wrapper: build_electionguard_python
+build_electionguard_python_wrapper:
 	cd ${ELECTIONGUARD_PYTHON_WRAPPER_PATH} && make package
 
 # ELECTIONGUARD PYTHON TO JS
