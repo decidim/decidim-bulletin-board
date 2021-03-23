@@ -60,7 +60,10 @@ jobs:
       - name: Lint JS files
         run: cd bulletin_board/server && npm run lint
       - name: Format JS files
-        run: cd bulletin_board/server npm run format
+        run: |
+          cd bulletin_board/server
+          npm run format
+          git diff --exit-code
       - name: Create database
         env:
           RAILS_ENV: test
@@ -84,19 +87,16 @@ jobs:
         uses: codecov/codecov-action@v1
         with:
           directory: ./bulletin_board/server/coverage
-      - name: Start Rails test server
-        env:
-          RAILS_ENV: test
-        run: |
-          cd bulletin_board/server
-          bundle exec rails server -e test -p 5017 -P tmp/test_server.pid &
-          sleep 5
       - name: Install cypress
         run: |
           apt-get install -y libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 libxtst6 xauth xvfb
           cd bulletin_board/server && npx cypress install
       - name: Run e2e tests
-        run: cd bulletin_board/server && npm run e2e:tests
+        run: |
+          cd bulletin_board/server
+          bundle exec rails server -e test -p 5017 -P tmp/test_server.pid &
+          sleep 5
+          npm run e2e:tests
       - name: Upload artifacts (screenshots)
         if: ${{ always() }}
         uses: actions/upload-artifact@v2
