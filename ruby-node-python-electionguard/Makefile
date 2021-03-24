@@ -1,5 +1,5 @@
 ELECTIONGUARD_PYTHON_PATH = \
-	voting_schemes/electionguard/electionguard-python
+	../voting_schemes/electionguard/electionguard-python
 
 clone_electionguard_python_repository:
 	if !(test -d "${ELECTIONGUARD_PYTHON_PATH}"); then git clone https://github.com/microsoft/electionguard-python ${ELECTIONGUARD_PYTHON_PATH}; fi
