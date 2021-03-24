@@ -44,8 +44,8 @@ jobs:
         run: |
           make build_electionguard_python_wrapper
           mkdir -p /cache/python
-          cp -r voting_schemes/electionguard/python-wrapper /cache/python/python-wrapper
-          cp -r voting_schemes/electionguard/electionguard-python /cache/python/electionguard-python
+          cp -r voting_schemes/electionguard/python-wrapper /cache/python
+          cp -r voting_schemes/electionguard/electionguard-python /cache/python
   build_python_to_js:
     name: Build pyodide
     needs: build_python_wrapper
@@ -87,8 +87,8 @@ jobs:
           PYODIDE_PACKAGES: "electionguard,bulletin_board-electionguard"
         run: |
           cp -r voting_schemes/electionguard/python-to-js/packages/* /src/pyodide/packages
-          cp -r /cache/python/electionguard-python/dist /src/pyodide/packages/electionguard/dist
-          cp -r /cache/python/python-wrapper/dist /src/pyodide/packages/bulletin_board-electionguard/dist
+          cp -r /cache/python/electionguard-python/dist /src/pyodide/packages/electionguard
+          cp -r /cache/python/python-wrapper/dist /src/pyodide/packages/bulletin_board-electionguard
           cd /src/pyodide && make
       - name: Override pyodide build
         run: |
@@ -152,8 +152,8 @@ jobs:
             ${{ runner.os }}-
       - name: Restore previous artifacts
         run: |
-          cp -r /cache/python/electionguard-python voting_schemes/electionguard/electionguard-python
-          cp -r /cache/python/python-wrapper voting_schemes/electionguard/python-wrapper
+          cp -r /cache/python/electionguard-python voting_schemes/electionguard
+          cp -r /cache/python/python-wrapper voting_schemes/electionguard
           mkdir -p voting_schemes/electionguard/ruby-adapter/public/assets
           cp -r /cache/python-to-js/electionguard-assets voting_schemes/electionguard/ruby-adapter/public/assets/electionguard
       - name: Install postgres client
