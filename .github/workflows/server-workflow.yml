@@ -32,10 +32,10 @@ jobs:
       - name: Cache python wrapper
         uses: actions/cache@v2
         env:
-          cache-name: cache-python
+          cache-name: cache-electionguard-python
         with:
           path: /cache/python
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('voting_schemes/electionguard/python-wrapper') }}
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('voting_schemes/electionguard/python-wrapper/**') }}
           restore-keys: |
             ${{ runner.os }}-build-${{ env.cache-name }}-
             ${{ runner.os }}-build-
@@ -60,15 +60,13 @@ jobs:
       - uses: actions/checkout@v2.0.0
         with:
           fetch-depth: 1
-      - uses: satackey/action-docker-layer-caching@v0.0.11
-        continue-on-error: true
       - name: Cache python to js
         uses: actions/cache@v2
         env:
-          cache-name: cache-electionguard-assets
+          cache-name: cache-electionguard-pyodide-assets
         with:
           path: /cache/python-to-js
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('voting_schemes/electionguard/python-to-js') }}
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('voting_schemes/electionguard/python-to-js/**') }}
           restore-keys: |
             ${{ runner.os }}-build-${{ env.cache-name }}-
             ${{ runner.os }}-build-
@@ -76,10 +74,10 @@ jobs:
       - name: Cache python wrapper
         uses: actions/cache@v2
         env:
-          cache-name: cache-python
+          cache-name: cache-electionguard-python
         with:
           path: /cache/python
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('voting_schemes/electionguard/python-wrapper') }}
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('voting_schemes/electionguard/python-wrapper/**') }}
           restore-keys: |
             ${{ runner.os }}-build-${{ env.cache-name }}-
             ${{ runner.os }}-build-
@@ -95,8 +93,9 @@ jobs:
       - name: Override pyodide build
         run: |
           cp -r voting_schemes/electionguard/python-to-js/override/* /src/pyodide/build/
-          mkdir -p /cache/python-to-js
-          cp -r /src/pyodide/build /cache/python-to-js/electionguard-assets
+          mkdir -p /cache/python-to-js/electionguard-assets
+          cp -r /src/pyodide/build/* /cache/python-to-js/electionguard-assets
+          ls /cache/python-to-js/electionguard-assets
   build:
     name: Build
     needs: build_python_to_js
@@ -133,10 +132,10 @@ jobs:
       - name: Cache python to js
         uses: actions/cache@v2
         env:
-          cache-name: cache-electionguard-assets
+          cache-name: cache-electionguard-pyodide-assets
         with:
           path: /cache/python-to-js
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('voting_schemes/electionguard/python-to-js') }}
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('voting_schemes/electionguard/python-to-js/**') }}
           restore-keys: |
             ${{ runner.os }}-build-${{ env.cache-name }}-
             ${{ runner.os }}-build-
@@ -144,10 +143,10 @@ jobs:
       - name: Cache python wrapper
         uses: actions/cache@v2
         env:
-          cache-name: cache-python
+          cache-name: cache-electionguard-python
         with:
           path: /cache/python
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('voting_schemes/electionguard/python-wrapper') }}
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('voting_schemes/electionguard/python-wrapper/**') }}
           restore-keys: |
             ${{ runner.os }}-build-${{ env.cache-name }}-
             ${{ runner.os }}-build-
@@ -156,8 +155,11 @@ jobs:
         run: |
           cp -r /cache/python/electionguard-python voting_schemes/electionguard
           cp -r /cache/python/python-wrapper voting_schemes/electionguard
-          mkdir -p voting_schemes/electionguard/ruby-adapter/public/assets
-          cp -r /cache/python-to-js/electionguard-assets voting_schemes/electionguard/ruby-adapter/public/assets/electionguard
+          mkdir -p voting_schemes/electionguard/ruby-adapter/public/assets/electionguard
+          cp -r /cache/python-to-js/electionguard-assets/* voting_schemes/electionguard/ruby-adapter/public/assets/electionguard
+          ls /cache/python-to-js/electionguard-assets
+          echo =======
+          ls voting_schemes/electionguard/ruby-adapter/public/assets/electionguard
       - name: Install postgres client
         run: sudo apt-get install libpq-dev
       - name: Install dependencies
