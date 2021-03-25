@@ -244,8 +244,6 @@ jobs:
         with:
           path: voting_schemes/electionguard/js-adapter/node_modules
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('voting_schemes/electionguard/js-adapter/package-lock.json') }}
-      - name: Install Cypress
-        run: npx cypress install
       - name: Install dependencies
         run: make install
       - name: Build artifacts
@@ -287,6 +285,7 @@ jobs:
       - name: Run e2e tests
         run: |
           cd bulletin_board/server
+          npx cypress install
           bundle exec rails s -e test -p 5017 &
           sleep 5
           npm run e2e:tests
