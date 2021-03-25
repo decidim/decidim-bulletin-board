@@ -102,10 +102,6 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: codegram/ruby-node-python-electionguard:0.0.1
-      volumes:
-        - pyodide:/src/pyodide/build
-        - python-wrapper:/tmp/python-wrapper
-        - electionguard-python:/tmp/electionguard-python
     services:
       postgres:
         image: postgres:11
@@ -184,32 +180,27 @@ jobs:
           cd bulletin_board/server
           bundler exec rails db:create
           bundler exec rails db:migrate
-      - name: Check if GraphQL schema has changed
-        env:
-          RAILS_ENV: test
-        run: |
-          cd bulletin_board/server
-          bundle exec rails server &
-          sleep 5
-          bundle exec rake schema:generate
-          npm run schema:generate
-          git diff --exit-code
-      - name: Run Rspec tests
-        run: cd bulletin_board/server && bundler exec rake
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v1
-        with:
-          directory: ./bulletin_board/server/coverage
-      - name: Install cypress
-        run: |
-          apt-get install -y libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 libxtst6 xauth xvfb
-          cd bulletin_board/server && npx cypress install
+      # - name: Check if GraphQL schema has changed
+      #   env:
+      #     RAILS_ENV: test
+      #   run: |
+      #     cd bulletin_board/server
+      #     bundle exec rails server &
+      #     sleep 5
+      #     bundle exec rake schema:generate
+      #     npm run schema:generate
+      #     git diff --exit-code
+      # - name: Run Rspec tests
+      #   run: cd bulletin_board/server && bundler exec rake
+      # - name: Upload coverage to Codecov
+      #   uses: codecov/codecov-action@v1
+      #   with:
+      #     directory: ./bulletin_board/server/coverage
       - name: Run e2e tests
-        run: |
-          cd bulletin_board/server
-          bundle exec rails server -e test -p 5017 -P tmp/test_server.pid &
-          sleep 5
-          npm run e2e:tests
+        uses: cypress-io/github-action@v2
+        with:
+          start: bundle exec rails s -e test -p 5017 -P tmp/test_server.pid
+          working-directory: ./bulletin_board/server
       - name: Upload artifacts (screenshots)
         if: ${{ always() }}
         uses: actions/upload-artifact@v2
