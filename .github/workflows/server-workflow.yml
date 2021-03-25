@@ -35,7 +35,7 @@ jobs:
           cache-name: cache-electionguard-python
         with:
           path: /cache/python
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('voting_schemes/electionguard/python-wrapper/**') }}
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('voting_schemes/electionguard/python-wrapper/Pipfile.lock') }}
           restore-keys: |
             ${{ runner.os }}-build-${{ env.cache-name }}-
             ${{ runner.os }}-build-
@@ -66,7 +66,7 @@ jobs:
           cache-name: cache-electionguard-pyodide-assets
         with:
           path: /cache/python-to-js
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('voting_schemes/electionguard/python-to-js/**') }}
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('voting_schemes/electionguard/python-to-js/build') }}
           restore-keys: |
             ${{ runner.os }}-build-${{ env.cache-name }}-
             ${{ runner.os }}-build-
@@ -77,7 +77,7 @@ jobs:
           cache-name: cache-electionguard-python
         with:
           path: /cache/python
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('voting_schemes/electionguard/python-wrapper/**') }}
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('voting_schemes/electionguard/python-wrapper/Pipfile.lock') }}
           restore-keys: |
             ${{ runner.os }}-build-${{ env.cache-name }}-
             ${{ runner.os }}-build-
@@ -131,7 +131,7 @@ jobs:
           cache-name: cache-electionguard-pyodide-assets
         with:
           path: /cache/python-to-js
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('voting_schemes/electionguard/python-to-js/**') }}
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('voting_schemes/electionguard/python-to-js/build') }}
           restore-keys: |
             ${{ runner.os }}-build-${{ env.cache-name }}-
             ${{ runner.os }}-build-
@@ -142,7 +142,7 @@ jobs:
           cache-name: cache-electionguard-python
         with:
           path: /cache/python
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('voting_schemes/electionguard/python-wrapper/**') }}
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('voting_schemes/electionguard/python-wrapper/Pipfile.lock') }}
           restore-keys: |
             ${{ runner.os }}-build-${{ env.cache-name }}-
             ${{ runner.os }}-build-
@@ -153,11 +153,17 @@ jobs:
           cp -r /cache/python/python-wrapper voting_schemes/electionguard
           mkdir -p voting_schemes/electionguard/ruby-adapter/public/assets/electionguard
           cp -r /cache/python-to-js/electionguard-assets/* voting_schemes/electionguard/ruby-adapter/public/assets/electionguard
-          ls /cache/python-to-js/electionguard-assets
-          echo =======
-          ls voting_schemes/electionguard/ruby-adapter/public/assets/electionguard
       - name: Install postgres client
         run: sudo apt-get install libpq-dev
+      - name: Server JS dependencies
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-server-js-dependencies
+        with:
+          path: |
+            ~/.cache/Cypress
+            bulletin_board/server/node_modules
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('bulletin_board/package-lock.json') }}
       - name: Install dependencies
         run: make install
       - name: Build artifacts
@@ -201,6 +207,7 @@ jobs:
         with:
           start: bundle exec rails s -e test -p 5017 -P tmp/test_server.pid
           working-directory: ./bulletin_board/server
+          install: false
       - name: Upload artifacts (screenshots)
         if: ${{ always() }}
         uses: actions/upload-artifact@v2
