@@ -234,11 +234,11 @@ jobs:
       #   with:
       #     directory: ./bulletin_board/server/coverage
       - name: Run e2e tests
-        uses: cypress-io/github-action@v2
-        with:
-          start: bundle exec rails s -e test -p 5017 -P tmp/test_server.pid
-          working-directory: ./bulletin_board/server
-          install: false
+        run: |
+          cd bulletin_board/server
+          bundle exec rails s -e test -p 5017 &
+          sleep 5
+          npm run e2e:tests
       - name: Upload artifacts (screenshots)
         if: ${{ always() }}
         uses: actions/upload-artifact@v2
