@@ -76,7 +76,7 @@ jobs:
     name: Build pyodide
     needs: check_python_to_js_cache
     runs-on: ubuntu-latest
-    if: ${{ needs.check_python_to_js_cache.outputs.cache-hit }} != 'true'
+    if: ${{ needs.check_python_to_js_cache.outputs.cache-hit != 'true' }}
     container:
       image: codegram/electionguard-pyodide-base-packages:0.0.1
     steps:
