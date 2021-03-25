@@ -76,7 +76,7 @@ jobs:
     name: Build pyodide
     needs: check_python_to_js_cache
     runs-on: ubuntu-latest
-    if: ${{ needs.check_python_to_js_cache.outputs.cache-hit }} != 'True'
+    if: ${{ needs.check_python_to_js_cache.outputs.cache-hit }} != 'true'
     container:
       image: codegram/electionguard-pyodide-base-packages:0.0.1
     steps:
@@ -89,6 +89,7 @@ jobs:
           fetch-depth: 1
       - name: Cache python to js
         uses: actions/cache@v2
+        id: cache-electionguard-pyodide-assets
         env:
           cache-name: cache-electionguard-pyodide-assets
         with:
@@ -124,6 +125,7 @@ jobs:
           cp -r /src/pyodide/build/* /cache/python-to-js/electionguard-assets
   build:
     name: Build
+    if: always()
     needs: build_python_to_js
     runs-on: ubuntu-latest
     container:
@@ -181,15 +183,34 @@ jobs:
           cp -r /cache/python-to-js/electionguard-assets/* voting_schemes/electionguard/ruby-adapter/public/assets/electionguard
       - name: Install postgres client
         run: sudo apt-get install libpq-dev
-      - name: Configure gems folder
-        run: bundle config path vendor/bundle
-      - name: Cache Ruby dependencies
+      - name: Cache Server Ruby dependencies
         uses: actions/cache@v2
         env:
-          cache-name: cache-ruby-dependencies
+          cache-name: cache-server-ruby-dependencies
         with:
-          path: vendor/bundle
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/Gemfile.lock') }}
+          path: bulletin_board/server/.bundle/gems
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('bulletin_board/server/Gemfile.lock') }}
+      - name: Cache Client Ruby dependencies
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-client-ruby-dependencies
+        with:
+          path: bulletin_board/ruby-client/.bundle/gems
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('bulletin_board/ruby-client/Gemfile.lock') }}
+      - name: Cache Dummy Ruby dependencies
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-dummy-ruby-dependencies
+        with:
+          path: voting_schemes/dummy/ruby-adapter/.bundle/gems
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('voting_schemes/dummy/ruby-adapter/Gemfile.lock') }}
+      - name: Cache Electionguard Ruby dependencies
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-electionguard-ruby-dependencies
+        with:
+          path: voting_schemes/electionguard/ruby-adapter/.bundle/gems
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('voting_schemes/electionguard/ruby-adapter/Gemfile.lock') }}
       - name: Cache Server JS dependencies
         uses: actions/cache@v2
         env:
@@ -260,12 +281,12 @@ jobs:
       #   uses: codecov/codecov-action@v1
       #   with:
       #     directory: ./bulletin_board/server/coverage
-      - name: Run e2e tests
-        run: |
-          cd bulletin_board/server
-          bundle exec rails s -e test -p 5017 &
-          sleep 5
-          npm run e2e:tests
+      # - name: Run e2e tests
+      #   run: |
+      #     cd bulletin_board/server
+      #     bundle exec rails s -e test -p 5017 &
+      #     sleep 5
+      #     npm run e2e:tests
       # - name: Upload artifacts (screenshots)
       #   if: ${{ always() }}
       #   uses: actions/upload-artifact@v2
