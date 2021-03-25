@@ -2,12 +2,14 @@ PATH
   remote: ../../voting_schemes/dummy/ruby-adapter
   specs:
     voting_schemes-dummy (0.15.2)
+      mimemagic (~> 0.3.7)
       rails (>= 5.0.0)
 
 PATH
   remote: ../../voting_schemes/electionguard/ruby-adapter
   specs:
     voting_schemes-electionguard (0.15.2)
+      mimemagic (~> 0.3.7)
       rails (>= 5.0.0)
 
 PATH
@@ -17,6 +19,7 @@ PATH
       byebug (~> 11.0)
       graphlient (~> 0.4.0)
       jwt (~> 2.2.2)
+      mimemagic (~> 0.3.7)
       rails (>= 5.0.0)
       wisper (~> 2.0.0)
 
