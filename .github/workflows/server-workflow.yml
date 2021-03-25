@@ -260,3 +260,9 @@ jobs:
         with:
           name: server logs
           path: bulletin_board/server/log
+      - name: Upload artifacts (pyodide)
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v2
+        with:
+          name: pyodide artifacts
+          path: /cache/python-to-js/electionguard-assets
