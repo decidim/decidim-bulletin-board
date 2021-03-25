@@ -170,34 +170,34 @@ jobs:
           cp -r /cache/python-to-js/electionguard-assets/* voting_schemes/electionguard/ruby-adapter/public/assets/electionguard
       - name: Install postgres client
         run: sudo apt-get install libpq-dev
-      - name: Cache Server Ruby dependencies
-        uses: actions/cache@v2
-        env:
-          cache-name: cache-server-ruby-gems
-        with:
-          path: bulletin_board/server/.bundle/gems
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('bulletin_board/server/Gemfile.lock') }}
-      - name: Cache Client Ruby dependencies
-        uses: actions/cache@v2
-        env:
-          cache-name: cache-client-ruby-gems
-        with:
-          path: bulletin_board/ruby-client/.bundle/gems
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('bulletin_board/ruby-client/Gemfile.lock') }}
-      - name: Cache Dummy Ruby dependencies
-        uses: actions/cache@v2
-        env:
-          cache-name: cache-dummy-ruby-gems
-        with:
-          path: voting_schemes/dummy/ruby-adapter/.bundle/gems
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('voting_schemes/dummy/ruby-adapter/Gemfile.lock') }}
-      - name: Cache Electionguard Ruby dependencies
-        uses: actions/cache@v2
-        env:
-          cache-name: cache-electionguard-ruby-gems
-        with:
-          path: voting_schemes/electionguard/ruby-adapter/.bundle/gems
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('voting_schemes/electionguard/ruby-adapter/Gemfile.lock') }}
+      # - name: Cache Server Ruby dependencies
+      #   uses: actions/cache@v2
+      #   env:
+      #     cache-name: cache-server-ruby-gems
+      #   with:
+      #     path: bulletin_board/server/.bundle/gems
+      #     key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('bulletin_board/server/Gemfile.lock') }}
+      # - name: Cache Client Ruby dependencies
+      #   uses: actions/cache@v2
+      #   env:
+      #     cache-name: cache-client-ruby-gems
+      #   with:
+      #     path: bulletin_board/ruby-client/.bundle/gems
+      #     key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('bulletin_board/ruby-client/Gemfile.lock') }}
+      # - name: Cache Dummy Ruby dependencies
+      #   uses: actions/cache@v2
+      #   env:
+      #     cache-name: cache-dummy-ruby-gems
+      #   with:
+      #     path: voting_schemes/dummy/ruby-adapter/.bundle/gems
+      #     key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('voting_schemes/dummy/ruby-adapter/Gemfile.lock') }}
+      # - name: Cache Electionguard Ruby dependencies
+      #   uses: actions/cache@v2
+      #   env:
+      #     cache-name: cache-electionguard-ruby-gems
+      #   with:
+      #     path: voting_schemes/electionguard/ruby-adapter/.bundle/gems
+      #     key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('voting_schemes/electionguard/ruby-adapter/Gemfile.lock') }}
       - name: Cache Server JS dependencies
         uses: actions/cache@v2
         env:
@@ -228,10 +228,12 @@ jobs:
         with:
           path: voting_schemes/electionguard/js-adapter/node_modules
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('voting_schemes/electionguard/js-adapter/package-lock.json') }}
+      - name: Install Cypress dependencies
+        run: apt-get install libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 libxtst6 xauth xvfb
       - name: Install dependencies
         run: |
           make install
-          ls bulletin_board/server/.bundle/gems
+          cd bulletin_board/server && bundle info --path rubocop
       - name: Build artifacts
         run: make build
       - name: Install Rubocop
