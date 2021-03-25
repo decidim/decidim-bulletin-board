@@ -74,7 +74,7 @@ jobs:
             ${{ runner.os }}-
       - name: Save output
         id: save-output
-        run: echo "::set-output cache-hit=${{ steps.cache-electionguard-pyodide-assets.outputs.cache-hit }}"
+        run: echo "::set-output name=cache-hit::${{ steps.cache-electionguard-pyodide-assets.outputs.cache-hit }}"
   build_python_to_js:
     name: Build pyodide
     needs: check_python_to_js_cache
