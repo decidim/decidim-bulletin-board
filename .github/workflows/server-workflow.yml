@@ -35,7 +35,7 @@ jobs:
           cache-name: cache-electionguard-python
         with:
           path: /cache/python
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('voting_schemes/electionguard/python-wrapper/Pipfile.lock') }}
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('voting_schemes/electionguard/python-wrapper') }}
           restore-keys: |
             ${{ runner.os }}-build-${{ env.cache-name }}-
             ${{ runner.os }}-build-
@@ -66,7 +66,7 @@ jobs:
           cache-name: cache-electionguard-pyodide-assets
         with:
           path: /cache/python-to-js
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('voting_schemes/electionguard/python-to-js/build') }}
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('voting_schemes/electionguard/python-to-js') }}
           restore-keys: |
             ${{ runner.os }}-build-${{ env.cache-name }}-
             ${{ runner.os }}-build-
@@ -77,7 +77,7 @@ jobs:
           cache-name: cache-electionguard-python
         with:
           path: /cache/python
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('voting_schemes/electionguard/python-wrapper/Pipfile.lock') }}
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('voting_schemes/electionguard/python-wrapper') }}
           restore-keys: |
             ${{ runner.os }}-build-${{ env.cache-name }}-
             ${{ runner.os }}-build-
@@ -131,7 +131,7 @@ jobs:
           cache-name: cache-electionguard-pyodide-assets
         with:
           path: /cache/python-to-js
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('voting_schemes/electionguard/python-to-js/build') }}
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('voting_schemes/electionguard/python-to-js') }}
           restore-keys: |
             ${{ runner.os }}-build-${{ env.cache-name }}-
             ${{ runner.os }}-build-
@@ -142,7 +142,7 @@ jobs:
           cache-name: cache-electionguard-python
         with:
           path: /cache/python
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('voting_schemes/electionguard/python-wrapper/Pipfile.lock') }}
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('voting_schemes/electionguard/python-wrapper') }}
           restore-keys: |
             ${{ runner.os }}-build-${{ env.cache-name }}-
             ${{ runner.os }}-build-
@@ -155,15 +155,45 @@ jobs:
           cp -r /cache/python-to-js/electionguard-assets/* voting_schemes/electionguard/ruby-adapter/public/assets/electionguard
       - name: Install postgres client
         run: sudo apt-get install libpq-dev
-      - name: Server JS dependencies
+      - name: Configure gems folder
+        run: bundle config path vendor/bundle
+      - name: Cache Ruby dependencies
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-ruby-dependencies
+        with:
+          path: vendor/bundle
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/Gemfile.lock') }}
+      - name: Cache Server JS dependencies
         uses: actions/cache@v2
         env:
           cache-name: cache-server-js-dependencies
         with:
           path: |
-            ~/.cache/Cypress
+            .cache/Cypress
             bulletin_board/server/node_modules
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('bulletin_board/package-lock.json') }}
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('bulletin_board/server/package-lock.json') }}
+      - name: Cache Client JS dependencies
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-client-js-dependencies
+        with:
+          path: bulletin_board/js-client/node_modules
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('bulletin_board/js-client/package-lock.json') }}
+      - name: Cache Dummy JS dependencies
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-dummy-js-dependencies
+        with:
+          path: voting_schemes/dummy/js-adapter/node_modules
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('voting_schemes/dummy/js-adapter/package-lock.json') }}
+      - name: Cache Electionguard JS dependencies
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-electionguard-js-dependencies
+        with:
+          path: voting_schemes/electionguard/js-adapter/node_modules
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('voting_schemes/electionguard/js-adapter/package-lock.json') }}
       - name: Install dependencies
         run: make install
       - name: Build artifacts
