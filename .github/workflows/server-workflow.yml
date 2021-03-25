@@ -95,7 +95,6 @@ jobs:
           cp -r voting_schemes/electionguard/python-to-js/override/* /src/pyodide/build/
           mkdir -p /cache/python-to-js/electionguard-assets
           cp -r /src/pyodide/build/* /cache/python-to-js/electionguard-assets
-          ls /cache/python-to-js/electionguard-assets
   build:
     name: Build
     needs: build_python_to_js
@@ -155,6 +154,8 @@ jobs:
           cp -r /cache/python-to-js/electionguard-assets/* voting_schemes/electionguard/ruby-adapter/public/assets/electionguard
       - name: Install postgres client
         run: sudo apt-get install libpq-dev
+      - name: Install Cypress
+        run: npx cypress install
       - name: Configure gems folder
         run: bundle config path vendor/bundle
       - name: Cache Ruby dependencies
