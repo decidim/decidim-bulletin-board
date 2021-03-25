@@ -170,6 +170,13 @@ jobs:
           cp -r /cache/python-to-js/electionguard-assets/* voting_schemes/electionguard/ruby-adapter/public/assets/electionguard
       - name: Install postgres client
         run: sudo apt-get install libpq-dev
+      - name: Cache Ruby dependencies
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-ruby-gems
+        with:
+          path: /usr/local/bundle
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/Gemfile.lock') }}
       # - name: Cache Server Ruby dependencies
       #   uses: actions/cache@v2
       #   env:
@@ -270,13 +277,13 @@ jobs:
       #   uses: codecov/codecov-action@v1
       #   with:
       #     directory: ./bulletin_board/server/coverage
-      - name: Run e2e tests
-        run: |
-          cd bulletin_board/server
-          npm run e2e:install
-          bundle exec rails s -e test -p 5017 &
-          sleep 5
-          npm run e2e:tests
+      # - name: Run e2e tests
+      #   run: |
+      #     cd bulletin_board/server
+      #     npm run e2e:install
+      #     bundle exec rails s -e test -p 5017 &
+      #     sleep 5
+      #     npm run e2e:tests
       # - name: Upload artifacts (screenshots)
       #   if: ${{ always() }}
       #   uses: actions/upload-artifact@v2
