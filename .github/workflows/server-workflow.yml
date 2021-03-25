@@ -50,6 +50,8 @@ jobs:
     name: Check pyodide cache
     needs: build_python_wrapper
     runs-on: ubuntu-latest
+    outputs:
+      cache-hit: ${{ steps.save-output.outputs.cache-hit }}
     steps:
       - uses: rokroskar/workflow-run-cleanup-action@v0.3.2
         if: "github.ref != 'refs/heads/develop'"
@@ -71,6 +73,7 @@ jobs:
             ${{ runner.os }}-build-
             ${{ runner.os }}-
       - name: Save output
+        id: save-output
         run: echo "::set-output cache-hit=${{ steps.cache-electionguard-pyodide-assets.outputs.cache-hit }}"
   build_python_to_js:
     name: Build pyodide
