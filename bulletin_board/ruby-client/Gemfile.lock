@@ -5,6 +5,7 @@ PATH
       byebug (~> 11.0)
       graphlient (~> 0.4.0)
       jwt (~> 2.2.2)
+      mimemagic (~> 0.3.7)
       rails (>= 5.0.0)
       wisper (~> 2.0.0)
 
@@ -112,7 +113,8 @@ GEM
     marcel (0.3.3)
       mimemagic (~> 0.3.2)
     method_source (1.0.0)
-    mimemagic (0.3.6)
+    mimemagic (0.3.7)
+      nokogiri (~> 1.11.2)
     mini_mime (1.0.2)
     mini_portile2 (2.5.0)
     minitest (5.14.4)

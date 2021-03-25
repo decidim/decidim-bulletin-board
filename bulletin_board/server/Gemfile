@@ -50,6 +50,8 @@ gem "decidim-bulletin_board", path: "../ruby-client"
 gem "voting_schemes-dummy", path: "../../voting_schemes/dummy/ruby-adapter"
 gem "voting_schemes-electionguard", path: "../../voting_schemes/electionguard/ruby-adapter"
 
+gem "mimemagic", "~> 0.3.7"
+
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem "byebug", platforms: [:mri, :mingw, :x64_mingw]
