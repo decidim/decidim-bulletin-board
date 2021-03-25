@@ -46,10 +46,37 @@ jobs:
           mkdir -p /cache/python
           cp -r voting_schemes/electionguard/python-wrapper /cache/python
           cp -r voting_schemes/electionguard/electionguard-python /cache/python
-  build_python_to_js:
-    name: Build pyodide
+  check_python_to_js_cache:
+    name: Check pyodide cache
     needs: build_python_wrapper
     runs-on: ubuntu-latest
+    steps:
+      - uses: rokroskar/workflow-run-cleanup-action@v0.3.2
+        if: "github.ref != 'refs/heads/develop'"
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+      - uses: actions/checkout@v2.0.0
+        with:
+          fetch-depth: 1
+      - name: Cache python to js
+        uses: actions/cache@v2
+        id: cache-electionguard-pyodide-assets
+        env:
+          cache-name: cache-electionguard-pyodide-assets
+        with:
+          path: /cache/python-to-js
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('voting_schemes/electionguard/python-to-js') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+      - name: Save output
+        run: echo "::set-output cache-hit=${{ steps.cache-electionguard-pyodide-assets.outputs.cache-hit }}"
+  build_python_to_js:
+    name: Build pyodide
+    needs: check_python_to_js_cache
+    runs-on: ubuntu-latest
+    if: ${{ needs.check_python_to_js_cache.outputs.cache-hit }} != 'True'
     container:
       image: codegram/electionguard-pyodide-base-packages:0.0.1
     steps:
@@ -154,8 +181,6 @@ jobs:
           cp -r /cache/python-to-js/electionguard-assets/* voting_schemes/electionguard/ruby-adapter/public/assets/electionguard
       - name: Install postgres client
         run: sudo apt-get install libpq-dev
-      - name: Install Cypress
-        run: npx cypress install
       - name: Configure gems folder
         run: bundle config path vendor/bundle
       - name: Cache Ruby dependencies
@@ -195,6 +220,8 @@ jobs:
         with:
           path: voting_schemes/electionguard/js-adapter/node_modules
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('voting_schemes/electionguard/js-adapter/package-lock.json') }}
+      - name: Install Cypress
+        run: npx cypress install
       - name: Install dependencies
         run: make install
       - name: Build artifacts
@@ -233,12 +260,12 @@ jobs:
       #   uses: codecov/codecov-action@v1
       #   with:
       #     directory: ./bulletin_board/server/coverage
-      # - name: Run e2e tests
-      #   run: |
-      #     cd bulletin_board/server
-      #     bundle exec rails s -e test -p 5017 &
-      #     sleep 5
-      #     npm run e2e:tests
+      - name: Run e2e tests
+        run: |
+          cd bulletin_board/server
+          bundle exec rails s -e test -p 5017 &
+          sleep 5
+          npm run e2e:tests
       # - name: Upload artifacts (screenshots)
       #   if: ${{ always() }}
       #   uses: actions/upload-artifact@v2
