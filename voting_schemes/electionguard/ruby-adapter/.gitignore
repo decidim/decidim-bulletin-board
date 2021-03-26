@@ -1,6 +1,4 @@
-# Ignore installed gems
-/.bundle/gems
-
+/.bundle
 /.yardoc
 /_yardoc/
 /coverage/
