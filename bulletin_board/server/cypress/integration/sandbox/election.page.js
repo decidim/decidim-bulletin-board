@@ -298,6 +298,9 @@ export class ElectionPage {
     cy.findByText("Perform tally").click().should("not.exist");
     cy.findByText(`Tally for ${electionTitle}`).should("be.visible");
 
+    // Wait a decent amount of time to make sure electionguard is loaded.
+    cy.wait(15_000);
+
     trustees.forEach(({ unique_id, name }) => {
       cy.findByText(name)
         .parent("tr")
@@ -311,7 +314,7 @@ export class ElectionPage {
 
           // When the upload button is rendered on the screen the change event callback
           // may not be set yet, so we wait a reasonable time to ensure it is set correctly.
-          cy.wait(10_000);
+          cy.wait(1000);
 
           // Emulate trustee uploading the private key file
           cy.get(trusteeRow)
