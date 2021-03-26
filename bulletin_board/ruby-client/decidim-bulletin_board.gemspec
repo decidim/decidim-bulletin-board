@@ -25,8 +25,8 @@ Gem::Specification.new do |s|
   s.executables = s.files.grep(%r{^exe/}) { |f| File.basename(f) }
   s.require_paths = ["lib"]
 
-  s.add_dependency "rails", ">= 5.0.0"
   s.add_dependency "mimemagic", "~> 0.3.7"
+  s.add_dependency "rails", ">= 5.0.0"
 
   s.add_dependency "byebug", "~> 11.0"
   s.add_dependency "graphlient", "~> 0.4.0"
