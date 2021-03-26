@@ -114,8 +114,121 @@ jobs:
           cp -r voting_schemes/electionguard/python-to-js/override/* /src/pyodide/build/
           mkdir -p /cache/python-to-js/electionguard-assets
           cp -r /src/pyodide/build/* /cache/python-to-js/electionguard-assets
-  build:
-    name: Build
+  tests:
+    name: Unit tests
+    if: always()
+    needs: build_python_to_js
+    runs-on: ubuntu-latest
+    container:
+      image: codegram/ruby-node-python-electionguard:0.0.1
+    services:
+      postgres:
+        image: postgres:11
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        env:
+          POSTGRES_PASSWORD: postgres
+    env:
+      DATABASE_USERNAME: postgres
+      DATABASE_PASSWORD: postgres
+      DATABASE_HOST: postgres
+    steps:
+      - uses: actions/checkout@v2.0.0
+        with:
+          fetch-depth: 1
+      - name: Cache python to js
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-electionguard-pyodide-assets
+        with:
+          path: /cache/python-to-js
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('voting_schemes/electionguard/python-to-js') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+      - name: Cache python wrapper
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-electionguard-python
+        with:
+          path: /cache/python
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('voting_schemes/electionguard/python-wrapper') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+      - name: Restore previous artifacts
+        run: |
+          cp -r /cache/python/electionguard-python voting_schemes/electionguard
+          cp -r /cache/python/python-wrapper voting_schemes/electionguard
+          mkdir -p voting_schemes/electionguard/ruby-adapter/public/assets/electionguard
+          cp -r /cache/python-to-js/electionguard-assets/* voting_schemes/electionguard/ruby-adapter/public/assets/electionguard
+      - name: Install system dependencies
+        run: sudo apt-get install -y libpq-dev
+      - name: Cache Ruby dependencies
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-ruby-gems
+        with:
+          path: /usr/local/bundle
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/Gemfile.lock') }}
+      - name: Cache JS dependencies
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-node-packages
+        with:
+          path: |
+            .cache/Cypress
+            bulletin_board/server/node_modules
+            bulletin_board/js-client/node_modules
+            voting_schemes/dummy/js-adapter/node_modules
+            voting_schemes/electionguard/js-adapter/node_modules
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+      - name: Install dependencies
+        run: make install
+      - name: Build artifacts
+        run: make build
+      - name: Install Rubocop
+        run: gem install rubocop
+      - name: Lint Ruby files
+        run: cd bulletin_board/server && bundle exec rubocop -P
+      - name: Lint JS files
+        run: cd bulletin_board/server && npm run lint
+      - name: Format JS files
+        run: |
+          cd bulletin_board/server
+          npm run format
+          git diff --exit-code
+      - name: Create database
+        env:
+          RAILS_ENV: test
+        run: |
+          cd bulletin_board/server
+          bundler exec rails db:create
+          bundler exec rails db:migrate
+      - name: Check if GraphQL schema has changed
+        env:
+          RAILS_ENV: test
+        run: |
+          cd bulletin_board/server
+          bundle exec rails server &
+          sleep 5
+          bundle exec rake schema:generate
+          npm run schema:generate
+          git diff --exit-code
+      - name: Run Rspec tests
+        run: cd bulletin_board/server && bundler exec rake
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v1
+        with:
+          directory: ./bulletin_board/server/coverage
+  e2e:
+    name: E2E tests
     if: always()
     needs: build_python_to_js
     runs-on: ubuntu-latest
@@ -190,123 +303,7 @@ jobs:
             voting_schemes/electionguard/js-adapter/node_modules
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
       - name: Install dependencies
-        run: |
-          make install
-          cd bulletin_board/server && bundle info --path rubocop
-      - name: Build artifacts
-        run: make build
-      - name: Install Rubocop
-        run: gem install rubocop
-      - name: Lint Ruby files
-        run: cd bulletin_board/server && bundle exec rubocop -P
-      - name: Lint JS files
-        run: cd bulletin_board/server && npm run lint
-      - name: Format JS files
-        run: |
-          cd bulletin_board/server
-          npm run format
-          git diff --exit-code
-      - name: Create database
-        env:
-          RAILS_ENV: test
-        run: |
-          cd bulletin_board/server
-          bundler exec rails db:create
-          bundler exec rails db:migrate
-      - name: Check if GraphQL schema has changed
-        env:
-          RAILS_ENV: test
-        run: |
-          cd bulletin_board/server
-          bundle exec rails server &
-          sleep 5
-          bundle exec rake schema:generate
-          npm run schema:generate
-          git diff --exit-code
-      - name: Run Rspec tests
-        run: cd bulletin_board/server && bundler exec rake
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v1
-        with:
-          directory: ./bulletin_board/server/coverage
-  e2e:
-    name: E2E
-    needs: build
-    runs-on: ubuntu-latest
-    container:
-      image: codegram/ruby-node-python-electionguard:0.0.1
-    services:
-      postgres:
-        image: postgres:11
-        ports: ["5432:5432"]
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-        env:
-          POSTGRES_PASSWORD: postgres
-    env:
-      DATABASE_USERNAME: postgres
-      DATABASE_PASSWORD: postgres
-      DATABASE_HOST: postgres
-    steps:
-      - uses: actions/checkout@v2.0.0
-        with:
-          fetch-depth: 1
-      - name: Cache python to js
-        uses: actions/cache@v2
-        env:
-          cache-name: cache-electionguard-pyodide-assets
-        with:
-          path: /cache/python-to-js
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('voting_schemes/electionguard/python-to-js') }}
-          restore-keys: |
-            ${{ runner.os }}-build-${{ env.cache-name }}-
-            ${{ runner.os }}-build-
-            ${{ runner.os }}-
-      - name: Cache python wrapper
-        uses: actions/cache@v2
-        env:
-          cache-name: cache-electionguard-python
-        with:
-          path: /cache/python
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('voting_schemes/electionguard/python-wrapper') }}
-          restore-keys: |
-            ${{ runner.os }}-build-${{ env.cache-name }}-
-            ${{ runner.os }}-build-
-            ${{ runner.os }}-
-      - name: Restore previous artifacts
-        run: |
-          cp -r /cache/python/electionguard-python voting_schemes/electionguard
-          cp -r /cache/python/python-wrapper voting_schemes/electionguard
-          mkdir -p voting_schemes/electionguard/ruby-adapter/public/assets/electionguard
-          cp -r /cache/python-to-js/electionguard-assets/* voting_schemes/electionguard/ruby-adapter/public/assets/electionguard
-      - name: Install system dependencies
-        run: sudo apt-get install -y libpq-dev libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 libxtst6 xauth xvfb
-      - name: Cache Ruby dependencies
-        uses: actions/cache@v2
-        env:
-          cache-name: cache-ruby-gems
-        with:
-          path: /usr/local/bundle
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/Gemfile.lock') }}
-      - name: Cache JS dependencies
-        uses: actions/cache@v2
-        env:
-          cache-name: cache-node-packages
-        with:
-          path: |
-            .cache/Cypress
-            bulletin_board/server/node_modules
-            bulletin_board/js-client/node_modules
-            voting_schemes/dummy/js-adapter/node_modules
-            voting_schemes/electionguard/js-adapter/node_modules
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
-      - name: Install dependencies
-        run: |
-          make install
-          cd bulletin_board/server && bundle info --path rubocop
+        run: make install
       - name: Build artifacts
         run: make build
       - name: Create database
