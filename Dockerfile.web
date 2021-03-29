@@ -62,7 +62,7 @@ ADD voting_schemes/dummy/ruby-adapter /code/voting_schemes/dummy/ruby-adapter
 COPY --from=python-to-js-builder /code/voting_schemes/electionguard /code/voting_schemes/electionguard
 ADD voting_schemes/electionguard/js-adapter /code/voting_schemes/electionguard/js-adapter
 ADD voting_schemes/electionguard/ruby-adapter /code/voting_schemes/electionguard/ruby-adapter
-COPY --from=python-to-js-builder /src/pyodide/build /code/voting_schemes/electionguard/js-adapter/public/assets/electionguard
+COPY --from=python-to-js-builder /src/pyodide/build /code/voting_schemes/electionguard/ruby-adapter/public/assets/electionguard
 
 # Add dependencies manifests
 ADD bulletin_board/server/package-lock.json /code/bulletin_board/server/package-lock.json

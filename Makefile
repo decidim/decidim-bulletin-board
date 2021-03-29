@@ -9,8 +9,10 @@ help:
 	@echo '  test - Run all tests.'
 	@echo 'Releasing packages:'
 	@echo '  release - Bump versions, commit and push changes to the repository and release gems. Requires clean repository and VERSION set.'
+	@echo 'Deploying applications:'
+	@echo '  deploy_staging - Deploy an application to the staging pipeline. Requires heroku login and HEROKU_APP_NAME set.'
 
-.PHONY: clean install build serve test release
+.PHONY: clean install build serve test release deploy_staging
 
 # CONSTANTS
 
@@ -239,3 +241,8 @@ build_voting_scheme_electionguard_ruby_library:
 
 release_voting_scheme_electionguard_gem:
 	cd ${VOTING_SCHEME_ELECTIONGUARD_RUBY_LIBRARY_PATH} && gem push pkg/voting_schemes-electionguard-${VERSION}.gem
+
+# Deployment
+
+deploy_staging:
+	./deploy_staging.sh
