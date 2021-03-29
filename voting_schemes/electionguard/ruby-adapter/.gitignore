@@ -1,4 +1,4 @@
-/.bundle/
+/.bundle
 /.yardoc
 /_yardoc/
 /coverage/
@@ -9,3 +9,7 @@
 
 # rspec failure tracking
 .rspec_status
+
+# artifacts
+/app/assets/javascripts/voting_schemes/electionguard/electionguard.js
+/public

@@ -2,22 +2,16 @@
 
 SHARED_FOLDER=${1:-/host-tmp}
 HOST_SHARED_FOLDER=${1:-/tmp}
-OS=$(python -c 'import platform; print(platform.system())')
+
+mkdir -p packages/bulletin_board-electionguard/dist/
+mkdir -p packages/electionguard/dist/
+mkdir -p ../ruby-adapter/public/assets/electionguard/
 
 # Copy electionguard package source to the packages folder
-cd ../electionguard-python
-make build
-cp dist/electionguard-*.tar.gz ../python-to-js/packages/electionguard/dist/
+cd ../electionguard-python && cp dist/electionguard-*.tar.gz ../python-to-js/packages/electionguard/dist/
 
 # Copy bulletin_board-electionguard package source to the packages folder
-cd ../python-wrapper
-if [ $OS = "Linux" ]; then
-  make install-linux
-else
-  make install-mac
-fi
-make package
-cp dist/bulletin_board-electionguard-*.tar.gz ../python-to-js/packages/bulletin_board-electionguard/dist/
+cd ../python-wrapper && cp dist/bulletin_board-electionguard-*.tar.gz ../python-to-js/packages/bulletin_board-electionguard/dist/
 
 # Copy everything needed to compile to the shared folder
 mkdir -p $SHARED_FOLDER/electionguard
@@ -25,9 +19,8 @@ rm -rf $SHARED_FOLDER/electionguard/*
 cp -rf .. $SHARED_FOLDER/electionguard/
 
 # Build packages with Pyodide
-docker run --rm --mount type=bind,source=$HOST_SHARED_FOLDER/electionguard,target=/electionguard -it iodide/pyodide:0.16.1 /electionguard/python-to-js/build-pyodide
+docker run --rm --mount type=bind,source=$HOST_SHARED_FOLDER/electionguard,target=/electionguard -e PYODIDE_PACKAGES="electionguard,bulletin_board-electionguard" -it codegram/electionguard-pyodide-base-packages:0.0.1 /electionguard/python-to-js/build-pyodide
 
 # Move generated files to the vendor folder of the js-adapter
-rm -rf ../js-adapter/vendor/electionguard/*
 cp -rf $SHARED_FOLDER/electionguard/python-to-js/output/* ../ruby-adapter/public/assets/electionguard/
 rm -rf $SHARED_FOLDER/electionguard

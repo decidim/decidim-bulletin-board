@@ -111,14 +111,12 @@ export class ElectionPage {
             );
 
           cy.findByText("Start").click();
-        });
-    });
 
-    trustees.forEach(({ name }) => {
-      cy.findByText(name)
-        .parent("tr")
-        .within(() => {
-          cy.findByText("Backup").click({ timeout: 120_000 });
+          cy.findByText(name)
+            .parent("tr")
+            .within(() => {
+              cy.findByText("Backup").click({ timeout: 120_000 });
+            });
         });
     });
   }
@@ -186,7 +184,7 @@ export class ElectionPage {
   assertBallotHashIsPresent() {
     cy.findByText("Encrypt vote").should("be.disabled");
     cy.findByText(/Your ballot identifier is:/, {
-      timeout: 60_000,
+      timeout: 120_000,
     }).should("be.visible");
   }
 
@@ -225,7 +223,7 @@ export class ElectionPage {
       });
     cy.findByText("Encrypt vote").should("be.visible").click();
     cy.findByText("Cast vote", {
-      timeout: 60_000,
+      timeout: 120_000,
     })
       .should("be.visible")
       .click();
@@ -300,12 +298,15 @@ export class ElectionPage {
     cy.findByText("Perform tally").click().should("not.exist");
     cy.findByText(`Tally for ${electionTitle}`).should("be.visible");
 
+    // Wait a decent amount of time to make sure electionguard is loaded.
+    cy.wait(15_000);
+
     trustees.forEach(({ unique_id, name }) => {
       cy.findByText(name)
         .parent("tr")
         .within((trusteeRow) => {
           cy.findByText("Start").click({
-            timeout: 60_000,
+            timeout: 120_000,
           });
 
           // Ensure that the button is present before starting to upload the trustee state
@@ -398,11 +399,11 @@ export class ElectionPage {
     const flatVotes = this.castedVotes.flat();
     const totals = {};
 
-    for (i in flatVotes) {
+    for (const i in flatVotes) {
       totals[flatVotes[i]] = (totals[flatVotes[i]] || 0) + 1; // increments count if element already exists
     }
 
-    for (answer in Object.keys(totals)) {
+    for (const answer in Object.keys(totals)) {
       cy.findByText(`${answer}: ${totals[answer]}`).should("be.visible");
     }
   }

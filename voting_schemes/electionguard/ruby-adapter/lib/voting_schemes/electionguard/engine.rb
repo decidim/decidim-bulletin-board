@@ -8,7 +8,7 @@ module VotingSchemes
       isolate_namespace VotingSchemes::Electionguard
 
       initializer "static assets" do |app|
-        app.middleware.insert_before(::ActionDispatch::Static, ::ActionDispatch::Static, "#{root}/public")
+        app.middleware.insert_after(::Rack::Sendfile, ::ActionDispatch::Static, "#{root}/public")
       end
     end
   end

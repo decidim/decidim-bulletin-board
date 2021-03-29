@@ -1,22 +1,25 @@
 PATH
   remote: ../../voting_schemes/dummy/ruby-adapter
   specs:
-    voting_schemes-dummy (0.1.0)
+    voting_schemes-dummy (0.15.2)
+      mimemagic (~> 0.3.7)
       rails (>= 5.0.0)
 
 PATH
   remote: ../../voting_schemes/electionguard/ruby-adapter
   specs:
-    voting_schemes-electionguard (0.1.0)
+    voting_schemes-electionguard (0.15.2)
+      mimemagic (~> 0.3.7)
       rails (>= 5.0.0)
 
 PATH
   remote: ../ruby-client
   specs:
-    decidim-bulletin_board (0.14.0)
+    decidim-bulletin_board (0.15.2)
       byebug (~> 11.0)
       graphlient (~> 0.4.0)
       jwt (~> 2.2.2)
+      mimemagic (~> 0.3.7)
       rails (>= 5.0.0)
       wisper (~> 2.0.0)
 
@@ -160,19 +163,20 @@ GEM
     marcel (0.3.3)
       mimemagic (~> 0.3.2)
     method_source (1.0.0)
-    mimemagic (0.3.5)
+    mimemagic (0.3.7)
+      nokogiri (~> 1.11.2)
     mini_mime (1.0.2)
     mini_portile2 (2.5.0)
     minitest (5.14.3)
     msgpack (1.4.2)
     multipart-post (2.1.1)
     nio4r (2.5.4)
-    nokogiri (1.11.1)
+    nokogiri (1.11.2)
       mini_portile2 (~> 2.5.0)
       racc (~> 1.4)
-    nokogiri (1.11.1-x86_64-darwin)
+    nokogiri (1.11.2-x86_64-darwin)
       racc (~> 1.4)
-    nokogiri (1.11.1-x86_64-linux)
+    nokogiri (1.11.2-x86_64-linux)
       racc (~> 1.4)
     parallel (1.20.1)
     parser (3.0.0.0)
@@ -364,6 +368,7 @@ DEPENDENCIES
   jsonl
   jwt
   listen (~> 3.2)
+  mimemagic (~> 0.3.7)
   pg (>= 0.18, < 2.0)
   pry-rails
   puma (~> 4.1)
