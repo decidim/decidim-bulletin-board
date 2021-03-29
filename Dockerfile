@@ -48,7 +48,8 @@ ENV RAILS_ENV production
 # Install system dependencies
 RUN apt-get update && \
   apt-get install -y postgresql postgresql-client postgresql-contrib libpq-dev \
-  redis-server memcached imagemagick ffmpeg mupdf mupdf-tools libxml2-dev
+  redis-server memcached imagemagick ffmpeg mupdf mupdf-tools libxml2-dev && \
+  rm -rf /var/lib/apt/lists/*
 
 # Add Makefile
 ADD Makefile /code/Makefile
@@ -69,11 +70,12 @@ ADD bulletin_board/server/package.json /code/bulletin_board/server/package.json
 ADD bulletin_board/server/Gemfile.lock /code/bulletin_board/server/Gemfile.lock
 ADD bulletin_board/server/Gemfile /code/bulletin_board/server/Gemfile
 
-# Install all dependencies
-RUN cd /code && make install
-
-# Build all artifacts
-RUN cd /code && make build
+# Install all dependencies, build artifacts and remove unnecessary files
+RUN cd /code && make install && make build && \
+  rm -rf /code/bulletin_board/js-client && \
+  rm -rf /code/voting_schemes/dummy/js-adapter && \
+  rm -rf /code/voting_schemes/electionguard/js-adapter && \
+  rm -rf /root/.cache/Cypress
 
 # Add application source code
 ADD bulletin_board/server /code/bulletin_board/server
