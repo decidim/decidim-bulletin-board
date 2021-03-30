@@ -223,7 +223,7 @@ export class ElectionPage {
       });
     cy.findByText("Encrypt vote").should("be.visible").click();
     cy.findByText("Cast vote", {
-      timeout: 120_000,
+      timeout: 180_000,
     })
       .should("be.visible")
       .click();
@@ -298,9 +298,6 @@ export class ElectionPage {
     cy.findByText("Perform tally").click().should("not.exist");
     cy.findByText(`Tally for ${electionTitle}`).should("be.visible");
 
-    // Wait a decent amount of time to make sure electionguard is loaded.
-    cy.wait(15_000);
-
     trustees.forEach(({ unique_id, name }) => {
       cy.findByText(name)
         .parent("tr")
@@ -308,6 +305,9 @@ export class ElectionPage {
           cy.findByText("Start").click({
             timeout: 120_000,
           });
+
+          // Wait a decent amount of time to make sure electionguard is loaded.
+          cy.wait(15_000);
 
           // Ensure that the button is present before starting to upload the trustee state
           cy.findByText("Restore").should("be.visible");
