@@ -244,5 +244,13 @@ release_voting_scheme_electionguard_gem:
 
 # Deployment
 
-deploy_staging:
-	./scripts/deploy_staging.sh
+check_main_branch:
+ifneq ('${shell git branch --show-current}', 'main')
+	${error 'branch is not main'}
+endif
+
+deploy_development_app:
+	./scripts/deploy_development_app.sh
+
+deploy_staging_app: check_main_branch
+	./scripts/deploy_staging_app.sh

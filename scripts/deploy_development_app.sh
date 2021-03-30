@@ -6,7 +6,7 @@ BULLETIN_BOARD_STAGING_APP=decidim-bulletin-board-staging
 # Create heroku application and store the app name in a variable
 HEROKU_APP_NAME=`heroku apps:create -n -t decidim --region eu --json | jq -r '.name'`
 
-# Add the heroku application to the pipeline
+# Add the heroku application to the pipeline in the development stage
 heroku pipelines:add $BULLETIN_BOARD_STAGING_PIPELINE -s development -a $HEROKU_APP_NAME
 
 # Add postgres and redis to the heroku application
