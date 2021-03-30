@@ -7,10 +7,15 @@ help:
 	@echo '  build - Compile all artifacts.'
 	@echo 'Testing code:'
 	@echo '  test - Run all tests.'
+	@echo 'Serve application:'
+	@echo '  serve - Starts the bulletin board rails server.'
 	@echo 'Releasing packages:'
 	@echo '  release - Bump versions, commit and push changes to the repository and release gems. Requires clean repository and VERSION set.'
+	@echo 'Deploying applications:'
+	@echo '  deploy_staging_app - Deploy the bulletin board staging application. Requires heroku login and must be run in the main branch.'
+	@echo '  deploy_development_app - Deploy an application to the staging pipeline in the development stage. Requires heroku login.'
 
-.PHONY: clean install build serve test release
+.PHONY: clean install build serve test release deploy_staging_app deploy_development_app
 
 # CONSTANTS
 
@@ -239,3 +244,16 @@ build_voting_scheme_electionguard_ruby_library:
 
 release_voting_scheme_electionguard_gem:
 	cd ${VOTING_SCHEME_ELECTIONGUARD_RUBY_LIBRARY_PATH} && gem push pkg/voting_schemes-electionguard-${VERSION}.gem
+
+# Deployment
+
+check_main_branch:
+ifneq ('${shell git branch --show-current}', 'main')
+	${error 'branch is not main'}
+endif
+
+deploy_development_app:
+	./scripts/deploy_development_app.sh
+
+deploy_staging_app: check_main_branch
+	./scripts/deploy_staging_app.sh

@@ -48,7 +48,8 @@ ENV RAILS_ENV production
 # Install system dependencies
 RUN apt-get update && \
   apt-get install -y postgresql postgresql-client postgresql-contrib libpq-dev \
-  redis-server memcached imagemagick ffmpeg mupdf mupdf-tools libxml2-dev
+  redis-server memcached imagemagick ffmpeg mupdf mupdf-tools libxml2-dev && \
+  rm -rf /var/lib/apt/lists/*
 
 # Add Makefile
 ADD Makefile /code/Makefile
@@ -61,7 +62,7 @@ ADD voting_schemes/dummy/ruby-adapter /code/voting_schemes/dummy/ruby-adapter
 COPY --from=python-to-js-builder /code/voting_schemes/electionguard /code/voting_schemes/electionguard
 ADD voting_schemes/electionguard/js-adapter /code/voting_schemes/electionguard/js-adapter
 ADD voting_schemes/electionguard/ruby-adapter /code/voting_schemes/electionguard/ruby-adapter
-COPY --from=python-to-js-builder /src/pyodide/build /code/voting_schemes/electionguard/js-adapter/public/assets/electionguard
+COPY --from=python-to-js-builder /src/pyodide/build /code/voting_schemes/electionguard/ruby-adapter/public/assets/electionguard
 
 # Add dependencies manifests
 ADD bulletin_board/server/package-lock.json /code/bulletin_board/server/package-lock.json
@@ -69,11 +70,12 @@ ADD bulletin_board/server/package.json /code/bulletin_board/server/package.json
 ADD bulletin_board/server/Gemfile.lock /code/bulletin_board/server/Gemfile.lock
 ADD bulletin_board/server/Gemfile /code/bulletin_board/server/Gemfile
 
-# Install all dependencies
-RUN cd /code && make install
-
-# Build all artifacts
-RUN cd /code && make build
+# Install all dependencies, build artifacts and remove unnecessary files
+RUN cd /code && make install && make build && \
+  rm -rf /code/bulletin_board/js-client && \
+  rm -rf /code/voting_schemes/dummy/js-adapter && \
+  rm -rf /code/voting_schemes/electionguard/js-adapter && \
+  rm -rf /root/.cache/Cypress
 
 # Add application source code
 ADD bulletin_board/server /code/bulletin_board/server
