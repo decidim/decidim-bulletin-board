@@ -223,7 +223,7 @@ export class ElectionPage {
       });
     cy.findByText("Encrypt vote").should("be.visible").click();
     cy.findByText("Cast vote", {
-      timeout: 120_000,
+      timeout: 180_000,
     })
       .should("be.visible")
       .click();
