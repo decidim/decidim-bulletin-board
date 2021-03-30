@@ -245,4 +245,4 @@ release_voting_scheme_electionguard_gem:
 # Deployment
 
 deploy_staging:
-	./deploy_staging.sh
+	./scripts/deploy_staging.sh
