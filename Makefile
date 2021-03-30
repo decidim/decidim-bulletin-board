@@ -10,7 +10,7 @@ help:
 	@echo 'Releasing packages:'
 	@echo '  release - Bump versions, commit and push changes to the repository and release gems. Requires clean repository and VERSION set.'
 
-.PHONY: clean install build test release
+.PHONY: clean install build serve test release
 
 # CONSTANTS
 
@@ -143,6 +143,9 @@ test_bulletin_board_server:
 
 bump_version_bulletin_board_server:
 	cd ${BULLETIN_BOARD_SERVER_PATH} && bundle
+
+serve:
+	cd ${BULLETIN_BOARD_SERVER_PATH} && bundle exec rails s
 
 # BULLETIN BOARD CLIENT
 
