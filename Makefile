@@ -7,12 +7,15 @@ help:
 	@echo '  build - Compile all artifacts.'
 	@echo 'Testing code:'
 	@echo '  test - Run all tests.'
+	@echo 'Serve application:'
+	@echo '  serve - Starts the bulletin board rails server.'
 	@echo 'Releasing packages:'
 	@echo '  release - Bump versions, commit and push changes to the repository and release gems. Requires clean repository and VERSION set.'
 	@echo 'Deploying applications:'
-	@echo '  deploy_staging - Deploy an application to the staging pipeline. Requires heroku login and HEROKU_APP_NAME set.'
+	@echo '  deploy_staging_app - Deploy the bulletin board staging application. Requires heroku login and must be run in the main branch.'
+	@echo '  deploy_development_app - Deploy an application to the staging pipeline in the development stage. Requires heroku login.'
 
-.PHONY: clean install build serve test release deploy_staging
+.PHONY: clean install build serve test release deploy_staging_app deploy_development_app
 
 # CONSTANTS
 
