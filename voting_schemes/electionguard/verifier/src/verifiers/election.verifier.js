@@ -48,14 +48,14 @@ module.exports = {
               console.log(`\t${chalk.red("[ERROR]")} Electionguard verified.`);
               console.error(error);
               resolve(false);
-            }
-            if (stderr) {
+            } else if (stderr) {
               console.log(`\t${chalk.red("[ERROR]")} Electionguard verified.`);
               console.error(stderr);
               resolve(false);
+            } else {
+              console.log(`\t${chalk.green("[OK]")} Electionguard verified.`);
+              resolve(true);
             }
-            console.log(`\t${chalk.green("[OK]")} Electionguard verified.`);
-            resolve(true);
           }
         );
       });
