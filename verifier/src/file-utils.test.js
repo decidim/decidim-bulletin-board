@@ -9,6 +9,7 @@ describe("file utils", () => {
     "..",
     "test",
     "fixtures",
+    "dummy",
     "election-ok.tar"
   );
   const auditableBallotPath = path.join(
@@ -16,6 +17,7 @@ describe("file utils", () => {
     "..",
     "test",
     "fixtures",
+    "dummy",
     "ballot-1.txt"
   );
 
