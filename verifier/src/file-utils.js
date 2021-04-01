@@ -59,13 +59,10 @@ module.exports = {
    * with all the data parsed.
    *
    * @param {String} path - a folder path that contains multiple files.
-   * @param {Function} onData - called when there is new data in the stream.
-   * @param {Function} onSuccess - called when all the data has been processed.
-   * @param {Function} onError - called when something went wrong.
    *
    * @returns {Stream<Object>}
    */
-  readAllElectionFiles(path, onData, onSuccess, onError) {
+  createAllElectionFilesStream(path) {
     const combinedStream = CombinedStream.create();
 
     fs.readdirSync(path).forEach((filename) => {
@@ -74,13 +71,6 @@ module.exports = {
       );
     });
 
-    combinedStream.pipe(jsonlParser()).on("data", ({ value }) =>
-      // The `onData` callback also receives a function to abort the stream
-      onData(value, combinedStream.destroy.bind(combinedStream))
-    );
-    combinedStream.on("end", onSuccess);
-    combinedStream.on("error", onError);
-
-    return combinedStream;
+    return combinedStream.pipe(jsonlParser());
   },
 };

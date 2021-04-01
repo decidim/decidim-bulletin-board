@@ -14,16 +14,13 @@ help:
 	@echo 'Deploying applications:'
 	@echo '  deploy_staging_app - Deploy the bulletin board staging application. Requires heroku login and must be run in the main branch.'
 	@echo '  deploy_development_app - Deploy an application to the staging pipeline in the development stage. Requires heroku login.'
+	@echo 'Vendor tasks:'
+	@echo '  build_electionguard_python_wrapper - Build the bulletin_board-electionguard python package.'
+	@echo '  build_electionguard_python_to_js - Compile the pyodide build including both electionguard-python and bulletin_board-electionguard packages and copy them to the electionguard ruby-adapter.'
 
-.PHONY: clean install build serve test release deploy_staging_app deploy_development_app
+.PHONY: clean install build serve test release deploy_staging_app deploy_development_app test_verifier
 
 # CONSTANTS
-
-ELECTIONGUARD_PYTHON_WRAPPER_PATH = \
-	voting_schemes/electionguard/python-wrapper
-
-ELECTIONGUARD_PYTHON_TO_JS_PATH = \
-	voting_schemes/electionguard/python-to-js
 
 BULLETIN_BOARD_SERVER_PATH = bulletin_board/server
 
@@ -45,6 +42,15 @@ VOTING_SCHEME_ELECTIONGUARD_RUBY_LIBRARY_PATH = \
 	voting_schemes/electionguard/ruby-adapter
 VOTING_SCHEME_ELECTIONGUARD_JS_LIBRARY_OUTPUT = \
 	voting_schemes/electionguard/ruby-adapter/app/assets/javascripts/voting_schemes/electionguard/electionguard.js
+
+ELECTIONGUARD_PYTHON_WRAPPER_PATH = \
+	voting_schemes/electionguard/python-wrapper
+
+ELECTIONGUARD_PYTHON_TO_JS_PATH = \
+	voting_schemes/electionguard/python-to-js
+
+ELECTIONGUARD_JAVA_PATH = \
+	voting_schemes/electionguard/verifier/electionguard-java
 
 # TASKS
 
@@ -121,16 +127,6 @@ check_release_flag:
 
 check_electionguard_python_submodule_update:
 	git submodule init && git submodule update
-
-# ELECTIONGUARD PYTHON WRAPPER
-
-build_electionguard_python_wrapper:
-	cd ${ELECTIONGUARD_PYTHON_WRAPPER_PATH} && make package
-
-# ELECTIONGUARD PYTHON TO JS
-
-build_electionguard_python_to_js:
-	mkdir -p /tmp/electionguard && cd ${ELECTIONGUARD_PYTHON_TO_JS_PATH} && ./build /tmp/electionguard
 
 # BULLETIN BOARD SERVER
 
@@ -245,7 +241,36 @@ build_voting_scheme_electionguard_ruby_library:
 release_voting_scheme_electionguard_gem:
 	cd ${VOTING_SCHEME_ELECTIONGUARD_RUBY_LIBRARY_PATH} && gem push pkg/voting_schemes-electionguard-${VERSION}.gem
 
-# Deployment
+# ELECTIONGUARD PYTHON WRAPPER
+
+build_electionguard_python_wrapper:
+	cd ${ELECTIONGUARD_PYTHON_WRAPPER_PATH} && make package
+
+# ELECTIONGUARD PYTHON TO JS
+
+build_electionguard_python_to_js:
+	mkdir -p /tmp/electionguard && cd ${ELECTIONGUARD_PYTHON_TO_JS_PATH} && ./build /tmp/electionguard
+
+# ELECTIONGUARD JAVA
+
+build_electionguard_java:
+	cd ${ELECTIONGUARD_JAVA_PATH} && git apply ../patches/no-ballot-chaining-verifier.patch && ./gradlew fatJar && git reset --hard
+
+# VERIFIER
+
+VERIFIER_PATH = verifier
+VERIFIER_ELECTIONGUARD_PATH = voting_schemes/electionguard/verifier
+
+install_verifier_electionguard_dependencies:
+	cd ${VERIFIER_ELECTIONGUARD_PATH} && npm i
+
+install_verifier_dependencies: install_verifier_electionguard_dependencies build_electionguard_java
+	cd ${VERIFIER_PATH} && npm i
+
+test_verifier: install_verifier_dependencies
+	cd ${VERIFIER_PATH} && bin/verify test/fixtures/electionguard/election-ok.tar
+
+# DEPLOYMENT
 
 check_main_branch:
 ifneq ('${shell git branch --show-current}', 'main')

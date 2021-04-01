@@ -1,3 +1,6 @@
 [submodule "voting_schemes/electionguard/electionguard-python"]
 	path = voting_schemes/electionguard/electionguard-python
 	url = https://github.com/microsoft/electionguard-python
+[submodule "voting_schemes/electionguard/verifier/electionguard-java"]
+	path = voting_schemes/electionguard/verifier/electionguard-java
+	url = https://github.com/JohnLCaron/electionguard-java

@@ -133,9 +133,11 @@ class ProcessTrusteeVerification(ElectionStep):
         if len(self.verifications_received) < context.number_of_guardians:
             return [], None
 
+        sorted_trustee_elections_keys = sorted(context.trustee_election_keys.items())
+
         election_commitments = {
             guardian_id: trustee_election_key.coefficient_validation_set.coefficient_commitments
-            for guardian_id, trustee_election_key in context.trustee_election_keys.items()
+            for guardian_id, trustee_election_key in sorted_trustee_elections_keys
         }
 
         election_public_keys = {
@@ -144,7 +146,7 @@ class ProcessTrusteeVerification(ElectionStep):
                 key=trustee_election_key.public_key_set.election_public_key,
                 proof=trustee_election_key.public_key_set.election_public_key_proof
             )
-            for guardian_id, trustee_election_key in context.trustee_election_keys.items()
+            for guardian_id, trustee_election_key in sorted_trustee_elections_keys
         }
 
         election_joint_key = combine_election_public_keys(election_commitments, election_public_keys)

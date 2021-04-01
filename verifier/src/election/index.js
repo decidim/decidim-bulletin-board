@@ -1,7 +1,15 @@
 const chalk = require("chalk");
 
-const { extractElectionFile } = require("../file-utils");
+const {
+  extractElectionFile,
+  createAllElectionFilesStream,
+} = require("../file-utils");
+
+// Verifiers
 const { verifyChainedHashes } = require("./verifiers/chained-hash.verifier");
+const {
+  verifyElection,
+} = require("decidim-bulletin_board-verifier-electionguard");
 
 /**
  * Includes all the business logic to verify an election log file.
@@ -18,9 +26,13 @@ module.exports = {
    */
   async verify(path) {
     const electionDataPath = await extractElectionFile(path);
+    const electionFilesStream = createAllElectionFilesStream(electionDataPath);
 
     console.log(`${chalk.yellow("Verifying election...")}`);
 
-    await verifyChainedHashes(electionDataPath);
+    await Promise.all([
+      verifyChainedHashes(electionFilesStream),
+      verifyElection(electionFilesStream),
+    ]);
   },
 };

@@ -25,6 +25,7 @@
   },
   "dependencies": {
     "combined-stream2": "^1.1.2",
+    "decidim-bulletin_board-verifier-electionguard": "file://../voting_schemes/electionguard/verifier",
     "stream-json": "^1.7.1",
     "tar-stream": "^2.2.0"
   }
