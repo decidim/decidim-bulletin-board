@@ -16,6 +16,7 @@ from electionguard.types import GUARDIAN_ID
 from electionguard.utils import get_optional
 
 from .common import Content, Context, ElectionStep, Wrapper
+from .dummy_scheduler import DummyScheduler
 from .messages import (
     Compensation,
     KeyCeremonyResults,
@@ -299,7 +300,7 @@ class BulletinBoard(Wrapper[BulletinBoardContext]):
                 (None, from_ciphertext_ballot(ciphertext_ballot, BallotBoxState.CAST))
             )
 
-        self.context.tally.batch_append(submitted_ballots, None)
+        self.context.tally.batch_append(submitted_ballots, DummyScheduler()) # type: ignore
 
     def add_ballot(self, ballot: str):
         ciphertext_ballot = deserialize(ballot, CiphertextBallot)
@@ -308,7 +309,7 @@ class BulletinBoard(Wrapper[BulletinBoardContext]):
         )
         self.context.tally.append(
             submitted_ballot,
-            None,
+            DummyScheduler(), # type: ignore
         )
 
     def get_tally_cast(self) -> Dict:

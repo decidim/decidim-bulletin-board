@@ -1,6 +1,5 @@
 from itertools import starmap
 from typing import Any, Callable, Iterable, List
-
 from electionguard.singleton import Singleton
 
 
