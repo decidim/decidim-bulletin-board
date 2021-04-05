@@ -9,7 +9,8 @@ from electionguard.election import CiphertextElectionContext
 from electionguard.election_builder import ElectionBuilder
 from electionguard.manifest import InternalManifest, Manifest
 
-from .utils import InvalidElectionDescription, complete_election_description
+from .utils import InvalidElectionDescription
+from .election import parse_description
 
 try:
     import cPickle as pickle  # type: ignore
@@ -35,9 +36,7 @@ class Context:
     quorum: int
 
     def build_election(self, election_creation: dict):
-        self.election = Manifest.from_json_object(
-            complete_election_description(election_creation["description"])
-        )
+        self.election = parse_description(election_creation["description"])
 
         if not self.election.is_valid():
             raise InvalidElectionDescription()

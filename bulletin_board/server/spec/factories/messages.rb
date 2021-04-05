@@ -111,7 +111,7 @@ FactoryBot.define do
             description[:candidates] << build(:candidate_description, _object_id: ballot_selection[:candidate_id])
           end
         end
-        [:start_date, :end_date].each { |field| description[field] = description[field].iso8601 }
+        [:start_date, :end_date].each { |field| description[field] = description[field].strftime("%FT%T%:z") }
       end
     end
 

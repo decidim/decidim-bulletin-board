@@ -300,7 +300,7 @@ class BulletinBoard(Wrapper[BulletinBoardContext]):
                 (None, from_ciphertext_ballot(ciphertext_ballot, BallotBoxState.CAST))
             )
 
-        self.context.tally.batch_append(submitted_ballots, DummyScheduler()) # type: ignore
+        self.context.tally.batch_append(submitted_ballots, DummyScheduler())  # type: ignore
 
     def add_ballot(self, ballot: str):
         ciphertext_ballot = deserialize(ballot, CiphertextBallot)
@@ -309,7 +309,7 @@ class BulletinBoard(Wrapper[BulletinBoardContext]):
         )
         self.context.tally.append(
             submitted_ballot,
-            DummyScheduler(), # type: ignore
+            DummyScheduler(),  # type: ignore
         )
 
     def get_tally_cast(self) -> Dict:

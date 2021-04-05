@@ -12,7 +12,8 @@ from bulletin_board.electionguard.utils import InvalidBallot
 from bulletin_board.electionguard.voter import Voter
 
 from .utils import (
-    create_election_test_message,
+    create_election_test_message_v1,
+    create_election_test_message_v2,
     end_vote_message,
     start_tally_message,
     start_vote_message,
@@ -39,6 +40,16 @@ class TestIntegration(unittest.TestCase):
             self.cast_votes()
             self.decrypt_tally()
             self.publish_and_verify()
+
+    def test_backwards_compatible_ballot_styles(self):
+        self.reset_state = True
+        self.show_output = False
+        self.configure_election(without_style=True)
+        self.key_ceremony()
+        self.encrypt_ballots(without_style=True)
+        self.cast_votes()
+        self.decrypt_tally()
+        self.publish_and_verify()
 
     def test_without_all_trustees(self):
         self.reset_state = False
@@ -74,8 +85,12 @@ class TestIntegration(unittest.TestCase):
             self.bulletin_board = BulletinBoard.restore(self.bulletin_board.backup())
             self.trustees = [Trustee.restore(trustee) for trustee in trustee_backups]
 
-    def configure_election(self, recorder=None):
-        self.election_message = create_election_test_message()
+    def configure_election(self, recorder=None, without_style=False):
+        if without_style:
+            self.election_message = create_election_test_message_v1()
+        else:
+            self.election_message = create_election_test_message_v2()
+
         self.bulletin_board = BulletinBoard(recorder=recorder)
         self.trustees = [
             Trustee("alicia", recorder=recorder),
@@ -170,7 +185,7 @@ class TestIntegration(unittest.TestCase):
         self.bulletin_board.process_message("end_key_ceremony", None)
         self.checkpoint("JOINT ELECTION KEY", self.joint_election_key)
 
-    def encrypt_ballots(self, recorder=None):
+    def encrypt_ballots(self, recorder=None, without_style=False):
         possible_answers = [
             {
                 "object_id": contest["object_id"],
@@ -200,7 +215,15 @@ class TestIntegration(unittest.TestCase):
                 )
                 for contest in possible_answers
             )
-            auditable_data, encrypted_data = voter.encrypt(ballot)
+
+            if without_style:
+                ballot_style = None
+            else:
+                ballot_style = "madrid"  # can vote on both questions
+
+            auditable_data, encrypted_data = voter.encrypt(
+                ballot, ballot_style=ballot_style
+            )
             self.encrypted_ballots.append(encrypted_data)
 
     def cast_votes(self):

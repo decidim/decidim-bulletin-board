@@ -44,47 +44,6 @@ def pair_with_object_id(obj):
     return (obj.object_id, obj)
 
 
-def complete_election_description(election_description: dict) -> dict:
-    complete_description = dict(election_description)
-    complete_description.update(
-        {
-            "contact_information": {
-                "address_line": [],
-                "name": "Organization name",
-                "email": [{"annotation": "contact", "value": "contact@example.org"}],
-                "phone": [],
-            },
-            "election_scope_id": "test-election",
-            "type": "special",
-            "spec_version": "v0.95",
-            "geopolitical_units": [
-                {
-                    "object_id": "a-place",
-                    "name": "A place",
-                    "type": "county",
-                    "contact_information": {
-                        "address_line": [],
-                        "name": "Organization name",
-                        "email": [
-                            {"annotation": "contact", "value": "contact@example.org"}
-                        ],
-                    },
-                    "phone": [],
-                }
-            ],
-            "parties": [],
-            "ballot_styles": [
-                {"object_id": "ballot-style", "geopolitical_unit_ids": ["a-place"]}
-            ],
-        }
-    )
-
-    for contest in complete_description["contests"]:
-        contest["electoral_district_id"] = "a-place"
-
-    return complete_description
-
-
 def remove_nonces(ciphered_ballot):
     ciphered_ballot.nonce = None
     for contest in ciphered_ballot.contests:
