@@ -221,6 +221,10 @@ export class ElectionPage {
       .then((vote) => {
         this.castedVotes.push(Object.values(JSON.parse(vote)).flat());
       });
+
+    // Wait a decent amount of time to make sure electionguard is loaded.
+    cy.wait(15_000);
+
     cy.findByText("Encrypt vote").should("be.visible").click();
     cy.findByText("Cast vote", {
       timeout: 180_000,
