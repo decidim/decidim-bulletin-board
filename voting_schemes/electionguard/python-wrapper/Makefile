@@ -17,13 +17,16 @@ install-apt:
 
 install-deps:
 	python3 -m pip install --upgrade pip
-	pip install pipenv
 	cd ../electionguard-python && make environment build
-	pipenv install --dev
+	pip install pipenv
+	PIPENV_VENV_IN_PROJECT=True pipenv install --dev
 	python3 -m pip install --user --upgrade twine
 
 format:
 	pipenv run black .
+
+typecheck:
+	pyright
 
 lint:
 	pipenv run flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics

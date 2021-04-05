@@ -1,0 +1,32 @@
+{
+    "folders": [
+        {
+            "name": "Bulletin Board",
+            "path": "bulletin_board/server"
+        },
+        {
+            "name": "Bulletin Board Gem",
+            "path": "bulletin_board/ruby-client"
+        },
+        {
+            "name": "Documentation",
+            "path": "docs"
+        },
+        {
+            "name": "Verifier",
+            "path": "verifier"
+        },
+        {
+            "name": "Dummy JS Adapter",
+            "path": "voting_schemes/dummy/js-adapter"
+        },
+        {
+            "name": "ElectionGuard JS Adapter",
+            "path": "voting_schemes/electionguard/js-adapter"
+        },
+        {
+            "name": "ElectionGuard Wrapper",
+            "path": "voting_schemes/electionguard/python-wrapper"
+        }
+    ]
+}

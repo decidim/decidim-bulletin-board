@@ -1,12 +1,12 @@
 # flake8: noqa: E501
 
-from electionguard.ballot import CiphertextBallot
 from bulletin_board.electionguard.utils import deserialize, serialize, serialize_as_dict
+from electionguard.ballot import CiphertextBallot
 import json
 from pathlib import Path
 
 
-def create_election_test_message():
+def create_election_test_message() -> dict:
     return {
         "scheme": {"name": "electionguard", "quorum": 2},
         "trustees": [
@@ -134,19 +134,21 @@ def create_election_test_message():
 
 def read_messages(input_path):
     file = open(input_path, "r")
-    return [
-        json.loads(jline)
-        for jline in file.readlines()
-    ]
+    return [json.loads(jline) for jline in file.readlines()]
 
 
 INTEGRATION_RESULTS_MESSAGES = read_messages(Path(".") / "integration_results.jsonl")
 
 
 def integration_results_messages(message_type):
-    return sum((message["out"]
-                for message in INTEGRATION_RESULTS_MESSAGES
-                if message["message_type"] == message_type), [])
+    return sum(
+        (
+            message["out"]
+            for message in INTEGRATION_RESULTS_MESSAGES
+            if message["message_type"] == message_type
+        ),
+        [],
+    )
 
 
 def integration_results_message(message_type):
@@ -160,8 +162,10 @@ def trustees_public_keys():
 def joint_election_key_test_message():
     return integration_results_message("key_ceremony.trustee_verification")
 
+
 def joint_election_key_test_number():
     return 886328318859599089638776138842935792901365373881215619109825518352876974339163786902274304863398929993879376646731679957603761140016158218040780303021373333559620258137274792770627996719130608200169052303576653699507738535110639658991465592891887415497982734234949227530624177570739615640997537507602146969172162565327269772057717410497250386425045732340681251012603399716573673777430466754043137040816217827486878468051685019707804906982917906781733234748592340847773972283845917382502666829042153209969753188599942016836117334460806012523736951994424568494390878707405007010678259644987926740991859186633625913898753029385565132494079948976584717409906688403178325219444566097189506011920914175877919268761194735189534141673829387015727309197911299771426488466046446906577408203828692172437783632724782150377705051715994851989608999795510024096859876307259164195557795270507082098130298431578913835238330231225995577853396217262450374463226557794849606423541758311127149890775740089355342466677296238538842718195191400866052346433032340326124036898266179959493039830961324911792151532071102693845671802154495704810396957175285895996684800751805928433793054000765764485219563084444107844599399922937957860357804646318830647666635837
+
 
 def start_vote_message():
     return {"message_id": "decidim-barcelona.1.start_vote+a.decidim-barcelona"}

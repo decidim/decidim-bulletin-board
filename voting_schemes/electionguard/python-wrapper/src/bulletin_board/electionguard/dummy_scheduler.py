@@ -1,8 +1,7 @@
-from typing import Any, Callable, Iterable, List, TypeVar
 from itertools import starmap
-from electionguard.singleton import Singleton
+from typing import Any, Callable, Iterable, List
 
-_T = TypeVar("_T")
+from electionguard.singleton import Singleton
 
 
 class DummyScheduler(Singleton):
@@ -11,5 +10,5 @@ class DummyScheduler(Singleton):
         task: Callable,
         arguments: Iterable[Iterable[Any]],
         with_shared_resources: bool = False,
-    ) -> List[_T]:
+    ) -> List[Any]:
         return list(starmap(task, arguments))

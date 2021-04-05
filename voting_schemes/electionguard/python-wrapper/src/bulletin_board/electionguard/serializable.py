@@ -1,12 +1,13 @@
-from base64 import b64encode, b64decode
+from base64 import b64decode, b64encode
+from typing import Final, Union
+
+import electionguard.serializable
 from electionguard.group import (
     ElementModP,
     ElementModQ,
     int_to_p_unchecked,
     int_to_q_unchecked,
 )
-from typing import Union, Final
-import electionguard.serializable
 
 old_set_serializers = electionguard.serializable.set_serializers
 old_set_deserializers = electionguard.serializable.set_deserializers
@@ -61,25 +62,25 @@ def maybe_base64_to_int(i: Union[str, int]) -> int:
 def set_serializers():
     old_set_serializers()
     electionguard.serializable.set_serializer(
-        lambda p, **_: int_to_maybe_base64(p.to_int()), ElementModP
+        lambda p, **_: int_to_maybe_base64(p.to_int()), ElementModP  # type: ignore
     )
     electionguard.serializable.set_serializer(
-        lambda q, **_: int_to_maybe_base64(q.to_int()), ElementModQ
+        lambda q, **_: int_to_maybe_base64(q.to_int()), ElementModQ  # type: ignore
     )
     electionguard.serializable.set_serializer(
-        lambda i, **_: int_to_maybe_base64(i), int
+        lambda i, **_: int_to_maybe_base64(i), int  # type: ignore
     )
 
 
 def set_deserializers():
     old_set_serializers()
     electionguard.serializable.set_deserializer(
-        lambda p, cls, **_: int_to_p_unchecked(maybe_base64_to_int(p)), ElementModP
+        lambda p, cls, **_: int_to_p_unchecked(maybe_base64_to_int(p)), ElementModP  # type: ignore
     )
     electionguard.serializable.set_deserializer(
-        lambda q, cls, **_: int_to_q_unchecked(maybe_base64_to_int(q)), ElementModQ
+        lambda q, cls, **_: int_to_q_unchecked(maybe_base64_to_int(q)), ElementModQ  # type: ignore
     )
 
     electionguard.serializable.set_deserializer(
-        lambda i, cls, **_: maybe_base64_to_int(i), int
+        lambda i, cls, **_: maybe_base64_to_int(i), int  # type: ignore
     )

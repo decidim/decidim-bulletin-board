@@ -1,17 +1,23 @@
 from dataclasses import dataclass
-from electionguard.decryption_share import CiphertextDecryptionContest
-from electionguard.election import ElectionConstants, CiphertextElectionContext
-from electionguard.group import ElementModP
+from typing import Dict, List
+
+from electionguard.decryption import AVAILABLE_GUARDIAN_ID, MISSING_GUARDIAN_ID
+from electionguard.decryption_share import (
+    CiphertextDecryptionContest,
+    CompensatedDecryptionShare,
+)
+from electionguard.election import CiphertextElectionContext, ElectionConstants
+from electionguard.group import ElementModP, ElementModQ
 from electionguard.key_ceremony import (
     CoefficientValidationSet,
-    PublicKeySet,
     ElectionJointKey,
-    ElectionPartialKeyVerification,
     ElectionPartialKeyBackup,
+    ElectionPartialKeyVerification,
+    ElectionPublicKey,
+    PublicKeySet,
 )
 from electionguard.serializable import Serializable
 from electionguard.types import CONTEST_ID, GUARDIAN_ID
-from typing import Dict, List
 
 
 @dataclass
@@ -44,3 +50,11 @@ class KeyCeremonyResults(Serializable):
     election_joint_key: ElectionJointKey
     constants: ElectionConstants
     context: CiphertextElectionContext
+
+
+@dataclass
+class Compensation(Serializable):
+    guardian_id: AVAILABLE_GUARDIAN_ID
+    lagrange_coefficient: ElementModQ
+    compensated_decryptions: List[CompensatedDecryptionShare]
+    election_public_keys: Dict[MISSING_GUARDIAN_ID, ElectionPublicKey]

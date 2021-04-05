@@ -1,46 +1,42 @@
-from collections import defaultdict
-from typing import Dict, NoReturn, Optional, Set, Literal, Union, Tuple, List
+from typing import Any, Dict, List, Literal, NoReturn, Optional, Set, Tuple, Union
+
 from electionguard.ballot import (
-    CiphertextBallot,
-    from_ciphertext_ballot,
     BallotBoxState,
+    CiphertextBallot,
+    SubmittedBallot,
+    from_ciphertext_ballot,
 )
 from electionguard.ballot_validator import ballot_is_valid_for_election
-from electionguard.decrypt_with_shares import decrypt_selection_with_decryption_shares
+from electionguard.data_store import DataStore
+from electionguard.decryption_share import DecryptionShare
 from electionguard.election import ElectionConstants
-from electionguard.key_ceremony import combine_election_public_keys, ElectionPublicKey
-from electionguard.tally import (
-    CiphertextTally,
-    PlaintextTallySelection,
-    PlaintextTallyContest
-)
-from electionguard.types import CONTEST_ID, GUARDIAN_ID, SELECTION_ID
+from electionguard.key_ceremony import ElectionPublicKey, combine_election_public_keys
+from electionguard.tally import CiphertextTally
+from electionguard.types import GUARDIAN_ID
 from electionguard.utils import get_optional
+
 from .common import Content, Context, ElectionStep, Wrapper
 from .messages import (
+    Compensation,
+    KeyCeremonyResults,
     TrusteeElectionKey,
     TrusteePartialKeys,
     TrusteeVerification,
-    TrusteeShare,
-    KeyCeremonyResults
 )
-from .utils import (
-    InvalidBallot,
-    serialize,
-    deserialize,
-)
-from .dummy_scheduler import DummyScheduler
+from .tally_decryptor import TallyDecryptor
+from .utils import InvalidBallot, deserialize, serialize
 
 
 class BulletinBoardContext(Context):
     trustee_election_keys: Dict[GUARDIAN_ID, TrusteeElectionKey]
     tally: CiphertextTally
-    shares: Dict[GUARDIAN_ID, Dict]
+    decryptor: TallyDecryptor
 
     def __init__(self):
+        super(BulletinBoardContext).__init__()
         self.trustee_election_keys = {}
         self.has_joint_key = False
-        self.shares = {}
+        self.decryptor = TallyDecryptor()
 
 
 class ProcessCreateElection(ElectionStep):
@@ -140,29 +136,40 @@ class ProcessTrusteeVerification(ElectionStep):
             for guardian_id, trustee_election_key in sorted_trustee_elections_keys
         }
 
-        election_public_keys = {
-            guardian_id: ElectionPublicKey(
-                owner_id=trustee_election_key.public_key_set.owner_id,
-                key=trustee_election_key.public_key_set.election_public_key,
-                proof=trustee_election_key.public_key_set.election_public_key_proof
+        election_public_keys: DataStore[GUARDIAN_ID, ElectionPublicKey] = DataStore()
+        for guardian_id, trustee_election_key in sorted_trustee_elections_keys:
+            election_public_keys.set(
+                guardian_id,
+                ElectionPublicKey(
+                    owner_id=trustee_election_key.public_key_set.owner_id,
+                    key=trustee_election_key.public_key_set.election_public_key,
+                    proof=trustee_election_key.public_key_set.election_public_key_proof,
+                ),
             )
-            for guardian_id, trustee_election_key in sorted_trustee_elections_keys
-        }
 
-        election_joint_key = combine_election_public_keys(election_commitments, election_public_keys)
-        context.election_builder.set_public_key(get_optional(election_joint_key.joint_public_key))
-        context.election_builder.set_commitment_hash(get_optional(election_joint_key.commitment_hash))
+        election_joint_key = combine_election_public_keys(
+            election_commitments, election_public_keys
+        )
+        context.election_builder.set_public_key(
+            get_optional(election_joint_key.joint_public_key)
+        )
+        context.election_builder.set_commitment_hash(
+            get_optional(election_joint_key.commitment_hash)
+        )
         context.election_metadata, context.election_context = get_optional(
             context.election_builder.build()
         )
+
         return [
             {
                 "message_type": "end_key_ceremony",
-                "content": serialize(KeyCeremonyResults(
-                    election_joint_key=election_joint_key,
-                    constants=ElectionConstants(),
-                    context=context.election_context
-                ))
+                "content": serialize(
+                    KeyCeremonyResults(
+                        election_joint_key=election_joint_key,
+                        constants=ElectionConstants(),
+                        context=context.election_context,
+                    )
+                ),
             }
         ], ProcessStartVote()
 
@@ -210,59 +217,72 @@ class ProcessStartTally(ElectionStep):
     def process_message(
         self,
         message_type: Literal["start_tally"],
-        message: Content,
+        message: Union[Content, dict],
         context: BulletinBoardContext,
-    ) -> Tuple[List[Content], ElectionStep]:
+    ) -> Tuple[List[Content], Optional[ElectionStep]]:
         return [], ProcessTrusteeShare()
 
 
-class ProcessTrusteeShare(ElectionStep):
-    message_type = "tally.trustee_share"
+class ProcessTrusteeShare(ElectionStep[BulletinBoardContext]):
+    def skip_message(self, message_type: str):
+        return (
+            message_type != "tally.trustee_share"
+            and message_type != "tally.compensation"
+        )
 
     def process_message(
         self, message_type: str, message: Content, context: BulletinBoardContext
-    ) -> Tuple[List[Content], None]:
-        content = deserialize(message["content"], TrusteeShare)
-        context.shares[content.guardian_id] = content
+    ) -> Tuple[List[Any], None]:
+        if message_type == "tally.trustee_share":
+            share = deserialize(message["content"], DecryptionShare)
+            context.decryptor.received_share(share)
 
-        if len(context.shares) < context.number_of_guardians:
-            return [], None
+            if not context.decryptor.is_ready_to_decrypt(
+                context.number_of_guardians, context.quorum
+            ):
+                return [], None
 
-        tally_shares = self._prepare_shares_for_decryption(context.shares)
-        results: Dict[CONTEST_ID, Dict[SELECTION_ID, int]] = {}
-        content: Dict[CONTEST_ID, PlaintextTallyContest] = {}
-
-        for contest in context.tally.contests.values():
-            results[contest.object_id] = {}
-            selections: Dict[SELECTION_ID, PlaintextTallySelection] = {}
-
-            for selection in contest.selections.values():
-                selection_results: PlaintextTallySelection = (
-                    decrypt_selection_with_decryption_shares(
-                        selection,
-                        tally_shares[selection.object_id],
-                        context.election_context.crypto_extended_base_hash,
-                    )
-                )
-                selections[selection.object_id] = selection_results
-
-                results[contest.object_id][
-                    selection.object_id
-                ] = selection_results.tally
-
-            content[contest.object_id] = PlaintextTallyContest(
-                contest.object_id, selections
+            contests, results = context.decryptor.decrypt_tally(
+                context.tally,
+                context.election_context.crypto_extended_base_hash,
+                context.number_of_guardians,
+                context.quorum,
             )
 
-        return [{"message_type": "end_tally", "content": serialize(content), "results": results}], None
+            return [
+                {
+                    "message_type": "end_tally",
+                    "content": serialize(contests),
+                    "results": results,
+                }
+            ], None
 
-    def _prepare_shares_for_decryption(self, tally_shares):
-        shares = defaultdict(dict)
-        for guardian_id, share in tally_shares.items():
-            for question_id, question in share.contests.items():
-                for selection_id, selection in question.selections.items():
-                    shares[selection_id][guardian_id] = (share.public_key, selection)
-        return shares
+        if message_type == "tally.compensation":
+            compensation = deserialize(message["content"], Compensation)
+            context.decryptor.received_compensation(compensation)
+
+            if not context.decryptor.is_ready_to_decrypt(
+                context.number_of_guardians, context.quorum
+            ):
+                return [], None
+
+            contests, results = context.decryptor.decrypt_tally(
+                context.tally,
+                context.election_context.crypto_extended_base_hash,
+                context.number_of_guardians,
+                context.quorum,
+            )
+
+            return [
+                {
+                    "message_type": "end_tally",
+                    "content": serialize(contests),
+                    "results": results,
+                }
+            ], None
+
+        # impossible, pylance
+        return [], None
 
 
 class BulletinBoard(Wrapper[BulletinBoardContext]):
@@ -271,11 +291,24 @@ class BulletinBoard(Wrapper[BulletinBoardContext]):
             BulletinBoardContext(), ProcessCreateElection(), recorder=recorder
         )
 
-    def add_ballot(self, ballot: dict):
+    def add_ballots(self, ballots: List[str]):
+        submitted_ballots: List[Tuple[None, SubmittedBallot]] = []
+        for ballot in ballots:
+            ciphertext_ballot = deserialize(ballot, CiphertextBallot)
+            submitted_ballots.append(
+                (None, from_ciphertext_ballot(ciphertext_ballot, BallotBoxState.CAST))
+            )
+
+        self.context.tally.batch_append(submitted_ballots, None)
+
+    def add_ballot(self, ballot: str):
         ciphertext_ballot = deserialize(ballot, CiphertextBallot)
+        submitted_ballot = from_ciphertext_ballot(
+            ciphertext_ballot, BallotBoxState.CAST
+        )
         self.context.tally.append(
-            from_ciphertext_ballot(ciphertext_ballot, BallotBoxState.CAST),
-            DummyScheduler(),
+            submitted_ballot,
+            None,
         )
 
     def get_tally_cast(self) -> Dict:
