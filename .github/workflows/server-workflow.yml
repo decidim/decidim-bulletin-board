@@ -1,9 +1,10 @@
 name: "[CI] Server"
 on:
   pull_request:
-    paths:
-      - ".github/workflows/server-workflow.yml"
-      - "bulletin_board/server/**"
+    paths-ignore:
+      - docs
+      - scripts
+      - verifier
   push:
     branches:
       - develop
