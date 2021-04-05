@@ -11,5 +11,6 @@ module Types
     field :start_tally, mutation: Mutations::StartTallyMutation
     field :process_tally_step, mutation: Mutations::ProcessTallyStepMutation
     field :publish_results, mutation: Mutations::PublishResultsMutation
+    field :reset_test_database, mutation: Mutations::ResetTestDatabaseMutation
   end
 end
