@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## [0.16.0] - 2021-04-06
+
 ## Added
 
 - The bulletin board client now includes a `reset_test_database` method that can be called in the test environment to clear the bulletin board database.
