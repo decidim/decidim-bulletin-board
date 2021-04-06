@@ -14,6 +14,7 @@ require "decidim/bulletin_board/authority/publish_results"
 require "decidim/bulletin_board/authority/get_election_results"
 require "decidim/bulletin_board/voter/cast_vote"
 require "decidim/bulletin_board/voter/get_pending_message_status"
+require "decidim/bulletin_board/test/reset_test_database"
 
 module Decidim
   module BulletinBoard
@@ -104,6 +105,15 @@ module Decidim
         publish_results.on(:ok) { |pending_message| return pending_message }
         publish_results.on(:error) { |error_message| raise StandardError, error_message }
         publish_results.call
+      end
+
+      if Rails.env.test?
+        def reset_test_database
+          reset_test_database = configure Test::ResetTestDatabase.new
+          reset_test_database.on(:ok) { |result| return result }
+          reset_test_database.on(:error) { |error_message| raise StandardError, error_message }
+          reset_test_database.call
+        end
       end
 
       private

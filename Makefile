@@ -9,6 +9,7 @@ help:
 	@echo '  test - Run all tests.'
 	@echo 'Serve application:'
 	@echo '  serve - Starts the bulletin board rails server.'
+	@echo '  serve_test - Starts the bulletin board rails server in test mode.'
 	@echo 'Releasing packages:'
 	@echo '  release - Bump versions, commit and push changes to the repository and release gems. Requires clean repository and VERSION set.'
 	@echo 'Deploying applications:'
@@ -146,7 +147,10 @@ bump_version_bulletin_board_server:
 	cd ${BULLETIN_BOARD_SERVER_PATH} && bundle
 
 serve:
-	cd ${BULLETIN_BOARD_SERVER_PATH} && bundle exec rails s
+	cd ${BULLETIN_BOARD_SERVER_PATH} && bundle exec rails s -P tmp/pids/development.pid
+
+serve_test:
+	cd ${BULLETIN_BOARD_SERVER_PATH} && bundle exec rails s -e test -p 5017 -P tmp/pids/test.pid
 
 # BULLETIN BOARD CLIENT
 
