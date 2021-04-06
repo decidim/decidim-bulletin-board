@@ -1,5 +1,5 @@
 # This stage builds the python-wrapper package
-FROM codegram/ruby-node-python-electionguard:0.0.1 as python-wrapper-builder
+FROM codegram/ruby-node-python-electionguard:355b587ea9c4e80c9228183e5c2da68bc40f2afa as python-wrapper-builder
 LABEL author="david@codegram.com"
 
 # Add Makefile
@@ -12,7 +12,7 @@ ADD voting_schemes/electionguard/python-wrapper /code/voting_schemes/electiongua
 RUN cd /code && make build_electionguard_python_wrapper
 
 # This stage builds the pyodide packages for the previous python packages
-FROM codegram/ruby-node-python-electionguard:355b587ea9c4e80c9228183e5c2da68bc40f2afa as python-to-js-builder
+FROM codegram/electionguard-pyodide-base-packages:0.0.1 as python-to-js-builder
 LABEL author="david@codegram.com"
 
 ENV PYODIDE_PACKAGES "electionguard,bulletin_board-electionguard"
