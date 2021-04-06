@@ -32,7 +32,7 @@ jobs:
           cache-name: cache-electionguard-python
         with:
           path: /cache/python
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('voting_schemes/electionguard/python-wrapper/**') }}
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ secrets.CACHE_VERSION }}-${{ hashFiles('voting_schemes/electionguard/python-wrapper/**') }}
           restore-keys: |
             ${{ runner.os }}-build-${{ env.cache-name }}-
             ${{ runner.os }}-build-
@@ -60,7 +60,7 @@ jobs:
           cache-name: cache-electionguard-pyodide-assets
         with:
           path: /cache/python-to-js
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('voting_schemes/electionguard/python-to-js/**') }}
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ secrets.CACHE_VERSION }}-${{ hashFiles('voting_schemes/electionguard/python-to-js/**') }}
           restore-keys: |
             ${{ runner.os }}-build-${{ env.cache-name }}-
             ${{ runner.os }}-build-
@@ -86,7 +86,7 @@ jobs:
           cache-name: cache-electionguard-pyodide-assets
         with:
           path: /cache/python-to-js
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('voting_schemes/electionguard/python-to-js/**') }}
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ secrets.CACHE_VERSION }}-${{ hashFiles('voting_schemes/electionguard/python-to-js/**') }}
           restore-keys: |
             ${{ runner.os }}-build-${{ env.cache-name }}-
             ${{ runner.os }}-build-
@@ -97,7 +97,7 @@ jobs:
           cache-name: cache-electionguard-python
         with:
           path: /cache/python
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('voting_schemes/electionguard/python-wrapper/**') }}
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ secrets.CACHE_VERSION }}-${{ hashFiles('voting_schemes/electionguard/python-wrapper/**') }}
           restore-keys: |
             ${{ runner.os }}-build-${{ env.cache-name }}-
             ${{ runner.os }}-build-
@@ -147,7 +147,7 @@ jobs:
           cache-name: cache-electionguard-pyodide-assets
         with:
           path: /cache/python-to-js
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('voting_schemes/electionguard/python-to-js/**') }}
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ secrets.CACHE_VERSION }}-${{ hashFiles('voting_schemes/electionguard/python-to-js/**') }}
           restore-keys: |
             ${{ runner.os }}-build-${{ env.cache-name }}-
             ${{ runner.os }}-build-
@@ -158,7 +158,7 @@ jobs:
           cache-name: cache-electionguard-python
         with:
           path: /cache/python
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('voting_schemes/electionguard/python-wrapper/**') }}
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ secrets.CACHE_VERSION }}-${{ hashFiles('voting_schemes/electionguard/python-wrapper/**') }}
           restore-keys: |
             ${{ runner.os }}-build-${{ env.cache-name }}-
             ${{ runner.os }}-build-
@@ -177,7 +177,7 @@ jobs:
           cache-name: cache-ruby-gems
         with:
           path: /usr/local/bundle
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/Gemfile.lock') }}
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ secrets.CACHE_VERSION }}-${{ hashFiles('**/Gemfile.lock') }}
       - name: Cache JS dependencies
         uses: actions/cache@v2
         env:
@@ -189,7 +189,7 @@ jobs:
             bulletin_board/js-client/node_modules
             voting_schemes/dummy/js-adapter/node_modules
             voting_schemes/electionguard/js-adapter/node_modules
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ secrets.CACHE_VERSION }}-${{ hashFiles('**/package-lock.json') }}
       - name: Install dependencies
         run: make install
       - name: Build artifacts
@@ -260,7 +260,7 @@ jobs:
           cache-name: cache-electionguard-pyodide-assets
         with:
           path: /cache/python-to-js
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('voting_schemes/electionguard/python-to-js/**') }}
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ secrets.CACHE_VERSION }}-${{ hashFiles('voting_schemes/electionguard/python-to-js/**') }}
           restore-keys: |
             ${{ runner.os }}-build-${{ env.cache-name }}-
             ${{ runner.os }}-build-
@@ -271,7 +271,7 @@ jobs:
           cache-name: cache-electionguard-python
         with:
           path: /cache/python
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('voting_schemes/electionguard/python-wrapper/**') }}
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ secrets.CACHE_VERSION }}-${{ hashFiles('voting_schemes/electionguard/python-wrapper/**') }}
           restore-keys: |
             ${{ runner.os }}-build-${{ env.cache-name }}-
             ${{ runner.os }}-build-
@@ -290,7 +290,7 @@ jobs:
           cache-name: cache-ruby-gems
         with:
           path: /usr/local/bundle
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/Gemfile.lock') }}
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ secrets.CACHE_VERSION }}-${{ hashFiles('**/Gemfile.lock') }}
       - name: Cache JS dependencies
         uses: actions/cache@v2
         env:
@@ -302,7 +302,7 @@ jobs:
             bulletin_board/js-client/node_modules
             voting_schemes/dummy/js-adapter/node_modules
             voting_schemes/electionguard/js-adapter/node_modules
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ secrets.CACHE_VERSION }}-${{ hashFiles('**/package-lock.json') }}
       - name: Install dependencies
         run: make install
       - name: Build artifacts
