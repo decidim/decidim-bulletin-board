@@ -60,7 +60,6 @@ def maybe_base64_to_int(i: Union[str, int]) -> int:
 
 
 def set_serializers():
-    old_set_serializers()
     electionguard.serializable.set_serializer(
         lambda p, **_: int_to_maybe_base64(p.to_int()), ElementModP  # type: ignore
     )
@@ -73,7 +72,6 @@ def set_serializers():
 
 
 def set_deserializers():
-    old_set_serializers()
     electionguard.serializable.set_deserializer(
         lambda p, cls, **_: int_to_p_unchecked(maybe_base64_to_int(p)), ElementModP  # type: ignore
     )

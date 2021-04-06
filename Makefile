@@ -273,9 +273,7 @@ test_verifier: install_verifier_dependencies
 # DEPLOYMENT
 
 check_main_branch:
-ifneq ('${shell git branch --show-current}', 'main')
-	${error 'branch is not main'}
-endif
+	@[ "${shell git rev-parse --abbrev-ref HEAD}" == 'main' ] || ( echo ">> current branch is not main"; exit 1 )
 
 deploy_development_app:
 	./scripts/deploy_development_app.sh

@@ -40,6 +40,8 @@ export class ElectionPage {
    * @returns {undefined}
    */
   setupElection({ title, uniqueId, votingSchemeName }) {
+    this.votingSchemeName = votingSchemeName;
+
     cy.findByText("Setup new election").click();
     cy.findByLabelText(/Voting scheme name/).select(votingSchemeName);
     cy.findByLabelText(/Election ID/)
@@ -222,8 +224,10 @@ export class ElectionPage {
         this.castedVotes.push(Object.values(JSON.parse(vote)).flat());
       });
 
-    // Wait a decent amount of time to make sure electionguard is loaded.
-    cy.wait(15_000);
+    if (this.votingSchemeName === "electionguard") {
+      // Wait a decent amount of time to make sure electionguard is loaded.
+      cy.wait(15_000);
+    }
 
     cy.findByText("Encrypt vote").should("be.visible").click();
     cy.findByText("Cast vote", {
@@ -310,8 +314,10 @@ export class ElectionPage {
             timeout: 120_000,
           });
 
-          // Wait a decent amount of time to make sure electionguard is loaded.
-          cy.wait(15_000);
+          if (this.votingSchemeName === "electionguard") {
+            // Wait a decent amount of time to make sure electionguard is loaded.
+            cy.wait(15_000);
+          }
 
           // Ensure that the button is present before starting to upload the trustee state
           cy.findByText("Restore").should("be.visible");
