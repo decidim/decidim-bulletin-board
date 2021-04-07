@@ -85,5 +85,6 @@ WORKDIR /code/bulletin_board/server
 RUN npm install --global yarn
 RUN bundle exec rake assets:precompile
 
-# Run rails server
-CMD ["bin/rails", "server"]
+# Run the entrypoint script
+COPY ./docker-entrypoint.sh /
+ENTRYPOINT ["/docker-entrypoint.sh"]
