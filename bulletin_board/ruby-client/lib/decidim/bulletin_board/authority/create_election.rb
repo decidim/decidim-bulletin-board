@@ -52,8 +52,8 @@ module Decidim
             trustees: trustees,
             description: {
               name: text(election_data[:title]),
-              start_date: election_data[:start_date].iso8601,
-              end_date: election_data[:end_date].iso8601,
+              start_date: election_data[:start_date].strftime("%FT%T%:z"),
+              end_date: election_data[:end_date].strftime("%FT%T%:z"),
               candidates: candidates,
               contests: contests
             }

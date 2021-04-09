@@ -1,4 +1,4 @@
-from typing import List, Tuple
+from typing import List, Optional, Tuple
 
 from electionguard.ballot import (
     PlaintextBallot,
@@ -66,11 +66,19 @@ class Voter(Wrapper[VoterContext]):
         super().__init__(VoterContext(), ProcessCreateElection(), recorder=recorder)
         self.ballot_id = ballot_id
 
-    def encrypt(self, ballot: dict, master_nonce: int = None) -> Tuple[str, str]:
+    def encrypt(
+        self, ballot: dict, ballot_style: Optional[str] = None, master_nonce: int = None
+    ) -> Tuple[str, str]:
         if not self.context.election_joint_key:
             raise MissingJointKey()
 
-        ballot_style: str = self.context.election.ballot_styles[0].object_id
+        if ballot_style is None and len(self.context.election.ballot_styles) == 1:
+            ballot_style = self.context.election.ballot_styles[0].object_id
+
+        assert (
+            ballot_style is not None
+        ), "ballot style cannot be None if election has multiple ballot styles"
+
         contests: List[PlaintextBallotContest] = []
 
         for contest in self.context.election_metadata.get_contests_for(ballot_style):

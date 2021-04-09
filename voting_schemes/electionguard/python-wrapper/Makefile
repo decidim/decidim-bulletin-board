@@ -32,17 +32,8 @@ lint:
 	pipenv run flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
 	pipenv run flake8 . --count --max-complexity=10 --max-line-length=127 --statistics
 
-test: test_integration test_bulletin_board test_trustee test_voter
-
-integration: test_integration
-test-integration: test_integration
-test_integration:
-	pipenv run python -m unittest tests/test_integration.py
-
-bulletin-board: test_bulletin_board
-test-bulletin-board: test_bulletin_board
-test_bulletin_board:
-	pipenv run python -m unittest tests/test_bulletin_board.py
+test:
+	pipenv run pytest
 
 package:
 	pipenv run python setup.py sdist bdist_wheel
