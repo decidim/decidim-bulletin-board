@@ -25,8 +25,8 @@ export class VoterWrapperAdapter extends WrapperAdapter {
    *
    * @returns {Promise<undefined>}
    */
-  setup() {
-    return this.processPythonCodeOnWorker(
+  async setup() {
+    return await this.processPythonCode(
       `
         from js import voter_id
         from bulletin_board.electionguard.voter import Voter
@@ -47,10 +47,10 @@ export class VoterWrapperAdapter extends WrapperAdapter {
    * @returns {Promise<Object|undefined>}
    */
   async processMessage(messageType, decodedData) {
-    const result = await this.processPythonCodeOnWorker(
+    const result = await this.processPythonCode(
       `
-      import json
       from js import message_type, decoded_data
+      import json
       voter.process_message(message_type, json.loads(decoded_data))
     `,
       {
@@ -64,7 +64,7 @@ export class VoterWrapperAdapter extends WrapperAdapter {
       const { message_type, content } = result[0];
       return {
         messageType: message_type,
-        content,
+        content: content.toJs(),
       };
     }
   }
@@ -80,10 +80,10 @@ export class VoterWrapperAdapter extends WrapperAdapter {
    * @returns {Promise<Object|undefined>}
    */
   async encrypt(plainVote, ballotStyle) {
-    const [auditableData, encryptedData] = await this.processPythonCodeOnWorker(
+    const [auditableData, encryptedData] = await this.processPythonCode(
       `
       from js import plain_vote, ballot_style
-      voter.encrypt(plain_vote, ballot_style)
+      voter.encrypt(plain_vote.to_py(), ballot_style)
     `,
       {
         plain_vote: plainVote,

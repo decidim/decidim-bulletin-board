@@ -13,6 +13,3 @@ requirements:
     - rsa
     - gmpy2
     - pyasn1
-  test:
-  imports:
-    - electionguard

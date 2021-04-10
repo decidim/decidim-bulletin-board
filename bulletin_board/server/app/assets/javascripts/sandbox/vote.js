@@ -79,7 +79,7 @@ $(() => {
   } else if (votingSchemeName === "electionguard") {
     voterWrapperAdapter = new ElectionGuardVoterWrapperAdapter({
       voterId: voterUniqueId,
-      workerUrl: "/assets/electionguard/webworker.js",
+      workerUrl: "/assets/electionguard/webworker.js"
     });
   } else {
     throw new Error(`Voting scheme ${votingSchemeName} not supported.`);

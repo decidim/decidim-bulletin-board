@@ -111,32 +111,32 @@ Test::PrivateKeys.trustees_public_keys.each_with_index.map do |trustee_public_ke
   )
 end
 
-TEST_ELECTION_ID_OFFSET = 10_000
-[:created, :key_ceremony, :key_ceremony_ended, :vote, :vote_ended, :tally, :tally_ended, :results_published].each_with_index do |status, i|
-  election = FactoryBot.create(:election, status, election_id: TEST_ELECTION_ID_OFFSET + i)
+# TEST_ELECTION_ID_OFFSET = 10_000
+# [:created, :key_ceremony, :key_ceremony_ended, :vote, :vote_ended, :tally, :tally_ended, :results_published].each_with_index do |status, i|
+#   election = FactoryBot.create(:election, status, election_id: TEST_ELECTION_ID_OFFSET + i)
 
-  next if status == :created
+#   next if status == :created
 
-  create_start_key_ceremony_log_entry(election)
-  next if status == :key_ceremony
+#   create_start_key_ceremony_log_entry(election)
+#   next if status == :key_ceremony
 
-  create_key_ceremony_log_entries(election)
-  create_end_key_ceremony_log_entry(election)
-  next if status == :key_ceremony_ended
+#   create_key_ceremony_log_entries(election)
+#   create_end_key_ceremony_log_entry(election)
+#   next if status == :key_ceremony_ended
 
-  create_start_vote_log_entry(election)
-  next if status == :vote
+#   create_start_vote_log_entry(election)
+#   next if status == :vote
 
-  create_vote_log_entries(election)
-  create_end_vote_log_entry(election)
-  next if status == :vote_ended
+#   create_vote_log_entries(election)
+#   create_end_vote_log_entry(election)
+#   next if status == :vote_ended
 
-  create_start_tally_log_entries(election)
-  next if status == :tally
+#   create_start_tally_log_entries(election)
+#   next if status == :tally
 
-  create_tally_log_entries(election)
-  create_end_tally_log_entry(election)
-  next if status == :tally_ended
+#   create_tally_log_entries(election)
+#   create_end_tally_log_entry(election)
+#   next if status == :tally_ended
 
-  create_publish_results_log_entry(election)
-end
+#   create_publish_results_log_entry(election)
+# end

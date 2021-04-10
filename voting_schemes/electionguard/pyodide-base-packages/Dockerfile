@@ -1,7 +1,9 @@
-FROM iodide/pyodide:0.16.1
+FROM codegram/pyodide:latest
 LABEL author="david@codegram.com"
 
 ENV PYODIDE_PACKAGES "pyasn1,libgmp,gmpy2,micropip,attrs,sortedcontainers,hypothesis,jsons,typish,rsa"
+
+RUN apt-get update && apt-get install -y m4
 
 # Add base packages meta files
 ADD packages /packages

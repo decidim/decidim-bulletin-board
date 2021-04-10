@@ -24,7 +24,7 @@ from electionguard.tally import CiphertextTally, CiphertextTallyContest
 from electionguard.types import CONTEST_ID, GUARDIAN_ID, SELECTION_ID
 from electionguard.utils import get_optional
 
-from .common import Content, Context, ElectionStep, Wrapper, unwrap
+from .common import AsyncWrapper, Content, Context, ElectionStep, Wrapper, async_wrap, unwrap
 from .messages import (
     Compensation,
     KeyCeremonyResults,
@@ -408,7 +408,7 @@ class ProcessEndTally(ElectionStep[TrusteeContext]):
         return [], None
 
 
-class Trustee(Wrapper[TrusteeContext]):
+class Trustee(AsyncWrapper[TrusteeContext]):
     starting_step: Type[ElectionStep] = ProcessCreateElection
 
     def __init__(self, guardian_id: GUARDIAN_ID, recorder=None) -> None:
@@ -416,6 +416,7 @@ class Trustee(Wrapper[TrusteeContext]):
             TrusteeContext(guardian_id), self.starting_step(), recorder=recorder
         )
 
+    @async_wrap
     def is_key_ceremony_done(self) -> bool:
         return self.step.__class__ in [
             ProcessTallyCast,
@@ -423,5 +424,6 @@ class Trustee(Wrapper[TrusteeContext]):
             ProcessPublishResults,
         ]
 
+    @async_wrap
     def is_tally_done(self) -> bool:
         return self.step.__class__ in [ProcessPublishResults]
