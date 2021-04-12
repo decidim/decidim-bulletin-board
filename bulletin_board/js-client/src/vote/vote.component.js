@@ -77,8 +77,8 @@ export class VoteComponent {
       onStart();
       await onSetupDone;
       onVoteEncryption(
-        (plainVote) => {
-          this.voter.encrypt(plainVote).then((ballot) => {
+        (plainVote, ballotStyle) => {
+          this.voter.encrypt(plainVote, ballotStyle).then((ballot) => {
             castOrAuditBallot(ballot);
             onBindAuditBallotButton(() => {
               onAuditBallot(
