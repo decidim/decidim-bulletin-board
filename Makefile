@@ -11,7 +11,7 @@ help:
 	@echo '  serve - Starts the bulletin board rails server.'
 	@echo '  serve_test - Starts the bulletin board rails server in test mode.'
 	@echo 'Releasing packages:'
-	@echo '  release - Bump versions, commit and push changes to the repository and release gems. Requires clean repository and VERSION set.'
+	@echo '  release - Bump versions, commit and push changes to the repository and release gems and packages. Requires clean repository and VERSION set.'
 	@echo 'Deploying applications:'
 	@echo '  deploy_staging_app - Deploy the bulletin board staging application. Requires heroku login and must be run in the main branch.'
 	@echo '  deploy_development_app - Deploy an application to the staging pipeline in the development stage. Requires heroku login.'
@@ -95,7 +95,7 @@ release: check_clean_repo \
 	check_release_flag \
 	update_changelog \
 	commit_and_push \
-	release_gems
+	release_gems_and_packages
 
 bump_versions: bump_version_bulletin_board_client_js_library \
   bump_version_bulletin_board_client_ruby_library \
@@ -113,9 +113,12 @@ commit_and_push:
 	git tag v${VERSION}
 	git push --tags
 
-release_gems: release_bulletin_board_client_gem \
+release_gems_and_packages: release_bulletin_board_client_gem \
+	release_bulletin_board_client_package \
 	release_voting_scheme_dummy_gem \
-	release_voting_scheme_electionguard_gem
+	release_voting_scheme_dummy_package \
+	release_voting_scheme_electionguard_gem \
+	release_voting_scheme_electionguard_package
 
 check_clean_repo:
 	git diff --quiet
@@ -183,6 +186,9 @@ bump_version_bulletin_board_client_ruby_library:
 release_bulletin_board_client_gem:
 	cd ${BULLETIN_BOARD_CLIENT_RUBY_LIBRARY_PATH} && gem push pkg/decidim-bulletin_board-${VERSION}.gem
 
+release_bulletin_board_client_package:
+	cd ${BULLETIN_BOARD_CLIENT_JS_LIBRARY_PATH} && npm publish
+
 # VOTING SCHEME DUMMY
 
 install_voting_scheme_dummy_js_dependencies:
@@ -214,6 +220,9 @@ bump_version_voting_scheme_dummy_ruby_library:
 release_voting_scheme_dummy_gem:
 	cd ${VOTING_SCHEME_DUMMY_RUBY_LIBRARY_PATH} && gem push pkg/voting_schemes-dummy-${VERSION}.gem
 
+release_voting_scheme_dummy_package:
+	cd ${VOTING_SCHEME_DUMMY_JS_LIBRARY_PATH} && npm publish
+
 # VOTING SCHEME ELECTIONGUARD
 
 install_voting_scheme_electionguard_js_dependencies:
@@ -244,6 +253,9 @@ build_voting_scheme_electionguard_ruby_library:
 
 release_voting_scheme_electionguard_gem:
 	cd ${VOTING_SCHEME_ELECTIONGUARD_RUBY_LIBRARY_PATH} && gem push pkg/voting_schemes-electionguard-${VERSION}.gem
+
+release_voting_scheme_electionguard_package:
+	cd ${VOTING_SCHEME_ELECTIONGUARD_JS_LIBRARY_PATH} && npm publish
 
 # ELECTIONGUARD PYTHON WRAPPER
 

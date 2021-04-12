@@ -1,5 +1,5 @@
 {
-  "name": "js-client",
+  "name": "@codegram/decidim-bulletin_board",
   "version": "0.16.0",
   "description": "",
   "main": "index.js",
