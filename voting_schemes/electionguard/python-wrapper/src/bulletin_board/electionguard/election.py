@@ -49,7 +49,7 @@ def _translate_ballot_styles(
         elif (
             "contests" in ballot_style
         ):  # flag that indicates we need to fake some geopolitical units
-            contest_ids = {id for id in ballot_style["contests"]}
+            contest_ids = [id for id in ballot_style["contests"]]
             for id in contest_ids:
                 unique_contest_ids.add(id)
             ballot_styles.append(
@@ -70,7 +70,7 @@ def _translate_ballot_styles(
             name=f"{contest_id} Geopolitical Unit",
             type=ReportingUnitType.county,
         )
-        for contest_id in unique_contest_ids
+        for contest_id in sorted(unique_contest_ids)
     ]
 
 

@@ -42,12 +42,13 @@ export class VoterWrapper {
    * Converts the given vote into an auditable ballot and an encrypted Ballot. As the process is very fast,
    * it simulates the delay of the encryption process.
    *
-   * @param {Object} vote - An object with the choosen answers for each question.
+   * @param {Object} plainVote - An object with the choosen answers for each question.
+   * @param {String} ballotStyle - The ballot style identifier.
    *
    * @private
    * @returns {Promise<Object|undefined>}
    */
-  async encrypt(vote) {
+  async encrypt(plainVote, _ballotStyle) {
     return new Promise((resolve) => setTimeout(resolve, WAIT_TIME_MS)).then(
       () => {
         if (!this.jointElectionKey) {
@@ -55,7 +56,7 @@ export class VoterWrapper {
           return;
         }
 
-        const auditableData = this.createAuditableBallot(vote);
+        const auditableData = this.createAuditableBallot(plainVote);
         const encryptedData = JSON.stringify(
           this.createEncryptedData(JSON.parse(JSON.stringify(auditableData)))
         );
