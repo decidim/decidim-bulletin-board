@@ -1,5 +1,5 @@
 {
-  "name": "bulletin_board-dummy-adapter",
+  "name": "@codegram/voting_schemes-dummy",
   "version": "0.16.0",
   "description": "",
   "main": "src/index.js",
