@@ -13,15 +13,15 @@
     <div class="new_election__form-row">
       <div class="new_election__form-column">
         <div class="new_election__form-field">
-          <label>Voting scheme name</label>
-          <select name="election[voting_scheme_name]">
+          <label for="election_voting_scheme_name">Voting scheme name</label>
+          <select id="election_voting_scheme_name" name="election[voting_scheme_name]">
             <option value="dummy">dummy</option>
             <option value="electionguard">electionguard</option>
           </select>
         </div>
         <div class="new_election__form-field">
-          <label>Election ID</label>
-          <input name="election[id]" type="text" value="<%= SecureRandom.base58 %>">
+          <label for="election_id">Election ID</label>
+          <input id="election_id" name="election[id]" type="text" value="<%= SecureRandom.base58 %>">
         </div>
         <div class="new_election__form-field">
           <label>Default locale</label>
@@ -32,8 +32,8 @@
           </select>
         </div>
         <div class="new_election__form-field">
-          <label>Election title</label>
-          <input name="election[title][ca]" type="text" value="Votació de prova" placeholder="ca">
+          <label for="election_title">Election title</label>
+          <input id="election_title" name="election[title][ca]" type="text" value="Votació de prova" placeholder="ca">
           <input name="election[title][en]" type="text" value="Test election" placeholder="en">
           <input name="election[title][es]" type="text" value="Votación de prueba" placeholder="es">
         </div>

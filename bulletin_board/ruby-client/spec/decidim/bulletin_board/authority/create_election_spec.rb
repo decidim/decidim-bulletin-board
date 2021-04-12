@@ -103,7 +103,12 @@ module Decidim
                   "es": "Otra respuesta para otra pregunta"
                 }
               }
-            ]
+            ],
+            ballot_styles: {
+              "ballot_style_1": ["question-1"],
+              "ballot_style_2": ["question-2"],
+              "ballot_style_3": ["question-1", "question-2"]
+            }
           }
         end
 
@@ -181,7 +186,12 @@ module Decidim
                                                                 candidate_id: "answer-3" },
                                                               { object_id: "question-2_answer-4",
                                                                 sequence_order: 1,
-                                                                candidate_id: "answer-4" }] }] } }
+                                                                candidate_id: "answer-4" }] }],
+                             ballot_styles: [
+                               { object_id: "ballot_style_1", contests: ["question-1"] },
+                               { object_id: "ballot_style_2", contests: ["question-2"] },
+                               { object_id: "ballot_style_3", contests: ["question-1", "question-2"] }
+                             ] } }
           end
 
           it "broadcasts ok with the result of the graphql mutation" do

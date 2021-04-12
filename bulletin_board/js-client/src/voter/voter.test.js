@@ -31,14 +31,20 @@ describe("Voter", () => {
         .mockImplementation(() =>
           Promise.resolve({ auditableBallot: {}, encryptedBallot: {} })
         );
-      await voter.encrypt({
-        question1: ["answer-1-option-a"],
-        question2: ["answer-2-option-a", "answer-2-option-b"],
-      });
-      expect(voter.wrapperAdapter.encrypt).toHaveBeenCalledWith({
-        question1: ["answer-1-option-a"],
-        question2: ["answer-2-option-a", "answer-2-option-b"],
-      });
+      await voter.encrypt(
+        {
+          question1: ["answer-1-option-a"],
+          question2: ["answer-2-option-a", "answer-2-option-b"],
+        },
+        null
+      );
+      expect(voter.wrapperAdapter.encrypt).toHaveBeenCalledWith(
+        {
+          question1: ["answer-1-option-a"],
+          question2: ["answer-2-option-a", "answer-2-option-b"],
+        },
+        null
+      );
     });
   });
 });

@@ -7,9 +7,8 @@ module Sandbox
     end
 
     def election_questions_with_answers(election)
-      election.manifest[:description][:contests].inject({}) do |acc, contest|
+      election.manifest[:description][:contests].each_with_object({}) do |contest, acc|
         acc[contest[:object_id]] = contest[:ballot_selections].map { |ballot_selection| ballot_selection[:object_id] }
-        acc
       end
     end
 
@@ -24,7 +23,7 @@ module Sandbox
     end
 
     def has_ballot_styles?(election)
-      election.manifest[:description][:ballot_styles].length > 0
+      election.manifest[:description][:ballot_styles].length.positive?
     end
   end
 end

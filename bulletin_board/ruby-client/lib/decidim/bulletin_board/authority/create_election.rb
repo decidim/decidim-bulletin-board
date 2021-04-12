@@ -132,7 +132,7 @@ module Decidim
         def ballot_styles
           election_data[:ballot_styles].map do |ballot_style_id, question_ids|
             {
-              object_id: ballot_style_id,
+              object_id: ballot_style_id.to_s,
               contests: question_ids
             }
           end
