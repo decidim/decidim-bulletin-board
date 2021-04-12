@@ -1,34 +1,52 @@
 <%= stylesheet_link_tag "sandbox/vote" %>
 
-<div class="intro">
-  <div class="version">Bulletin Board Version <%= Decidim::BulletinBoard::VERSION %></div>
+<section class="vote">
+  <div class="vote__intro">
+    <div class="version">Bulletin Board Version <%= Decidim::BulletinBoard::VERSION %></div>
 
-  <h1>Vote for <%= election.title.values.first %></h1>
-</div>
+    <h1>Vote for <%= election.title.values.first %></h1>
+    <%= link_to "Back", sandbox_elections_path %>
+  </div>
 
-<div class="info">
-  <%= link_to "Back", sandbox_elections_path %>
-
-  <div class="voter"
-       data-election-unique-id="<%= election.unique_id %>"
-       data-api-endpoint-url="<%= bulletin_board_server %>"
-       data-authority-public-key="<%= authority_public_key %>"
-       data-voting-scheme-name="<%= election.voting_scheme_name %>">
-    <p>Voter Id: <input name="voter_id" value="<%= random_voter_id %>" style="width:20rem"></p>
-
-    <label>Vote content:
-      <textarea cols="100" rows="5"><%= base_vote %></textarea>
-    </label>
-
-    <p>
-      <button class="encrypt-vote">Encrypt vote</button>
-    </p>
+  <form
+    target="!#"
+    class="vote__form voter"
+    data-election-unique-id="<%= election.unique_id %>"
+    data-api-endpoint-url="<%= bulletin_board_server %>"
+    data-authority-public-key="<%= authority_public_key %>"
+    data-voting-scheme-name="<%= election.voting_scheme_name %>">
+    <div class="vote__form-row">
+      <div class="vote__form-column">
+        <div class="vote__form-field">
+          <label>Voter ID</label>
+          <input name="voter_id" value="<%= random_voter_id %>">
+        </div>
+      </div>
+      <% if has_ballot_styles?(election) %>
+        <div class="vote__form-column">
+          <div class="vote__form-field">
+            <label>Ballot Style</label>
+            <select name="ballot_style">
+              <%= options_for_ballot_style_select(election) %>
+            </select>
+          </div>
+        </div>
+      <% end %>
+    </div>
+    <div class="vote__form-row">
+      <% election_questions_with_answers(election).each do |question_id, answer_ids| %>
+        <div class="vote__form-column question <%= ballot_style_classes(question_id) %>">
+          <p><%= question_id %></p>
+          <% answer_ids.each do |answer_id| %>
+            <label><%= answer_id %></label>
+            <input name="<%= question_id %>" value="<%= answer_id %>" type="radio" <%= Random.rand > 0.5 ? 'checked' : '' %>>
+          <% end %>
+          <input name="<%= question_id %>" type="hidden">
+        </div>
+      <% end %>
+    </div>
     <p class="benchmark"></p>
     <p class="ballot-hash"></p>
-    <p>
-      <button class="audit-vote">Audit vote</button>
-      <button class="cast-vote">Cast vote</button>
-    </p>
     <p>
       <span class="done-message">Your vote has been casted successfully</span>
       <span class="audit-done-message">Your vote has been audited successfully</span>
@@ -36,7 +54,12 @@
     <p>
       <a href="">Refresh</a>
     </p>
-  </div>
-</div>
+    <div class="vote__form-actions">
+      <button class="encrypt-vote">Encrypt vote</button>
+      <button class="audit-vote">Audit vote</button>
+      <button class="cast-vote">Cast vote</button>
+    </div>
+  </form>
+</section>
 
 <%= javascript_include_tag "sandbox/vote" %>
