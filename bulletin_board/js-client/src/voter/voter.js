@@ -63,12 +63,14 @@ export class Voter {
    * Encrypts the data using the wrapper.
    *
    * @param {Object} plainVote - An object with the choosen answers for each question.
+   * @param {String} ballotStyle - The ballot style identifier.
    *
    * @returns {Promise<Object>} - The ballot.
    */
-  async encrypt(plainVote) {
+  async encrypt(plainVote, ballotStyle) {
     const { encryptedData, auditableData } = await this.wrapperAdapter.encrypt(
-      plainVote
+      plainVote,
+      ballotStyle
     );
     const encryptedDataHash = await this.hash(encryptedData);
 

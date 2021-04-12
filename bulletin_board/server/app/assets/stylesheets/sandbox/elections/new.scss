@@ -1,17 +1,9 @@
-.vote {
+.new_election {
   max-width: 900px;
   margin: 0 auto;
   font-size: 14px;
   &__intro {
     margin-bottom: 2rem;
-  }
-  &__form {
-    .done-message,
-    .audit-done-message,
-    .audit-vote,
-    .cast-vote {
-      display: none;
-    }
   }
   &__form-row {
     display: flex;
@@ -37,11 +29,9 @@
     input {
       padding: 0.2rem;
       margin-bottom: 0.2rem;
-      width: 20rem;
     }
     select {
       display: block;
-      width: 20rem;
     }
   }
   &__form-actions {

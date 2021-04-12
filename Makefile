@@ -65,14 +65,16 @@ install: install_bulletin_board_server_js_dependencies \
 	install_voting_scheme_electionguard_js_dependencies \
 	install_voting_scheme_electionguard_ruby_dependencies
 
-clean:
-	rm -f ${BULLETIN_BOARD_CLIENT_JS_LIBRARY_OUTPUT}
-	rm -f ${VOTING_SCHEME_DUMMY_JS_LIBRARY_OUTPUT}
-	rm -f ${VOTING_SCHEME_ELECTIONGUARD_JS_LIBRARY_OUTPUT}
+clean: clean_javascript_artifacts
 	rm -rf ${VOTING_SCHEME_ELECTIONGUARD_RUBY_LIBRARY_PATH}/public
 	rm -rf ${ELECTIONGUARD_PYTHON_WRAPPER_PATH}/dist
 	rm -rf ${ELECTIONGUARD_PYTHON_TO_JS_PATH}/packages/bulletin_board-electionguard/dist/
 	rm -rf ${ELECTIONGUARD_PYTHON_TO_JS_PATH}/packages/electionguard/dist/
+
+clean_javascript_artifacts:
+	rm -f ${BULLETIN_BOARD_CLIENT_JS_LIBRARY_OUTPUT}
+	rm -f ${VOTING_SCHEME_DUMMY_JS_LIBRARY_OUTPUT}
+	rm -f ${VOTING_SCHEME_ELECTIONGUARD_JS_LIBRARY_OUTPUT}
 
 build: ${BULLETIN_BOARD_CLIENT_JS_LIBRARY_OUTPUT} \
 	${VOTING_SCHEME_DUMMY_JS_LIBRARY_OUTPUT} \

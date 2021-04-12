@@ -18,16 +18,31 @@ $(() => {
   const $encryptVote = $voter.find(".encrypt-vote");
   const $castVote = $voter.find(".cast-vote");
   const $auditVote = $voter.find(".audit-vote");
-  const $vote = $voter.find("textarea");
   const $voterId = $voter.find("input");
   const $doneMessage = $voter.find(".done-message");
   const $auditMessage = $voter.find(".audit-done-message");
   const $ballotHash = $voter.find(".ballot-hash");
   const $benchmark = $voter.find(".benchmark");
+  const $ballotStyle = $("select[name=ballot_style]");
 
-  $vote.on("change", (event) => {
-    $vote.css("border", "");
+  $voter.find(".vote__form-actions").on("click", "button", (event) => {
+    event.preventDefault();
   });
+
+  const toggleQuestions = (ballotStyle) => {
+    $(".question").find("input").prop("disabled", true);
+    $(`.question.${ballotStyle}`).show();
+    $(`.question.${ballotStyle}`).find("input").prop("disabled", false);
+  };
+
+  $ballotStyle.on("change", (event) => {
+    const ballotStyle = event.target.value;
+    toggleQuestions(ballotStyle);
+  });
+
+  if ($ballotStyle.length) {
+    toggleQuestions($ballotStyle.val());
+  }
 
   // Data
   const bulletinBoardClientParams = {
@@ -70,19 +85,33 @@ $(() => {
       $encryptVote.on("click", onEventTriggered);
     },
     onStart() {
-      $vote.css("background", "");
       $auditMessage.hide();
       $doneMessage.hide();
       $encryptVote.prop("disabled", true);
     },
     onVoteEncryption(validVoteFn, invalidVoteFn) {
       try {
-        const vote = JSON.parse($vote.val());
-        if (!vote) {
+        const formData = $voter.serializeArray();
+        const [ballotStyleData] = formData.filter(
+          ({ name }) => name === "ballot_style"
+        );
+        const voteData = formData
+          .filter(({ name }) => name !== "ballot_style" && name !== "voter_id")
+          .reduce((acc, { name, value }) => {
+            if (!acc[name]) {
+              acc[name] = [];
+            }
+            if (value !== "") {
+              acc[name] = [...acc[name], value];
+            }
+            return acc;
+          }, {});
+
+        if (!voteData) {
           invalidVoteFn();
         }
         encryptStart = new Date();
-        validVoteFn(vote);
+        validVoteFn(voteData, ballotStyleData ? ballotStyleData.value : null);
       } catch (_error) {
         invalidVoteFn();
       }
@@ -117,7 +146,6 @@ $(() => {
       $auditVote.prop("disabled", true);
 
       $auditMessage.show();
-      $vote.css("background", "green");
     },
     onCastBallot({ encryptedData: encryptedBallot }) {
       return $.ajax({
@@ -136,10 +164,7 @@ $(() => {
       $castVote.prop("disabled", true);
       $auditVote.prop("disabled", true);
       $doneMessage.show();
-      $vote.css("background", "green");
     },
-    onInvalid() {
-      $vote.css("border", "1px solid red");
-    },
+    onInvalid() {},
   });
 });

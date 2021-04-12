@@ -6,7 +6,7 @@ module Sandbox
   class ElectionsController < ApplicationController
     helper_method :elections, :election
     helper_method :bulletin_board_server, :authority_slug, :authority_public_key
-    helper_method :base_vote, :random_voter_id
+    helper_method :random_voter_id
     helper_method :election_results
     helper_method :default_bulk_votes_number, :bulk_votes_file_name, :bulk_votes_file_exists?, :generated_votes_number
 
@@ -97,7 +97,8 @@ module Sandbox
         start_date: start_date,
         end_date: end_date,
         questions: questions,
-        answers: answers
+        answers: answers,
+        ballot_styles: ballot_styles
       )
     end
 
@@ -141,6 +142,10 @@ module Sandbox
           }
         end
       end
+    end
+
+    def ballot_styles
+      @ballot_styles ||= params.require(:election).permit(ballot_styles: {})[:ballot_styles].to_h.transform_values(&:keys)
     end
 
     def go_back
@@ -190,16 +195,6 @@ module Sandbox
         quorum: 2,
         number_of_trustees: 3
       }
-    end
-
-    def base_vote
-      @base_vote ||= election.manifest[:description][:contests].map do |contest|
-        [
-          contest[:object_id],
-          contest[:ballot_selections].sample(Random.rand(contest[:number_elected] + 1))
-                                     .map { |ballot_selection| ballot_selection[:object_id] }
-        ]
-      end.to_h.to_json
     end
 
     def random_voter_id

@@ -30,11 +30,12 @@ export class VoterWrapperAdapter {
    * encrypted data and the auditable data known as ballot.
    *
    * @param {Object} plainVote - An object with the choosen answers for each question.
+   * @param {String} ballotStyle - The ballot style identifier.
    *
    * @private
    * @returns {Promise<Object|undefined>}
    */
-  encrypt(_plainVote) {
+  encrypt(_plainVote, _ballotStyle) {
     throw new Error("Not implemented.");
   }
 }

@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## Added
+
+- The bulletin board client now accepts the `ballot_styles` param when creating an election.
+
 ## [0.16.1] - 2021-04-12
 
 ## [0.16.0] - 2021-04-06

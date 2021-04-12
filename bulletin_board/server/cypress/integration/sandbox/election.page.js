@@ -218,11 +218,13 @@ export class ElectionPage {
    */
   castVote() {
     cy.findByText("Vote").click();
-    cy.findByLabelText(/Vote content/)
-      .invoke("text")
-      .then((vote) => {
-        this.castedVotes.push(Object.values(JSON.parse(vote)).flat());
-      });
+
+    // Extract the votes answers from the form
+    cy.get("input[type=radio]").then(($radio) => {
+      if ($radio.is("checked")) {
+        $radio.invoke("val").then((vote) => this.castedVotes.push(vote));
+      }
+    });
 
     if (this.votingSchemeName === "electionguard") {
       // Wait a decent amount of time to make sure electionguard is loaded.

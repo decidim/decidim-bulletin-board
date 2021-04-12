@@ -74,18 +74,20 @@ export class VoterWrapperAdapter extends WrapperAdapter {
    * encrypted data and the auditable data known as ballot.
    *
    * @param {Object} plainVote - An object with the choosen answers for each question.
+   * @param {String} ballotStyle - The ballot style identifier.
    *
    * @private
    * @returns {Promise<Object|undefined>}
    */
-  async encrypt(plainVote) {
+  async encrypt(plainVote, ballotStyle) {
     const [auditableData, encryptedData] = await this.processPythonCodeOnWorker(
       `
-      from js import plain_vote
-      voter.encrypt(plain_vote)
+      from js import plain_vote, ballot_style
+      voter.encrypt(plain_vote, ballot_style)
     `,
       {
         plain_vote: plainVote,
+        ballot_style: ballotStyle,
       }
     );
 
