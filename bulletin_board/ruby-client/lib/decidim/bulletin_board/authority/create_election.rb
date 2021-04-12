@@ -55,7 +55,8 @@ module Decidim
               start_date: election_data[:start_date].strftime("%FT%T%:z"),
               end_date: election_data[:end_date].strftime("%FT%T%:z"),
               candidates: candidates,
-              contests: contests
+              contests: contests,
+              ballot_styles: ballot_styles
             }
           }
         end
@@ -124,6 +125,15 @@ module Decidim
             {
               object_id: answer[:slug],
               ballot_name: text(answer[:title])
+            }
+          end
+        end
+
+        def ballot_styles
+          election_data[:ballot_styles].map do |ballot_style_id, question_ids|
+            {
+              object_id: ballot_style_id,
+              contests: question_ids
             }
           end
         end
