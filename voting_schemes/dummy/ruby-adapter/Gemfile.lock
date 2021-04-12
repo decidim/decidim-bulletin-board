@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    voting_schemes-dummy (0.16.1)
+    voting_schemes-dummy (0.17.0)
       rails (>= 5.0.0)
 
 GEM

@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    decidim-bulletin_board (0.16.1)
+    decidim-bulletin_board (0.17.0)
       byebug (~> 11.0)
       graphlient (~> 0.4.0)
       jwt (~> 2.2.2)
@@ -96,7 +96,7 @@ GEM
       faraday (>= 1.0)
       faraday_middleware
       graphql-client
-    graphql (1.12.7)
+    graphql (1.12.8)
     graphql-client (0.16.0)
       activesupport (>= 3.0)
       graphql (~> 1.8)
