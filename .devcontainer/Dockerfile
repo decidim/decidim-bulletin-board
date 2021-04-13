@@ -1,6 +1,5 @@
-# [Choice] Ruby version: 2, 2.7, 2.6, 2.5
-ARG VARIANT=2.6
-FROM mcr.microsoft.com/vscode/devcontainers/ruby:${VARIANT}
+FROM codegram/ruby-node-python-electionguard:355b587ea9c4e80c9228183e5c2da68bc40f2afa
+LABEL author="david@codegram.com"
 
 # [Option] Install zsh
 ARG INSTALL_ZSH="true"
@@ -31,23 +30,3 @@ RUN apt-get update \
 # to the Docker socket. The script will also execute CMD as needed.
 ENTRYPOINT [ "/usr/local/share/docker-init.sh" ]
 CMD [ "sleep", "infinity" ]
-
-# Install Rails dependencies
-RUN apt-get update && \
-    apt-get install -y postgresql-client && \
-    apt-get install -y inotify-tools && \
-    apt-get install -y vim && \
-    apt-get install -y git && \
-    apt-get install -y curl && \
-    apt-get install -y wget && \
-    apt-get install -y rubygems
-
-# Install Nodejs
-RUN curl -sL https://deb.nodesource.com/setup_15.x | bash -
-RUN apt-get install -y nodejs
-
-# Install Rails
-RUN gem install bundler
-
-# Install Redis
-RUN apt-get install -y redis
