@@ -154,6 +154,9 @@ bump_version_bulletin_board_server:
 serve:
 	cd ${BULLETIN_BOARD_SERVER_PATH} && bundle exec rails s -P tmp/pids/development.pid
 
+replant_serve:
+	cd ${BULLETIN_BOARD_SERVER_PATH} && bundle exec rails db:seed:replant && bundle exec rails s -P tmp/pids/development.pid
+
 serve_test:
 	cd ${BULLETIN_BOARD_SERVER_PATH} && bundle exec rails s -e test -p 5017 -P tmp/pids/test.pid
 
