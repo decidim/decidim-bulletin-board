@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_04_13_114316) do
+ActiveRecord::Schema.define(version: 2021_04_13_125626) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -93,8 +93,10 @@ ActiveRecord::Schema.define(version: 2021_04_13_114316) do
     t.integer "iat", null: false
     t.string "author_unique_id", null: false
     t.string "message_type", null: false
+    t.string "message_subtype"
     t.index ["chained_hash"], name: "index_log_entries_on_chained_hash", unique: true
     t.index ["client_id"], name: "index_log_entries_on_client_id"
+    t.index ["election_id", "message_type", "message_subtype", "author_unique_id"], name: "index_log_entries_on_type_subtype_author"
     t.index ["election_id"], name: "index_log_entries_on_election_id"
     t.index ["iat"], name: "index_log_entries_on_iat"
   end

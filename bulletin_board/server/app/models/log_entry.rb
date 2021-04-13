@@ -12,6 +12,7 @@ class LogEntry < ApplicationRecord
     self.chained_hash = Digest::SHA256.hexdigest([previous_hash, signed_data].join("."))
     self.iat = decoded_data[:iat]
     self.message_type = message_identifier.type
+    self.message_subtype = message_identifier.subtype
     self.author_unique_id = message_identifier.author_id
   end
 
