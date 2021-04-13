@@ -44,7 +44,7 @@ class ProcessTallyStep < Rectify::Command
   private
 
   def voting_scheme
-    @voting_scheme ||= voting_scheme_class.new(election, ElectionUniqueVotes.new(election))
+    @voting_scheme ||= voting_scheme_class.new(election, ValidVotes.new(election))
   end
 
   attr_accessor :trustee, :response_log_entries
