@@ -62,6 +62,14 @@ module Decidim
         cast_vote.call
       end
 
+      def in_person_vote(election_id, voter_id, polling_station_id)
+        in_person_vote = configure Voter::InPersonVote.new(election_id, voter_id, polling_station_id)
+        yield in_person_vote.message_id if block_given?
+        in_person_vote.on(:ok) { |pending_message| return pending_message }
+        in_person_vote.on(:error) { |error_message| raise StandardError, error_message }
+        in_person_vote.call
+      end
+
       def get_pending_message_status(message_id)
         get_pending_message_status = configure Voter::GetPendingMessageStatus.new(message_id)
         get_pending_message_status.on(:ok) { |status| return status }
