@@ -12,9 +12,10 @@ RSpec.describe Vote do
   let(:election_status) { :vote }
   let(:client) { Authority.first }
   let(:message_type) { :vote_message }
-  let(:message_params) { { election: election } }
+  let(:message_params) { { election: election, voter_id: voter_id } }
+  let(:voter_id) { generate(:voter_id) }
 
-  it "broadcast ok" do
+  it "broadcasts ok" do
     expect { subject }.to broadcast(:ok)
   end
 
@@ -30,10 +31,15 @@ RSpec.describe Vote do
     expect { subject }.not_to change { Election.last.status }.from("vote")
   end
 
+  it "processes the message with the voting scheme" do
+    expect_any_instance_of(described_class).to receive(:process_message)
+    subject
+  end
+
   context "when the vote message is invalid" do
     let(:extra_message_params) { { content_traits: [:invalid] } }
 
-    it "broadcast invalid" do
+    it "broadcasts invalid" do
       expect { subject }.to broadcast(:invalid)
     end
 
@@ -54,7 +60,7 @@ RSpec.describe Vote do
     let(:client) { create(:authority, private_key: private_key) }
     let(:private_key) { generate(:private_key) }
 
-    it "broadcast invalid" do
+    it "broadcasts invalid" do
       expect { subject }.to broadcast(:invalid, "Invalid client")
     end
   end
@@ -63,17 +69,56 @@ RSpec.describe Vote do
     let(:client) { Trustee.first }
     let(:private_key) { Test::PrivateKeys.trustees_private_keys.first }
 
-    it "broadcast invalid" do
+    it "broadcasts invalid" do
       expect { subject }.to broadcast(:invalid, "Invalid client")
     end
   end
 
   context "when the message author is not a voter" do
-    let(:message_id) { "#{election.unique_id}.vote.cast+x.#{generate(:voter_id)}" }
+    let(:message_id) { "#{election.unique_id}.vote.cast+x.#{voter_id}" }
     let(:extra_message_params) { { message_id: message_id } }
 
-    it "broadcast invalid" do
+    it "broadcasts invalid" do
       expect { subject }.to broadcast(:invalid, "Invalid message author")
+    end
+  end
+
+  context "when the voter has already voted in person" do
+    let!(:in_person_vote) { create(:log_entry, election: election, message: previous_message) }
+    let(:previous_message) { build(:in_person_vote_message, election: election, voter_id: voter_id) }
+
+    it "broadcasts invalid" do
+      expect { subject }.to broadcast(:invalid, "Can't cast a vote after voting in person.")
+    end
+  end
+
+  describe "in person voting" do
+    let(:message_type) { :in_person_vote_message }
+
+    it "broadcasts ok" do
+      expect { subject }.to broadcast(:ok)
+    end
+
+    it "doesn't process the message with the voting scheme" do
+      expect_any_instance_of(described_class).not_to receive(:process_message)
+      subject
+    end
+
+    context "when the voter has already voted in person" do
+      let!(:in_person_vote) { create(:log_entry, election: election, message: previous_message) }
+      let(:previous_message) { build(:in_person_vote_message, election: election, voter_id: voter_id) }
+
+      it "broadcasts invalid" do
+        expect { subject }.to broadcast(:invalid, "Can't cast a vote after voting in person.")
+      end
+    end
+
+    context "when the polling station identifier is invalid" do
+      let!(:election) { create(:election, election_status, polling_stations: ["another_polling_station"]) }
+
+      it "broadcasts invalid" do
+        expect { subject }.to broadcast(:invalid, "Invalid polling station identifier.")
+      end
     end
   end
 end

@@ -32,6 +32,7 @@ FactoryBot.define do
       trustees_plus_keys { Trustee.first(3).zip(Test::PrivateKeys.trustees_private_keys) }
       election_id { generate(:election_id) }
       voting_scheme { :dummy }
+      polling_stations { %w(polling_station_1 polling_station_2) }
     end
 
     title { { en: Faker::Lorem.question } }
@@ -46,7 +47,8 @@ FactoryBot.define do
                                                 message: build(:create_election_message, election_id: election.unique_id,
                                                                                          authority_client: election.authority,
                                                                                          voting_scheme: evaluator.voting_scheme,
-                                                                                         trustees_plus_keys: evaluator.trustees_plus_keys))
+                                                                                         trustees_plus_keys: evaluator.trustees_plus_keys,
+                                                                                         polling_stations: evaluator.polling_stations))
     end
 
     trait :key_ceremony do
