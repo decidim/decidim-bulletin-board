@@ -29,7 +29,8 @@ class Vote < Rectify::Command
       valid_client?(client.authority? && election.authority == authority) &&
       valid_author?(message_identifier.from_voter?, ignore_author_id: true) &&
       valid_step?(election.vote?) &&
-      process_message
+      valid_vote? &&
+      (in_person_vote? || process_message)
 
     log_entry.election = election
     election.with_lock { log_entry.save! }
@@ -40,4 +41,31 @@ class Vote < Rectify::Command
   private
 
   attr_accessor :authority
+
+  def valid_vote?
+    run_validations do
+      if cant_revote?
+        "Can't cast a vote after voting in person."
+      elsif in_person_vote? && !valid_polling_station?
+        "Invalid polling station identifier."
+      end
+    end
+  end
+
+  def cant_revote?
+    (
+      ElectionInPersonVotes.new(election) |
+      ElectionVoterVote.new(election, message_identifier.author_id)
+    ).exists?
+  end
+
+  def in_person_vote?
+    return @in_person_vote if defined?(@in_person_vote)
+
+    @in_person_vote = message_identifier.subtype == "in_person"
+  end
+
+  def valid_polling_station?
+    election.polling_stations.include?(decoded_data[:polling_station_id])
+  end
 end

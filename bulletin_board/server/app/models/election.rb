@@ -17,4 +17,8 @@ class Election < ApplicationRecord
   def voting_scheme_name
     @voting_scheme_name ||= manifest["scheme"]["name"]
   end
+
+  def polling_stations
+    @polling_stations ||= manifest["polling_stations"] || []
+  end
 end
