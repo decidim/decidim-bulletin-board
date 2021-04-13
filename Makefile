@@ -267,7 +267,11 @@ build_electionguard_python_wrapper:
 # ELECTIONGUARD PYTHON TO JS
 
 build_electionguard_python_to_js:
+ifeq (,$(wildcard /.dockerenv))
 	mkdir -p /tmp/electionguard && cd ${ELECTIONGUARD_PYTHON_TO_JS_PATH} && ./build /tmp/electionguard
+else
+	cd ${ELECTIONGUARD_PYTHON_TO_JS_PATH} && ./build
+endif
 
 # ELECTIONGUARD JAVA
 
