@@ -110,7 +110,7 @@ module Decidim
         let(:result) { [:ok, double(status: "enqueued")] }
 
         it "yields the message_id" do
-          expect { |block| instance.cast_vote(election_id, voter_id, polling_station_id, &block) }.to yield_with_args("a.message+id")
+          expect { |block| instance.in_person_vote(election_id, voter_id, polling_station_id, &block) }.to yield_with_args("a.message+id")
         end
 
         it "calls the InPersonVote command and return the result" do

@@ -14,6 +14,7 @@ require "decidim/bulletin_board/authority/publish_results"
 require "decidim/bulletin_board/authority/get_election_results"
 require "decidim/bulletin_board/voter/cast_vote"
 require "decidim/bulletin_board/voter/get_pending_message_status"
+require "decidim/bulletin_board/voter/in_person_vote"
 require "decidim/bulletin_board/test/reset_test_database"
 
 module Decidim

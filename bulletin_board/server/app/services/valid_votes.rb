@@ -14,4 +14,8 @@ class ValidVotes
       counted_votes << vote
     end
   end
+
+  private
+
+  attr_reader :election
 end
