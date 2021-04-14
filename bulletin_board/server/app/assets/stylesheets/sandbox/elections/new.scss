@@ -1,5 +1,5 @@
 .new_election {
-  max-width: 900px;
+  max-width: 1100px;
   margin: 0 auto;
   font-size: 14px;
   &__intro {
@@ -20,7 +20,7 @@
   &__form-field {
     margin-bottom: 1rem;
     display: block;
-    width: 400px;
+    width: 500px;
     label {
       font-weight: bold;
       margin-bottom: 0.2rem;
@@ -37,9 +37,10 @@
   &__form-actions {
     display: flex;
     justify-content: flex-end;
-    input {
-      padding: 0.5rem 1.5rem;
-      cursor: pointer;
+  }
+  .new_election__form-questions-placeholder {
+    input[type=text] {
+      width: 28%;
     }
   }
 }

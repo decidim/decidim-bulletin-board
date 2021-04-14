@@ -1,9 +1,17 @@
-.trustee-table {
-  .start-button,
-  .backup-button,
-  .restore-button,
-  .upload-private-key-button,
-  .done-message {
-    display: none;
+.key_ceremony {
+  max-width: 1100px;
+  margin: 0 auto;
+  font-size: 14px;
+  &__intro {
+    margin-bottom: 2rem;
+  }
+  .trustee-table {
+    .start-button,
+    .backup-button,
+    .restore-button,
+    .upload-private-key-button,
+    .done-message {
+      display: none;
+    }
   }
 }

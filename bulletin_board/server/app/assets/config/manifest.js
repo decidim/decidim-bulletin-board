@@ -19,5 +19,7 @@
 //= link sandbox/tally.js
 //= link sandbox/tally.css
 
+//= link sandbox/results.css
+
 //= link sandbox/elections/new.css
 //= link sandbox/elections/new.js

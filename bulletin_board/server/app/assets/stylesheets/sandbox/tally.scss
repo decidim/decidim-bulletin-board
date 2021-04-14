@@ -1,8 +1,16 @@
-.trustee-table {
-  .start-button,
-  .generate-backup-button,
-  .restore-button,
-  .done-message {
-    display: none;
+.tally {
+  max-width: 1100px;
+  margin: 0 auto;
+  font-size: 14px;
+  &__intro {
+    margin-bottom: 2rem;
+  }
+  .trustee-table {
+    .start-button,
+    .generate-backup-button,
+    .restore-button,
+    .done-message {
+      display: none;
+    }
   }
 }

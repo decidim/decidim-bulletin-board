@@ -5,7 +5,7 @@
     <div class="version">Bulletin Board Version <%= Decidim::BulletinBoard::VERSION %></div>
 
     <h1>Create election</h1>
-    <%= link_to "Back", sandbox_elections_path %>
+    <%= link_to "Back", sandbox_elections_path, class: "button" %>
   </div>
 
   <form class="new_election__form" method="post" action="<%= sandbox_elections_path %>">
@@ -90,38 +90,24 @@
     </div>
   </div>
   <h4>Answers</h4>
-  <div class="new_election__form-row">
-    <div class="new_election__form-column">
-      <div class="new_election__form-field">
-        <label>Title</label>
-        <input name="election[questions][{{questionIndex}}][answers][0][title][ca]" type="text" value="Resposta {{questionIndexPlusOne}}" placeholder="ca">
-        <input name="election[questions][{{questionIndex}}][answers][0][title][en]" type="text" value="Answer {{questionIndexPlusOne}}" placeholder="en">
-        <input name="election[questions][{{questionIndex}}][answers][0][title][es]" type="text" value="Respuesta {{questionIndexPlusOne}}" placeholder="es">
+  <% 3.times do |i| %>
+    <div class="new_election__form-row">
+      <div class="new_election__form-column">
+        <div class="new_election__form-field">
+          <label>Title</label>
+          <input name="election[questions][{{questionIndex}}][answers][<%= i %>][title][ca]" type="text" value="Resposta {{questionIndexPlusOne}}.<%= i+1 %>" placeholder="ca">
+          <input name="election[questions][{{questionIndex}}][answers][<%= i %>][title][en]" type="text" value="Answer {{questionIndexPlusOne}}.<%= i+1 %>" placeholder="en">
+          <input name="election[questions][{{questionIndex}}][answers][<%= i %>][title][es]" type="text" value="Respuesta {{questionIndexPlusOne}}.<%= i+1 %>" placeholder="es">
+        </div>
+      </div>
+      <div class="new_election__form-column">
+        <div class="new_election__form-field">
+          <label>Slug</label>
+          <input name="election[questions][{{questionIndex}}][answers][<%= i %>][slug]" type="text" value="question-{{questionIndexPlusOne}}-<%= i+1 %>">
+        </div>
       </div>
     </div>
-    <div class="new_election__form-column">
-      <div class="new_election__form-field">
-        <label>Slug</label>
-        <input name="election[questions][{{questionIndex}}][answers][0][slug]" type="text" value="question-{{questionIndexPlusOne}}-1">
-      </div>
-    </div>
-  </div>
-  <div class="new_election__form-row">
-    <div class="new_election__form-column">
-      <div class="new_election__form-field">
-        <label>Title</label>
-        <input name="election[questions][{{questionIndex}}][answers][1][title][ca]" type="text" value="Resposta {{questionIndexPlusOne}}" placeholder="ca">
-        <input name="election[questions][{{questionIndex}}][answers][1][title][en]" type="text" value="Answer {{questionIndexPlusOne}}" placeholder="en">
-        <input name="election[questions][{{questionIndex}}][answers][1][title][es]" type="text" value="Respuesta {{questionIndexPlusOne}}" placeholder="es">
-      </div>
-    </div>
-    <div class="new_election__form-column">
-      <div class="new_election__form-field">
-        <label>Slug</label>
-        <input name="election[questions][{{questionIndex}}][answers][1][slug]" type="text" value="question-{{questionIndexPlusOne}}-2">
-      </div>
-    </div>
-  </div>
+  <% end %>
 </template>
 
 <template class="ballot-style-template">
@@ -131,8 +117,10 @@
 
 <template class="ballot-style-question-template">
   <div class="new_election__form-column">
-    <label>question-{{questionIndexPlusOne}}</label>
-    <input type="checkbox" name="election[ballot_styles][ballot-style-{{ballotStyleIndexPlusOne}}][question-{{questionIndexPlusOne}}]" checked>
+    <label>
+      <input type="checkbox" name="election[ballot_styles][ballot-style-{{ballotStyleIndexPlusOne}}][question-{{questionIndexPlusOne}}]" checked>
+      question-{{questionIndexPlusOne}}
+    </label>
   </div>
 </template>
 

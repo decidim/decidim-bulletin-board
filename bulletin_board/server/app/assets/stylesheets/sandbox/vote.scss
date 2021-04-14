@@ -1,5 +1,5 @@
 .vote {
-  max-width: 900px;
+  max-width: 1100px;
   margin: 0 auto;
   font-size: 14px;
   &__intro {
@@ -8,8 +8,8 @@
   &__form {
     .done-message,
     .audit-done-message,
-    .audit-vote,
-    .cast-vote {
+    button.audit-vote,
+    button.cast-vote {
       display: none;
     }
   }
@@ -47,9 +47,5 @@
   &__form-actions {
     display: flex;
     justify-content: flex-end;
-    input {
-      padding: 0.5rem 1.5rem;
-      cursor: pointer;
-    }
   }
 }

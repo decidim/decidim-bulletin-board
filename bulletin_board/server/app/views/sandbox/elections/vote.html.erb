@@ -5,7 +5,8 @@
     <div class="version">Bulletin Board Version <%= Decidim::BulletinBoard::VERSION %></div>
 
     <h1>Vote for <%= election.title.values.first %></h1>
-    <%= link_to "Back", sandbox_elections_path %>
+    <%= link_to "Back", sandbox_elections_path, class: "button" %>
+    <a href="" class="button">Refresh</a>
   </div>
 
   <form
@@ -49,9 +50,6 @@
     <p>
       <span class="done-message">Your vote has been casted successfully</span>
       <span class="audit-done-message">Your vote has been audited successfully</span>
-    </p>
-    <p>
-      <a href="">Refresh</a>
     </p>
     <div class="vote__form-actions">
       <button type="button" class="encrypt-vote">Encrypt vote</button>

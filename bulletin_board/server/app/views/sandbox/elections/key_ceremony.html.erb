@@ -1,54 +1,55 @@
 <%= stylesheet_link_tag "sandbox/key_ceremony" %>
 
-<div class="intro">
-  <div class="version">Bulletin Board Version <%= Decidim::BulletinBoard::VERSION %></div>
+<section class="key_ceremony">
+  <div class="key_ceremony__intro">
+    <div class="version">Bulletin Board Version <%= Decidim::BulletinBoard::VERSION %></div>
 
-  <h1>Key ceremony for <%= election.title.values.first %></h1>
-</div>
+    <h1>Key ceremony for <%= election.title.values.first %></h1>
+    <%= link_to "Back", sandbox_elections_path, class: "button" %>
+  </div>
 
-<div class="info">
-  <%= link_to "Back", sandbox_elections_path %>
+  <div class="key_ceremony__content">
+    <h2>Trustees</h2>
 
-  <h2>Trustees</h2>
+    <p>You can find the trustee keys in the project's <code>lib/assets</code> folder.</p>
 
-  <p>You can find the trustee keys in the project's <code>lib/assets</code> folder.</p>
-
-  <table class="trustee-table"
-         data-election-unique-id="<%= election.unique_id %>"
-         data-api-endpoint-url="<%= bulletin_board_server %>"
-         data-authority-public-key="<%= authority_public_key %>"
-         data-voting-scheme-name="<%= election.voting_scheme_name %>">
-    <thead>
-      <tr>
-        <th>Unique ID</th>
-        <th>Slug</th>
-        <th>Name</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% election.trustees.each do |trustee| %>
-        <tr data-unique-id="<%= trustee.slug %>" data-public-key="<%= trustee.public_key.to_json %>">
-          <td><%= trustee.unique_id %></td>
-          <td><%= trustee.slug %></td>
-          <td><%= trustee.name %></td>
-          <td>
-            <label class="upload-private-key-button">
-              <span>Upload private key</span>
-              <input class="private-key-input" style="display: none" type="file" />
-            </label>
-            <%= link_to "Start", "#", class: "start-button" %>
-            <%= link_to "Backup", "#", class: "backup-button" %>
-            <label class="restore-button">
-              <span>Restore</span>
-              <input class="restore-button-input" style="display: none" type="file" />
-            </label>
-            <span class="done-message">Done</span>
-          </td>
+    <table class="trustee-table"
+          data-election-unique-id="<%= election.unique_id %>"
+          data-api-endpoint-url="<%= bulletin_board_server %>"
+          data-authority-public-key="<%= authority_public_key %>"
+          data-voting-scheme-name="<%= election.voting_scheme_name %>">
+      <thead>
+        <tr>
+          <th>Unique ID</th>
+          <th>Slug</th>
+          <th>Name</th>
+          <th>Actions</th>
         </tr>
-      <% end %>
-    </tbody>
-  </table>
-</div>
+      </thead>
+      <tbody>
+        <% election.trustees.each do |trustee| %>
+          <tr data-unique-id="<%= trustee.slug %>" data-public-key="<%= trustee.public_key.to_json %>">
+            <td><%= trustee.unique_id %></td>
+            <td><%= trustee.slug %></td>
+            <td><%= trustee.name %></td>
+            <td>
+              <label class="upload-private-key-button">
+                <span>Upload private key</span>
+                <input class="private-key-input" style="display: none" type="file" />
+              </label>
+              <%= link_to "Start", "#", class: "start-button button" %>
+              <%= link_to "Backup", "#", class: "backup-button button" %>
+              <label class="restore-button">
+                <span>Restore</span>
+                <input class="restore-button-input" style="display: none" type="file" />
+              </label>
+              <span class="done-message">Done</span>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</section>
 
 <%= javascript_include_tag "sandbox/key_ceremony" %>

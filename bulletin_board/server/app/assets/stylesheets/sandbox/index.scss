@@ -1,13 +1,21 @@
-.stress-tests-section {
-  display: none;
-}
-.stress-tests.button.pressed {
-  display: none;
-  & + .stress-tests-section {
-    display: block;
-    padding: 2px;
+.index {
+  max-width: 1400px;
+  margin: 0 auto;
+  font-size: 14px;
+  &__intro {
+    margin-bottom: 2rem;
   }
-}
-.generate-votes-input {
-  width: 55px;
+  .stress-tests-section {
+    display: none;
+  }
+  .stress-tests.button.pressed {
+    display: none;
+    & + .stress-tests-section {
+      display: block;
+      padding: 2px;
+    }
+  }
+  .generate-votes-input {
+    width: 55px;
+  }
 }

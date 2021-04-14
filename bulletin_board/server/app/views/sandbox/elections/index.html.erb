@@ -1,41 +1,42 @@
 <%= stylesheet_link_tag "sandbox/index" %>
 
-<div class="intro">
-  <div class="version">Bulletin Board Version <%= Decidim::BulletinBoard::VERSION %></div>
+<section class="index">
+  <div class="index__intro">
+    <div class="version">Bulletin Board Version <%= Decidim::BulletinBoard::VERSION %></div>
 
-  <h1>Elections</h1>
-</div>
+    <h1>Elections</h1>
+    <%= link_to "Back", root_path, class: "button" %>
+    <%= link_to "Setup new election", new_sandbox_election_path, class: "button" %>
+  </div>
 
-<div class="info">
-  <%= link_to "Back", root_path %>
-
-  <table>
-    <thead>
-      <tr>
-        <th>Unique ID</th>
-        <th>Title</th>
-        <th>Status</th>
-        <th>Voting Scheme</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% elections.each do |election| %>
-        <tr class="election" data-id="<%= election.id %>">
-          <td><%= election.unique_id %></td>
-          <td><%= election.title.values.first %></td>
-          <td><%= election.status %></td>
-          <td><%= election.voting_scheme_name %></td>
-          <td>
-            <% if election.created? %>
-              <%= link_to "Start key ceremony", start_key_ceremony_sandbox_election_path(election) %>
-            <% elsif election.key_ceremony? %>
-              <%= link_to "Perform key ceremony", key_ceremony_sandbox_election_path(election) %>
-            <% elsif election.key_ceremony_ended? %>
-              <%= link_to "Start vote", start_vote_sandbox_election_path(election) %>
-            <% elsif election.vote? %>
-                <%= link_to "Vote", vote_sandbox_election_path(election) %>
-                <%= link_to "End vote", end_vote_sandbox_election_path(election) %>
+  <div class="index__content">
+    <table>
+      <thead>
+        <tr>
+          <th>Unique ID</th>
+          <th>Title</th>
+          <th>Status</th>
+          <th>Voting Scheme</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% elections.each do |election| %>
+          <tr class="election" data-id="<%= election.id %>">
+            <td><%= election.unique_id %></td>
+            <td><%= election.title.values.first %></td>
+            <td><%= election.status %></td>
+            <td><%= election.voting_scheme_name %></td>
+            <td>
+              <% if election.created? %>
+                <%= link_to "Start key ceremony", start_key_ceremony_sandbox_election_path(election), class: "button" %>
+              <% elsif election.key_ceremony? %>
+                <%= link_to "Perform key ceremony", key_ceremony_sandbox_election_path(election), class: "button" %>
+              <% elsif election.key_ceremony_ended? %>
+                <%= link_to "Start vote", start_vote_sandbox_election_path(election), class: "button" %>
+              <% elsif election.vote? %>
+                <%= link_to "Vote", vote_sandbox_election_path(election), class: "button" %>
+                <%= link_to "End vote", end_vote_sandbox_election_path(election), class: "button" %>
                 <a href="#" class="stress-tests button <%= "pressed" if bulk_votes_file_exists?(election) %>">Stress tests</a>
                 <div class="stress-tests-section">
                   <input class="generate-votes-input" type="number" placeholder="How many votes?" value="<%= default_bulk_votes_number %>"/>
@@ -45,22 +46,20 @@
                     <%= link_to "Download #{generated_votes_number(election)} votes", download_bulk_votes_sandbox_election_path(election), download: bulk_votes_file_name(election), class: "button" %>
                   <% end %>
                 </div>
-            <% elsif election.vote_ended? %>
-              <%= link_to "Start tally", start_tally_sandbox_election_path(election) %>
-            <% elsif election.tally? %>
-              <%= link_to "Perform tally", tally_sandbox_election_path(election) %>
-            <% else %>
-              <%= link_to "View results", results_sandbox_election_path(election) %>
-              <%= link_to "Publish results", publish_results_sandbox_election_path(election) if election.tally_ended? %>
-            <% end %>
-          </td>
-        </tr>
-      <% end %>
-    </tbody>
-  </table>
-
-  <%= link_to "Setup new election", new_sandbox_election_path %>
-</div>
-
+              <% elsif election.vote_ended? %>
+                <%= link_to "Start tally", start_tally_sandbox_election_path(election), class: "button" %>
+              <% elsif election.tally? %>
+                <%= link_to "Perform tally", tally_sandbox_election_path(election), class: "button" %>
+              <% else %>
+                <%= link_to "View results", results_sandbox_election_path(election), class: "button" %>
+                <%= link_to "Publish results", publish_results_sandbox_election_path(election), class: "button" if election.tally_ended? %>
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</section>
 
 <%= javascript_include_tag "sandbox/index" %>

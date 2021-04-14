@@ -1,3 +1,22 @@
 body {
   max-width: unset;
 }
+
+.button, button, input[type=button], input[type=submit] {
+  border: 1px solid darkblue;
+  text-decoration: none;
+  margin: 2px;
+  padding: 2px 5px;
+  border-radius: 5px;
+  font-size: 0.9em;
+  display: inline-block;
+  background: transparent;
+  color: darkblue;
+  cursor: pointer;
+}
+
+button:disabled {
+  color: black;
+  cursor: not-allowed;
+  background: rgba(0, 0, 0, 0.1);
+}
