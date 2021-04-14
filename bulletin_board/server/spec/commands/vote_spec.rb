@@ -32,7 +32,7 @@ RSpec.describe Vote do
   end
 
   it "processes the message with the voting scheme" do
-    expect_any_instance_of(described_class).to receive(:process_message)
+    expect_any_instance_of(described_class).to receive(:process_message) # rubocop:disable RSpec/AnyInstance
     subject
   end
 
@@ -100,7 +100,7 @@ RSpec.describe Vote do
     end
 
     it "doesn't process the message with the voting scheme" do
-      expect_any_instance_of(described_class).not_to receive(:process_message)
+      expect_any_instance_of(described_class).not_to receive(:process_message) # rubocop:disable RSpec/AnyInstance
       subject
     end
 
