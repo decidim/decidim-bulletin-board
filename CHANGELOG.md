@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## [0.17.1] - 2021-04-14
+
 ## Fixed
 
 - Use the correct main file in the bulletin board javascript client.
