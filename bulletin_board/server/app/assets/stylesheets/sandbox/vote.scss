@@ -12,6 +12,12 @@
     button.cast-vote {
       display: none;
     }
+    .accepted {
+      color: green;
+    }
+    .rejected {
+      color: red;
+    }
   }
   &__form-row {
     display: flex;

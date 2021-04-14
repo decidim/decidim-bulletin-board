@@ -20,6 +20,7 @@ $(() => {
   const $auditVote = $voter.find(".audit-vote");
   const $voterId = $voter.find("input");
   const $doneMessage = $voter.find(".done-message");
+  const $pendingMessage = $doneMessage.find(".pending-message");
   const $auditMessage = $voter.find(".audit-done-message");
   const $ballotHash = $voter.find(".ballot-hash");
   const $benchmark = $voter.find(".benchmark");
@@ -168,10 +169,15 @@ $(() => {
         },
       });
     },
-    onCastComplete() {
+    onCastComplete(result) {
       $castVote.prop("disabled", true);
       $auditVote.prop("disabled", true);
+
       $doneMessage.show();
+      component.bulletinBoardClient.waitForPendingMessageToBeProcessed(result.data.messageId).then((pendingMessage) => {
+        $pendingMessage.addClass(pendingMessage.status);
+        $pendingMessage.text(pendingMessage.status);
+      });
     },
     onInvalid() {},
   });

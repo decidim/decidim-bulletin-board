@@ -4,11 +4,12 @@ require "test/private_keys"
 
 module Sandbox
   class ElectionsController < ApplicationController
-    helper_method :elections, :election
-    helper_method :bulletin_board_server, :authority_slug, :authority_public_key
-    helper_method :random_voter_id
-    helper_method :election_results
-    helper_method :default_bulk_votes_number, :bulk_votes_file_name, :bulk_votes_file_exists?, :generated_votes_number
+    helper_method :elections, :election,
+                  :bulletin_board_server, :authority_slug, :authority_public_key,
+                  :random_voter_id,
+                  :election_results,
+                  :default_bulk_votes_number, :bulk_votes_file_name, :bulk_votes_file_exists?, :generated_votes_number,
+                  :pending_message
 
     DEFAULT_BULK_VOTES_NUMBER = 1000
 
@@ -34,7 +35,9 @@ module Sandbox
     def vote
       return unless request.post?
 
-      bulletin_board_client.cast_vote(election_id, params[:voter_id], params[:encrypted_ballot])
+      pending_message = bulletin_board_client.cast_vote(election_id, params[:voter_id], params[:encrypted_ballot])
+
+      render json: pending_message.to_json
     end
 
     def generate_bulk_votes
@@ -87,7 +90,7 @@ module Sandbox
     delegate :authority, to: :election
     delegate :bulletin_board_server, :authority_slug, to: :bulletin_board_client
 
-    attr_reader :election_results
+    attr_reader :election_results, :pending_message
 
     def election_data
       @election_data ||= params.require(:election).permit(:default_locale, title: {}).to_h.merge(
