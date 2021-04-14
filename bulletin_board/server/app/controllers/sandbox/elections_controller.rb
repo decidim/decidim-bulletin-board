@@ -97,6 +97,7 @@ module Sandbox
         trustees: trustees,
         start_date: start_date,
         end_date: end_date,
+        polling_stations: polling_stations,
         questions: questions,
         answers: answers,
         ballot_styles: ballot_styles
@@ -119,6 +120,10 @@ module Sandbox
           public_key: trustee.public_key
         }
       end
+    end
+
+    def polling_stations
+      @polling_stations ||= params[:election][:polling_stations].reject(&:blank?)
     end
 
     def questions
