@@ -34,17 +34,17 @@
             <% elsif election.key_ceremony_ended? %>
               <%= link_to "Start vote", start_vote_sandbox_election_path(election) %>
             <% elsif election.vote? %>
-              <%= link_to "Vote", vote_sandbox_election_path(election) %> |
-              <%= link_to "End vote", end_vote_sandbox_election_path(election) %>  |
-              <%= link_to "Load test stats", load_test_stats_sandbox_election_path(election), download: Sandbox::GenerateLoadTestStats::STATS_OUTPUT_FILE_NAME %>  |
-              <button class="show-input-button"> Generate bulk votes </button>
-              <div class="generate-votes-input-section">
-                <input class="generate-votes-input" type="number" placeholder="How many votes?" value="<%= default_bulk_votes_number %>"/>
-                <button class="generate-votes-button">Generate votes</button>
-              </div>
-              <% if bulk_votes_file_exists? %>
-                <%= link_to "Download #{generated_votes_number} votes", download_bulk_votes_sandbox_election_path(election), download: bulk_votes_file_name %>
-              <% end %>
+                <%= link_to "Vote", vote_sandbox_election_path(election) %>
+                <%= link_to "End vote", end_vote_sandbox_election_path(election) %>
+                <a href="#" class="stress-tests button <%= "pressed" if bulk_votes_file_exists?(election) %>">Stress tests</a>
+                <div class="stress-tests-section">
+                  <input class="generate-votes-input" type="number" placeholder="How many votes?" value="<%= default_bulk_votes_number %>"/>
+                  <a href="#" class="generate-votes button">Generate votes</a>
+                  <%= link_to "Load test stats", load_test_stats_sandbox_election_path(election), download: Sandbox::GenerateLoadTestStats::STATS_OUTPUT_FILE_NAME, class: "button" %>
+                  <% if bulk_votes_file_exists?(election) %>
+                    <%= link_to "Download #{generated_votes_number(election)} votes", download_bulk_votes_sandbox_election_path(election), download: bulk_votes_file_name(election), class: "button" %>
+                  <% end %>
+                </div>
             <% elsif election.vote_ended? %>
               <%= link_to "Start tally", start_tally_sandbox_election_path(election) %>
             <% elsif election.tally? %>

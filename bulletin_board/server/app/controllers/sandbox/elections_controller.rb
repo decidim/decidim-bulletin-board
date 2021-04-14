@@ -10,8 +10,6 @@ module Sandbox
     helper_method :election_results
     helper_method :default_bulk_votes_number, :bulk_votes_file_name, :bulk_votes_file_exists?, :generated_votes_number
 
-    BULK_VOTES_FILE_NAME = "bulk_votes.csv"
-    BULK_VOTES_FILE_PATH = Rails.root.join("tmp", BULK_VOTES_FILE_NAME)
     DEFAULT_BULK_VOTES_NUMBER = 1000
 
     def index; end
@@ -40,17 +38,17 @@ module Sandbox
     end
 
     def generate_bulk_votes
-      delete_bulk_votes_file
+      delete_bulk_votes_file(election)
 
-      GenerateVotesJob.perform_later(number_of_votes_to_generate, election.id, BULK_VOTES_FILE_PATH.to_s, bulletin_board_settings_hash)
+      GenerateVotesJob.perform_later(number_of_votes_to_generate, election.id, bulk_votes_file_path(election), bulletin_board_settings_hash)
     end
 
     def download_bulk_votes
-      return head(:not_foud) unless bulk_votes_file_exists?
+      return head(:not_foud) unless bulk_votes_file_exists?(election)
 
       send_file(
-        BULK_VOTES_FILE_PATH,
-        filename: BULK_VOTES_FILE_NAME,
+        bulk_votes_file_path(election),
+        filename: bulk_votes_file_name(election),
         type: "text/csv"
       )
     end
@@ -176,10 +174,6 @@ module Sandbox
       @bulletin_board_client ||= Decidim::BulletinBoard::Client.new(bulletin_board_settings)
     end
 
-    def file_client
-      @file_client ||= Decidim::BulletinBoard::FileClient.new(BULK_VOTES_FILE_PATH, bulletin_board_settings)
-    end
-
     def bulletin_board_settings
       @bulletin_board_settings ||= OpenStruct.new(bulletin_board_settings_hash)
     end
@@ -201,10 +195,6 @@ module Sandbox
       @random_voter_id ||= SecureRandom.hex
     end
 
-    def delete_bulk_votes_file
-      File.delete(BULK_VOTES_FILE_PATH) if bulk_votes_file_exists?
-    end
-
     def number_of_votes_to_generate
       params[:number_of_votes]&.to_i || 1000
     end
@@ -213,16 +203,24 @@ module Sandbox
       DEFAULT_BULK_VOTES_NUMBER
     end
 
-    def bulk_votes_file_name
-      BULK_VOTES_FILE_NAME
+    def delete_bulk_votes_file(election)
+      File.delete(bulk_votes_file_path(election)) if bulk_votes_file_exists?(election)
     end
 
-    def bulk_votes_file_exists?
-      File.exist?(BULK_VOTES_FILE_PATH)
+    def bulk_votes_file_path(election)
+      Rails.root.join("tmp", bulk_votes_file_name(election)).to_s
     end
 
-    def generated_votes_number
-      `wc -l "#{BULK_VOTES_FILE_PATH}"`.strip.split(" ")[0].to_i
+    def bulk_votes_file_name(election)
+      "bulk_votes_#{election.id}.csv"
+    end
+
+    def bulk_votes_file_exists?(election)
+      File.exist?(bulk_votes_file_path(election))
+    end
+
+    def generated_votes_number(election)
+      `wc -l "#{bulk_votes_file_path(election)}"`.strip.split(" ")[0].to_i
     end
   end
 end

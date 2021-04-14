@@ -1,18 +1,15 @@
 //= require jquery
 
-$(async () => {
+$(() => {
   // UI Elements
-  const $showInputButton = $(".show-input-button");
-  const $generateVotesButton = $(".generate-votes-button");
+  const $stressTests = $(".stress-tests");
+  const $generateVotes = $(".generate-votes");
 
-  $showInputButton.on("click", (event) => {
-    $(event.target).hide();
-    $(event.target)
-      .siblings(".generate-votes-input-section")
-      .css("display", "inline");
+  $stressTests.on("click", (event) => {
+    $(event.target).addClass("pressed");
   });
 
-  $generateVotesButton.on("click", (event) => {
+  $generateVotes.on("click", (event) => {
     const electionId = $(event.target).closest(".election").data("id");
     const votesToGenerate = $(event.target)
       .siblings(".generate-votes-input")

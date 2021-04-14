@@ -1,12 +1,13 @@
-.generate-votes-input-section,
-.download-votes-button {
+.stress-tests-section {
   display: none;
 }
-
-.show-input-button {
-  display: inline;
+.stress-tests.button.pressed {
+  display: none;
+  & + .stress-tests-section {
+    display: block;
+    padding: 2px;
+  }
 }
-
 .generate-votes-input {
   width: 55px;
 }
