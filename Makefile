@@ -154,6 +154,9 @@ bump_version_bulletin_board_server:
 serve:
 	cd ${BULLETIN_BOARD_SERVER_PATH} && bundle exec rails s -P tmp/pids/development.pid
 
+replant_serve:
+	cd ${BULLETIN_BOARD_SERVER_PATH} && bundle exec rails db:seed:replant && bundle exec rails s -P tmp/pids/development.pid
+
 serve_test:
 	cd ${BULLETIN_BOARD_SERVER_PATH} && bundle exec rails s -e test -p 5017 -P tmp/pids/test.pid
 
@@ -267,7 +270,11 @@ build_electionguard_python_wrapper:
 # ELECTIONGUARD PYTHON TO JS
 
 build_electionguard_python_to_js:
+ifeq (,$(wildcard /.dockerenv))
 	mkdir -p /tmp/electionguard && cd ${ELECTIONGUARD_PYTHON_TO_JS_PATH} && ./build /tmp/electionguard
+else
+	cd ${ELECTIONGUARD_PYTHON_TO_JS_PATH} && ./build
+endif
 
 # ELECTIONGUARD JAVA
 

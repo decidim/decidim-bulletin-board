@@ -21,7 +21,7 @@
   "forwardPorts": [8000],
 
   // Use 'postCreateCommand' to run commands after the container is created.
-  "postCreateCommand": ".devcontainer/post_create_command.sh"
+  "postCreateCommand": "make install build_electionguard_python_wrapper build_electionguard_python_to_js build"
 
   // Uncomment to connect as a non-root user. See https://aka.ms/vscode-remote/containers/non-root.
   // "remoteUser": "vscode"
