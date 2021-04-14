@@ -1,0 +1,52 @@
+.in_person_vote {
+  max-width: 1100px;
+  margin: 0 auto;
+  font-size: 14px;
+  &__intro {
+    margin-bottom: 2rem;
+  }
+  &__pending_message{
+    .accepted {
+      color: green;
+    }
+    .rejected {
+      color: red;
+    }
+    margin-bottom: 2rem;
+  }
+  &__form-row {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 100%;
+  }
+  &__form-column {
+    display: flex;
+    flex-direction: column;
+    flex-basis: 100%;
+    flex: 1;
+  }
+  &__form-field {
+    margin-bottom: 1rem;
+    display: block;
+    width: 400px;
+    label {
+      font-weight: bold;
+      margin-bottom: 0.2rem;
+      display: block;
+    }
+    input {
+      padding: 0.2rem;
+      margin-bottom: 0.2rem;
+      width: 20rem;
+    }
+    select {
+      display: block;
+      width: 20rem;
+    }
+  }
+  &__form-actions {
+    display: flex;
+    justify-content: flex-end;
+  }
+}

@@ -40,6 +40,12 @@ module Sandbox
       render json: pending_message.to_json
     end
 
+    def in_person_vote
+      return unless request.post?
+
+      @pending_message = bulletin_board_client.in_person_vote(election_id, params[:voter_id], params[:polling_station_id])
+    end
+
     def generate_bulk_votes
       delete_bulk_votes_file(election)
 

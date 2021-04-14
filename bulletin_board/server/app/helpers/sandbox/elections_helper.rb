@@ -29,5 +29,13 @@ module Sandbox
         end
       end.join(" ")
     end
+
+    def has_polling_stations?(election)
+      election.manifest[:polling_stations]&.any?
+    end
+
+    def options_for_polling_station_select(election)
+      options_for_select(election.manifest[:polling_stations])
+    end
   end
 end

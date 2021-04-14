@@ -1,0 +1,47 @@
+<%= stylesheet_link_tag "sandbox/in_person_vote" %>
+
+<section class="in_person_vote">
+  <div class="in_person_vote__intro">
+    <div class="version">Bulletin Board Version <%= Decidim::BulletinBoard::VERSION %></div>
+
+    <h1>In person vote for <%= election.title.values.first %></h1>
+    <%= link_to "Back", sandbox_elections_path, class: "button" %>
+  </div>
+
+  <% if pending_message %>
+    <div class="in_person_vote__pending_message">
+      Previous request status:
+      <span
+        class="js-pending-message"
+        data-api-endpoint-url="<%= bulletin_board_server %>"
+        data-message-id="<%= pending_message.message_id %>">
+        enqueued
+      </span>
+    </div>
+  <% end %>
+
+  <form class="in_person_vote__form voter" method="post" action="<%= in_person_vote_sandbox_election_path(election) %>">
+    <%= hidden_field_tag :authenticity_token, form_authenticity_token -%>
+    <div class="in_person_vote__form-row">
+      <div class="in_person_vote__form-column">
+        <div class="in_person_vote__form-field">
+          <label>Voter ID</label>
+          <input name="voter_id" value="<%= random_voter_id %>">
+        </div>
+      </div>
+      <div class="in_person_vote__form-column">
+        <div class="in_person_vote__form-field">
+          <label>Polling station</label>
+          <select name="polling_station_id">
+            <%= options_for_polling_station_select(election) %>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="in_person_vote__form-actions">
+      <button>In person vote</button>
+    </div>
+  </form>
+</section>
+
+<%= javascript_include_tag "sandbox/in_person_vote" %>

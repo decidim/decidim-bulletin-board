@@ -37,6 +37,9 @@
               <% elsif election.vote? %>
                 <%= link_to "Vote", vote_sandbox_election_path(election), class: "button" %>
                 <%= link_to "End vote", end_vote_sandbox_election_path(election), class: "button" %>
+                <% if has_polling_stations?(election) %>
+                  <%= link_to "In Person Vote", in_person_vote_sandbox_election_path(election), class: "button" %>
+                <% end %>
                 <a href="#" class="stress-tests button <%= "pressed" if bulk_votes_file_exists?(election) %>">Stress tests</a>
                 <div class="stress-tests-section">
                   <input class="generate-votes-input" type="number" placeholder="How many votes?" value="<%= default_bulk_votes_number %>"/>
