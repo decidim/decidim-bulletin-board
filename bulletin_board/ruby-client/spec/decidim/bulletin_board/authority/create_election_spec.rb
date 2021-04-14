@@ -32,6 +32,7 @@ module Decidim
             },
             start_date: Time.new(2023, 4, 5, 6, 7, 8, "+03:00"),
             end_date: Time.new(2023, 4, 7, 6, 5, 4, "+03:00"),
+            polling_stations: ["polling-station-1", "polling-station-2"],
             questions: [
               {
                 slug: "question-1",
@@ -139,6 +140,7 @@ module Decidim
                                          kid: "b8dba1459df956d60107690c34fa490db681eac4f73ffaf6e4055728c02ddc8e" } },
               trustees: [{ slug: "trustee-1", name: "trustee 1", public_key: "the public key 1" },
                          { slug: "trustee-2", name: "trustee 2", public_key: "the public key 2" }],
+              polling_stations: ["polling-station-1", "polling-station-2"],
               description: { name: { text: [{ language: "en", value: "An election" },
                                             { language: "es", value: "Una elección" }] },
                              start_date: "2023-04-05T06:07:08+03:00",
