@@ -24,10 +24,18 @@ $(() => {
   const $ballotHash = $voter.find(".ballot-hash");
   const $benchmark = $voter.find(".benchmark");
   const $ballotStyle = $("select[name=ballot_style]");
+  const $allAnswers = $('input.answer');
 
   $voter.find(".vote__form-actions").on("click", "button", (event) => {
     event.preventDefault();
   });
+
+  $allAnswers.on('change', (event) => {
+    const checkbox = event.target;
+    if ($(checkbox).parents(".question").find(".answer:checked").length > parseInt(checkbox.dataset.limit)) {
+      checkbox.checked = false;
+    }
+  }).trigger('change');
 
   const toggleQuestions = (ballotStyle) => {
     $(".question").find("input").prop("disabled", true);

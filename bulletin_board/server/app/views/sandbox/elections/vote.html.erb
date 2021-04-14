@@ -36,10 +36,12 @@
     <div class="vote__form-row">
       <% election_questions_with_answers(election).each do |question_id, answer_ids| %>
         <div class="vote__form-column question <%= ballot_style_classes(question_id) %>">
-          <p><%= question_id %></p>
+          <p><%= question_id %> (limit = <%= question_max_selections(question_id) %>)</p>
           <% answer_ids.each do |answer_id| %>
-            <label><%= answer_id %></label>
-            <input name="<%= question_id %>" value="<%= answer_id %>" type="radio" <%= Random.rand > 0.5 ? 'checked' : '' %>>
+            <label>
+              <input name="<%= question_id %>" value="<%= answer_id %>" type="checkbox" <%= Random.rand > 0.5 ? 'checked' : '' %> class="answer" data-limit="<%= question_max_selections(question_id) %>">
+              <%= answer_id %>
+            </label>
           <% end %>
           <input name="<%= question_id %>" type="hidden">
         </div>
