@@ -9,7 +9,6 @@
   </div>
 
   <form
-    target="!#"
     class="vote__form voter"
     data-election-unique-id="<%= election.unique_id %>"
     data-api-endpoint-url="<%= bulletin_board_server %>"
@@ -55,9 +54,9 @@
       <a href="">Refresh</a>
     </p>
     <div class="vote__form-actions">
-      <button class="encrypt-vote">Encrypt vote</button>
-      <button class="audit-vote">Audit vote</button>
-      <button class="cast-vote">Cast vote</button>
+      <button type="button" class="encrypt-vote">Encrypt vote</button>
+      <button type="button" class="audit-vote">Audit vote</button>
+      <button type="button" class="cast-vote">Cast vote</button>
     </div>
   </form>
 </section>
