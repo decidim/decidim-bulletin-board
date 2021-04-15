@@ -72,7 +72,11 @@ export const createAllElectionFilesStream = (path) => {
 };
 
 /**
- * @todo
+ * This parses the ballot file and returns a new Object.
+ *
+ * @param {String} path - a path that contain a ballot file.
+ *
+ * @returns {Promise<Object>} - the content of the file as an Object with some extra properties.
  */
 export const parseBallotFile = (path) => {
   let result = {};
