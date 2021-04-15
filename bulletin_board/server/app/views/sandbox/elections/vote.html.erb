@@ -18,15 +18,15 @@
     <div class="vote__form-row">
       <div class="vote__form-column">
         <div class="vote__form-field">
-          <label>Voter ID</label>
-          <input name="voter_id" value="<%= random_voter_id %>">
+          <label for="voter_id">Voter ID</label>
+          <input id="voter_id" name="voter_id" value="<%= random_voter_id %>">
         </div>
       </div>
       <% if has_ballot_styles?(election) %>
         <div class="vote__form-column">
           <div class="vote__form-field">
-            <label>Ballot Style</label>
-            <select name="ballot_style">
+            <label for="ballot_style">Ballot Style</label>
+            <select id="ballot_style" name="ballot_style">
               <%= options_for_ballot_style_select(election) %>
             </select>
           </div>

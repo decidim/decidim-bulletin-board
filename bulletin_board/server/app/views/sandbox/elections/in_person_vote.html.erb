@@ -16,7 +16,7 @@
         data-api-endpoint-url="<%= bulletin_board_server %>"
         data-message-id="<%= pending_message.message_id %>">
         enqueued
-      </span>
+      </span>.
     </div>
   <% end %>
 
@@ -25,14 +25,14 @@
     <div class="in_person_vote__form-row">
       <div class="in_person_vote__form-column">
         <div class="in_person_vote__form-field">
-          <label>Voter ID</label>
-          <input name="voter_id" value="<%= random_voter_id %>">
+          <label for="voter_id">Voter ID</label>
+          <input id="voter_id" name="voter_id" value="<%= random_voter_id %>">
         </div>
       </div>
       <div class="in_person_vote__form-column">
         <div class="in_person_vote__form-field">
-          <label>Polling station</label>
-          <select name="polling_station_id">
+          <label for="polling_station_id">Polling station</label>
+          <select id="polling_station_id" name="polling_station_id">
             <%= options_for_polling_station_select(election) %>
           </select>
         </div>
