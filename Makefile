@@ -289,11 +289,14 @@ VERIFIER_ELECTIONGUARD_PATH = voting_schemes/electionguard/verifier
 install_verifier_electionguard_dependencies:
 	cd ${VERIFIER_ELECTIONGUARD_PATH} && npm i
 
-install_verifier_dependencies: install_verifier_electionguard_dependencies build_electionguard_java
+install_verifier_dependencies: install_verifier_electionguard_dependencies
 	cd ${VERIFIER_PATH} && npm i
 
-test_verifier: install_verifier_dependencies
-	cd ${VERIFIER_PATH} && bin/verify test/fixtures/electionguard/election-ok.tar
+test_verify_election: install_verifier_dependencies build_electionguard_java
+	cd ${VERIFIER_PATH} && node src/index.js test/fixtures/electionguard/election-ok.tar
+
+test_verify_ballot: install_verifier_dependencies
+	cd ${VERIFIER_PATH} && node src/index.js test/fixtures/electionguard/ballot-ok.txt
 
 # DEPLOYMENT
 
