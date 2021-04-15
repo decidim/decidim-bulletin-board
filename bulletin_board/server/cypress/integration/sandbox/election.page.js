@@ -214,17 +214,25 @@ export class ElectionPage {
   /**
    * Cast a vote.
    *
+   * @param {String} voterId - a fixed voterId to use. Optional, it will generate a random one if not present.
+   *
    * @returns {undefined}
    */
-  castVote() {
+  castVote(voterId = null) {
     cy.findByText("Vote").click();
 
     // Extract the votes answers from the form
-    cy.get("input[type=radio]").then(($radio) => {
-      if ($radio.is("checked")) {
-        $radio.invoke("val").then((vote) => this.castedVotes.push(vote));
+    cy.get("input[type=checkbox]").then(($checkbox) => {
+      if ($checkbox.is("checked")) {
+        $checkbox.invoke("val").then((vote) => this.castedVotes.push(vote));
       }
     });
+
+    if (voterId) {
+      cy.findAllByLabelText(/Voter ID/)
+        .clear()
+        .type(voterId);
+    }
 
     if (this.votingSchemeName === "electionguard") {
       // Wait a decent amount of time to make sure electionguard is loaded.
@@ -244,8 +252,66 @@ export class ElectionPage {
    *
    * @returns {undefined}
    */
-  assertVoteHasBeenCasted() {
-    cy.findByText("Your vote has been casted successfully").should(
+  assertVoteHasBeenAccepted() {
+    cy.findByText(/Your vote has been sent to the server. It's status is/).contains("accepted").should(
+      "be.visible"
+    );
+    cy.findByText("Back").click();
+  }
+
+  /**
+   * Assert that the vote has been rejected by the server.
+   *
+   * @returns {undefined}
+   */
+  assertVoteHasBeenRejected() {
+    cy.findByText(/Your vote has been sent to the server. It's status is/).contains("rejected").should(
+      "be.visible"
+    );
+    cy.findByText("Back").click();
+  }
+
+  /**
+   * Registers an in person vote.
+   *
+   * @param {String} voterId - a fixed voterId to use. Optional, it will generate a random one if not present.
+   *
+   * @returns {undefined}
+   */
+   inPersonVote(voterId = null) {
+    cy.findByText("In Person Vote").click();
+
+    if (voterId) {
+      cy.findAllByLabelText(/Voter ID/)
+        .clear()
+        .type(voterId);
+    }
+
+    cy.findByLabelText(/Polling station/)
+      .select("polling-station-2");
+
+    cy.findByText("In person vote").should("be.visible").click();
+  }
+
+  /**
+   * Assert that the vote has been casted successfully.
+   *
+   * @returns {undefined}
+   */
+  assertInPersonVoteHasBeenAccepted() {
+    cy.findByText(/Previous request status:/).contains("accepted").should(
+      "be.visible"
+    );
+    cy.findByText("Back").click();
+  }
+
+  /**
+   * Assert that the vote has been rejected by the server.
+   *
+   * @returns {undefined}
+   */
+  assertInPersonVoteHasBeenRejected() {
+    cy.findByText(/Previous request status:/).contains("rejected").should(
       "be.visible"
     );
     cy.findByText("Back").click();
