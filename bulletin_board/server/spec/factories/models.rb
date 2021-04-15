@@ -139,6 +139,20 @@ FactoryBot.define do
       client { nil }
       signed_data { BulletinBoard.sign(message) }
     end
+
+    trait :vote do
+      transient do
+        message { build(:vote_message, election: election, voter_id: voter_id) }
+        voter_id { generate(:voter_id) }
+      end
+    end
+
+    trait :in_person_vote do
+      transient do
+        message { build(:in_person_vote_message, election: election, voter_id: voter_id) }
+        voter_id { generate(:voter_id) }
+      end
+    end
   end
 
   factory :pending_message, traits: [:message_model] do
