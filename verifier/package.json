@@ -2,7 +2,8 @@
   "name": "decidim-bulletin_board-verifier",
   "version": "1.0.0",
   "description": "",
-  "main": "bin/verify.js",
+  "main": "src/index.js",
+  "type": "module",
   "scripts": {
     "format": "prettier -c src/**/*.js",
     "lint": "eslint src/**/*.js",
