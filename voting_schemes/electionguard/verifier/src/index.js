@@ -1,5 +1,4 @@
-const { verifyElection } = require("./verifiers/election.verifier");
+import { verifyElection } from "./verifiers/election.verifier.js";
+import { verifyBallot } from "./verifiers/ballot.verifier.js";
 
-module.exports = {
-  verifyElection,
-};
+export { verifyElection, verifyBallot };
