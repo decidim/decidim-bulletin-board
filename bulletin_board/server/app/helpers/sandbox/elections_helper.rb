@@ -9,7 +9,7 @@ module Sandbox
     end
 
     def question_max_selections(question_id)
-      election.manifest.dig(:description, :contests).find {|contest| contest["object_id"] == question_id }["number_elected"]
+      election.manifest.dig(:description, :contests).find { |contest| contest["object_id"] == question_id }["number_elected"]
     end
 
     def has_ballot_styles?(election)

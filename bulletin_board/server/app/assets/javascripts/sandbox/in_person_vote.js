@@ -15,9 +15,11 @@ $(() => {
     };
 
     const bulletinBoardClient = new Client(bulletinBoardClientParams);
-    bulletinBoardClient.waitForPendingMessageToBeProcessed(messageId).then((pendingMessage) => {
-      $pendingMessage.addClass(pendingMessage.status);
-      $pendingMessage.text(pendingMessage.status);
-    });
+    bulletinBoardClient
+      .waitForPendingMessageToBeProcessed(messageId)
+      .then((pendingMessage) => {
+        $pendingMessage.addClass(pendingMessage.status);
+        $pendingMessage.text(pendingMessage.status);
+      });
   }
 });
