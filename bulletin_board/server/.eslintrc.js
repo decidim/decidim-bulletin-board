@@ -15,6 +15,6 @@ module.exports = {
     sourceType: "module",
   },
   rules: {
-    "no-focused-tests": 2,
+    "jest/no-focused-tests": 2,
   },
 };
