@@ -3,22 +3,22 @@
 module Decidim
   module BulletinBoard
     module Voter
-      # This command uses the GraphQL client to cast the vote.
-      class CastVote < Decidim::BulletinBoard::Command
+      # This command uses the GraphQL client to inform about a vote casted in person in a polling station.
+      class InPersonVote < Decidim::BulletinBoard::Command
         # Public: Initializes the command.
         #
         # election_id - The local election identifier
         # voter_id - The unique identifier of the voter
-        # encrypted_vote - The content of the encrypted vote.
-        def initialize(election_id, voter_id, encrypted_vote)
+        # polling_station_id - The identifier of the polling station where the vote was casted.
+        def initialize(election_id, voter_id, polling_station_id)
           @election_id = election_id
           @voter_id = voter_id
-          @encrypted_vote = encrypted_vote
+          @polling_station_id = polling_station_id
         end
 
         # Returns the message_id related to the operation
         def message_id
-          @message_id ||= build_message_id(unique_election_id(election_id), "vote.cast", voter_id)
+          @message_id ||= build_message_id(unique_election_id(election_id), "vote.in_person", voter_id)
         end
 
         # Executes the command. Broadcasts these events:
@@ -31,7 +31,7 @@ module Decidim
           # arguments used inside the graphql operation
           args = {
             message_id: message_id,
-            signed_data: sign_message(message_id, { content: encrypted_vote })
+            signed_data: sign_message(message_id, { polling_station_id: polling_station_id })
           }
 
           begin
@@ -57,7 +57,7 @@ module Decidim
 
         private
 
-        attr_reader :election_id, :voter_id, :encrypted_vote
+        attr_reader :election_id, :voter_id, :polling_station_id
       end
     end
   end

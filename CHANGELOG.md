@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## Added
+
+- The bulletin board client now accepts the `polling_stations` param with a list of valid polling stations identifiers for running hybrid elections.
+- The bulletin board client now includes a `in_person_vote` to inform the server about physical votes.
+
 ## [0.17.1] - 2021-04-14
 
 ## Fixed

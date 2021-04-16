@@ -97,6 +97,35 @@ module Decidim
         end
       end
 
+      describe "in_person_vote" do
+        subject { instance.in_person_vote(election_id, voter_id, polling_station_id) }
+
+        before do
+          stub_command("Decidim::BulletinBoard::Voter::InPersonVote", :call, *result)
+        end
+
+        let(:election_id) { "test.1" }
+        let(:voter_id) { "voter.1" }
+        let(:polling_station_id) { "polling_station.1" }
+        let(:result) { [:ok, double(status: "enqueued")] }
+
+        it "yields the message_id" do
+          expect { |block| instance.in_person_vote(election_id, voter_id, polling_station_id, &block) }.to yield_with_args("a.message+id")
+        end
+
+        it "calls the InPersonVote command and return the result" do
+          expect(subject.status).to eq("enqueued")
+        end
+
+        context "when something went wrong" do
+          let(:result) { [:error, "something went wrong"] }
+
+          it "calls the InPersonVote command and throws an error" do
+            expect { subject }.to raise_error("something went wrong")
+          end
+        end
+      end
+
       describe "end_vote" do
         subject { instance.end_vote(election_id) }
 

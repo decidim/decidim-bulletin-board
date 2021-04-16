@@ -13,7 +13,7 @@ module ClientOrBulletinBoard
       validates :client, presence: true, unless: :bulletin_board
 
       after_find do
-        @bulletin_board = true unless client
+        @bulletin_board = true unless client_id
       end
 
       def client

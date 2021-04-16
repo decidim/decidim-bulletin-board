@@ -94,6 +94,10 @@ RSpec.describe "LogEntry" do
       expect { subject }.to change(log_entry, :message_type).from(nil).to("type")
     end
 
+    it "stores the message_subtype" do
+      expect { subject }.to change(log_entry, :message_subtype).from(nil).to("subtype")
+    end
+
     it "stores the author_unique_id" do
       expect { subject }.to change(log_entry, :author_unique_id).from(nil).to("author")
     end

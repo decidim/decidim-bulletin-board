@@ -50,6 +50,7 @@ module Decidim
             bulletin_board: bulletin_board,
             authority: authority,
             trustees: trustees,
+            polling_stations: polling_stations,
             description: {
               name: text(election_data[:title]),
               start_date: election_data[:start_date].strftime("%FT%T%:z"),
@@ -92,6 +93,10 @@ module Decidim
               public_key: trustee[:public_key]
             }
           end
+        end
+
+        def polling_stations
+          election_data[:polling_stations] || []
         end
 
         def contests

@@ -14,6 +14,7 @@ require "decidim/bulletin_board/authority/publish_results"
 require "decidim/bulletin_board/authority/get_election_results"
 require "decidim/bulletin_board/voter/cast_vote"
 require "decidim/bulletin_board/voter/get_pending_message_status"
+require "decidim/bulletin_board/voter/in_person_vote"
 require "decidim/bulletin_board/test/reset_test_database"
 
 module Decidim
@@ -60,6 +61,14 @@ module Decidim
         cast_vote.on(:ok) { |pending_message| return pending_message }
         cast_vote.on(:error) { |error_message| raise StandardError, error_message }
         cast_vote.call
+      end
+
+      def in_person_vote(election_id, voter_id, polling_station_id)
+        in_person_vote = configure Voter::InPersonVote.new(election_id, voter_id, polling_station_id)
+        yield in_person_vote.message_id if block_given?
+        in_person_vote.on(:ok) { |pending_message| return pending_message }
+        in_person_vote.on(:error) { |error_message| raise StandardError, error_message }
+        in_person_vote.call
       end
 
       def get_pending_message_status(message_id)

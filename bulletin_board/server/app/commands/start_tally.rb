@@ -46,6 +46,6 @@ class StartTally < Rectify::Command
   attr_accessor :authority
 
   def voting_scheme
-    @voting_scheme ||= voting_scheme_class.new(election, ElectionUniqueVotes.new(election))
+    @voting_scheme ||= voting_scheme_class.new(election, ValidVotes.new(election))
   end
 end

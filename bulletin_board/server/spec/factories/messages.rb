@@ -56,6 +56,7 @@ FactoryBot.define do
       bulletin_board { build(:json_bulletin_board) }
       authority { build(:json_authority, authority: authority_client) }
       trustees { trustees_plus_keys.map { |trustee, private_key| build(:json_trustee, trustee: trustee, private_key: private_key) } }
+      polling_stations { [] }
       description { build(:description, number_of_questions: number_of_questions, start_date: start_date, title: title) }
     end
 
@@ -264,6 +265,16 @@ FactoryBot.define do
           }
         end
       end
+    end
+
+    factory :in_person_vote_message, parent: :message do
+      transient do
+        election { create(:election, :vote) }
+        voter_id { generate(:voter_id) }
+      end
+
+      message_id { "#{election.unique_id}.vote.in_person+v.#{voter_id}" }
+      polling_station_id { "polling_station_1" }
     end
 
     factory :end_vote_message, parent: :message do
