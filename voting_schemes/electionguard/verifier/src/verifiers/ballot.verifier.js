@@ -7,6 +7,8 @@ import { encryptVote } from "../services/encrypt-vote.service.js";
 import { transform } from "../transformers/ballot.transformer.js";
 
 /**
+ * Using the auditable data inside the ballot data and the messages from the log entry
+ * this function encrypts the vote again and compare the result with the original one.
  *
  * @param {Object} ballotData - the ballot data parsed from the file.
  * @param {Object} createElectionMessage - the create election message in the election log entries.

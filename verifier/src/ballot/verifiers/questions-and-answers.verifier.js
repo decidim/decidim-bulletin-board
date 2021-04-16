@@ -3,6 +3,8 @@ import chalk from "chalk";
 const LOCALE = process.env.LOCALE || "en";
 
 /**
+ * Prints the questions and answers for the given election and highlight the answers
+ * that belongs to the plain vote inside the ballot data.
  *
  * @param {Object} ballotData - the ballot data parsed from the file.
  * @param {Object} createElectionMessage - the create election message in the election log entries.
