@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    voting_schemes-electionguard (0.17.1)
+    voting_schemes-electionguard (0.18.0)
       rails (>= 5.0.0)
 
 GEM
@@ -91,6 +91,8 @@ GEM
     nio4r (2.5.7)
     nokogiri (1.11.3)
       mini_portile2 (~> 2.5.0)
+      racc (~> 1.4)
+    nokogiri (1.11.3-x86_64-linux)
       racc (~> 1.4)
     parallel (1.20.1)
     parser (3.0.0.0)
@@ -189,4 +191,4 @@ DEPENDENCIES
   voting_schemes-electionguard!
 
 BUNDLED WITH
-   2.2.13
+   2.2.15

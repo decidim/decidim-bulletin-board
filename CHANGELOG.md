@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## [0.18.0] - 2021-04-16
+
 ## Added
 
 - The bulletin board client now accepts the `polling_stations` param with a list of valid polling stations identifiers for running hybrid elections.
