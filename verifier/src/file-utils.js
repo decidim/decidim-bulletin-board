@@ -88,12 +88,22 @@ export const parseBallotFile = (path) => {
   return new Promise((resolve) => {
     stream.on(
       "data",
-      ({ value: { encryptedData, encryptedDataHash, auditableData } }) => {
+      ({
+        value: {
+          encryptedData,
+          encryptedDataHash,
+          auditableData,
+          plainVote,
+          electionUniqueId,
+        },
+      }) => {
         result = {
           encryptedDataRaw: encryptedData,
           encryptedData: JSON.parse(encryptedData),
           encryptedDataHash,
           auditableData: JSON.parse(auditableData),
+          plainVote,
+          electionUniqueId,
         };
       }
     );

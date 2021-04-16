@@ -35,7 +35,7 @@ export class BulletinBoardClient {
    * @param {String} electionUniqueId - the election unique id.
    * @returns {Object} - an object that contains the decoded data of the messages.
    */
-  async getMessagesToEncryptVote(electionUniqueId) {
+  async getMessagesToAuditBallot(electionUniqueId) {
     const { data } = await this.client.query({
       query: gql`
         query {
