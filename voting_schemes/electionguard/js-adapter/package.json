@@ -1,6 +1,6 @@
 {
   "name": "@codegram/voting_schemes-electionguard",
-  "version": "0.18.0",
+  "version": "0.19.0",
   "description": "The ElectionGuard voting scheme implementation for the Decidim Bulletin Board.",
   "main": "src/index.js",
   "scripts": {
