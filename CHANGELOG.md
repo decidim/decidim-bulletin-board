@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Added
 
-- The voter `encrypt` method now returns the `plainVote` so it will be included when the user audits the ballot.
+- The voter `encrypt` method now returns the `plainVote` and the `electionUniqueId` so it will be included when the user audits the ballot.
 
 ## [0.18.0] - 2021-04-16
 

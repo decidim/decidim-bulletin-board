@@ -79,6 +79,7 @@ export class Voter {
       encryptedDataHash,
       auditableData,
       plainVote,
+      electionUniqueId: this.election.uniqueId,
     };
   }
 
