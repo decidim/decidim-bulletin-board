@@ -25,26 +25,53 @@ describe("Voter", () => {
   });
 
   describe("encrypt", () => {
-    it("calls the wrapper's encrypt method with the given data", async () => {
+    const plainVote = {
+      question1: ["answer-1-option-a"],
+      question2: ["answer-2-option-a", "answer-2-option-b"],
+    };
+    const encryptedData = "1234";
+    const encryptedDataHash = "5678";
+    const actualAuditableData = "1278";
+
+    beforeEach(() => {
+      jest.spyOn(voter.wrapperAdapter, "encrypt").mockImplementation(() =>
+        Promise.resolve({
+          encryptedData,
+          actualAuditableData,
+        })
+      );
+
       jest
-        .spyOn(voter.wrapperAdapter, "encrypt")
-        .mockImplementation(() =>
-          Promise.resolve({ auditableBallot: {}, encryptedBallot: {} })
-        );
-      await voter.encrypt(
-        {
-          question1: ["answer-1-option-a"],
-          question2: ["answer-2-option-a", "answer-2-option-b"],
-        },
-        null
-      );
+        .spyOn(voter, "hash")
+        .mockImplementation(() => Promise.resolve(encryptedDataHash));
+    });
+
+    it("calls the wrapper's encrypt method with the given data", async () => {
+      await voter.encrypt(plainVote, null);
       expect(voter.wrapperAdapter.encrypt).toHaveBeenCalledWith(
+        plainVote,
+        null
+      );
+    });
+
+    it("returns the plain vote and the auditable data", async () => {
+      const {
+        encryptedData: actualEncryptedData,
+        encryptedDataHash: actualEncryptedDataHash,
+        auditableData: actualAuditableData,
+        plainVote: actualPlainVote,
+      } = await voter.encrypt(
         {
           question1: ["answer-1-option-a"],
           question2: ["answer-2-option-a", "answer-2-option-b"],
         },
         null
       );
+
+      expect(actualEncryptedData).toEqual(encryptedData);
+      expect(actualEncryptedDataHash).toEqual(encryptedDataHash);
+      expect(actualAuditableData).toEqual(actualAuditableData);
+      expect(actualPlainVote).toEqual(plainVote);
     });
   });
 });

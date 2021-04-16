@@ -78,6 +78,7 @@ export class Voter {
       encryptedData,
       encryptedDataHash,
       auditableData,
+      plainVote,
     };
   }
 
