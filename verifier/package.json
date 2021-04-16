@@ -26,8 +26,14 @@
     "prettier": "2.1.2"
   },
   "dependencies": {
+    "apollo-cache-inmemory": "^1.6.6",
+    "apollo-client": "^2.6.10",
+    "apollo-link-http": "^1.5.17",
     "combined-stream2": "^1.1.2",
     "decidim-bulletin_board-verifier-electionguard": "file://../voting_schemes/electionguard/verifier",
+    "graphql": "^15.5.0",
+    "graphql-tag": "^2.11.0",
+    "node-fetch": "^2.6.1",
     "stream-json": "^1.7.1",
     "tar-stream": "^2.2.0"
   }

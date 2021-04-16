@@ -2,45 +2,40 @@ import chalk from "chalk";
 
 // Services
 import { encryptVote } from "../services/encrypt-vote.service.js";
-import { BulletinBoardClient } from "../services/bulletin-board-client.service.js";
 
 // Transformers
 import { transform } from "../transformers/ballot.transformer.js";
 
-const BULLETIN_BOARD_API_URL =
-  process.env.BULLETIN_BOARD_API_URL || "http://localhost:8000/api";
-const ELECTION_UNIQUE_ID = process.env.ELECTION_UNIQUE_ID;
-
 /**
  *
  * @param {Object} ballotData - the ballot data parsed from the file.
+ * @param {Object} createElectionMessage - the create election message in the election log entries.
+ * @param {Object} endKeyCeremonyMessage - the end key ceremony message in the election log entries.
  * @returns {Promise<Boolean>}
  */
-export const verifyBallot = async (ballotData) => {
-  return new Promise(async (resolve) => {
-    const bulletinBoardClient = new BulletinBoardClient(BULLETIN_BOARD_API_URL);
+export const verifyBallot = async (
+  ballotData,
+  createElectionMessage,
+  endKeyCeremonyMessage
+) => {
+  const {
+    expectedCipheredBallot,
+    voterId,
+    plainVote,
+    ballotStyle,
+    nonce,
+  } = transform(ballotData);
 
-    const {
-      expectedCipheredBallot,
-      voterId,
-      plainVote,
-      ballotStyle,
-      nonce,
-    } = transform(ballotData);
-    const {
-      createElectionMessage,
-      endKeyCeremonyMessage,
-    } = await bulletinBoardClient.getMessagesToEncryptVote(ELECTION_UNIQUE_ID);
+  const actualCipheredBallot = await encryptVote({
+    voterId,
+    createElectionMessage,
+    endKeyCeremonyMessage,
+    plainVote,
+    ballotStyle,
+    nonce,
+  });
 
-    const actualCipheredBallot = await encryptVote({
-      voterId,
-      createElectionMessage,
-      endKeyCeremonyMessage,
-      plainVote,
-      ballotStyle,
-      nonce,
-    });
-
+  return new Promise((resolve) => {
     if (
       JSON.stringify(cleanTimeDependingData(actualCipheredBallot)) ===
       JSON.stringify(cleanTimeDependingData(expectedCipheredBallot))
