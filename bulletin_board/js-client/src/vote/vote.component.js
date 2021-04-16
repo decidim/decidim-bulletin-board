@@ -90,8 +90,8 @@ export class VoteComponent {
 
             onBindCastBallotButton(async () => {
               try {
-                await onCastBallot(ballot);
-                onCastComplete();
+                const result = await onCastBallot(ballot);
+                onCastComplete(result);
               } catch {
                 onInvalid();
               }

@@ -5,7 +5,7 @@
     <div class="version">Bulletin Board Version <%= Decidim::BulletinBoard::VERSION %></div>
 
     <h1>Create election</h1>
-    <%= link_to "Back", sandbox_elections_path %>
+    <%= link_to "Back", sandbox_elections_path, class: "button" %>
   </div>
 
   <form class="new_election__form" method="post" action="<%= sandbox_elections_path %>">
@@ -24,8 +24,8 @@
           <input id="election_id" name="election[id]" type="text" value="<%= SecureRandom.base58 %>">
         </div>
         <div class="new_election__form-field">
-          <label>Default locale</label>
-          <select name="election[default_locale]">
+          <label for="election_default_locale">Default locale</label>
+          <select id="election_default_locale" name="election[default_locale]">
             <option>ca</option>
             <option selected>en</option>
             <option>es</option>
@@ -40,12 +40,23 @@
       </div>
       <div class="new_election__form-column">
         <div class="new_election__form-field">
-          <label>Start date</label>
-          <input name="election[start_date]" type="number" value="1"> days from now
+          <label for="election_start_date">Start date</label>
+          <input id="election_start_date" name="election[start_date]" type="number" value="1"> days from now
         </div>
         <div class="new_election__form-field">
-          <label>End date</label>
-          <input name="election[end_date]" type="number" value="1"> after the start
+          <label for="election_end_date">End date</label>
+          <input id="election_end_date" name="election[end_date]" type="number" value="1"> after the start
+        </div>
+        <div class="new_election__form-field">
+          <label for="election_polling_stations">Polling stations</label>
+          <input id="election_polling_stations" name="election[polling_stations][]" value="polling-station-1">
+          <input name="election[polling_stations][]" value="polling-station-2">
+          <input name="election[polling_stations][]" value="polling-station-3">
+          <input name="election[polling_stations][]" value="">
+          <input name="election[polling_stations][]" value="">
+          <input name="election[polling_stations][]" value="">
+          <input name="election[polling_stations][]" value="">
+          <input name="election[polling_stations][]" value="">
         </div>
       </div>
     </div>
@@ -66,62 +77,48 @@
   <div class="new_election__form-row election-question">
     <div class="new_election__form-column">
       <div class="new_election__form-field">
-        <label>Title</label>
-        <input name="election[questions][{{questionIndex}}][title][ca]" type="text" value="Pregunta {{questionIndexPlusOne}}" placeholder="ca">
+        <label for="election_questions_{{questionIndex}}_title">Title</label>
+        <input id="election_questions_{{questionIndex}}_title" name="election[questions][{{questionIndex}}][title][ca]" type="text" value="Pregunta {{questionIndexPlusOne}}" placeholder="ca">
         <input name="election[questions][{{questionIndex}}][title][en]" type="text" value="Question {{questionIndexPlusOne}}" placeholder="en">
         <input name="election[questions][{{questionIndex}}][title][es]" type="text" value="Pregunta {{questionIndexPlusOne}}" placeholder="es">
       </div>
       <div class="new_election__form-field">
-        <label>Description</label>
-        <input name="election[questions][{{questionIndex}}][description][ca]" type="text" value="Descripció {{questionIndexPlusOne}}" placeholder="ca">
+        <label for="election_questions_{{questionIndex}}_description">Description</label>
+        <input id="election_questions_{{questionIndex}}_description" name="election[questions][{{questionIndex}}][description][ca]" type="text" value="Descripció {{questionIndexPlusOne}}" placeholder="ca">
         <input name="election[questions][{{questionIndex}}][description][en]" type="text" value="Description {{questionIndexPlusOne}}" placeholder="en">
         <input name="election[questions][{{questionIndex}}][description][es]" type="text" value="Descripción {{questionIndexPlusOne}}" placeholder="es">
       </div>
     </div>
     <div class="new_election__form-column">
       <div class="new_election__form-field">
-        <label>Slug</label>
-        <input name="election[questions][{{questionIndex}}][slug]" type="text" value="question-{{questionIndexPlusOne}}">
+        <label for="election_questions_{{questionIndex}}_slug">Slug</label>
+        <input id="election_questions_{{questionIndex}}_slug" name="election[questions][{{questionIndex}}][slug]" type="text" value="question-{{questionIndexPlusOne}}">
       </div>
       <div class="new_election__form-field">
-        <label>Maximum selections</label>
-        <input name="election[questions][{{questionIndex}}][max_selections]" type="number" value="1" min="1" max="4" readonly>
+        <label for="election_questions_{{questionIndex}}_max_selections">Maximum selections</label>
+        <input id="election_questions_{{questionIndex}}_max_selections" name="election[questions][{{questionIndex}}][max_selections]" type="number" value="{{questionIndexPlusOne}}" min="1" max="4">
       </div>
     </div>
   </div>
   <h4>Answers</h4>
-  <div class="new_election__form-row">
-    <div class="new_election__form-column">
-      <div class="new_election__form-field">
-        <label>Title</label>
-        <input name="election[questions][{{questionIndex}}][answers][0][title][ca]" type="text" value="Resposta {{questionIndexPlusOne}}" placeholder="ca">
-        <input name="election[questions][{{questionIndex}}][answers][0][title][en]" type="text" value="Answer {{questionIndexPlusOne}}" placeholder="en">
-        <input name="election[questions][{{questionIndex}}][answers][0][title][es]" type="text" value="Respuesta {{questionIndexPlusOne}}" placeholder="es">
+  <% 3.times do |i| %>
+    <div class="new_election__form-row">
+      <div class="new_election__form-column">
+        <div class="new_election__form-field">
+          <label for="election_questions_{{questionIndex}}_answers_<%= i %>_title">Title</label>
+          <input id="election_questions_{{questionIndex}}_answers_<%= i %>_title" name="election[questions][{{questionIndex}}][answers][<%= i %>][title][ca]" type="text" value="Resposta {{questionIndexPlusOne}}.<%= i+1 %>" placeholder="ca">
+          <input name="election[questions][{{questionIndex}}][answers][<%= i %>][title][en]" type="text" value="Answer {{questionIndexPlusOne}}.<%= i+1 %>" placeholder="en">
+          <input name="election[questions][{{questionIndex}}][answers][<%= i %>][title][es]" type="text" value="Respuesta {{questionIndexPlusOne}}.<%= i+1 %>" placeholder="es">
+        </div>
+      </div>
+      <div class="new_election__form-column">
+        <div class="new_election__form-field">
+          <label for="election_questions_{{questionIndex}}_answers_<%= i %>_slug">Slug</label>
+          <input id="election_questions_{{questionIndex}}_answers_<%= i %>_slug" name="election[questions][{{questionIndex}}][answers][<%= i %>][slug]" type="text" value="question-{{questionIndexPlusOne}}-<%= i+1 %>">
+        </div>
       </div>
     </div>
-    <div class="new_election__form-column">
-      <div class="new_election__form-field">
-        <label>Slug</label>
-        <input name="election[questions][{{questionIndex}}][answers][0][slug]" type="text" value="question-{{questionIndexPlusOne}}-1">
-      </div>
-    </div>
-  </div>
-  <div class="new_election__form-row">
-    <div class="new_election__form-column">
-      <div class="new_election__form-field">
-        <label>Title</label>
-        <input name="election[questions][{{questionIndex}}][answers][1][title][ca]" type="text" value="Resposta {{questionIndexPlusOne}}" placeholder="ca">
-        <input name="election[questions][{{questionIndex}}][answers][1][title][en]" type="text" value="Answer {{questionIndexPlusOne}}" placeholder="en">
-        <input name="election[questions][{{questionIndex}}][answers][1][title][es]" type="text" value="Respuesta {{questionIndexPlusOne}}" placeholder="es">
-      </div>
-    </div>
-    <div class="new_election__form-column">
-      <div class="new_election__form-field">
-        <label>Slug</label>
-        <input name="election[questions][{{questionIndex}}][answers][1][slug]" type="text" value="question-{{questionIndexPlusOne}}-2">
-      </div>
-    </div>
-  </div>
+  <% end %>
 </template>
 
 <template class="ballot-style-template">
@@ -131,8 +128,10 @@
 
 <template class="ballot-style-question-template">
   <div class="new_election__form-column">
-    <label>question-{{questionIndexPlusOne}}</label>
-    <input type="checkbox" name="election[ballot_styles][ballot-style-{{ballotStyleIndexPlusOne}}][question-{{questionIndexPlusOne}}]" checked>
+    <label>
+      <input type="checkbox" name="election[ballot_styles][ballot-style-{{ballotStyleIndexPlusOne}}][question-{{questionIndexPlusOne}}]" checked>
+      question-{{questionIndexPlusOne}}
+    </label>
   </div>
 </template>
 

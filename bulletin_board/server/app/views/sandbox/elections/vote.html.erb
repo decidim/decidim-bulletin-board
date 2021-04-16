@@ -5,11 +5,11 @@
     <div class="version">Bulletin Board Version <%= Decidim::BulletinBoard::VERSION %></div>
 
     <h1>Vote for <%= election.title.values.first %></h1>
-    <%= link_to "Back", sandbox_elections_path %>
+    <%= link_to "Back", sandbox_elections_path, class: "button" %>
+    <a href="" class="button">Refresh</a>
   </div>
 
   <form
-    target="!#"
     class="vote__form voter"
     data-election-unique-id="<%= election.unique_id %>"
     data-api-endpoint-url="<%= bulletin_board_server %>"
@@ -18,15 +18,15 @@
     <div class="vote__form-row">
       <div class="vote__form-column">
         <div class="vote__form-field">
-          <label>Voter ID</label>
-          <input name="voter_id" value="<%= random_voter_id %>">
+          <label for="voter_id">Voter ID</label>
+          <input id="voter_id" name="voter_id" value="<%= random_voter_id %>">
         </div>
       </div>
       <% if has_ballot_styles?(election) %>
         <div class="vote__form-column">
           <div class="vote__form-field">
-            <label>Ballot Style</label>
-            <select name="ballot_style">
+            <label for="ballot_style">Ballot Style</label>
+            <select id="ballot_style" name="ballot_style">
               <%= options_for_ballot_style_select(election) %>
             </select>
           </div>
@@ -36,10 +36,12 @@
     <div class="vote__form-row">
       <% election_questions_with_answers(election).each do |question_id, answer_ids| %>
         <div class="vote__form-column question <%= ballot_style_classes(question_id) %>">
-          <p><%= question_id %></p>
+          <p><%= question_id %> (limit = <%= question_max_selections(question_id) %>)</p>
           <% answer_ids.each do |answer_id| %>
-            <label><%= answer_id %></label>
-            <input name="<%= question_id %>" value="<%= answer_id %>" type="radio" <%= Random.rand > 0.5 ? 'checked' : '' %>>
+            <label>
+              <input name="<%= question_id %>" value="<%= answer_id %>" type="checkbox" <%= Random.rand > 0.5 ? 'checked' : '' %> class="answer" data-limit="<%= question_max_selections(question_id) %>">
+              <%= answer_id %>
+            </label>
           <% end %>
           <input name="<%= question_id %>" type="hidden">
         </div>
@@ -47,17 +49,15 @@
     </div>
     <p class="benchmark"></p>
     <p class="ballot-hash"></p>
-    <p>
-      <span class="done-message">Your vote has been casted successfully</span>
-      <span class="audit-done-message">Your vote has been audited successfully</span>
+    <p class="done-message">
+      Your vote has been sent to the server. It's status is
+        <span class="pending-message">enqueued</span>.
     </p>
-    <p>
-      <a href="">Refresh</a>
-    </p>
+    <p class="audit-done-message">Your vote has been audited successfully</p>
     <div class="vote__form-actions">
-      <button class="encrypt-vote">Encrypt vote</button>
-      <button class="audit-vote">Audit vote</button>
-      <button class="cast-vote">Cast vote</button>
+      <button type="button" class="encrypt-vote">Encrypt vote</button>
+      <button type="button" class="audit-vote">Audit vote</button>
+      <button type="button" class="cast-vote">Cast vote</button>
     </div>
   </form>
 </section>

@@ -1,23 +1,18 @@
-.vote {
+.in_person_vote {
   max-width: 1100px;
   margin: 0 auto;
   font-size: 14px;
   &__intro {
     margin-bottom: 2rem;
   }
-  &__form {
-    .done-message,
-    .audit-done-message,
-    button.audit-vote,
-    button.cast-vote {
-      display: none;
-    }
+  &__pending_message{
     .accepted {
       color: green;
     }
     .rejected {
       color: red;
     }
+    margin-bottom: 2rem;
   }
   &__form-row {
     display: flex;

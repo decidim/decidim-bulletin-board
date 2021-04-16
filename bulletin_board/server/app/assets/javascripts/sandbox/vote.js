@@ -20,14 +20,28 @@ $(() => {
   const $auditVote = $voter.find(".audit-vote");
   const $voterId = $voter.find("input");
   const $doneMessage = $voter.find(".done-message");
+  const $pendingMessage = $doneMessage.find(".pending-message");
   const $auditMessage = $voter.find(".audit-done-message");
   const $ballotHash = $voter.find(".ballot-hash");
   const $benchmark = $voter.find(".benchmark");
   const $ballotStyle = $("select[name=ballot_style]");
+  const $allAnswers = $("input.answer");
 
   $voter.find(".vote__form-actions").on("click", "button", (event) => {
     event.preventDefault();
   });
+
+  $allAnswers
+    .on("change", (event) => {
+      const checkbox = event.target;
+      if (
+        $(checkbox).parents(".question").find(".answer:checked").length >
+        parseInt(checkbox.dataset.limit)
+      ) {
+        checkbox.checked = false;
+      }
+    })
+    .trigger("change");
 
   const toggleQuestions = (ballotStyle) => {
     $(".question").find("input").prop("disabled", true);
@@ -160,10 +174,17 @@ $(() => {
         },
       });
     },
-    onCastComplete() {
+    onCastComplete(result) {
       $castVote.prop("disabled", true);
       $auditVote.prop("disabled", true);
+
       $doneMessage.show();
+      component.bulletinBoardClient
+        .waitForPendingMessageToBeProcessed(result.data.messageId)
+        .then((pendingMessage) => {
+          $pendingMessage.addClass(pendingMessage.status);
+          $pendingMessage.text(pendingMessage.status);
+        });
     },
     onInvalid() {},
   });
