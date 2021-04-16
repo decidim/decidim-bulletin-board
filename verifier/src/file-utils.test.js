@@ -1,7 +1,7 @@
-const path = require("path");
-const fs = require("fs");
+import path from "path";
+import fs from "fs";
 
-const { isElectionLogFile, isAuditBallotFile } = require("./file-utils");
+import { isElectionLogFile, isAuditBallotFile } from "./file-utils.js";
 
 describe("file utils", () => {
   const auditableElectionPath = path.join(

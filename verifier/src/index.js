@@ -1,12 +1,7 @@
-#!/usr/bin/env node
-
-const fs = require("fs");
-const {
-  isElectionLogFile,
-  isAuditBallotFile,
-} = require("../src/file-utils.js");
-const { verify: electionVerify } = require("../src/election");
-const { verify: ballotVerify } = require("../src/ballot");
+import * as fs from "fs";
+import { isElectionLogFile, isAuditBallotFile } from "./file-utils.js";
+import { verify as electionVerify } from "./election/index.js";
+import { verify as ballotVerify } from "./ballot/index.js";
 
 if (process.argv.length < 3) {
   console.log("usage: verify <filename>");
@@ -25,7 +20,7 @@ fs.access(path, fs.F_OK, async (error) => {
     await electionVerify(path);
     process.exit(0);
   } else if (isAuditBallotFile(path)) {
-    ballotVerify(path);
+    await ballotVerify(path);
     process.exit(0);
   } else {
     console.error(`File ${path} not supported.`);

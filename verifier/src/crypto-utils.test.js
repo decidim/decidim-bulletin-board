@@ -1,4 +1,4 @@
-const { hash } = require("./crypto-utils");
+import { hash } from "./crypto-utils.js";
 
 describe("Crypto utils", () => {
   describe("hash", () => {

@@ -1,18 +1,24 @@
-const chalk = require("chalk");
+import chalk from "chalk";
+
+import { parseBallotFile } from "../file-utils.js";
+
+// Verifiers
+import { verifyEncryptedDataHash } from "./verifiers/encrypted-data-hash.verifier.js";
+import { verifyBallot } from "decidim-bulletin_board-verifier-electionguard";
 
 /**
- * Includes all the business logic to verify an audit ballot file.
+ * Parse the ballot file and run some verifiers.
  *
- * @module
+ * @param {String} path - a ballot file path.
+ * @returns {Promise<undefined>}
  */
-module.exports = {
-  /**
-   * Parse the audit ballot and run some verifiers.
-   *
-   * @param {String} path - an audit ballot file path.
-   * @returns {Promise<undefined>}
-   */
-  verify() {
-    console.log(`${chalk.yellow("Verifying ballot...")}`);
-  },
+export const verify = async (path) => {
+  const ballotData = await parseBallotFile(path);
+
+  console.log(`${chalk.yellow("Verifying ballot...")}`);
+
+  return Promise.all([
+    verifyEncryptedDataHash(ballotData),
+    verifyBallot(ballotData),
+  ]);
 };

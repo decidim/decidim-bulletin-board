@@ -1,18 +1,11 @@
-const crypto = require("crypto");
+import crypto from "crypto";
 
 /**
- * Helper functions to deal with cryptography operations.
+ * Computes the sha256 of the given data.
  *
- * @module
+ * @param {String} data - The string to be digested.
+ * @returns {String}
  */
-module.exports = {
-  /**
-   * Computes the sha256 of the given data.
-   *
-   * @param {String} data - The string to be digested.
-   * @returns {String}
-   */
-  hash(data) {
-    return crypto.createHash("sha256").update(data).digest("hex");
-  },
+export const hash = (data) => {
+  return crypto.createHash("sha256").update(data).digest("hex");
 };
