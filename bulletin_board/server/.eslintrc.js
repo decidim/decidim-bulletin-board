@@ -14,7 +14,5 @@ module.exports = {
     ecmaVersion: 12,
     sourceType: "module",
   },
-  rules: {
-    "jest/no-focused-tests": 2,
-  },
+  rules: {},
 };
