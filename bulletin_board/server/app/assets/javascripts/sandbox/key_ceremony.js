@@ -65,16 +65,19 @@ $(() => {
 
     // Use the key ceremony component and bind all UI events
     const component = new KeyCeremonyComponent({
-      bulletinBoardClientParams,
       authorityPublicKeyJSON,
-      electionUniqueId,
       trusteeUniqueId: trusteeContext.uniqueId,
       trusteeIdentificationKeys,
       trusteeWrapperAdapter,
     });
 
-    const bindComponentEvents = async () => {
+    const setupComponent = async () => {
       $uploadPrivateKeyButton.hide();
+
+      await component.setupElection({
+        bulletinBoardClientParams,
+        electionUniqueId,
+      });
 
       await component.bindEvents({
         onEvent(_event) {},
@@ -121,12 +124,12 @@ $(() => {
 
     $trustee.on("change", ".private-key-input", async (event) => {
       await trusteeIdentificationKeys.upload(event, true);
-      await bindComponentEvents();
+      await setupComponent();
     });
 
     trusteeIdentificationKeys.present(async (exists) => {
       if (exists) {
-        await bindComponentEvents();
+        await setupComponent();
       } else {
         $uploadPrivateKeyButton.show();
       }
