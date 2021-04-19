@@ -9,9 +9,7 @@ export class KeyCeremonyComponent {
   /**
    * Initialises the class with the given params.
    * @param {Object} params - An object that contains the initialization params.
-   *  - {Object} bulletinBoardClientParams - An object to configure the bulletin board client.
    *  - {String} authorityPublicKeyJSON - The authority identification public key.
-   *  - {String} electionUniqueId - The unique identifier of an election.
    *  - {String} trusteeUniqueId - The unique identifier of a trustee.
    *  - {Object} trusteeIdentificationKeys - An object that contains both the public and private key for
    *                                         the corresponding trustee.
@@ -26,9 +24,39 @@ export class KeyCeremonyComponent {
     trusteeIdentificationKeys,
     trusteeWrapperAdapter,
   }) {
-    const bulletinBoardClient = new Client(bulletinBoardClientParams);
+    this.trustee = new Trustee({
+      uniqueId: trusteeUniqueId,
+      authorityPublicKeyJSON,
+      identificationKeys: trusteeIdentificationKeys,
+      wrapperAdapter: trusteeWrapperAdapter,
+    });
+  }
 
-    this.election = new Election({
+  /**
+   * Setup the election for the trustee.
+   *
+   * @param {Object} params - An object that contains the initialization params.
+   *  - {Object} bulletinBoardClientParams - An object to configure the bulletin board client.
+   *  - {String} electionUniqueId - The unique identifier of an election.
+   *
+   * @returns {Promise<undefined>}
+   */
+  async setupElection({ bulletinBoardClientParams, electionUniqueId }) {
+    const [authorityId] = electionUniqueId.split(".");
+    const trusteeUniqueIdHeader = `${authorityId}.${this.trustee.uniqueId}`;
+    const authorizationHeader = await this.trustee.signMessage({
+      trustee_unique_id: trusteeUniqueIdHeader,
+    });
+
+    const bulletinBoardClient = new Client({
+      ...bulletinBoardClientParams,
+      headers: {
+        Authorization: authorizationHeader,
+        TrusteeUniqueId: trusteeUniqueIdHeader,
+      },
+    });
+
+    const election = new Election({
       uniqueId: electionUniqueId,
       bulletinBoardClient,
       typesFilter: [
@@ -39,14 +67,7 @@ export class KeyCeremonyComponent {
       ],
     });
 
-    this.trustee = new Trustee({
-      uniqueId: trusteeUniqueId,
-      bulletinBoardClient,
-      authorityPublicKeyJSON,
-      identificationKeys: trusteeIdentificationKeys,
-      election: this.election,
-      wrapperAdapter: trusteeWrapperAdapter,
-    });
+    this.trustee.election = election;
   }
 
   /**
