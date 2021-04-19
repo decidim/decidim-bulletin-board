@@ -11,11 +11,9 @@ module Message
     end
 
     def visible_for_all?
-      # TODO: hardcoded until we solve https://github.com/decidim/decidim-bulletin-board/issues/163
-      # !VotingScheme::BulletinBoard.results_message?(
-      #   election.voting_scheme_name, message_identifier.type_subtype
-      # ) || election.results_published?
-      true
+      !VotingScheme::BulletinBoard.results_message?(
+        election.voting_scheme_name, message_identifier.type_subtype
+      ) || election.results_published?
     end
   end
 end

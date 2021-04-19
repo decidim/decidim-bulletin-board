@@ -142,6 +142,8 @@ GEM
     graphql-client (0.16.0)
       activesupport (>= 3.0)
       graphql (~> 1.8)
+    graphql-guard (2.0.0)
+      graphql (>= 1.10.0, < 2)
     i18n (1.8.10)
       concurrent-ruby (~> 1.0)
     ice_nine (0.11.2)
@@ -360,6 +362,7 @@ DEPENDENCIES
   graphiql-rails
   graphlient (~> 0.4.0)
   graphql (~> 1.9)
+  graphql-guard (~> 2.0)
   jbuilder (~> 2.7)
   jquery-rails
   jsonl
