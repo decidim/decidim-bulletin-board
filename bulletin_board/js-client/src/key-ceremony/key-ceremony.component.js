@@ -1,37 +1,10 @@
-import { Client } from "../client/client";
-import { Election } from "../election/election";
-import { Trustee } from "../trustee/trustee";
+// Components
+import { TrusteeComponent } from "../trustee/trustee.component";
 
 /**
  * This class is used to bind any UI elements to a key ceremony process.
  */
-export class KeyCeremonyComponent {
-  /**
-   * Initialises the class with the given params.
-   * @param {Object} params - An object that contains the initialization params.
-   *  - {String} authorityPublicKeyJSON - The authority identification public key.
-   *  - {String} trusteeUniqueId - The unique identifier of a trustee.
-   *  - {Object} trusteeIdentificationKeys - An object that contains both the public and private key for
-   *                                         the corresponding trustee.
-   *  - {Object} trusteeWrapperAdapter - An object to interact with the trustee wrapper.
-   * @constructor
-   */
-  constructor({
-    bulletinBoardClientParams,
-    authorityPublicKeyJSON,
-    electionUniqueId,
-    trusteeUniqueId,
-    trusteeIdentificationKeys,
-    trusteeWrapperAdapter,
-  }) {
-    this.trustee = new Trustee({
-      uniqueId: trusteeUniqueId,
-      authorityPublicKeyJSON,
-      identificationKeys: trusteeIdentificationKeys,
-      wrapperAdapter: trusteeWrapperAdapter,
-    });
-  }
-
+export class KeyCeremonyComponent extends TrusteeComponent {
   /**
    * Setup the election for the trustee.
    *
@@ -41,24 +14,10 @@ export class KeyCeremonyComponent {
    *
    * @returns {Promise<undefined>}
    */
-  async setupElection({ bulletinBoardClientParams, electionUniqueId }) {
-    const [authorityId] = electionUniqueId.split(".");
-    const trusteeUniqueIdHeader = `${authorityId}.${this.trustee.uniqueId}`;
-    const authorizationHeader = await this.trustee.signMessage({
-      trustee_unique_id: trusteeUniqueIdHeader,
-    });
-
-    const bulletinBoardClient = new Client({
-      ...bulletinBoardClientParams,
-      headers: {
-        Authorization: authorizationHeader,
-        TrusteeUniqueId: trusteeUniqueIdHeader,
-      },
-    });
-
-    const election = new Election({
-      uniqueId: electionUniqueId,
-      bulletinBoardClient,
+  setupElection({ bulletinBoardClientParams, electionUniqueId }) {
+    return this.setupElectionWithTypesFilter({
+      electionUniqueId,
+      bulletinBoardClientParams,
       typesFilter: [
         "create_election",
         "start_key_ceremony",
@@ -66,8 +25,6 @@ export class KeyCeremonyComponent {
         "end_key_ceremony",
       ],
     });
-
-    this.trustee.election = election;
   }
 
   /**
@@ -122,7 +79,7 @@ export class KeyCeremonyComponent {
         onBackupNeeded();
         onBindBackupButton(
           backupData,
-          `${this.trustee.uniqueId}-election-${this.election.uniqueId}.bak`,
+          `${this.trustee.uniqueId}-election-${this.trustee.election.uniqueId}.bak`,
           async () => {
             onBackupStarted();
             await keyCeremonySetup.next();

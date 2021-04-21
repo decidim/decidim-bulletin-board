@@ -1,35 +1,10 @@
-import { Client } from "../client/client";
-import { Election } from "../election/election";
-import { Trustee } from "../trustee/trustee";
+// Components
+import { TrusteeComponent } from "../trustee/trustee.component";
 
 /**
  * This class is used to bind any UI elements to a tally process.
  */
-export class TallyComponent {
-  /**
-   * Initialises the class with the given params.
-   * @param {Object} params - An object that contains the initialization params.
-   *  - {String} authorityPublicKeyJSON - The authority identification public key.
-   *  - {String} trusteeUniqueId - The unique identifier of a trustee.
-   *  - {Object} trusteeIdentificationKeys - An object that contains both the public and private key for
-   *                                         the corresponding trustee.
-   *  - {Object} trusteeWrapperAdapter - An object to interact with the trustee wrapper.
-   * @constructor
-   */
-  constructor({
-    authorityPublicKeyJSON,
-    trusteeUniqueId,
-    trusteeIdentificationKeys,
-    trusteeWrapperAdapter,
-  }) {
-    this.trustee = new Trustee({
-      uniqueId: trusteeUniqueId,
-      authorityPublicKeyJSON,
-      identificationKeys: trusteeIdentificationKeys,
-      wrapperAdapter: trusteeWrapperAdapter,
-    });
-  }
-
+export class TallyComponent extends TrusteeComponent {
   /**
    * Setup the election for the trustee.
    *
@@ -39,24 +14,10 @@ export class TallyComponent {
    *
    * @returns {Promise<undefined>}
    */
-  async setupElection({ bulletinBoardClientParams, electionUniqueId }) {
-    const [authorityId] = electionUniqueId.split(".");
-    const trusteeUniqueIdHeader = `${authorityId}.${this.trustee.uniqueId}`;
-    const authorizationHeader = await this.trustee.signMessage({
-      trustee_unique_id: trusteeUniqueIdHeader,
-    });
-
-    const bulletinBoardClient = new Client({
-      ...bulletinBoardClientParams,
-      headers: {
-        Authorization: authorizationHeader,
-        TrusteeUniqueId: trusteeUniqueIdHeader,
-      },
-    });
-
-    const election = new Election({
-      uniqueId: electionUniqueId,
-      bulletinBoardClient,
+  setupElection({ bulletinBoardClientParams, electionUniqueId }) {
+    return this.setupElectionWithTypesFilter({
+      electionUniqueId,
+      bulletinBoardClientParams,
       typesFilter: [
         "create_election",
         "start_key_ceremony",
@@ -67,8 +28,6 @@ export class TallyComponent {
         "end_tally",
       ],
     });
-
-    this.trustee.election = election;
   }
 
   /**
