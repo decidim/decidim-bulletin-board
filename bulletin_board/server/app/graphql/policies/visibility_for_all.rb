@@ -22,8 +22,12 @@ module Policies
       trustee = Client.where(unique_id: trustee_unique_id).first
       return false if trustee.blank?
 
-      decoded_api_key = JWT.decode(context[:api_key], trustee.public_key_rsa, true, verify_iat: true, algorithm: "RS256").first.with_indifferent_access
-      decoded_api_key[:trustee_unique_id] == trustee_unique_id
+      begin
+        decoded_api_key = JWT.decode(context[:api_key], trustee.public_key_rsa, true, verify_iat: true, verify_expiration: true, algorithm: "RS256").first.with_indifferent_access
+        decoded_api_key[:trustee_unique_id] == trustee_unique_id
+      rescue JWT::ExpiredSignature
+        false
+      end
     end
 
     def self.authority?(object, context)

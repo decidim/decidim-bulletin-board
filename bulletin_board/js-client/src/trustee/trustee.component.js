@@ -60,6 +60,7 @@ export class TrusteeComponent {
     const trusteeUniqueIdHeader = `${authorityId}.${this.trustee.uniqueId}`;
     const authorizationHeader = await this.trustee.signMessage({
       trustee_unique_id: trusteeUniqueIdHeader,
+      exp: Math.ceil(+new Date() / 1000) + 2 * 3600, // 2 hours
     });
 
     const bulletinBoardClient = new Client({
