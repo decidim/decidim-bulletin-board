@@ -2,5 +2,6 @@
   "baseUrl": "http://localhost:5017",
   "defaultCommandTimeout": 30000,
   "ignoreTestFiles": "*.page.js",
-  "redirectionLimit": 50
+  "redirectionLimit": 50,
+  "videoUploadOnPasses": false
 }
