@@ -30,14 +30,6 @@ RSpec.describe PublishResults do
     expect { subject }.to change { election.reload.status }.from("tally_ended").to("results_published")
   end
 
-  it "generates the verifiable results file" do
-    expect { subject }.to change { election.reload.verifiable_results.attached? }.from(false).to(true)
-  end
-
-  it "generates the verifiable results file hash" do
-    expect { subject }.to change { election.reload.verifiable_results_hash }.from(nil)
-  end
-
   describe "verifiable results file contents" do
     it "creates one file per each election status" do
       subject

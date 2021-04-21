@@ -50,6 +50,14 @@ RSpec.describe ProcessTallyStep do
     it "changes the election status" do
       expect { subject }.to change { Election.last.status }.from("tally").to("tally_ended")
     end
+
+    it "generates the verifiable results file" do
+      expect { subject }.to change { election.reload.verifiable_results.attached? }.from(false).to(true)
+    end
+
+    it "generates the verifiable results file hash" do
+      expect { subject }.to change { election.reload.verifiable_results_hash }.from(nil)
+    end
   end
 
   shared_examples "tally fails" do
