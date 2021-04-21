@@ -47,6 +47,7 @@ export class TrusteeComponent {
    * @param {Object} params - An object that contains the initialization params.
    *  - {Object} bulletinBoardClientParams - An object to configure the bulletin board client.
    *  - {String} electionUniqueId - The unique identifier of an election.
+   *  - {Number} authorizationExpirationTimestamp - The timestamp until the authorization header is no longer valid.
    *  - {Array<String>} typesFilter - A collection of message ids to be included in the log entry query.
    *
    * @returns {Promise<undefined>}
@@ -54,13 +55,14 @@ export class TrusteeComponent {
   async setupElectionWithTypesFilter({
     bulletinBoardClientParams,
     electionUniqueId,
+    authorizationExpirationTimestamp,
     typesFilter,
   }) {
     const [authorityId] = electionUniqueId.split(".");
     const trusteeUniqueIdHeader = `${authorityId}.${this.trustee.uniqueId}`;
     const authorizationHeader = await this.trustee.signMessage({
       trustee_unique_id: trusteeUniqueIdHeader,
-      exp: Math.ceil(+new Date() / 1000) + 2 * 3600, // 2 hours
+      exp: authorizationExpirationTimestamp,
     });
 
     const bulletinBoardClient = new Client({

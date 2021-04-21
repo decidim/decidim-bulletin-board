@@ -70,6 +70,8 @@ $(() => {
       await component.setupElection({
         bulletinBoardClientParams,
         electionUniqueId,
+        authorizationExpirationTimestamp:
+          Math.ceil(+new Date() / 1000) + 2 * 3600, // 2 hours
       });
 
       await component.bindEvents({

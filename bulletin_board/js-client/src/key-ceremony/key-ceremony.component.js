@@ -11,13 +11,19 @@ export class KeyCeremonyComponent extends TrusteeComponent {
    * @param {Object} params - An object that contains the initialization params.
    *  - {Object} bulletinBoardClientParams - An object to configure the bulletin board client.
    *  - {String} electionUniqueId - The unique identifier of an election.
+   *  - {Number} authorizationExpirationTimestamp - The timestamp until the authorization header is no longer valid.
    *
    * @returns {Promise<undefined>}
    */
-  setupElection({ bulletinBoardClientParams, electionUniqueId }) {
+  setupElection({
+    bulletinBoardClientParams,
+    electionUniqueId,
+    authorizationExpirationTimestamp,
+  }) {
     return this.setupElectionWithTypesFilter({
       electionUniqueId,
       bulletinBoardClientParams,
+      authorizationExpirationTimestamp,
       typesFilter: [
         "create_election",
         "start_key_ceremony",
