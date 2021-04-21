@@ -1,5 +1,6 @@
 {
   "baseUrl": "http://localhost:5017",
   "defaultCommandTimeout": 30000,
-  "ignoreTestFiles": "*.page.js"
+  "ignoreTestFiles": "*.page.js",
+  "redirectionLimit": 50
 }
