@@ -10,10 +10,8 @@ module Message
       @message_identifier ||= Decidim::BulletinBoard::MessageIdentifier.new(message_id)
     end
 
-    def visible_for_all?
-      !VotingScheme::BulletinBoard.results_message?(
-        election.voting_scheme_name, message_identifier.type_subtype
-      ) || election.results_published?
+    def results_message?
+      !VotingScheme::BulletinBoard.results_message?(election.voting_scheme_name, message_identifier.type_subtype)
     end
   end
 end
