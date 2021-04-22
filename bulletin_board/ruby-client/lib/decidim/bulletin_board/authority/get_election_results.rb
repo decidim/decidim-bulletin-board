@@ -44,7 +44,7 @@ module Decidim
           @election = response.data.election
           @signed_data = election.log_entries.first.signed_data
 
-          broadcast(:ok, { election_results: decoded_data["results"], verifiable_results: verifiable_results } )
+          broadcast(:ok, { election_results: decoded_data["results"], verifiable_results: verifiable_results })
         rescue Graphlient::Errors::ServerError
           broadcast(:error, "Sorry, something went wrong")
         end

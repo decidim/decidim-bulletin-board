@@ -32,7 +32,7 @@ module Decidim
 
           it "uses the graphql client to perform an election query, decodes the the response and returns the encoded data" do
             subject.on(:ok) do |result|
-              expect(result).to eq( { election_results: { "23" => { "66" => 0, "67" => 0, "68" => 0, "69" => 4 }, "24" => { "70" => 0, "71" => 1, "72" => 1 } }, verifiable_results: { url: verifiable_results_url, hash: verifiable_results_hash } } )
+              expect(result).to eq({ election_results: { "23" => { "66" => 0, "67" => 0, "68" => 0, "69" => 4 }, "24" => { "70" => 0, "71" => 1, "72" => 1 } }, verifiable_results: { url: verifiable_results_url, hash: verifiable_results_hash } })
             end
             subject.call
           end
