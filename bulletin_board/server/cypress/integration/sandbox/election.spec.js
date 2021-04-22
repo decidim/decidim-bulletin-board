@@ -58,7 +58,7 @@ describe("Election", () => {
           page.inPersonVote();
           page.assertInPersonVoteHasBeenAccepted();
         }
-      }
+      },
     });
   });
 
@@ -72,7 +72,7 @@ describe("Election", () => {
           page.castVote();
           page.assertVoteHasBeenAccepted();
         }
-      }
+      },
     });
   });
 
@@ -96,9 +96,9 @@ describe("Election", () => {
         // (there was only one online vote, and it was overriden by the in person vote)
         page.castedVotes = [];
 
-        page.castVote();  // Add one vote to have a ballot to tally
+        page.castVote(); // Add one vote to have a ballot to tally
         page.assertVoteHasBeenAccepted();
-      }
+      },
     });
-  })
+  });
 });

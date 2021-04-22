@@ -23,7 +23,7 @@ module Types
     field :verifiable_results_hash, String, null: true
     field :verifiable_results_url, String, null: true do
       def resolve(parent, _args, _context)
-        return unless parent.object.results_published?
+        return if parent.object.verifiable_results.blank?
 
         Rails.application.routes.url_helpers.rails_blob_path(parent.object.verifiable_results, only_path: true)
       end

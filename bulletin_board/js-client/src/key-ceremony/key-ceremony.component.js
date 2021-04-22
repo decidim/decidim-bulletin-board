@@ -1,51 +1,35 @@
-import { Client } from "../client/client";
-import { Election } from "../election/election";
-import { Trustee } from "../trustee/trustee";
+// Components
+import { TrusteeComponent } from "../trustee/trustee.component";
 
 /**
  * This class is used to bind any UI elements to a key ceremony process.
  */
-export class KeyCeremonyComponent {
+export class KeyCeremonyComponent extends TrusteeComponent {
   /**
-   * Initialises the class with the given params.
+   * Setup the election for the trustee.
+   *
    * @param {Object} params - An object that contains the initialization params.
    *  - {Object} bulletinBoardClientParams - An object to configure the bulletin board client.
-   *  - {String} authorityPublicKeyJSON - The authority identification public key.
    *  - {String} electionUniqueId - The unique identifier of an election.
-   *  - {String} trusteeUniqueId - The unique identifier of a trustee.
-   *  - {Object} trusteeIdentificationKeys - An object that contains both the public and private key for
-   *                                         the corresponding trustee.
-   *  - {Object} trusteeWrapperAdapter - An object to interact with the trustee wrapper.
-   * @constructor
+   *  - {Number} authorizationExpirationTimestamp - The timestamp until the authorization header is no longer valid.
+   *
+   * @returns {Promise<undefined>}
    */
-  constructor({
+  setupElection({
     bulletinBoardClientParams,
-    authorityPublicKeyJSON,
     electionUniqueId,
-    trusteeUniqueId,
-    trusteeIdentificationKeys,
-    trusteeWrapperAdapter,
+    authorizationExpirationTimestamp,
   }) {
-    const bulletinBoardClient = new Client(bulletinBoardClientParams);
-
-    this.election = new Election({
-      uniqueId: electionUniqueId,
-      bulletinBoardClient,
+    return this.setupElectionWithTypesFilter({
+      electionUniqueId,
+      bulletinBoardClientParams,
+      authorizationExpirationTimestamp,
       typesFilter: [
         "create_election",
         "start_key_ceremony",
         "key_ceremony",
         "end_key_ceremony",
       ],
-    });
-
-    this.trustee = new Trustee({
-      uniqueId: trusteeUniqueId,
-      bulletinBoardClient,
-      authorityPublicKeyJSON,
-      identificationKeys: trusteeIdentificationKeys,
-      election: this.election,
-      wrapperAdapter: trusteeWrapperAdapter,
     });
   }
 
@@ -101,7 +85,7 @@ export class KeyCeremonyComponent {
         onBackupNeeded();
         onBindBackupButton(
           backupData,
-          `${this.trustee.uniqueId}-election-${this.election.uniqueId}.bak`,
+          `${this.trustee.uniqueId}-election-${this.trustee.election.uniqueId}.bak`,
           async () => {
             onBackupStarted();
             await keyCeremonySetup.next();

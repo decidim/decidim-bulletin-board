@@ -8,11 +8,6 @@ module Types
     field :election, Types::ElectionType, null: false
     field :client, Types::ClientType, null: false
     field :message_id, String, null: false
-    field :signed_data, String, null: true do
-      def resolve(parent, _args, context)
-        message = parent.object
-        message.signed_data if message.visible_for_all? || message.election.authority.api_key == context[:api_key]
-      end
-    end
+    field :signed_data, String, null: true
   end
 end

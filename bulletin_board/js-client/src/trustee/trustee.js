@@ -16,28 +16,22 @@ export class Trustee {
    * @constructor
    * @param {Object} params - An object that contains the initialization params.
    *  - {String} uniqueId - The trustee identifier.
-   *  - {Client} bulletinBoardClient - An instance of the Bulletin Board Client
    *  - {String} authorityPublicKeyJSON - The authority identification public key.
    *  - {Object} identificationKeys - A object that contains both the public and private key for
    *                                  the corresponding trustee.
-   *  - {Object} election - An object that interacts with a specific election
-   *                        to get some data and perform the key ceremony.
    *  - {Object} wrapperAdapter - An object to interact with the trustee wrapper.
    *  - {Object?} options - An optional object with some extra options.
    */
   constructor({
     uniqueId,
-    bulletinBoardClient,
     authorityPublicKeyJSON,
     identificationKeys,
-    election,
     wrapperAdapter,
     options,
   }) {
     this.uniqueId = uniqueId;
-    this.bulletinBoardClient = bulletinBoardClient;
     this.identificationKeys = identificationKeys;
-    this.election = election;
+    this.election = null;
     this.options = options || { waitUntilNextCheck: WAIT_TIME_MS };
     this.wrapperAdapter = wrapperAdapter;
     this.parser = new MessageParser({ authorityPublicKeyJSON });
@@ -55,6 +49,9 @@ export class Trustee {
    * @returns {Promise<undefined>}
    */
   async setup() {
+    if (this.election === null) {
+      throw new Error("election is not set.");
+    }
     await this.wrapperAdapter.setup();
     return this.election.subscribeToLogEntriesChanges();
   }
@@ -242,7 +239,7 @@ export class Trustee {
   async processKeyCeremonyStep(message) {
     if (message && !this.isMessageAlreadyLogged(message)) {
       const signedData = await this.signMessage(message);
-      return this.bulletinBoardClient.processKeyCeremonyStep({
+      return this.election.bulletinBoardClient.processKeyCeremonyStep({
         messageId: message.message_id,
         signedData,
       });
@@ -259,7 +256,7 @@ export class Trustee {
   async processTallyStep(message) {
     if (message && !this.isMessageAlreadyLogged(message)) {
       const signedData = await this.signMessage(message);
-      return this.bulletinBoardClient.processTallyStep({
+      return this.election.bulletinBoardClient.processTallyStep({
         messageId: message.message_id,
         signedData,
       });

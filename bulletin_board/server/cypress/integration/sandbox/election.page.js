@@ -117,7 +117,7 @@ export class ElectionPage {
           cy.findByText(name)
             .parent("tr")
             .within(() => {
-              cy.findByText("Backup").click({ timeout: 120_000 });
+              cy.findByText("Backup").click({ timeout: 180_000 });
             });
         });
     });
@@ -253,9 +253,9 @@ export class ElectionPage {
    * @returns {undefined}
    */
   assertVoteHasBeenAccepted() {
-    cy.findByText(/Your vote has been sent to the server. It's status is/).contains("accepted").should(
-      "be.visible"
-    );
+    cy.findByText(/Your vote has been sent to the server. It's status is/)
+      .contains("accepted")
+      .should("be.visible");
     cy.findByText("Back").click();
   }
 
@@ -265,9 +265,9 @@ export class ElectionPage {
    * @returns {undefined}
    */
   assertVoteHasBeenRejected() {
-    cy.findByText(/Your vote has been sent to the server. It's status is/).contains("rejected").should(
-      "be.visible"
-    );
+    cy.findByText(/Your vote has been sent to the server. It's status is/)
+      .contains("rejected")
+      .should("be.visible");
     cy.findByText("Back").click();
   }
 
@@ -278,7 +278,7 @@ export class ElectionPage {
    *
    * @returns {undefined}
    */
-   inPersonVote(voterId = null) {
+  inPersonVote(voterId = null) {
     cy.findByText("In Person Vote").click();
 
     if (voterId) {
@@ -287,8 +287,7 @@ export class ElectionPage {
         .type(voterId);
     }
 
-    cy.findByLabelText(/Polling station/)
-      .select("polling-station-2");
+    cy.findByLabelText(/Polling station/).select("polling-station-2");
 
     cy.findByText("In person vote").should("be.visible").click();
   }
@@ -299,9 +298,9 @@ export class ElectionPage {
    * @returns {undefined}
    */
   assertInPersonVoteHasBeenAccepted() {
-    cy.findByText(/Previous request status:/).contains("accepted").should(
-      "be.visible"
-    );
+    cy.findByText(/Previous request status:/)
+      .contains("accepted")
+      .should("be.visible");
     cy.findByText("Back").click();
   }
 
@@ -311,9 +310,9 @@ export class ElectionPage {
    * @returns {undefined}
    */
   assertInPersonVoteHasBeenRejected() {
-    cy.findByText(/Previous request status:/).contains("rejected").should(
-      "be.visible"
-    );
+    cy.findByText(/Previous request status:/)
+      .contains("rejected")
+      .should("be.visible");
     cy.findByText("Back").click();
   }
 

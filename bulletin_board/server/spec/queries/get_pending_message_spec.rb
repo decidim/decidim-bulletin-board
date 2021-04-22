@@ -69,18 +69,17 @@ RSpec.describe "GetPendingMessage" do
     let!(:election) { create(:election, :tally) }
     let!(:pending_message) { create(:pending_message, :by_trustee, election: election, message: build(:tally_share_message, election: election)) }
 
-    # TODO: commented until we solve https://github.com/decidim/decidim-bulletin-board/issues/163
-    # it "hides the signed data" do
-    #   expect(subject.deep_symbolize_keys).to include(
-    #     data: {
-    #       pendingMessage: {
-    #         messageId: pending_message.message_id,
-    #         signedData: nil,
-    #         status: pending_message.status
-    #       }
-    #     }
-    #   )
-    # end
+    it "hides the signed data" do
+      expect(subject.deep_symbolize_keys).to include(
+        data: {
+          pendingMessage: {
+            messageId: pending_message.message_id,
+            signedData: nil,
+            status: pending_message.status
+          }
+        }
+      )
+    end
 
     context "when the client is an authority" do
       let(:context) { { api_key: election.authority.api_key } }

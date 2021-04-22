@@ -60,15 +60,20 @@ $(() => {
 
     // Use the tally component and bind all UI events
     const component = new TallyComponent({
-      bulletinBoardClientParams,
       authorityPublicKeyJSON,
-      electionUniqueId,
       trusteeUniqueId: trusteeContext.uniqueId,
       trusteeIdentificationKeys,
       trusteeWrapperAdapter,
     });
 
-    const bindComponentEvents = async () => {
+    const setupComponent = async () => {
+      await component.setupElection({
+        bulletinBoardClientParams,
+        electionUniqueId,
+        authorizationExpirationTimestamp:
+          Math.ceil(+new Date() / 1000) + 2 * 3600, // 2 hours
+      });
+
       await component.bindEvents({
         onEvent(_event) {},
         onBindStartButton(onEventTriggered) {
@@ -112,7 +117,7 @@ $(() => {
 
     trusteeIdentificationKeys.present(async (exists) => {
       if (exists) {
-        await bindComponentEvents();
+        await setupComponent();
       }
     });
   });
