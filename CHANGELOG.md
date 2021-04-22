@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## [0.20.0] - 2021-04-22
+
 ## Changed
 
 - Tally and Key Ceremony components API have been changed a bit. The `setupElection` method should be called before binding the UI elements to the component.
