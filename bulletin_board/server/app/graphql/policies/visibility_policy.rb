@@ -37,7 +37,7 @@ module Policies
       return false if trustee.blank?
 
       begin
-        decoded_api_key = JWT.decode(context[:api_key], trustee.public_key_rsa, true, verify_iat: true, verify_expiration: true, algorithm: "RS256").first.with_indifferent_access
+        decoded_api_key = JWT.decode(context[:api_key], trustee.public_key_rsa, true, verify_expiration: true, algorithm: "RS256").first.with_indifferent_access
         decoded_api_key[:trustee_unique_id] == trustee_unique_id
       rescue JWT::ExpiredSignature
         false
