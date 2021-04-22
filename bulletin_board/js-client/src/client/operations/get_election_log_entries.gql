@@ -8,6 +8,7 @@ query GetElectionLogEntries(
       id
       messageId
       signedData
+      chainedHash
     }
   }
 }
