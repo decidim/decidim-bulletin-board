@@ -33,22 +33,25 @@ module Decidim
                 logEntries(types: args[:types]) do
                   signedData
                 end
+                verifiableResultsUrl
+                verifiableResultsHash
               end
             end
           end
 
           return broadcast(:error, "There aren't any log entries with type: 'end_tally' for this election.") if response.data.election.log_entries.empty?
 
-          @signed_data = response.data.election.log_entries.first.signed_data
+          @election = response.data.election
+          @signed_data = election.log_entries.first.signed_data
 
-          broadcast(:ok, decoded_data["results"])
+          broadcast(:ok, { election_results: decoded_data["results"], verifiable_results: verifiable_results })
         rescue Graphlient::Errors::ServerError
           broadcast(:error, "Sorry, something went wrong")
         end
 
         private
 
-        attr_reader :election_id, :types, :signed_data
+        attr_reader :election_id, :types, :signed_data, :election
 
         def decoded_data
           @decoded_data ||= begin
@@ -56,6 +59,13 @@ module Decidim
           rescue JWT::VerificationError, JWT::DecodeError, JWT::InvalidIatError, JWT::InvalidPayload => e
             { error: e.message }
           end
+        end
+
+        def verifiable_results
+          {
+            url: election.verifiable_results_url,
+            hash: election.verifiable_results_hash
+          }
         end
       end
     end
