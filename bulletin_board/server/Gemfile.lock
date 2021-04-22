@@ -1,19 +1,19 @@
 PATH
   remote: ../../voting_schemes/dummy/ruby-adapter
   specs:
-    voting_schemes-dummy (0.20.0)
+    voting_schemes-dummy (0.21.0)
       rails (>= 5.0.0)
 
 PATH
   remote: ../../voting_schemes/electionguard/ruby-adapter
   specs:
-    voting_schemes-electionguard (0.20.0)
+    voting_schemes-electionguard (0.21.0)
       rails (>= 5.0.0)
 
 PATH
   remote: ../ruby-client
   specs:
-    decidim-bulletin_board (0.20.0)
+    decidim-bulletin_board (0.21.0)
       byebug (~> 11.0)
       graphlient (~> 0.4.0)
       jwt (~> 2.2.2)

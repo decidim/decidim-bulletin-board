@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## [0.21.0] - 2021-04-22
+
 ## Changed
 
 - The bulletin board client also gets the election's verifiable data along with its results
