@@ -7,7 +7,7 @@ module Sandbox
     helper_method :elections, :election,
                   :bulletin_board_server, :authority_slug, :authority_public_key,
                   :random_voter_id,
-                  :election_results,
+                  :election_results, :verifiable_results,
                   :default_bulk_votes_number, :bulk_votes_file_name, :bulk_votes_file_exists?, :generated_votes_number,
                   :pending_message
 
@@ -88,7 +88,9 @@ module Sandbox
     end
 
     def results
-      @election_results = bulletin_board_client.get_election_results(election_id)
+      results = bulletin_board_client.get_election_results(election_id)
+      @election_results = results[:election_results]
+      @verifiable_results = results[:verifiable_results]
     end
 
     private
@@ -96,7 +98,7 @@ module Sandbox
     delegate :authority, to: :election
     delegate :bulletin_board_server, :authority_slug, to: :bulletin_board_client
 
-    attr_reader :election_results, :pending_message
+    attr_reader :election_results, :verifiable_results, :pending_message
 
     def election_data
       @election_data ||= params.require(:election).permit(:default_locale, title: {}).to_h.merge(

@@ -19,4 +19,12 @@
       </ul>
     <% end %>
   </div>
+
+  <div class="results__content">
+    <h2>Verifiable Results</h2>
+      <ul>
+        <li><strong>Hash</strong>: <%= verifiable_results[:hash] %></li>
+        <li><strong>File</strong>: <%= link_to "download here", verifiable_results[:url] %></li>
+      </ul>
+  </div>
 </section>
