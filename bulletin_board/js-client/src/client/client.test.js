@@ -33,6 +33,7 @@ describe("Client", () => {
       expect(entry).toEqual({
         signedData: "1234",
         contentHash: "h1234",
+        chainedHash: "c1234",
       });
     });
   });

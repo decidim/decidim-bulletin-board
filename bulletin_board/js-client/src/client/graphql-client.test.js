@@ -48,8 +48,8 @@ describe("GraphQLClient", () => {
   describe("getElectionLogEntries", () => {
     it("returns all the log entries given a election id", async () => {
       const logEntriesResult = [
-        { messageId: "dummy.1", signedData: "1234" },
-        { messageId: "dummy.2", signedData: "5678" },
+        { messageId: "dummy.1", signedData: "1234", chainedHash: "c1234" },
+        { messageId: "dummy.2", signedData: "5678", chainedHash: "c5678" },
       ];
 
       fetch.mockResponseOnce(

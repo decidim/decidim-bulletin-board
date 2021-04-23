@@ -8,10 +8,12 @@ const logEntriesByElection = {
           {
             signedData: "1234",
             contentHash: "h1234",
+            chainedHash: "c1234",
           },
           {
             signedData: "5678",
             contentHash: "h5678",
+            chainedHash: "c5678",
           },
         ],
       },
@@ -24,6 +26,7 @@ const logEntriesByElection = {
           {
             signedData: "9012",
             contentHash: "h9012",
+            chainedHash: "c9012",
           },
         ],
       },

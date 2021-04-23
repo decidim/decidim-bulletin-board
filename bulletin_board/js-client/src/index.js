@@ -1,7 +1,8 @@
 import { Client } from "./client/client";
-import { Election } from ".//election/election";
+import { Election } from "./election/election";
 import { Trustee } from "./trustee/trustee";
 import { Voter } from "./voter/voter";
+import { MessageParser } from "./client/message-parser";
 import { MessageIdentifier } from "./client/message-identifier";
 import { MESSAGE_RECEIVED, MESSAGE_PROCESSED } from "./trustee/event_manager";
 import { IdentificationKeys } from "./trustee/identification_keys";
@@ -14,6 +15,7 @@ export {
   Election,
   Trustee,
   Voter,
+  MessageParser,
   MessageIdentifier,
   MESSAGE_PROCESSED,
   MESSAGE_RECEIVED,
