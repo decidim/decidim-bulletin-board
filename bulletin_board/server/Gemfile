@@ -18,7 +18,7 @@ gem "redcarpet"
 # Use SCSS for stylesheets
 gem "sass-rails", ">= 6"
 # Transpile app-like JavaScript. Read more: https://github.com/rails/webpacker
-gem "webpacker", "~> 6.0.0.pre.2"
+gem 'webpacker', '~> 5.0'
 # Turbolinks makes navigating your web application faster. Read more: https://github.com/turbolinks/turbolinks
 gem "turbolinks", "~> 5"
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
@@ -42,14 +42,10 @@ gem "jquery-rails"
 gem "jwt"
 gem "rack-cors"
 gem "rectify", "~> 0.13.0"
-gem "sprockets-es6"
 
 gem "factory_bot_rails"
 
 gem "decidim-bulletin_board", path: "../ruby-client"
-
-gem "voting_schemes-dummy", path: "../../voting_schemes/dummy/ruby-adapter"
-gem "voting_schemes-electionguard", path: "../../voting_schemes/electionguard/ruby-adapter"
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console

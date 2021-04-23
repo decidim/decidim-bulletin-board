@@ -33,9 +33,6 @@ module.exports = function (api) {
           corejs: 3,
           modules: false,
           exclude: ["transform-typeof-symbol"],
-          targets: {
-            node: "current",
-          },
         },
       ],
     ].filter(Boolean),
@@ -60,8 +57,6 @@ module.exports = function (api) {
         "@babel/plugin-transform-runtime",
         {
           helpers: false,
-          regenerator: true,
-          corejs: false,
         },
       ],
       [
