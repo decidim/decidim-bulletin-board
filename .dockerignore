@@ -48,3 +48,6 @@
 
 /voting_schemes/electionguard/python-to-js/packages/bulletin_board-electionguard/dist
 /voting_schemes/electionguard/python-to-js/packages/electionguard/dist
+
+# Ignore python-wrapper environment files
+/voting_schemes/electionguard/python-wrapper/.venv
