@@ -1,0 +1,5 @@
+#! /bin/sh
+
+make install_verifier_dependencies build_electionguard_java
+
+cd verifier && node src/index.js "$@"
