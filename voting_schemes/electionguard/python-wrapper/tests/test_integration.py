@@ -1,4 +1,6 @@
 import json
+import asyncio
+import pytest
 import unittest
 from pathlib import Path
 from random import choice, sample
@@ -29,49 +31,49 @@ def display_results(results: TallyResults):
             print(f"Option {selection_id}: " + str(tally))
 
 
-class TestIntegration(unittest.TestCase):
-    def test_complete(self):
+class TestIntegration(object):
+    @pytest.mark.asyncio
+    async def test_complete(self):
         with Recorder(output_path=Path(".") / "integration_results.jsonl") as recorder:
             self.reset_state = False
             self.show_output = True
             self.configure_election(recorder)
-            self.key_ceremony()
-            self.encrypt_ballots(recorder)
-            self.cast_votes()
-            self.decrypt_tally()
-            self.publish_and_verify()
+            await self.key_ceremony()
+            await self.encrypt_ballots(recorder)
+            await self.cast_votes()
+            await self.decrypt_tally()
 
-    def test_backwards_compatible_ballot_styles(self):
+    @pytest.mark.asyncio
+    async def test_backwards_compatible_ballot_styles(self):
         self.reset_state = True
         self.show_output = False
         self.configure_election(without_style=True)
-        self.key_ceremony()
-        self.encrypt_ballots(without_style=True)
-        self.cast_votes()
-        self.decrypt_tally()
-        self.publish_and_verify()
+        await self.key_ceremony()
+        await self.encrypt_ballots(without_style=True)
+        await self.cast_votes()
+        await self.decrypt_tally()
 
-    def test_without_all_trustees(self):
+    @pytest.mark.asyncio
+    async def test_without_all_trustees(self):
         self.reset_state = False
         self.show_output = True
         self.configure_election()
-        self.key_ceremony()
-        self.encrypt_ballots()
-        self.cast_votes()
-        self.decrypt_tally_without_all_trustees()
-        self.publish_and_verify()
+        await self.key_ceremony()
+        await self.encrypt_ballots()
+        await self.cast_votes()
+        await self.decrypt_tally_without_all_trustees()
 
-    def test_without_state(self):
+    @pytest.mark.asyncio
+    async def test_without_state(self):
         self.reset_state = True
         self.show_output = False
         self.configure_election()
-        self.key_ceremony()
-        self.encrypt_ballots()
-        self.cast_votes()
-        self.decrypt_tally()
-        self.publish_and_verify()
+        await self.key_ceremony()
+        await self.encrypt_ballots()
+        await self.cast_votes()
+        await self.decrypt_tally()
 
-    def checkpoint(self, step, output=None):
+    async def checkpoint(self, step, output=None):
         if self.show_output:
             if output:
                 print("\n____ " + step + " ____")
@@ -102,21 +104,21 @@ class TestIntegration(unittest.TestCase):
             for i in range(1, NUMBER_OF_VOTERS)
         ]
 
-    def key_ceremony(self):
+    async def key_ceremony(self):
         self.bulletin_board.process_message("create_election", self.election_message)
         self.bulletin_board.process_message("start_key_ceremony", None)
 
         for trustee in self.trustees:
-            trustee.process_message("create_election", self.election_message)
+            await trustee.process_message("create_election", self.election_message)
 
-        self.checkpoint("CREATE ELECTION")
+        await self.checkpoint("CREATE ELECTION")
 
         trustees_public_keys = [
-            trustee.process_message("start_key_ceremony", None)[0]
+            (await trustee.process_message("start_key_ceremony", None))[0]
             for trustee in self.trustees
         ]
 
-        self.checkpoint("PUBLIC KEYS", trustees_public_keys)
+        await self.checkpoint("PUBLIC KEYS", trustees_public_keys)
 
         for public_keys in trustees_public_keys:
             self.bulletin_board.process_message(
@@ -129,9 +131,9 @@ class TestIntegration(unittest.TestCase):
                 filter(
                     None,
                     [
-                        trustee.process_message(
+                        (await trustee.process_message(
                             public_keys["message_type"], public_keys
-                        )
+                        ))
                         for public_keys in trustees_public_keys
                         for trustee in self.trustees
                     ],
@@ -150,9 +152,9 @@ class TestIntegration(unittest.TestCase):
                 filter(
                     None,
                     [
-                        trustee.process_message(
+                        await(trustee.process_message(
                             partial_public_keys["message_type"], partial_public_keys
-                        )
+                        ))
                         for partial_public_keys in trustees_partial_public_keys
                         for trustee in self.trustees
                     ],
@@ -160,7 +162,7 @@ class TestIntegration(unittest.TestCase):
             )
         )
 
-        self.checkpoint("PARTIAL PUBLIC KEYS", trustees_partial_public_keys)
+        await self.checkpoint("PARTIAL PUBLIC KEYS", trustees_partial_public_keys)
 
         for trustee_verifications in trustees_verifications:
             res = self.bulletin_board.process_message(
@@ -171,21 +173,21 @@ class TestIntegration(unittest.TestCase):
 
         for verification in trustees_verifications:
             for trustee in self.trustees:
-                trustee.process_message(verification["message_type"], verification)
+                await trustee.process_message(verification["message_type"], verification)
 
-        self.checkpoint("VERIFICATIONS", trustees_verifications)
+        await self.checkpoint("VERIFICATIONS", trustees_verifications)
 
         for trustee in self.trustees:
-            assert not trustee.is_key_ceremony_done()
-            trustee.process_message(
+            assert not await trustee.is_key_ceremony_done()
+            await trustee.process_message(
                 self.joint_election_key["message_type"], self.joint_election_key
             )
-            assert trustee.is_key_ceremony_done()
+            assert await trustee.is_key_ceremony_done()
 
         self.bulletin_board.process_message("end_key_ceremony", None)
-        self.checkpoint("JOINT ELECTION KEY", self.joint_election_key)
+        await self.checkpoint("JOINT ELECTION KEY", self.joint_election_key)
 
-    def encrypt_ballots(self, recorder=None, without_style=False):
+    async def encrypt_ballots(self, recorder=None, without_style=False):
         possible_answers = [
             {
                 "object_id": contest["object_id"],
@@ -202,11 +204,11 @@ class TestIntegration(unittest.TestCase):
         self.encrypted_ballots: List[str] = []
         ballot = dict()
         for voter in self.voters:
-            voter.process_message("create_election", self.election_message)
-            voter.process_message(
+            await voter.process_message("create_election", self.election_message)
+            await voter.process_message(
                 self.joint_election_key["message_type"], self.joint_election_key
             )
-            voter.process_message("start_vote", start_vote_message())
+            await voter.process_message("start_vote", start_vote_message())
 
             ballot = dict(
                 (
@@ -221,14 +223,14 @@ class TestIntegration(unittest.TestCase):
             else:
                 ballot_style = "madrid"  # can vote on both questions
 
-            auditable_data, encrypted_data = voter.encrypt(
+            auditable_data, encrypted_data = await voter.encrypt(
                 ballot, ballot_style=ballot_style
             )
             self.encrypted_ballots.append(encrypted_data)
 
-    def cast_votes(self):
+    async def cast_votes(self):
         self.bulletin_board.process_message("start_vote", start_vote_message())
-        self.checkpoint("START VOTE")
+        await self.checkpoint("START VOTE")
 
         self.accepted_ballots: List[str] = []
 
@@ -239,29 +241,29 @@ class TestIntegration(unittest.TestCase):
                     "vote.cast", {"content": encrypted_ballot}
                 )
                 self.accepted_ballots.append(encrypted_ballot)
-                self.checkpoint("BALLOT ACCEPTED " + voter_id, encrypted_ballot)
+                await self.checkpoint("BALLOT ACCEPTED " + voter_id, encrypted_ballot)
             except InvalidBallot:
-                self.checkpoint("BALLOT REJECTED " + voter_id)
+                await self.checkpoint("BALLOT REJECTED " + voter_id)
 
         self.bulletin_board.process_message("end_vote", end_vote_message())
-        self.checkpoint("END VOTE")
+        await self.checkpoint("END VOTE")
 
-    def decrypt_tally(self):
+    async def decrypt_tally(self):
         self.bulletin_board.process_message("start_tally", start_tally_message())
-        self.checkpoint("START TALLY")
+        await self.checkpoint("START TALLY")
 
         self.bulletin_board.add_ballots(self.accepted_ballots)
 
         tally_cast = self.bulletin_board.get_tally_cast()
 
-        self.checkpoint("TALLY CAST", tally_cast)
+        await self.checkpoint("TALLY CAST", tally_cast)
 
         trustees_shares = [
-            trustee.process_message(tally_cast["message_type"], tally_cast)[0]
+            (await trustee.process_message(tally_cast["message_type"], tally_cast))[0]
             for trustee in self.trustees
         ]
 
-        self.checkpoint("TRUSTEE SHARES", trustees_shares)
+        await self.checkpoint("TRUSTEE SHARES", trustees_shares)
 
         end_tally = dict()
         for share in trustees_shares:
@@ -269,48 +271,48 @@ class TestIntegration(unittest.TestCase):
             if len(res) > 0:
                 end_tally: dict = res[0]  # type: ignore
 
-        self.checkpoint("END TALLY", end_tally)
+        await self.checkpoint("END TALLY", end_tally)
 
         for trustee in self.trustees:
-            assert trustee.is_key_ceremony_done()
-            assert not trustee.is_tally_done()
-            trustee.process_message(end_tally["message_type"], end_tally)
-            assert trustee.is_key_ceremony_done()
-            assert trustee.is_tally_done()
+            assert await trustee.is_key_ceremony_done()
+            assert not await trustee.is_tally_done()
+            await trustee.process_message(end_tally["message_type"], end_tally)
+            assert await trustee.is_key_ceremony_done()
+            assert await trustee.is_tally_done()
 
         if self.show_output:
             display_results(end_tally["results"])
 
-    def decrypt_tally_without_all_trustees(self):
+    async def decrypt_tally_without_all_trustees(self):
         self.bulletin_board.process_message("start_tally", start_tally_message())
-        self.checkpoint("START TALLY")
+        await self.checkpoint("START TALLY")
 
         for ballot in self.accepted_ballots[0:2]:
             self.bulletin_board.add_ballot(ballot)
 
         tally_cast = self.bulletin_board.get_tally_cast()
 
-        self.checkpoint("TALLY CAST", tally_cast)
+        await self.checkpoint("TALLY CAST", tally_cast)
 
         trustees_shares = [
-            trustee.process_message(tally_cast["message_type"], tally_cast)[0]
+            (await trustee.process_message(tally_cast["message_type"], tally_cast))[0]
             for trustee in self.trustees
         ]
 
-        self.checkpoint("TRUSTEE SHARES", trustees_shares)
+        await self.checkpoint("TRUSTEE SHARES", trustees_shares)
 
         for share in trustees_shares[:2]:  # skip last trustee
             self.bulletin_board.process_message(share["message_type"], share)
             for trustee in self.trustees[:2]:
-                trustee.process_message(share["message_type"], share)
+                await trustee.process_message(share["message_type"], share)
 
         # Notify trustees that they need to compensate
         compensations = []
         for trustee in self.trustees[:2]:
-            for compensation in trustee.process_message("tally.compensate", None):
+            for compensation in await trustee.process_message("tally.compensate", None):
                 compensations.append(compensation)
 
-        self.checkpoint("TRUSTEES COMPENSATED", compensations)
+        await self.checkpoint("TRUSTEES COMPENSATED", compensations)
 
         end_tally = dict()
         for compensation in compensations:
@@ -322,22 +324,14 @@ class TestIntegration(unittest.TestCase):
 
         assert end_tally is not dict(), "Never got the end tally"
 
-        self.checkpoint("END TALLY", end_tally)
+        await self.checkpoint("END TALLY", end_tally)
 
         for trustee in self.trustees:
-            assert trustee.is_key_ceremony_done()
-            assert not trustee.is_tally_done()
-            trustee.process_message(end_tally["message_type"], end_tally)
-            assert trustee.is_key_ceremony_done()
-            assert trustee.is_tally_done()
+            assert await trustee.is_key_ceremony_done()
+            assert not await trustee.is_tally_done()
+            await trustee.process_message(end_tally["message_type"], end_tally)
+            assert await trustee.is_key_ceremony_done()
+            assert await trustee.is_tally_done()
 
         if self.show_output:
             display_results(end_tally["results"])
-
-    def publish_and_verify(self):
-        # see publish.py
-        pass
-
-
-if __name__ == "__main__":
-    unittest.main()

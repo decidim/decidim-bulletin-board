@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import asyncio
+from functools import partial, wraps
 import json
 import logging as log
 from pathlib import Path
@@ -9,8 +11,8 @@ from electionguard.election import CiphertextElectionContext
 from electionguard.election_builder import ElectionBuilder
 from electionguard.manifest import InternalManifest, Manifest
 
-from .utils import InvalidElectionDescription
 from .election import parse_description
+from .utils import InvalidElectionDescription
 
 try:
     import cPickle as pickle  # type: ignore
@@ -26,6 +28,13 @@ def unwrap(x: Optional[X], message="You messed up") -> X:
         raise Exception(message)
     return x
 
+
+
+def async_wrap(func):
+    @wraps(func)
+    async def run(*args, **kwargs):
+        return func(*args, **kwargs)
+    return run 
 
 class Context:
     election: Manifest
@@ -162,3 +171,10 @@ class Wrapper(Generic[C]):
     @classmethod
     def restore(cls: Type[T], backup: bytes) -> T:
         return pickle.loads(backup)
+
+class AsyncWrapper(Wrapper, Generic[C]):
+    @async_wrap
+    def process_message(
+        self, message_type: str, message: Optional[Message] | dict
+    ) -> List[Message]:
+        return super().process_message(message_type, message)

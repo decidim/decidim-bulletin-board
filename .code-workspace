@@ -9,6 +9,10 @@
             "path": "bulletin_board/ruby-client"
         },
         {
+            "name": "Bulletin Board JS Client",
+            "path": "bulletin_board/js-client"
+        },
+        {
             "name": "Documentation",
             "path": "docs"
         },
@@ -21,12 +25,29 @@
             "path": "voting_schemes/dummy/js-adapter"
         },
         {
+            "name": "ElectionGuard Wrapper",
+            "path": "voting_schemes/electionguard/python-wrapper"
+        },
+        {
             "name": "ElectionGuard JS Adapter",
             "path": "voting_schemes/electionguard/js-adapter"
         },
         {
-            "name": "ElectionGuard Wrapper",
-            "path": "voting_schemes/electionguard/python-wrapper"
+            "name": "ElectionGuard Ruby Adapter",
+            "path": "voting_schemes/electionguard/ruby-adapter"
+        },
+        {
+            "name": "ElectionGuard Python2JS",
+            "path": "voting_schemes/electionguard/python-to-js"
+        },
+        {
+            "name": "ElectionGuard Pyodide Base Packages",
+            "path": "voting_schemes/electionguard/pyodide-base-packages"
+        },
+        {
+            "name": "ElectionGuard Pyodide Verifier",
+            "path": "voting_schemes/electionguard/verifier"
         }
-    ]
+    ],
+    "settings": {}
 }

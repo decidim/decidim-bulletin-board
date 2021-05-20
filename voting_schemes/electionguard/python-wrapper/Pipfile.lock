@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "2bffb14c9e7f853114c8e2adbf25361bd1187bb111bb8f252daaa596b81b9d72"
+            "sha256": "15f3cbede3d97574586200f3b57902d3ec0fe2bcc0c27d4e9da2b91c1c6e2022"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -86,7 +86,8 @@
         },
         "electionguard": {
             "hashes": [
-                "sha256:17ca15b335f618ba88c2e574a9e047b2dc93cd06b5b107913f3c167a02b2a2d3"
+                "sha256:2f5465de659831e05a44f3aa9183a9ba82f00c025e3798d26e7b1514f842bc5c",
+                "sha256:5578edae8300e25e9380398efb860c9c18ed8eb57490fc33f92b90d52ee1ba28"
             ],
             "path": "./../electionguard-python/dist/electionguard-1.1.16-py3-none-any.whl",
             "version": "==1.1.16"
@@ -336,6 +337,14 @@
             ],
             "index": "pypi",
             "version": "==6.2.3"
+        },
+        "pytest-asyncio": {
+            "hashes": [
+                "sha256:2564ceb9612bbd560d19ca4b41347b54e7835c2f792c504f698e05395ed63f6f",
+                "sha256:3042bcdf1c5d978f6b74d96a151c4cfb9dcece65006198389ccd7e6c60eb1eea"
+            ],
+            "index": "pypi",
+            "version": "==0.15.1"
         },
         "regex": {
             "hashes": [

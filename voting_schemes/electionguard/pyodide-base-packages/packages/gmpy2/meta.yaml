@@ -7,11 +7,9 @@ source:
   patches:
     - patches/disable_mpc_mpfr.patch
 build:
-  skip_host: False
-  ldflags: |
-    -L../../../libgmp/gmp-6.2.1/.libs
-  cflags: |
-    -I../../../libgmp/gmp-6.2.1
+  skip_host: True
+  ldflags: -L/src/pyodide/packages/libgmp/build/gmp-6.2.1/.libs
+  cflags: -I/src/pyodide/packages/libgmp/build/gmp-6.2.1
 test:
   imports:
     - gmpy2
