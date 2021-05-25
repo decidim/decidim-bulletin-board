@@ -1,11 +1,11 @@
 from typing import Dict, Set, Tuple
 
-from electionguard.decrypt_with_shares import decrypt_tally
-from electionguard.decryption import (
+from electionguard.decrypt_with_shares import (
     AVAILABLE_GUARDIAN_ID,
     MISSING_GUARDIAN_ID,
-    reconstruct_decryption_share,
+    decrypt_tally
 )
+from electionguard.decryption import reconstruct_decryption_share
 from electionguard.decryption_share import CompensatedDecryptionShare, DecryptionShare
 from electionguard.group import ElementModQ
 from electionguard.key_ceremony import ElectionPublicKey
@@ -155,7 +155,6 @@ class TallyDecryptor:
             missing_decryption_shares[
                 missing_guardian_id
             ] = reconstruct_decryption_share(
-                missing_guardian_id,
                 missing_guardians[missing_guardian_id],
                 tally,
                 compensated_decryption_shares[missing_guardian_id],
