@@ -204,7 +204,7 @@ jobs:
         run: |
           cd bulletin_board/server
           npm run format
-          git diff --exit-code
+          git diff --exit-code --ignore-submodules
       - name: Create database
         env:
           RAILS_ENV: test
@@ -221,7 +221,7 @@ jobs:
           sleep 5
           bundle exec rake schema:generate
           npm run schema:generate
-          git diff --exit-code
+          git diff --exit-code --ignore-submodules
       - name: Run Rspec tests
         run: cd bulletin_board/server && bundler exec rake
       - name: Upload coverage to Codecov
