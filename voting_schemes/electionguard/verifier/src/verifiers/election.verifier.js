@@ -16,7 +16,7 @@ const ELECTIONGUARD_JAVA_JAR_PATH = join(
   "electionguard-java",
   "build",
   "libs",
-  "electionguard-java-0.9.1-SNAPSHOT-all.jar"
+  "electionguard-java-0.9.2-SNAPSHOT-all.jar"
 );
 
 /**
