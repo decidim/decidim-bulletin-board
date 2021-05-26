@@ -18,7 +18,6 @@ from electionguard.election_polynomial import compute_lagrange_coefficient
 from electionguard.group import ElementModQ
 from electionguard.guardian import Guardian
 from electionguard.manifest import InternalManifest
-from electionguard.rsa import rsa_decrypt
 from electionguard.serializable import Serializable
 from electionguard.tally import CiphertextTally, CiphertextTallyContest
 from electionguard.types import CONTEST_ID, GUARDIAN_ID, SELECTION_ID
@@ -70,7 +69,7 @@ class ProcessCreateElection(ElectionStep):
         context.guardian_ids = guardian_ids
         context.guardian = Guardian(
             context.guardian_id,
-            guardian_ids.index(context.guardian_id),
+            guardian_ids.index(context.guardian_id) + 1,
             context.number_of_guardians,
             context.quorum,
         )
@@ -93,7 +92,7 @@ class ProcessStartKeyCeremony(ElectionStep):
                 "content": serialize(
                     TrusteeElectionKey(
                         public_key_set=context.guardian.share_public_keys(),
-                        coefficient_validation_set=context.guardian.share_coefficient_validation_set(),
+                        guardian_record=context.guardian.publish(),
                     )
                 ),
             }
@@ -112,7 +111,7 @@ class ProcessTrusteeElectionKeys(ElectionStep):
     ) -> Tuple[List[Content], Optional[ElectionStep]]:
         content = deserialize(message["content"], TrusteeElectionKey)
 
-        if content.public_key_set.owner_id == context.guardian_id:
+        if content.guardian_record.guardian_id == context.guardian_id:
             self.mine_received = True
         else:
             context.guardian.save_guardian_public_keys(content.public_key_set)
@@ -267,7 +266,7 @@ class ProcessTallyCast(ElectionStep[TrusteeContext]):
                 pair_with_object_id(
                     unwrap(
                         compute_decryption_share_for_selection(
-                            context.guardian, selection, context.election_context
+                            context.guardian._election_keys, selection, context.election_context
                         )
                     )
                 )
@@ -309,7 +308,7 @@ class Compensator(Serializable):
     def compensate(self) -> Compensation:
         comp = Compensation(
             guardian_id=self.context.guardian_id,
-            election_public_keys=self.context.guardian._guardian_election_public_keys._store,
+            election_public_keys=self.context.guardian._guardian_election_public_keys,
             lagrange_coefficient=self._lagrange_coefficient(),
             compensated_decryptions=[
                 self._compensated_decryption_share(missing_guardian_id)
@@ -339,12 +338,10 @@ class Compensator(Serializable):
     def _compensated_decryption_share(
         self, missing_guardian_id: GUARDIAN_ID
     ) -> CompensatedDecryptionShare:
-        share = compute_compensated_decryption_share(
-            self.context.guardian,
+        share = self.context.guardian.compute_compensated_tally_share(
             missing_guardian_id,
             self.context.tally,
-            self.context.election_context,
-            rsa_decrypt,
+            self.context.election_context
         )
 
         if share is None:

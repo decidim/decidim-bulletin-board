@@ -1,15 +1,18 @@
 from dataclasses import dataclass
 from typing import Dict, List
 
-from electionguard.decryption import AVAILABLE_GUARDIAN_ID, MISSING_GUARDIAN_ID
+from electionguard.decrypt_with_shares import (
+    AVAILABLE_GUARDIAN_ID,
+    MISSING_GUARDIAN_ID
+)
 from electionguard.decryption_share import (
     CiphertextDecryptionContest,
     CompensatedDecryptionShare,
 )
 from electionguard.election import CiphertextElectionContext, ElectionConstants
 from electionguard.group import ElementModP, ElementModQ
+from electionguard.guardian import GuardianRecord
 from electionguard.key_ceremony import (
-    CoefficientValidationSet,
     ElectionJointKey,
     ElectionPartialKeyBackup,
     ElectionPartialKeyVerification,
@@ -23,7 +26,7 @@ from electionguard.types import CONTEST_ID, GUARDIAN_ID
 @dataclass
 class TrusteeElectionKey(Serializable):
     public_key_set: PublicKeySet
-    coefficient_validation_set: CoefficientValidationSet
+    guardian_record: GuardianRecord
 
 
 @dataclass

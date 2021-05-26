@@ -13,7 +13,7 @@ env:
   CI: "true"
   SIMPLECOV: "true"
   ACTIONS_ALLOW_UNSECURE_COMMANDS: "true"
-  PYTHON_VERSION: "3.8"
+  PYTHON_VERSION: "3.8.8"
 
 defaults:
   run:

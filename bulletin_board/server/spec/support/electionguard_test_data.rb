@@ -61,11 +61,11 @@ class ElectionguardTestData
   end
 
   def self.trustee_ids
-    messages.by("Trustee").of_type("start_key_ceremony").output_contents.map { |x| x["public_key_set"]["owner_id"] }.uniq.sort
+    messages.by("Trustee").of_type("start_key_ceremony").output_contents.map { |x| x["guardian_record"]["guardian_id"] }.uniq.sort
   end
 
   def self.trustee_election_keys
-    messages.by("Trustee").of_type("start_key_ceremony").outputs.sort_by { |x| JSON.parse(x["content"])["public_key_set"]["owner_id"] }
+    messages.by("Trustee").of_type("start_key_ceremony").outputs.sort_by { |x| JSON.parse(x["content"])["guardian_record"]["guardian_id"] }
   end
 
   def self.trustee_partial_election_keys

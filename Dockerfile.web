@@ -1,5 +1,5 @@
 # This stage builds the python-wrapper package
-FROM codegram/ruby-node-python-electionguard:ruby-2.6.6-node-15-python-3.8.8-electionguard-355b587ea9c4e80c9228183e5c2da68bc40f2afa as python-wrapper-builder
+FROM codegram/ruby-node-python-electionguard:ruby-2.6.6-node-15-python-3.8.8-electionguard-a5232f12ce647622528e46f3b2c25ff10d7bcdbe as python-wrapper-builder
 LABEL author="david@codegram.com"
 
 # Add Makefile
@@ -38,7 +38,7 @@ RUN make
 RUN cp -rf /code/voting_schemes/electionguard/python-to-js/override/* /src/pyodide/build/
 
 # This stage builds the bulletin-board application
-FROM codegram/ruby-node-python-electionguard:ruby-2.6.6-node-15-python-3.8.8-electionguard-355b587ea9c4e80c9228183e5c2da68bc40f2afa
+FROM codegram/ruby-node-python-electionguard:ruby-2.6.6-node-15-python-3.8.8-electionguard-a5232f12ce647622528e46f3b2c25ff10d7bcdbe
 LABEL author="david@codegram.com"
 
 # Environment variables

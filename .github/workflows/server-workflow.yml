@@ -19,7 +19,7 @@ jobs:
     name: Build electionguard
     runs-on: ubuntu-latest
     container:
-      image: codegram/ruby-node-python-electionguard:ruby-2.6.6-node-15-python-3.8.8-electionguard-355b587ea9c4e80c9228183e5c2da68bc40f2afa
+      image: codegram/ruby-node-python-electionguard:ruby-2.6.6-node-15-python-3.8.8-electionguard-a5232f12ce647622528e46f3b2c25ff10d7bcdbe
     steps:
       - uses: actions/checkout@v2.0.0
         with:
@@ -121,7 +121,7 @@ jobs:
     needs: build_python_to_js
     runs-on: ubuntu-latest
     container:
-      image: codegram/ruby-node-python-electionguard:ruby-2.6.6-node-15-python-3.8.8-electionguard-355b587ea9c4e80c9228183e5c2da68bc40f2afa
+      image: codegram/ruby-node-python-electionguard:ruby-2.6.6-node-15-python-3.8.8-electionguard-a5232f12ce647622528e46f3b2c25ff10d7bcdbe
     services:
       postgres:
         image: postgres:11
@@ -204,7 +204,7 @@ jobs:
         run: |
           cd bulletin_board/server
           npm run format
-          git diff --exit-code
+          git diff --exit-code --ignore-submodules
       - name: Create database
         env:
           RAILS_ENV: test
@@ -221,7 +221,7 @@ jobs:
           sleep 5
           bundle exec rake schema:generate
           npm run schema:generate
-          git diff --exit-code
+          git diff --exit-code --ignore-submodules
       - name: Run Rspec tests
         run: cd bulletin_board/server && bundler exec rake
       - name: Upload coverage to Codecov
@@ -234,7 +234,7 @@ jobs:
     needs: [check_python_to_js_cache, build_python_to_js]
     runs-on: ubuntu-latest
     container:
-      image: codegram/ruby-node-python-electionguard:ruby-2.6.6-node-15-python-3.8.8-electionguard-355b587ea9c4e80c9228183e5c2da68bc40f2afa
+      image: codegram/ruby-node-python-electionguard:ruby-2.6.6-node-15-python-3.8.8-electionguard-a5232f12ce647622528e46f3b2c25ff10d7bcdbe
     services:
       postgres:
         image: postgres:11

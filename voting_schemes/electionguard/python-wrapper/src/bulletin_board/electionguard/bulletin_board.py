@@ -75,7 +75,7 @@ class ProcessTrusteeElectionKeys(ElectionStep):
         context: BulletinBoardContext,
     ) -> Tuple[List[Content], Optional[ElectionStep]]:
         content = deserialize(message["content"], TrusteeElectionKey)
-        guardian_id = content.public_key_set.owner_id
+        guardian_id = content.guardian_record.guardian_id
         context.trustee_election_keys[guardian_id] = content
         # TO-DO: verify keys?
 
@@ -132,24 +132,9 @@ class ProcessTrusteeVerification(ElectionStep):
 
         sorted_trustee_elections_keys = sorted(context.trustee_election_keys.items())
 
-        election_commitments = {
-            guardian_id: trustee_election_key.coefficient_validation_set.coefficient_commitments
-            for guardian_id, trustee_election_key in sorted_trustee_elections_keys
-        }
-
-        election_public_keys: DataStore[GUARDIAN_ID, ElectionPublicKey] = DataStore()
-        for guardian_id, trustee_election_key in sorted_trustee_elections_keys:
-            election_public_keys.set(
-                guardian_id,
-                ElectionPublicKey(
-                    owner_id=trustee_election_key.public_key_set.owner_id,
-                    key=trustee_election_key.public_key_set.election_public_key,
-                    proof=trustee_election_key.public_key_set.election_public_key_proof,
-                ),
-            )
-
         election_joint_key = combine_election_public_keys(
-            election_commitments, election_public_keys
+            trustee_election_key.public_key_set.election
+            for guardian_id, trustee_election_key in sorted_trustee_elections_keys
         )
         context.election_builder.set_public_key(
             get_optional(election_joint_key.joint_public_key)
