@@ -71,7 +71,7 @@ def trustee_election_keys_step(election, evaluator)
     trustee, private_key = evaluator.trustees_plus_keys[order]
     content = JSON.parse(message["content"])
 
-    raise "Mismatched trustee #{trustee.slug} vs msg #{content["public_key_set"]["owner_id"]}" if trustee.slug != content["public_key_set"]["owner_id"]
+    raise "Mismatched trustee #{trustee.slug} vs msg #{content["guardian_record"]["guardian_id"]}" if trustee.slug != content["guardian_record"]["guardian_id"]
 
     trustee_public_key_message = message.deep_dup
     trustee_public_key_message["iat"] = Time.current.to_i

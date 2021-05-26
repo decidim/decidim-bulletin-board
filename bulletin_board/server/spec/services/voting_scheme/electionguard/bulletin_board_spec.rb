@@ -51,7 +51,7 @@ module VotingScheme
           let(:dont_process_count) { 1 }
 
           it "returns the joint election key message" do
-            expect(JSON.parse(election.log_entries.last.decoded_data["content"])["joint_public_key"]).not_to eq(nil)
+            expect(JSON.parse(election.log_entries.last.decoded_data["content"])["election_joint_key"]["joint_public_key"]).not_to eq(nil)
           end
         end
       end

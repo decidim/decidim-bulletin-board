@@ -195,7 +195,11 @@ FactoryBot.define do
       end
 
       owner_id { trustee.slug }
-      sequence_order { election.manifest["trustees"].find_index { |trustee_json| trustee_json["name"] == trustee.name } }
+      sequence_order do
+        election.manifest["trustees"]
+                .find_index { |trustee_json| trustee_json["name"] == trustee.name }
+                &.next # sequence_order numbers are 1-based
+      end
       election_public_key { Test::Elections.trustees_election_keys.first }
 
       trait :invalid do
