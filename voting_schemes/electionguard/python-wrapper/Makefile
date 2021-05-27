@@ -1,21 +1,10 @@
-.PHONY: all install-mac install-linux install-brew install-apt install-deps lint test test_integration test_bulletin_board test_trustee test_voter package
+.PHONY: all install lint test test_integration test_bulletin_board test_trustee test_voter
 
-all: lint test package
+OS ?= $(shell python -c 'import platform; print(platform.system())')
 
-install-mac: install-brew install-deps
-install-linux: install-apt install-deps
+all: lint test build
 
-install-brew:
-	brew install gmp || true
-	brew install mpfr || true
-	brew install libmpc || true
-
-install-apt:
-	sudo apt-get install libgmp-dev
-	sudo apt-get install libmpfr-dev
-	sudo apt-get install libmpc-dev
-
-install-deps:
+install:
 	python3 -m pip install --upgrade pip
 	cd ../electionguard-python && make environment build
 	pip install pipenv
@@ -37,6 +26,7 @@ test:
 
 package:
 	pipenv run python setup.py sdist bdist_wheel
+	python3 setup.py install
 
 publish:
-	python -m twine upload --username __token__ --password ${PYPI_TOKEN} dist/*
+	python3 -m twine upload --username __token__ --password ${PYPI_TOKEN} dist/*
