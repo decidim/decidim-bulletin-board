@@ -1,7 +1,6 @@
 {
   "name": "decidim-bulletin_board",
   "private": true,
-  "version": "0.17.1",
   "scripts": {
     "schema:generate": "graphql-codegen",
     "e2e:install": "cypress install",
