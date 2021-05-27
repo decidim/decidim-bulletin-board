@@ -1,6 +1,7 @@
 # CONSTANTS
 
 BULLETIN_BOARD_SERVER_PATH = bulletin_board/server
+DOCKER_WEB_IMAGE = codegram/decidim-bulletin-board:${VERSION}
 
 # SPECIFIC TASKS
 
@@ -33,6 +34,8 @@ test_server:
 	cd ${BULLETIN_BOARD_SERVER_PATH} && bundle exec rspec && npm run e2e:tests
 
 release_server:
+	docker image build -t ${DOCKER_WEB_IMAGE} Dockerfile.web
+  docker image push ${DOCKER_WEB_IMAGE}
 
 bump_server:
 	cd ${BULLETIN_BOARD_SERVER_PATH} && bundle
