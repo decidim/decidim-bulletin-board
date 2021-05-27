@@ -3,7 +3,7 @@ from typing import Dict, Set, Tuple
 from electionguard.decrypt_with_shares import (
     AVAILABLE_GUARDIAN_ID,
     MISSING_GUARDIAN_ID,
-    decrypt_tally
+    decrypt_tally,
 )
 from electionguard.decryption import reconstruct_decryption_share
 from electionguard.decryption_share import CompensatedDecryptionShare, DecryptionShare

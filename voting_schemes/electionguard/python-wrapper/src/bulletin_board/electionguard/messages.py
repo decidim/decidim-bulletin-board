@@ -1,10 +1,7 @@
 from dataclasses import dataclass
 from typing import Dict, List
 
-from electionguard.decrypt_with_shares import (
-    AVAILABLE_GUARDIAN_ID,
-    MISSING_GUARDIAN_ID
-)
+from electionguard.decrypt_with_shares import AVAILABLE_GUARDIAN_ID, MISSING_GUARDIAN_ID
 from electionguard.decryption_share import (
     CiphertextDecryptionContest,
     CompensatedDecryptionShare,

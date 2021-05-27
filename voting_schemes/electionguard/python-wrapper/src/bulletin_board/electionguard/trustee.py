@@ -266,7 +266,9 @@ class ProcessTallyCast(ElectionStep[TrusteeContext]):
                 pair_with_object_id(
                     unwrap(
                         compute_decryption_share_for_selection(
-                            context.guardian._election_keys, selection, context.election_context
+                            context.guardian._election_keys,
+                            selection,
+                            context.election_context,
                         )
                     )
                 )
@@ -339,9 +341,7 @@ class Compensator(Serializable):
         self, missing_guardian_id: GUARDIAN_ID
     ) -> CompensatedDecryptionShare:
         share = self.context.guardian.compute_compensated_tally_share(
-            missing_guardian_id,
-            self.context.tally,
-            self.context.election_context
+            missing_guardian_id, self.context.tally, self.context.election_context
         )
 
         if share is None:
