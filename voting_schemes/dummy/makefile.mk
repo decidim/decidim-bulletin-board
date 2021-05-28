@@ -58,7 +58,10 @@ bump_version_voting_scheme_dummy_ruby_library:
 	bundle install
 
 release_voting_scheme_dummy_gem:
-	cd ${VOTING_SCHEME_DUMMY_RUBY_LIBRARY_PATH} && gem push pkg/voting_schemes-dummy-${VERSION}.gem
+	cd ${VOTING_SCHEME_DUMMY_RUBY_LIBRARY_PATH} && \
+	gem build voting_schemes-dummy.gemspec && \
+	gem push voting_schemes-dummy-${VERSION}.gem && \
+	rm voting_schemes-dummy-${VERSION}.gem
 
 release_voting_scheme_dummy_package:
 	cd ${VOTING_SCHEME_DUMMY_JS_LIBRARY_PATH} && npm publish

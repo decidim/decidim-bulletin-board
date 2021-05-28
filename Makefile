@@ -89,7 +89,7 @@ update_changelog:
 commit_and_push:
 	git commit -am "chore: bump to version ${VERSION}"
 	git tag v${VERSION}
-	git push --tags
+	git push --tags origin/main
 
 check_clean_repo:
 	git diff --quiet

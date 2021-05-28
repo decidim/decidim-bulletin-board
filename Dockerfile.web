@@ -2,8 +2,13 @@
 FROM codegram/ruby-node-python-electionguard:ruby-2.6.6-node-15-python-3.8.8-electionguard-1.2.0 as python-wrapper-builder
 LABEL author="david@codegram.com"
 
-# Add Makefile
+# Add Makefiles
 ADD Makefile /code/Makefile
+ADD bulletin_board/server.mk /code/bulletin_board/server.mk
+ADD bulletin_board/client.mk /code/bulletin_board/client.mk
+ADD voting_schemes/dummy/makefile.mk /code/voting_schemes/dummy/makefile.mk
+ADD voting_schemes/electionguard/makefile.mk /code/voting_schemes/electionguard/makefile.mk
+ADD verifier/makefile.mk /code/verifier/makefile.mk
 
 # Add the source files
 ADD voting_schemes/electionguard/python-wrapper /code/voting_schemes/electionguard/python-wrapper
@@ -51,8 +56,13 @@ RUN apt-get update && \
   redis-server memcached imagemagick ffmpeg mupdf mupdf-tools libxml2-dev && \
   rm -rf /var/lib/apt/lists/*
 
-# Add Makefile
+# Add Makefiles
 ADD Makefile /code/Makefile
+ADD bulletin_board/server.mk /code/bulletin_board/server.mk
+ADD bulletin_board/client.mk /code/bulletin_board/client.mk
+ADD voting_schemes/dummy/makefile.mk /code/voting_schemes/dummy/makefile.mk
+ADD voting_schemes/electionguard/makefile.mk /code/voting_schemes/electionguard/makefile.mk
+ADD verifier/makefile.mk /code/verifier/makefile.mk
 
 # Add local dependencies and copy some artifacts from previous stages
 ADD bulletin_board/js-client /code/bulletin_board/js-client
@@ -71,7 +81,7 @@ ADD bulletin_board/server/Gemfile.lock /code/bulletin_board/server/Gemfile.lock
 ADD bulletin_board/server/Gemfile /code/bulletin_board/server/Gemfile
 
 # Install all dependencies, build artifacts and remove unnecessary files
-RUN cd /code && make install && make build && \
+RUN cd /code && make install && make build SKIP_PYODIDE=true && \
   rm -rf /code/bulletin_board/js-client && \
   rm -rf /code/voting_schemes/dummy/js-adapter && \
   rm -rf /code/voting_schemes/electionguard/js-adapter && \

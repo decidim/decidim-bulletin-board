@@ -55,7 +55,10 @@ bump_version_bulletin_board_client_ruby_library:
 	bundle install
 
 release_bulletin_board_client_gem:
-	cd ${BULLETIN_BOARD_CLIENT_RUBY_LIBRARY_PATH} && gem push pkg/decidim-bulletin_board-${VERSION}.gem
+	cd ${BULLETIN_BOARD_CLIENT_RUBY_LIBRARY_PATH} && \
+	gem build decidim-bulletin_board.gemspec && \
+	gem push decidim-bulletin_board-${VERSION}.gem && \
+	rm decidim-bulletin_board-${VERSION}.gem
 
 release_bulletin_board_client_package:
 	cd ${BULLETIN_BOARD_CLIENT_JS_LIBRARY_PATH} && npm publish

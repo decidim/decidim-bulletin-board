@@ -40,12 +40,12 @@ electionguard_submodules:
 	git submodule init && git submodule update
 
 electionguard_docker_base:
-	docker image build --build-arg ELECTIONGUARD_PYTHON_REF=${ELECTIONGUARD_PYTHON_VERSION} -t ${DOCKER_BASE_IMAGE} ${ELECTIONGUARD_DOCKER_PATH}/ruby-node-python-electionguard
-  docker image push ${DOCKER_BASE_IMAGE}
+	docker image build --build-arg ELECTIONGUARD_PYTHON_REF=${ELECTIONGUARD_PYTHON_VERSION} -t ${DOCKER_BASE_IMAGE} ${ELECTIONGUARD_DOCKER_PATH}/ruby-node-python-electionguard && \
+	docker image push ${DOCKER_BASE_IMAGE}
 
 electionguard_docker_pyodide:
-	docker image build -t ${DOCKER_PYODIDE_IMAGE} ${ELECTIONGUARD_DOCKER_PATH}/pyodide-electionguard
-  docker image push ${DOCKER_PYODIDE_IMAGE}
+	docker image build -t ${DOCKER_PYODIDE_IMAGE} ${ELECTIONGUARD_DOCKER_PATH}/pyodide-electionguard && \
+	docker image push ${DOCKER_PYODIDE_IMAGE}
 
 
 # COMMON TASKS
@@ -136,7 +136,10 @@ bump_version_voting_scheme_electionguard_ruby_library:
 	bundle install
 
 release_voting_scheme_electionguard_gem:
-	cd ${VOTING_SCHEME_ELECTIONGUARD_RUBY_LIBRARY_PATH} && gem push pkg/voting_schemes-electionguard-${VERSION}.gem
+	cd ${VOTING_SCHEME_ELECTIONGUARD_RUBY_LIBRARY_PATH} && \
+	gem build voting_schemes-electionguard.gemspec && \
+	gem push voting_schemes-electionguard-${VERSION}.gem && \
+	rm voting_schemes-electionguard-${VERSION}.gem
 
 release_voting_scheme_electionguard_package:
 	cd ${VOTING_SCHEME_ELECTIONGUARD_JS_LIBRARY_PATH} && npm publish

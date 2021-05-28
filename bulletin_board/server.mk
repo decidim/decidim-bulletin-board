@@ -23,8 +23,8 @@ help_server:
 	@echo '  replant_serve - Reseeds the server database and starts the bulletin board rails server.'
 	@echo '  serve_test - Starts the bulletin board rails server in test mode.'
 
-install_server: install_bulletin_board_server_js_dependencies \
-		install_bulletin_board_server_ruby_dependencies
+install_server: install_bulletin_board_server_ruby_dependencies \
+		install_bulletin_board_server_js_dependencies
 
 clean_server:
 
@@ -34,8 +34,8 @@ test_server:
 	cd ${BULLETIN_BOARD_SERVER_PATH} && bundle exec rspec && npm run e2e:tests
 
 release_server:
-	docker image build -t ${DOCKER_WEB_IMAGE} Dockerfile.web
-  docker image push ${DOCKER_WEB_IMAGE}
+	docker image build -t ${DOCKER_WEB_IMAGE} -f Dockerfile.web . && \
+	docker image push ${DOCKER_WEB_IMAGE}
 
 bump_server:
 	cd ${BULLETIN_BOARD_SERVER_PATH} && bundle
