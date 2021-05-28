@@ -1,4 +1,4 @@
-FROM codegram/ruby-node-python-electionguard:ruby-2.6.6-node-15-python-3.8.8-electionguard-a5232f12ce647622528e46f3b2c25ff10d7bcdbe
+FROM codegram/ruby-node-python-electionguard:ruby-2.6.6-node-15-python-3.8.8-electionguard-1.2.0
 LABEL author="david@codegram.com"
 
 # [Option] Install zsh
