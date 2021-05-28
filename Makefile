@@ -33,6 +33,20 @@ test: test_server \
 		test_dummy \
 		test_electionguard
 
+sync_main:
+		git checkout develop && \
+			git pull && \
+			git checkout main && \
+			git pull && \
+			git rebase develop && git push
+
+sync_develop:
+		git checkout main && \
+			git pull && \
+			git checkout develop && \
+			git pull && \
+			git rebase main && git push
+
 release: check_clean_repo \
 		check_version \
 		bump_versions \
@@ -54,17 +68,13 @@ deploy_staging_app: check_main_branch
 # SUBTASKS
 
 help_common:
-	@echo 'Installing dependencies:'
+	@echo 'Common tasks:'
 	@echo '  install - Install all dependencies.'
-	@echo 'Building artifacts:'
 	@echo '  build - Compile all artifacts.'
-	@echo 'Cleaning targets:'
 	@echo '  clean - Remove all artifacts from the project.'
-	@echo 'Testing code:'
 	@echo '  test - Run all tests.'
-	@echo 'Releasing packages:'
+	@echo '  sync_main - Prepare the local repo to perform the release. It pulls the last commits and updates the main branch'
 	@echo '  release - Bump versions, commit and push changes to the repository and release gems and packages. Requires clean repository and VERSION set.'
-	@echo 'Deploying applications:'
 	@echo '  deploy_staging_app - Deploy the bulletin board staging application. Requires heroku login and must be run in the main branch.'
 	@echo '  deploy_development_app - Deploy an application to the staging pipeline in the development stage. Requires heroku login.'
 
