@@ -1,6 +1,6 @@
 {
   "name": "@codegram/voting_schemes-dummy",
-  "version": "0.21.1",
+  "version": "0.21.2",
   "description": "",
   "main": "src/index.js",
   "scripts": {
