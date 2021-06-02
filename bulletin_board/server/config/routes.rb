@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require "sidekiq/web"
 Rails.application.routes.draw do
   scope "/api" do
     mount GraphiQL::Rails::Engine, at: "/graphiql", graphql_path: "/api"
@@ -11,6 +12,7 @@ Rails.application.routes.draw do
   root to: "pages#index"
 
   if !Rails.env.production? || ENV["SANDBOX"]
+    mount Sidekiq::Web => "/sidekiq"
     scope "/sandbox", module: :sandbox, as: :sandbox do
       resources :elections, only: [:new, :create, :index] do
         member do

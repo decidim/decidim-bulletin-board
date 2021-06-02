@@ -1,0 +1,6 @@
+:concurrency: 5
+:queues:
+  - vote
+  - key_ceremony
+  - tally
+  - publish_results

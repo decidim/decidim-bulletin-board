@@ -2,13 +2,8 @@
 FROM codegram/ruby-node-python-electionguard:ruby-2.6.6-node-15-python-3.8.11-electionguard-1.2.1 as python-wrapper-builder
 LABEL author="david@codegram.com"
 
-# Add Makefiles
+# Add Makefile
 ADD Makefile /code/Makefile
-ADD bulletin_board/server.mk /code/bulletin_board/server.mk
-ADD bulletin_board/client.mk /code/bulletin_board/client.mk
-ADD voting_schemes/dummy/makefile.mk /code/voting_schemes/dummy/makefile.mk
-ADD voting_schemes/electionguard/makefile.mk /code/voting_schemes/electionguard/makefile.mk
-ADD verifier/makefile.mk /code/verifier/makefile.mk
 
 # Add the source files
 ADD voting_schemes/electionguard/python-wrapper /code/voting_schemes/electionguard/python-wrapper
@@ -51,18 +46,13 @@ ENV SECRET_KEY_BASE 1234
 ENV RAILS_ENV production
 
 # Install system dependencies
-RUN apt-get update --allow-releaseinfo-change && \
+RUN apt-get update && \
   apt-get install -y postgresql postgresql-client postgresql-contrib libpq-dev \
   redis-server memcached imagemagick ffmpeg mupdf mupdf-tools libxml2-dev curl && \
   rm -rf /var/lib/apt/lists/*
 
-# Add Makefiles
+# Add Makefile
 ADD Makefile /code/Makefile
-ADD bulletin_board/server.mk /code/bulletin_board/server.mk
-ADD bulletin_board/client.mk /code/bulletin_board/client.mk
-ADD voting_schemes/dummy/makefile.mk /code/voting_schemes/dummy/makefile.mk
-ADD voting_schemes/electionguard/makefile.mk /code/voting_schemes/electionguard/makefile.mk
-ADD verifier/makefile.mk /code/verifier/makefile.mk
 
 # Add local dependencies and copy some artifacts from previous stages
 ADD bulletin_board/js-client /code/bulletin_board/js-client
@@ -81,7 +71,7 @@ ADD bulletin_board/server/Gemfile.lock /code/bulletin_board/server/Gemfile.lock
 ADD bulletin_board/server/Gemfile /code/bulletin_board/server/Gemfile
 
 # Install all dependencies, build artifacts and remove unnecessary files
-RUN cd /code && make install && make build SKIP_PYODIDE=true && \
+RUN cd /code && make install && make build && \
   rm -rf /code/bulletin_board/js-client && \
   rm -rf /code/voting_schemes/dummy/js-adapter && \
   rm -rf /code/voting_schemes/electionguard/js-adapter && \
@@ -96,5 +86,5 @@ RUN npm install --global yarn
 RUN bundle exec rake assets:precompile
 
 # Run the entrypoint script
-COPY ./docker-entrypoint.sh /
-ENTRYPOINT ["/docker-entrypoint.sh"]
+COPY ./docker-entrypoint-worker.sh /
+ENTRYPOINT ["/docker-entrypoint-worker.sh"]
