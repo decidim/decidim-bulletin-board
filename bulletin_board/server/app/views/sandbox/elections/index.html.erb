@@ -45,8 +45,9 @@
                   <input class="generate-votes-input" type="number" placeholder="How many votes?" value="<%= default_bulk_votes_number %>"/>
                   <a href="#" class="generate-votes button">Generate votes</a>
                   <%= link_to "Load test stats", load_test_stats_sandbox_election_path(election), download: Sandbox::GenerateLoadTestStats::STATS_OUTPUT_FILE_NAME, class: "button" %>
-                  <% if bulk_votes_file_exists?(election) %>
-                    <%= link_to "Download #{generated_votes_number(election)} votes", download_bulk_votes_sandbox_election_path(election), download: bulk_votes_file_name(election), class: "button" %>
+                  <% if bulk_votes_url_set?(election) %>
+                    <%= link_to "Download votes", bulk_votes_file_url(election), download: bulk_votes_file_name(election), class: "button", target: "_blank" %>
+                    <p><%= "Bulk votes file last updated at: #{bulk_votes_file_update_time(election)}"%></p>
                   <% end %>
                 </div>
               <% elsif election.vote_ended? %>

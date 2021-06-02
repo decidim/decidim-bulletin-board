@@ -1,0 +1,1 @@
+Redis.current = Redis.new(ssl_params: { verify_mode: OpenSSL::SSL::VERIFY_NONE })

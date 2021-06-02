@@ -1,5 +1,5 @@
 default: &default
-  iat_expiration_minutes: 60
+  iat_expiration_minutes: 43200
   create_election:
     hours_before: 2
 

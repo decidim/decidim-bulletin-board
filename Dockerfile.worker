@@ -1,14 +1,9 @@
 # This stage builds the python-wrapper package
-FROM codegram/ruby-node-python-electionguard:ruby-2.6.6-node-15-python-3.8.8-electionguard-1.2.0 as python-wrapper-builder
+FROM codegram/ruby-node-python-electionguard:ruby-2.6.6-node-15-python-3.8.8-electionguard-355b587ea9c4e80c9228183e5c2da68bc40f2afa as python-wrapper-builder
 LABEL author="david@codegram.com"
 
-# Add Makefiles
+# Add Makefile
 ADD Makefile /code/Makefile
-ADD bulletin_board/server.mk /code/bulletin_board/server.mk
-ADD bulletin_board/client.mk /code/bulletin_board/client.mk
-ADD voting_schemes/dummy/makefile.mk /code/voting_schemes/dummy/makefile.mk
-ADD voting_schemes/electionguard/makefile.mk /code/voting_schemes/electionguard/makefile.mk
-ADD verifier/makefile.mk /code/verifier/makefile.mk
 
 # Add the source files
 ADD voting_schemes/electionguard/python-wrapper /code/voting_schemes/electionguard/python-wrapper
@@ -17,7 +12,7 @@ ADD voting_schemes/electionguard/python-wrapper /code/voting_schemes/electiongua
 RUN cd /code && make build_electionguard_python_wrapper
 
 # This stage builds the pyodide packages for the previous python packages
-FROM codegram/pyodide-electionguard:pyodide-0.16.1-electionguard-1.2.0 as python-to-js-builder
+FROM codegram/electionguard-pyodide-base-packages:0.0.1 as python-to-js-builder
 LABEL author="david@codegram.com"
 
 ENV PYODIDE_PACKAGES "electionguard,bulletin_board-electionguard"
@@ -43,7 +38,7 @@ RUN make
 RUN cp -rf /code/voting_schemes/electionguard/python-to-js/override/* /src/pyodide/build/
 
 # This stage builds the bulletin-board application
-FROM codegram/ruby-node-python-electionguard:ruby-2.6.6-node-15-python-3.8.8-electionguard-1.2.0
+FROM codegram/ruby-node-python-electionguard:ruby-2.6.6-node-15-python-3.8.8-electionguard-355b587ea9c4e80c9228183e5c2da68bc40f2afa
 LABEL author="david@codegram.com"
 
 # Environment variables
@@ -56,13 +51,8 @@ RUN apt-get update && \
   redis-server memcached imagemagick ffmpeg mupdf mupdf-tools libxml2-dev curl && \
   rm -rf /var/lib/apt/lists/*
 
-# Add Makefiles
+# Add Makefile
 ADD Makefile /code/Makefile
-ADD bulletin_board/server.mk /code/bulletin_board/server.mk
-ADD bulletin_board/client.mk /code/bulletin_board/client.mk
-ADD voting_schemes/dummy/makefile.mk /code/voting_schemes/dummy/makefile.mk
-ADD voting_schemes/electionguard/makefile.mk /code/voting_schemes/electionguard/makefile.mk
-ADD verifier/makefile.mk /code/verifier/makefile.mk
 
 # Add local dependencies and copy some artifacts from previous stages
 ADD bulletin_board/js-client /code/bulletin_board/js-client
@@ -81,7 +71,7 @@ ADD bulletin_board/server/Gemfile.lock /code/bulletin_board/server/Gemfile.lock
 ADD bulletin_board/server/Gemfile /code/bulletin_board/server/Gemfile
 
 # Install all dependencies, build artifacts and remove unnecessary files
-RUN cd /code && make install && make build SKIP_PYODIDE=true && \
+RUN cd /code && make install && make build && \
   rm -rf /code/bulletin_board/js-client && \
   rm -rf /code/voting_schemes/dummy/js-adapter && \
   rm -rf /code/voting_schemes/electionguard/js-adapter && \
@@ -96,5 +86,5 @@ RUN npm install --global yarn
 RUN bundle exec rake assets:precompile
 
 # Run the entrypoint script
-COPY ./docker-entrypoint.sh /
-ENTRYPOINT ["/docker-entrypoint.sh"]
+COPY ./docker-entrypoint-worker.sh /
+ENTRYPOINT ["/docker-entrypoint-worker.sh"]
