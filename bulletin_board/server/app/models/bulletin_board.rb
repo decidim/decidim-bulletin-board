@@ -72,6 +72,8 @@ class BulletinBoard
       name.parameterize
     end
 
+    alias unique_id slug
+
     def configured?
       private_key.present?
     end
