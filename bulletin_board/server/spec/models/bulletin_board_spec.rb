@@ -3,8 +3,9 @@
 require "rails_helper"
 
 RSpec.describe "BulletinBoard" do
-  let!(:private_key) { Decidim::BulletinBoard::JwkUtils.import_private_key(Rails.application.secrets.bulletin_board_private_key) }
   subject { BulletinBoard }
+
+  let!(:private_key) { Decidim::BulletinBoard::JwkUtils.import_private_key(Rails.application.secrets.bulletin_board_private_key) }
 
   before do
     subject
@@ -31,11 +32,11 @@ RSpec.describe "BulletinBoard" do
   end
 
   it "is not destroyed by default" do
-    expect(subject).to_not be_destroyed
+    expect(subject).not_to be_destroyed
   end
 
   it "is not a new record by default" do
-    expect(subject).to_not be_new_record
+    expect(subject).not_to be_new_record
   end
 
   it "has a type of BulletinBoard" do
