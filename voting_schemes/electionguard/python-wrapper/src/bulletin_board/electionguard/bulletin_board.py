@@ -7,10 +7,9 @@ from electionguard.ballot import (
     from_ciphertext_ballot,
 )
 from electionguard.ballot_validator import ballot_is_valid_for_election
-from electionguard.data_store import DataStore
 from electionguard.decryption_share import DecryptionShare
 from electionguard.election import ElectionConstants
-from electionguard.key_ceremony import ElectionPublicKey, combine_election_public_keys
+from electionguard.key_ceremony import combine_election_public_keys
 from electionguard.tally import CiphertextTally
 from electionguard.types import GUARDIAN_ID
 from electionguard.utils import get_optional
