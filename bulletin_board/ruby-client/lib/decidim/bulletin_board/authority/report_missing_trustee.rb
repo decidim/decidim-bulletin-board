@@ -29,7 +29,7 @@ module Decidim
           # arguments used inside the graphql operation
           args = {
             message_id: message_id,
-            signed_data: sign_message(message_id, {trustee_id: trustee_id})
+            signed_data: sign_message(message_id, { trustee_id: trustee_id })
           }
 
           response = graphql.query do
