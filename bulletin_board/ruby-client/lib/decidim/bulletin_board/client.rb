@@ -6,12 +6,13 @@ require "decidim/bulletin_board/settings"
 
 require "decidim/bulletin_board/authority/create_election"
 require "decidim/bulletin_board/authority/end_vote"
+require "decidim/bulletin_board/authority/get_election_results"
 require "decidim/bulletin_board/authority/get_election_status"
+require "decidim/bulletin_board/authority/publish_results"
+require "decidim/bulletin_board/authority/report_missing_trustee"
 require "decidim/bulletin_board/authority/start_key_ceremony"
 require "decidim/bulletin_board/authority/start_tally"
 require "decidim/bulletin_board/authority/start_vote"
-require "decidim/bulletin_board/authority/publish_results"
-require "decidim/bulletin_board/authority/get_election_results"
 require "decidim/bulletin_board/voter/cast_vote"
 require "decidim/bulletin_board/voter/get_pending_message_status"
 require "decidim/bulletin_board/voter/in_person_vote"
@@ -99,6 +100,14 @@ module Decidim
         start_tally.on(:ok) { |pending_message| return pending_message }
         start_tally.on(:error) { |error_message| raise StandardError, error_message }
         start_tally.call
+      end
+
+      def report_missing_trustee(election_id, trustee_id)
+        report_missing_trustee = configure Authority::ReportMissingTrustee.new(election_id, trustee_id)
+        yield report_missing_trustee.message_id if block_given?
+        report_missing_trustee.on(:ok) { |pending_message| return pending_message }
+        report_missing_trustee.on(:error) { |error_message| raise StandardError, error_message }
+        report_missing_trustee.call
       end
 
       def get_election_results(election_id)
