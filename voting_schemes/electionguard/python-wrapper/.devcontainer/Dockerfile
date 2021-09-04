@@ -4,4 +4,4 @@
 ARG VARIANT="3"
 FROM mcr.microsoft.com/vscode/devcontainers/python:0-${VARIANT}
 
-RUN apt-get update
+RUN apt-get update --allow-releaseinfo-change

@@ -9,11 +9,11 @@ pytest = "*"
 black = "*"
 
 [packages]
-electionguard = {path = "./../electionguard-python/dist/electionguard-1.2.0-py3-none-any.whl"}
+electionguard = {path = "./../electionguard-python/dist/electionguard-1.2.1-py3-none-any.whl"}
 jsons = '==1.2'
 
 [requires]
-python_version = "3.8"
+python_version = "3.8.11"
 
 [pipenv]
 allow_prereleases = true

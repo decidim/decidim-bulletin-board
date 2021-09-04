@@ -19,7 +19,7 @@ jobs:
     name: Build electionguard
     runs-on: ubuntu-latest
     container:
-      image: codegram/ruby-node-python-electionguard:ruby-2.6.6-node-15-python-3.8.8-electionguard-1.2.0
+      image: codegram/ruby-node-python-electionguard:ruby-2.6.6-node-15-python-3.8.11-electionguard-1.2.1
     steps:
       - uses: actions/checkout@v2.0.0
         with:
@@ -74,7 +74,7 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ needs.check_python_to_js_cache.outputs.cache-hit != 'true' }}
     container:
-      image: codegram/pyodide-electionguard:pyodide-0.16.1-electionguard-1.2.0
+      image: codegram/pyodide-electionguard:pyodide-0.16.1-electionguard-1.2.1
     steps:
       - uses: actions/checkout@v2.0.0
         with:
@@ -121,7 +121,7 @@ jobs:
     needs: build_python_to_js
     runs-on: ubuntu-latest
     container:
-      image: codegram/ruby-node-python-electionguard:ruby-2.6.6-node-15-python-3.8.8-electionguard-1.2.0
+      image: codegram/ruby-node-python-electionguard:ruby-2.6.6-node-15-python-3.8.11-electionguard-1.2.1
     services:
       postgres:
         image: postgres:11
@@ -234,7 +234,7 @@ jobs:
     needs: [check_python_to_js_cache, build_python_to_js]
     runs-on: ubuntu-latest
     container:
-      image: codegram/ruby-node-python-electionguard:ruby-2.6.6-node-15-python-3.8.8-electionguard-1.2.0
+      image: codegram/ruby-node-python-electionguard:ruby-2.6.6-node-15-python-3.8.11-electionguard-1.2.1
     services:
       postgres:
         image: postgres:11

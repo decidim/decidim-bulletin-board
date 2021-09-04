@@ -1,6 +1,6 @@
 # CONSTANTS
 
-ELECTIONGUARD_PYTHON_VERSION = 1.2.0
+ELECTIONGUARD_PYTHON_VERSION = 1.2.1
 ELECTIONGUARD_PYTHON_WRAPPER_VERSION = 0.1.1
 ELECTIONGUARD_JAVA_VERSION = 0.9.2
 
@@ -31,7 +31,7 @@ VOTING_SCHEME_ELECTIONGUARD_JS_LIBRARY_OUTPUT = \
 
 VERIFIER_ELECTIONGUARD_PATH = voting_schemes/electionguard/verifier
 
-DOCKER_BASE_IMAGE = codegram/ruby-node-python-electionguard:ruby-2.6.6-node-15-python-3.8.8-electionguard-${ELECTIONGUARD_PYTHON_VERSION}
+DOCKER_BASE_IMAGE = codegram/ruby-node-python-electionguard:ruby-2.6.6-node-15-python-3.8.11-electionguard-${ELECTIONGUARD_PYTHON_VERSION}
 DOCKER_PYODIDE_IMAGE = codegram/pyodide-electionguard:pyodide-0.16.1-electionguard-${ELECTIONGUARD_PYTHON_VERSION}
 
 # SPECIFIC TASKS

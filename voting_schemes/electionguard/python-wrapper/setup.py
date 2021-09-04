@@ -11,14 +11,14 @@ setup(
     license="MIT",
     package_dir={"": "src", "tests": "tests"},
     packages=find_packages("src", "tests"),
-    install_requires=["electionguard==1.2", "jsons==1.2"],
+    install_requires=["electionguard==1.2.1", "jsons==1.2"],
     dependency_links=[
         os.path.join(
             os.getcwd(),
             "..",
             "electionguard-python",
             "dist",
-            "electionguard-1.2.0-py3-none-any.whl",
+            "electionguard-1.2.1-py3-none-any.whl",
         )
     ],
 )
