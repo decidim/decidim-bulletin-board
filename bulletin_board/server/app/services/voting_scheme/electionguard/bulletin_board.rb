@@ -10,7 +10,7 @@ module VotingScheme
     class BulletinBoard < VotingScheme::BulletinBoard
       include Electionguard
 
-      RESULTS = ["tally.trustee_share", "end_tally"].freeze
+      RESULTS = ["tally.trustee_share", "tally.compensations", "end_tally"].freeze
 
       delegate :backup, to: :state
 

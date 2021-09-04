@@ -2,11 +2,7 @@
 from dataclasses import dataclass
 from typing import Dict, List, Literal, Optional, Set, Tuple, Type
 
-from electionguard.decrypt_with_shares import MISSING_GUARDIAN_ID
-from electionguard.decryption import (
-    compute_compensated_decryption_share,
-    compute_decryption_share_for_selection,
-)
+from electionguard.decryption import compute_compensated_decryption_share, compute_decryption_share_for_selection
 from electionguard.decryption_share import (
     CiphertextDecryptionContest,
     CiphertextDecryptionSelection,
@@ -24,8 +20,9 @@ from electionguard.types import CONTEST_ID, GUARDIAN_ID, SELECTION_ID
 from electionguard.utils import get_optional
 
 from .common import Content, Context, ElectionStep, Wrapper, unwrap
+from .dummy_scheduler import DummyScheduler
 from .messages import (
-    Compensation,
+    Compensations,
     KeyCeremonyResults,
     TrusteeElectionKey,
     TrusteePartialKeys,
@@ -298,30 +295,43 @@ class ProcessTallyCast(ElectionStep[TrusteeContext]):
 class Compensator(Serializable):
     context: TrusteeContext
     shares_seen: Dict[GUARDIAN_ID, DecryptionShare]
+    missing_guardians: Set[GUARDIAN_ID]
 
     def __init__(self, context: TrusteeContext):
         super().__init__()
+        self.all_guardian_ids = set(context.guardian_ids)
         self.shares_seen = {}
+        self.missing_guardian_ids = set()
         self.context = context
 
     def seen_share(self, share: DecryptionShare):
+        self.missing_guardian_ids.discard(share.guardian_id)
         self.shares_seen[share.guardian_id] = share
 
-    def compensate(self) -> Compensation:
-        comp = Compensation(
+    def missing_guardian(self, guardian_id: GUARDIAN_ID):
+        if guardian_id not in self.shares_seen:
+            self.missing_guardian_ids.add(guardian_id)
+
+    def must_compensate(self):
+        shares_seen_set = set(self.shares_seen.keys())
+
+        return bool(
+            self.missing_guardian_ids and
+            len(shares_seen_set) >= self.context.quorum and
+            not (self.all_guardian_ids - shares_seen_set - self.missing_guardian_ids)
+        )
+
+    def compensate(self) -> Compensations:
+        comp = Compensations(
             guardian_id=self.context.guardian_id,
             election_public_keys=self.context.guardian._guardian_election_public_keys,
             lagrange_coefficient=self._lagrange_coefficient(),
             compensated_decryptions=[
                 self._compensated_decryption_share(missing_guardian_id)
-                for missing_guardian_id in self._missing_guardian_ids
+                for missing_guardian_id in self.missing_guardian_ids
             ],
         )
         return comp
-
-    @property
-    def _missing_guardian_ids(self) -> Set[MISSING_GUARDIAN_ID]:
-        return set(self.context.guardian_ids) - set(self.shares_seen.keys())
 
     def _lagrange_coefficient(self) -> ElementModQ:
         """
@@ -340,8 +350,25 @@ class Compensator(Serializable):
     def _compensated_decryption_share(
         self, missing_guardian_id: GUARDIAN_ID
     ) -> CompensatedDecryptionShare:
-        share = self.context.guardian.compute_compensated_tally_share(
-            missing_guardian_id, self.context.tally, self.context.election_context
+        # Ensure missing guardian information available
+        missing_guardian_key = self.context.guardian._guardian_election_public_keys.get(
+            missing_guardian_id
+        )
+        missing_guardian_backup = self.context.guardian._guardian_election_partial_key_backups.get(
+            missing_guardian_id
+        )
+
+        if missing_guardian_key is None or missing_guardian_backup is None:
+            raise Exception(f"missing trustee identifier not present: {missing_guardian_id}")
+
+        share = compute_compensated_decryption_share(
+            self.context.guardian.share_election_public_key(),
+            self.context.guardian._auxiliary_keys,
+            missing_guardian_key,
+            missing_guardian_backup,
+            self.context.tally,
+            self.context.election_context,
+            scheduler = DummyScheduler(),  # type: ignore
         )
 
         if share is None:
@@ -373,13 +400,13 @@ class ProcessEndTally(ElectionStep[TrusteeContext]):
     def skip_message(self, message_type: str) -> bool:
         return message_type not in [
             "tally.trustee_share",
-            "tally.compensate",
+            "tally.missing_trustee",
             "end_tally",
         ]
 
     def process_message(
         self,
-        message_type: Literal["tally.trustee_share", "tally.compensate", "end_tally"],
+        message_type: Literal["tally.trustee_share", "tally.missing_trustee", "end_tally"],
         message: Content,
         context: TrusteeContext,
     ) -> Tuple[List[Content], Optional[ElectionStep[TrusteeContext]]]:
@@ -388,21 +415,24 @@ class ProcessEndTally(ElectionStep[TrusteeContext]):
 
         if message_type == "end_tally":
             return [], ProcessPublishResults()
+
         if message_type == "tally.trustee_share":
-            # Keep track of other trustee shares in case we're asked to compensate
+            # Keep track of other trustee shares
             content = deserialize(message["content"], DecryptionShare)
             self.compensator.seen_share(content)
-            return [], None
-        if message_type == "tally.compensate":
+        elif message_type == "tally.missing_trustee":
+            # Keep track of missing trustees
+            self.compensator.missing_guardian(message["trustee_id"])
+
+        if self.compensator.must_compensate():
             return [
                 {
-                    "message_type": "tally.compensation",
+                    "message_type": "tally.compensations",
                     "content": serialize(self.compensator.compensate()),
                 }
             ], None
-
-        # that's impossible, pylance
-        return [], None
+        else:
+            return [], None
 
 
 class Trustee(Wrapper[TrusteeContext]):

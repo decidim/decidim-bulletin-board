@@ -297,6 +297,12 @@ def start_tally_message():
     return {"message_id": "decidim-barcelona.1.start_tally+a.decidim-barcelona"}
 
 
+def missing_guardian_message(guardian_id):
+    return {
+        "message_type": "tally.missing_trustee",
+        "trustee_id": guardian_id
+    }
+
 def remove_unused(ballot: str):
     b: dict = serialize_as_dict(deserialize(ballot, CiphertextBallot))  # type: ignore
     del b["timestamp"]

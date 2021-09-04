@@ -52,6 +52,18 @@ module VotingScheme
 
           it { expect(subject).to be_truthy }
         end
+
+        context "when asking for the missing trustee message" do
+          let(:type_subtype) { "tally.missing_trustee" }
+
+          it { expect(subject).to be_falsey }
+        end
+
+        context "when asking for the tally compensation message" do
+          let(:type_subtype) { "tally.compensations" }
+
+          it { expect(subject).to be_truthy }
+        end
       end
     end
   end

@@ -15,6 +15,7 @@ from .utils import (
     create_election_test_message_v1,
     create_election_test_message_v2,
     end_vote_message,
+    missing_guardian_message,
     start_tally_message,
     start_vote_message,
 )
@@ -292,30 +293,31 @@ class TestIntegration(unittest.TestCase):
 
         self.checkpoint("TALLY CAST", tally_cast)
 
-        trustees_shares = [
+        # A Trustee will not be there
+        missing_trustee = self.trustees.pop()
+
+        trustees_messages = [
             trustee.process_message(tally_cast["message_type"], tally_cast)[0]
             for trustee in self.trustees
         ]
+        # The authority notifies about a missing guardian in the middle of the messages
+        trustees_messages.insert(1, missing_guardian_message(missing_trustee.context.guardian_id))
 
-        self.checkpoint("TRUSTEE SHARES", trustees_shares)
+        self.checkpoint("TRUSTEE SHARES", trustees_messages)
 
-        for share in trustees_shares[:2]:  # skip last trustee
-            self.bulletin_board.process_message(share["message_type"], share)
-            for trustee in self.trustees[:2]:
-                trustee.process_message(share["message_type"], share)
-
-        # Notify trustees that they need to compensate
-        compensations = []
-        for trustee in self.trustees[:2]:
-            for compensation in trustee.process_message("tally.compensate", None):
-                compensations.append(compensation)
+        all_compensations = []
+        for message in trustees_messages:
+            self.bulletin_board.process_message(message["message_type"], message)
+            for trustee in self.trustees:
+                for compensations in trustee.process_message(message["message_type"], message):
+                    all_compensations.append(compensations)
 
         self.checkpoint("TRUSTEES COMPENSATED", compensations)
 
         end_tally = dict()
-        for compensation in compensations:
+        for compensations in all_compensations:
             res = self.bulletin_board.process_message(
-                "tally.compensation", compensation
+                "tally.compensations", compensations
             )
             if len(res) > 0:
                 end_tally: dict = res[0]  # type: ignore
