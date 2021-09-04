@@ -10,6 +10,9 @@
 //= link sandbox/index.js
 //= link sandbox/index.css
 
+//= link sandbox/new.js
+//= link sandbox/new.css
+
 //= link sandbox/key_ceremony.js
 //= link sandbox/key_ceremony.css
 
@@ -23,6 +26,3 @@
 //= link sandbox/tally.css
 
 //= link sandbox/results.css
-
-//= link sandbox/elections/new.css
-//= link sandbox/elections/new.js

@@ -366,46 +366,51 @@ export class ElectionPage {
    * @param {String} electionTitle - The title of the election.
    * @param {String} electionUniqueId - The election unique id.
    * @param {Array<Object>} trustees - A collection of Trustee objects.
+   * @param {Array<Integer>} missingTrustees - A collection of indexes simulating missing trustees.
    *
    * @returns {undefined}
    */
-  performTally(electionTitle, electionUniqueId, trustees) {
+  performTally(electionTitle, electionUniqueId, trustees, missingTrustees) {
     cy.findByText("Perform tally").click().should("not.exist");
     cy.findByText(`Tally for ${electionTitle}`).should("be.visible");
 
-    trustees.forEach(({ unique_id, name }) => {
+    trustees.forEach(({ unique_id, name }, index) => {
       cy.findByText(name)
         .parent("tr")
         .within((trusteeRow) => {
-          cy.findByText("Start").click({
-            timeout: 120_000,
-          });
+          if (missingTrustees.includes(index)) {
+            cy.findByText("Report as missing").click();
+          } else {
+            cy.findByText("Start").click({
+              timeout: 120_000,
+            });
 
-          if (this.votingSchemeName === "electionguard") {
-            // Wait a decent amount of time to make sure electionguard is loaded.
-            cy.wait(15_000);
+            if (this.votingSchemeName === "electionguard") {
+              // Wait a decent amount of time to make sure electionguard is loaded.
+              cy.wait(15_000);
+            }
+
+            // Ensure that the button is present before starting to upload the trustee state
+            cy.findByText("Restore").should("be.visible");
+
+            // When the upload button is rendered on the screen the change event callback
+            // may not be set yet, so we wait a reasonable time to ensure it is set correctly.
+            cy.wait(1_000);
+
+            // Emulate trustee uploading the private key file
+            cy.get(trusteeRow)
+              .find(".restore-button-input")
+              .attachFile(
+                {
+                  filePath: `../downloads/${unique_id
+                    .split(/[. ]+/)
+                    .pop()}-election-decidim-test-authority.${electionUniqueId}.bak`,
+                },
+                {
+                  force: true,
+                }
+              );
           }
-
-          // Ensure that the button is present before starting to upload the trustee state
-          cy.findByText("Restore").should("be.visible");
-
-          // When the upload button is rendered on the screen the change event callback
-          // may not be set yet, so we wait a reasonable time to ensure it is set correctly.
-          cy.wait(1000);
-
-          // Emulate trustee uploading the private key file
-          cy.get(trusteeRow)
-            .find(".restore-button-input")
-            .attachFile(
-              {
-                filePath: `../downloads/${unique_id
-                  .split(/[. ]+/)
-                  .pop()}-election-decidim-test-authority.${electionUniqueId}.bak`,
-              },
-              {
-                force: true,
-              }
-            );
         });
     });
   }
@@ -414,16 +419,19 @@ export class ElectionPage {
    * Assert that the tally has ended checking the election status.
    *
    * @param {Array<Object>} trustees - A collection of Trustee objects.
+   * @param {Array<Integer>} missingTrustees - A collection of indexes simulating missing trustees.
    *
    * @returns {undefined}
    */
-  assertTallyHasEnded(trustees) {
-    trustees.forEach(({ name }) => {
-      cy.contains(name)
-        .parent("tr")
-        .within(() => {
-          cy.findByText("Done").should("be.visible");
-        });
+  assertTallyHasEnded(trustees, missingTrustees) {
+    trustees.forEach(({ name }, index) => {
+      if (!missingTrustees.includes(index)) {
+        cy.contains(name)
+          .parent("tr")
+          .within(() => {
+            cy.findByText("Done").should("be.visible");
+          });
+      }
     });
 
     cy.findByText("Back").click();

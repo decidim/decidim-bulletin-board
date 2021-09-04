@@ -27,6 +27,7 @@ Rails.application.routes.draw do
           get :end_vote
           get :start_tally
           get :tally
+          post :report_missing_trustee
           get :publish_results
           get :results
         end

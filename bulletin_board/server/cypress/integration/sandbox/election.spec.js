@@ -8,6 +8,7 @@ describe("Election", () => {
     electionUniqueId,
     electionVotingSchemeName,
     doTheVoting,
+    missingTrustees,
   }) => {
     page.setup(({ trustees }) => {
       page.visit();
@@ -36,8 +37,14 @@ describe("Election", () => {
 
       page.startTally();
       page.assertTallyHasStarted();
-      page.performTally(electionTitle, electionUniqueId, trustees);
-      page.assertTallyHasEnded(trustees);
+
+      page.performTally(
+        electionTitle,
+        electionUniqueId,
+        trustees,
+        missingTrustees
+      );
+      page.assertTallyHasEnded(trustees, missingTrustees);
 
       page.publishResults();
       page.assertResultsPublished();
@@ -55,10 +62,9 @@ describe("Election", () => {
         for (let i = 0; i < 10; i++) {
           page.castVote();
           page.assertVoteHasBeenAccepted();
-          page.inPersonVote();
-          page.assertInPersonVoteHasBeenAccepted();
         }
       },
+      missingTrustees: [1],
     });
   });
 
@@ -73,6 +79,7 @@ describe("Election", () => {
           page.assertVoteHasBeenAccepted();
         }
       },
+      missingTrustees: [1],
     });
   });
 
@@ -99,6 +106,7 @@ describe("Election", () => {
         page.castVote(); // Add one vote to have a ballot to tally
         page.assertVoteHasBeenAccepted();
       },
+      missingTrustees: [],
     });
   });
 });
