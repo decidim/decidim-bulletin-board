@@ -1,8 +1,8 @@
-.PHONY: all install lint test test_integration test_bulletin_board test_trustee test_voter
+.PHONY: all install lint test
 
 OS ?= $(shell python -c 'import platform; print(platform.system())')
 
-all: lint test build
+all: lint test
 
 install:
 	python3 -m pip install --upgrade pip
@@ -22,10 +22,12 @@ lint:
 	pipenv run flake8 . --count --max-complexity=10 --max-line-length=127 --statistics
 
 test:
+	pipenv run python setup.py install
 	pipenv run pytest
 
 package:
 	pipenv run python setup.py sdist bdist_wheel
+	pipenv run python setup.py install
 	python3 setup.py install
 
 publish:

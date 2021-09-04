@@ -19,7 +19,7 @@ RSpec.describe StartTally do
       expect { subject }.not_to change(LogEntry, :count)
     end
 
-    it "desn't change the election status" do
+    it "doesn't change the election status" do
       expect { subject }.not_to(change { Election.last.status })
     end
   end
@@ -74,7 +74,7 @@ RSpec.describe StartTally do
     end
   end
 
-  context "when the message author is not the authority" do
+  context "when the message author is not the right authority" do
     let(:extra_message_params) { { authority: create(:authority) } }
 
     it_behaves_like "starting the tally fails"

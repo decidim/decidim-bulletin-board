@@ -24,14 +24,23 @@ help_server:
 	@echo '  serve_test - Starts the bulletin board rails server in test mode.'
 
 install_server: install_bulletin_board_server_ruby_dependencies \
-		install_bulletin_board_server_js_dependencies
+		install_bulletin_board_server_js_dependencies \
+		install_test_e2e
+
+install_test_e2e:
+	cd ${BULLETIN_BOARD_SERVER_PATH} && npm run e2e:install
 
 clean_server:
 
 build_server:
 
-test_server:
-	cd ${BULLETIN_BOARD_SERVER_PATH} && bundle exec rspec && npm run e2e:tests
+test_server: test_rails test_e2e
+
+test_rails:
+	cd ${BULLETIN_BOARD_SERVER_PATH} && bundle exec rspec
+
+test_e2e:
+	cd ${BULLETIN_BOARD_SERVER_PATH} && npm run e2e:tests
 
 release_server:
 	docker image build -t ${DOCKER_WEB_IMAGE} -f Dockerfile.web . && \
