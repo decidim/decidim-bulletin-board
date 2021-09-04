@@ -18,7 +18,7 @@ module VotingScheme
     class BulletinBoard < VotingScheme::BulletinBoard
       include Dummy
 
-      RESULTS = ["tally.share", "end_tally"].freeze
+      RESULTS = ["tally.share", "tally.compensation", "end_tally"].freeze
 
       private
 
@@ -86,6 +86,9 @@ module VotingScheme
           end
         end
 
+        state[:compensations] = {}
+        state[:joint_compensations] = {}
+        state[:compensated] = 0
         state[:shares] = []
         state[:joint_shares] = build_questions_struct(1)
 
@@ -93,19 +96,48 @@ module VotingScheme
         append_content results
       end
 
-      def process_tally_message(message_identifier, _message, content)
+      def process_tally_message(message_identifier, message, content)
+        if message_identifier.subtype == "missing_trustee"
+          state[:compensations][message[:trustee_id]] = []
+          state[:joint_compensations][message[:trustee_id]] = build_questions_struct(1)
+
+          return
+        end
+
         raise RejectedMessage, "The owner_id doesn't match the sender trustee" if content[:owner_id] != message_identifier.author_id
-        raise RejectedMessage, "The trustee already sent their share" if state[:shares].include?(content[:owner_id])
 
-        state[:shares] << content[:owner_id]
+        if message_identifier.subtype == "share"
+          raise RejectedMessage, "The trustee already sent their share" if state[:shares].include?(content[:owner_id])
 
-        content[:contests].each do |question, answers|
-          answers.each do |answer, share|
-            state[:joint_shares][question][answer] *= share
+          state[:shares] << content[:owner_id]
+
+          content[:contests].each do |question, answers|
+            answers.each do |answer, share|
+              state[:joint_shares][question][answer] *= share
+            end
+          end
+        elsif message_identifier.subtype == "compensation"
+          compensation = state[:compensations][content[:trustee_id]]
+          raise RejectedMessage, "The trustee already sent their compensation for #{content[:trustee_id]}" if compensation.include?(content[:owner_id])
+
+          compensation << content[:owner_id]
+          content[:contests].each do |question, answers|
+            answers.each do |answer, compensation|
+              state[:joint_compensations][content[:trustee_id]][question][answer] *= compensation
+            end
+          end
+
+          if state[:compensations].count + state[:compensations][content[:trustee_id]].count == election.trustees.count
+            content[:contests].each do |question, answers|
+              answers.each do |answer, compensation|
+                state[:joint_shares][question][answer] *= ((state[:joint_compensations][content[:trustee_id]][question][answer].round)**(1.0 / state[:shares].count)).round
+              end
+            end
+            state[:compensated] += 1
           end
         end
 
-        return unless state[:shares].count == election.trustees.count
+        return unless state[:shares].count + state[:compensated] == election.trustees.count
 
         results = build_questions_struct(0)
         state[:joint_shares].each do |question, answers|
