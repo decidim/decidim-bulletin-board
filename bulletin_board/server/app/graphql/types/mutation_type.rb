@@ -10,6 +10,7 @@ module Types
     field :end_vote, mutation: Mutations::EndVoteMutation
     field :start_tally, mutation: Mutations::StartTallyMutation
     field :process_tally_step, mutation: Mutations::ProcessTallyStepMutation
+    field :report_missing_trustee, mutation: Mutations::ReportMissingTrusteeMutation
     field :publish_results, mutation: Mutations::PublishResultsMutation
     field :reset_test_database, mutation: Mutations::ResetTestDatabaseMutation
   end

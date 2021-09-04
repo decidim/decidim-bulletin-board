@@ -352,6 +352,17 @@ FactoryBot.define do
       end
     end
 
+    factory :report_missing_trustee_message, parent: :message do
+      transient do
+        election { create(:election, :vote_ended) }
+        authority { Authority.first }
+        trustee { Trustee.first }
+      end
+
+      message_id { "#{election.unique_id}.tally.missing_trustee+a.#{authority.slug}" }
+      trustee_id { trustee.slug }
+    end
+
     factory :end_tally_message, parent: :message do
       transient do
         election { create(:election, :tally_ended) }
