@@ -64,7 +64,7 @@ describe("TrusteeWrapper", () => {
 
       describe("when it receives the END_KEY_CEREMONY message", () => {
         it("changes the wrapper status", () => {
-          wrapper.processMessage(END_KEY_CEREMONY, {});
+          wrapper.processMessage(END_KEY_CEREMONY, { content: "{}" });
           expect(wrapper.status).toEqual(KEY_CEREMONY_ENDED);
         });
       });
@@ -152,7 +152,7 @@ describe("TrusteeWrapper", () => {
   describe("backup", () => {
     it("returns a JSON representation of the wrapper", () => {
       expect(wrapper.backup()).toEqual(
-        `{"trusteeId":"trustee-1","status":${CREATED},"electionPublicKey":0}`
+        `{"trusteeId":"trustee-1","status":${CREATED},"electionPublicKey":0,"jointElectionKey":0,"tallyCastMessage":null}`
       );
     });
 
@@ -163,7 +163,7 @@ describe("TrusteeWrapper", () => {
 
       it("returns a JSON representation of the wrapper in the KEY_CEREMONY status", () => {
         expect(wrapper.backup()).toEqual(
-          `{"trusteeId":"trustee-1","status":${KEY_CEREMONY},"electionPublicKey":${wrapper.electionPublicKey}}`
+          `{"trusteeId":"trustee-1","status":${KEY_CEREMONY},"electionPublicKey":${wrapper.electionPublicKey},"jointElectionKey":0,"tallyCastMessage":null}`
         );
       });
     });

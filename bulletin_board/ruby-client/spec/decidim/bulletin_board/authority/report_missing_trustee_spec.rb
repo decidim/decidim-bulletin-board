@@ -15,7 +15,7 @@ module Decidim
 
         let(:bulletin_board_response) do
           {
-            tally: {
+            reportMissingTrustee: {
               pendingMessage: {
                 status: "enqueued"
               }
