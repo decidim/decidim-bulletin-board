@@ -429,7 +429,9 @@ export class ElectionPage {
         cy.contains(name)
           .parent("tr")
           .within(() => {
-            cy.findByText("Done").should("be.visible");
+            cy.findByText("Done", {
+              timeout: 120_000,
+            }).should("be.visible");
           });
       }
     });
