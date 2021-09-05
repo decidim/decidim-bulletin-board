@@ -334,6 +334,12 @@ jobs:
           bundle exec rails s -e test -p 5017 &
           sleep 5
           npm run e2e:tests -- --browser chrome --headless
+      - name: Upload artifacts (server logs)
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v2
+        with:
+          name: test server logs
+          path: bulletin_board/server/log/
       - name: Upload artifacts (screenshots)
         if: ${{ always() }}
         uses: actions/upload-artifact@v2
