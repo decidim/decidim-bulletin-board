@@ -4,7 +4,7 @@
 filename = command_options.fetch("runnable_full_title", "no title").gsub(" ", "_").gsub(/[^[:print:]]/, "")
 
 # grab last lines until "APPCLEANED" (Make sure in clean.rb to log the text "APPCLEANED")
-system "tail -n 10000 -F=log/#{Rails.env}.log | sed \"/APPCLEANED/ q\" | sed 'x;1!H;$!d;x' > 'log/#{filename}.log'"
+system "tail -n 10000 -F log/#{Rails.env}.log | sed \"/APPCLEANED/ q\" | sed 'x;1!H;$!d;x' > 'log/#{filename}.log'"
 
 # create a json debug file for server debugging
 json_result = {}
@@ -18,7 +18,7 @@ if defined?(ActiveRecord::Base)
     end
 end
 
-filename = command_options.fetch("runnable_full_title", "no title").gsub(/[^[:print:]]/, "")
+filename = command_options.fetch("runnable_full_title", "no title").gsub(" ", "_").gsub(/[^[:print:]]/, "")
 File.open("#{Rails.root}/log/#{filename}.json", "w+") do |file| # rubocop:disable Rails/FilePath
   file << JSON.pretty_generate(json_result)
 end

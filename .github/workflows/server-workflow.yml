@@ -314,26 +314,9 @@ jobs:
           cd bulletin_board/server
           bundler exec rails db:create
           bundler exec rails db:migrate
-      # - name: Install Chrome
-      #   run: |
-      #     sudo apt-get update
-      #     sudo apt-get install -y unzip xvfb libxi6 libgconf-2-4
-      #     sudo curl -sS -o - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add
-      #     sudo echo "deb [arch=amd64]  http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list
-      #     sudo apt-get -y update
-      #     sudo apt-get -y install google-chrome-stable
-      #     wget https://chromedriver.storage.googleapis.com/90.0.4430.24/chromedriver_linux64.zip
-      #     unzip chromedriver_linux64.zip
-      #     sudo mv chromedriver /usr/bin/chromedriver
-      #     sudo chown root:root /usr/bin/chromedriver
-      #     sudo chmod +x /usr/bin/chromedriver
-      # - name: Run e2e tests
-      #   run: |
-      #     cd bulletin_board/server
-      #     npm run e2e:install
-      #     bundle exec rails s -e test -p 5017 &
-      #     sleep 5
-      #     npm run e2e:tests -- --browser chrome --headless
+      - name: Install e2e tests dependencies
+        run: |
+          make install_test_e2e
       - name: Run e2e tests
         run: |
           make serve_test &
