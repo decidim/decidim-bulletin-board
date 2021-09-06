@@ -1,5 +1,5 @@
 {
-  "name": "@codegram/decidim-bulletin_board",
+  "name": "@decidim/decidim-bulletin_board",
   "version": "0.22.0",
   "description": "",
   "main": "src/index.js",

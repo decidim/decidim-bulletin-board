@@ -142,7 +142,7 @@ release_voting_scheme_electionguard_gem:
 	rm voting_schemes-electionguard-${VERSION}.gem
 
 release_voting_scheme_electionguard_package:
-	cd ${VOTING_SCHEME_ELECTIONGUARD_JS_LIBRARY_PATH} && npm publish
+	cd ${VOTING_SCHEME_ELECTIONGUARD_JS_LIBRARY_PATH} && npm publish --access public
 
 install_verifier_electionguard_dependencies:
 	cd ${VERIFIER_ELECTIONGUARD_PATH} && npm i

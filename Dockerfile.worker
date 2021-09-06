@@ -83,6 +83,7 @@ WORKDIR /code/bulletin_board/server
 
 # Precompile assets
 RUN npm install --global yarn
+RUN bundle
 RUN bundle exec rake assets:precompile
 
 # Run the entrypoint script
