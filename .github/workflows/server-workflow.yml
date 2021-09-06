@@ -246,10 +246,19 @@ jobs:
           --health-retries 5
         env:
           POSTGRES_PASSWORD: postgres
+      redis:
+        image: redis
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     env:
       DATABASE_USERNAME: postgres
       DATABASE_PASSWORD: postgres
       DATABASE_HOST: postgres
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
     steps:
       - uses: actions/checkout@v2.0.0
         with:

@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "test/private_keys"
+require "redis"
 
 module Sandbox
   class ElectionsController < ApplicationController
@@ -9,7 +10,7 @@ module Sandbox
                   :random_voter_id,
                   :election_results, :verifiable_results,
                   :default_bulk_votes_number, :bulk_votes_file_name, :bulk_votes_file_exists?, :generated_votes_number,
-                  :pending_message
+                  :bulk_votes_file_url, :bulk_votes_file_update_time, :bulk_votes_url_set?, :pending_message
 
     DEFAULT_BULK_VOTES_NUMBER = 1000
 
@@ -47,8 +48,6 @@ module Sandbox
     end
 
     def generate_bulk_votes
-      delete_bulk_votes_file(election)
-
       GenerateVotesJob.perform_later(number_of_votes_to_generate, election.id, bulk_votes_file_path(election), bulletin_board_settings_hash)
     end
 
@@ -225,10 +224,6 @@ module Sandbox
       DEFAULT_BULK_VOTES_NUMBER
     end
 
-    def delete_bulk_votes_file(election)
-      File.delete(bulk_votes_file_path(election)) if bulk_votes_file_exists?(election)
-    end
-
     def bulk_votes_file_path(election)
       Rails.root.join("tmp", bulk_votes_file_name(election)).to_s
     end
@@ -241,8 +236,27 @@ module Sandbox
       File.exist?(bulk_votes_file_path(election))
     end
 
+    def bulk_votes_url_set?(election)
+      bulk_votes_file_url(election).present?
+    end
+
+    def bulk_votes_file_url(election)
+      signed_id = redis.get("election-#{election.id}-votes-file:signed_id")
+      blob = ActiveStorage::Blob.find_signed(signed_id) if signed_id
+
+      url_for(blob) if blob
+    end
+
+    def bulk_votes_file_update_time(election)
+      redis.get("election-#{election.id}-votes-file:time")
+    end
+
     def generated_votes_number(election)
       `wc -l "#{bulk_votes_file_path(election)}"`.strip.split(" ")[0].to_i
+    end
+
+    def redis
+      Redis.current
     end
   end
 end

@@ -17,7 +17,7 @@ module VotingScheme
       end
 
       def encrypt(plaintext)
-        ciphertext = state.encrypt(PyCall::Dict.new(plaintext))
+        _auditable_data, ciphertext = state.encrypt(PyCall::Dict.new(plaintext))
 
         to_h(ciphertext)
       end

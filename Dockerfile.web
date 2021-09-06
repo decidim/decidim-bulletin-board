@@ -46,14 +46,14 @@ RUN cp -rf /code/voting_schemes/electionguard/python-to-js/override/* /src/pyodi
 FROM codegram/ruby-node-python-electionguard:ruby-2.6.6-node-15-python-3.8.11-electionguard-1.2.1
 LABEL author="david@codegram.com"
 
-# Environment variables
+# Dummy environment variables used to compile assets
 ENV SECRET_KEY_BASE 1234
 ENV RAILS_ENV production
 
 # Install system dependencies
 RUN apt-get update --allow-releaseinfo-change && \
   apt-get install -y postgresql postgresql-client postgresql-contrib libpq-dev \
-  redis-server memcached imagemagick ffmpeg mupdf mupdf-tools libxml2-dev && \
+  redis-server memcached imagemagick ffmpeg mupdf mupdf-tools libxml2-dev curl && \
   rm -rf /var/lib/apt/lists/*
 
 # Add Makefiles
