@@ -59,6 +59,10 @@ release: check_clean_repo \
 		release_dummy \
 		release_electionguard
 
+deploy_login:
+	heroku login
+	heroku container:login
+
 deploy_development_app:
 	./scripts/deploy_development_app.sh
 
@@ -75,6 +79,7 @@ help_common:
 	@echo '  test - Run all tests.'
 	@echo '  sync_main - Prepare the local repo to perform the release. It pulls the last commits and updates the main branch'
 	@echo '  release - Bump versions, commit and push changes to the repository and release gems and packages. Requires clean repository and VERSION set.'
+	@echo '  deploy_login - Login to Heroku to be able to deploy the application.'
 	@echo '  deploy_staging_app - Deploy the bulletin board staging application. Requires heroku login and must be run in the main branch.'
 	@echo '  deploy_development_app - Deploy an application to the staging pipeline in the development stage. Requires heroku login.'
 
@@ -101,4 +106,4 @@ check_release_flag:
 	@[ "${RELEASE}" ] || ( echo ">> RELEASE is not set"; exit 1 )
 
 check_main_branch:
-	@[ "${shell git rev-parse --abbrev-ref HEAD}" == 'main' ] || ( echo ">> current branch is not main"; exit 1 )
+	@[ "${shell git rev-parse --abbrev-ref HEAD}" = "main" ] || ( echo ">> current branch is not main"; exit 1 )

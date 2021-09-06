@@ -9,6 +9,7 @@ clone_electionguard_python_repository: check_electionguard_python_sha
 
 install_electionguard_python_dependencies: clone_electionguard_python_repository
 	cd ${ELECTIONGUARD_PYTHON_PATH} && git checkout ${ELECTIONGUARD_PYTHON_REF} && make environment
+	cd ${ELECTIONGUARD_PYTHON_PATH} && poetry export --format requirements.txt | pip install --requirement /dev/stdin
 
 build_electionguard_python: install_electionguard_python_dependencies
 	cd ${ELECTIONGUARD_PYTHON_PATH} && git checkout ${ELECTIONGUARD_PYTHON_REF} && make build
