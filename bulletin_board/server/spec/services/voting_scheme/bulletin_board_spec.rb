@@ -24,6 +24,18 @@ module VotingScheme
         it { expect(subject).to be_truthy }
       end
 
+      context "when asking for the missing trustee message" do
+        let(:type_subtype) { "tally.missing_trustee" }
+
+        it { expect(subject).to be_falsey }
+      end
+
+      context "when asking for the tally compensation message" do
+        let(:type_subtype) { "tally.compensation" }
+
+        it { expect(subject).to be_truthy }
+      end
+
       context "when using the electionguard voting scheme" do
         let(:voting_scheme) { "electionguard" }
 
@@ -37,6 +49,18 @@ module VotingScheme
 
         context "when asking for the tally shares message" do
           let(:type_subtype) { "tally.trustee_share" }
+
+          it { expect(subject).to be_truthy }
+        end
+
+        context "when asking for the missing trustee message" do
+          let(:type_subtype) { "tally.missing_trustee" }
+
+          it { expect(subject).to be_falsey }
+        end
+
+        context "when asking for the tally compensation message" do
+          let(:type_subtype) { "tally.compensations" }
 
           it { expect(subject).to be_truthy }
         end

@@ -9,8 +9,17 @@
     .start-button,
     .generate-backup-button,
     .restore-button,
+    .report-missing,
     .done-message {
       display: none;
+    }
+  }
+  .missing {
+    .report-missing {
+      display: none;
+    }
+    .button {
+      background-color: gray;
     }
   }
 }

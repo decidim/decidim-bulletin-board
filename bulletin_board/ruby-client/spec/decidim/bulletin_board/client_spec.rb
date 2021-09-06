@@ -227,6 +227,34 @@ module Decidim
         end
       end
 
+      describe "report_missing_trustee" do
+        subject { instance.report_missing_trustee(election_id, trustee_id) }
+
+        before do
+          stub_command("Decidim::BulletinBoard::Authority::ReportMissingTrustee", :call, *result)
+        end
+
+        let(:election_id) { "test.1" }
+        let(:trustee_id) { "alice" }
+        let(:result) { [:ok, double(status: "enqueued")] }
+
+        it "yields the message_id" do
+          expect { |block| instance.report_missing_trustee(election_id, trustee_id, &block) }.to yield_with_args("a.message+id")
+        end
+
+        it "calls the ReportMissingTrustee command and returns the result" do
+          expect(subject.status).to eq("enqueued")
+        end
+
+        context "when something went wrong" do
+          let(:result) { [:error, "something went wrong"] }
+
+          it "calls the ReportMissingTrustee command and throws an error" do
+            expect { subject }.to raise_error("something went wrong")
+          end
+        end
+      end
+
       describe "get_election_results" do
         subject { instance.get_election_results(election_id) }
 

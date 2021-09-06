@@ -27,7 +27,7 @@ module LogEntryCommand
       @error.blank?
     end
 
-    def valid_log_entry?(type)
+    def valid_log_entry?(type, subtype = nil)
       run_validations do
         if decoded_data.blank?
           "Invalid signature"
@@ -37,6 +37,8 @@ module LogEntryCommand
           "The message identifier given doesn't match the signed data"
         elsif message_identifier.type != type
           "The message is not valid for this endpoint"
+        elsif subtype && message_identifier.subtype != subtype
+          "The message subtype is not valid for this endpoint"
         elsif invalid_timestamp?
           "Message is too old to be accepted"
         end

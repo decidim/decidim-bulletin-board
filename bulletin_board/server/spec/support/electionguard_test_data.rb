@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require "jsonl"
-require "byebug"
 
 class ElectionguardTestData
   class Messages

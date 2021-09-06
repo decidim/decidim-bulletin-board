@@ -12,25 +12,25 @@ from electionguard.key_ceremony import ElectionPublicKey
 from electionguard.tally import CiphertextTally, PlaintextTally, PlaintextTallyContest
 from electionguard.types import CONTEST_ID, GUARDIAN_ID, SELECTION_ID
 
-from .messages import Compensation
+from .messages import Compensations
 
 TallyResults = Dict[CONTEST_ID, Dict[SELECTION_ID, int]]
 
 
 class TallyDecryptor:
     shares: Dict[GUARDIAN_ID, DecryptionShare]
-    compensations: Dict[GUARDIAN_ID, Compensation]
+    all_compensations: Dict[GUARDIAN_ID, Compensations]
 
     def __init__(self):
         super(TallyDecryptor).__init__()
         self.shares = dict()
-        self.compensations = dict()
+        self.all_compensations = dict()
 
     def received_share(self, share: DecryptionShare):
         self.shares[share.guardian_id] = share
 
-    def received_compensation(self, compensation: Compensation):
-        self.compensations[compensation.guardian_id] = compensation
+    def received_compensations(self, compensations: Compensations):
+        self.all_compensations[compensations.guardian_id] = compensations
 
     def is_ready_to_decrypt(self, number_of_guardians: int, quorum: int) -> bool:
         """
@@ -50,7 +50,7 @@ class TallyDecryptor:
         Do we have enough available trustees, and
         did we receive a compensation from every available trustee?
         """
-        return len(self.shares) >= quorum and len(self.compensations.keys()) == len(
+        return len(self.shares) >= quorum and len(self.all_compensations.keys()) == len(
             self.shares
         )
 
@@ -104,7 +104,7 @@ class TallyDecryptor:
         """
 
         any_available_guardian_id = list(self.shares.keys())[0]  # any will do
-        all_election_public_keys = self.compensations[
+        all_election_public_keys = self.all_compensations[
             any_available_guardian_id
         ].election_public_keys
 
@@ -116,8 +116,8 @@ class TallyDecryptor:
 
         compensated_missing_guardians: Set[MISSING_GUARDIAN_ID] = {
             share.missing_guardian_id
-            for available_guardian_id, compensation in self.compensations.items()
-            for share in compensation.compensated_decryptions
+            for available_guardian_id, compensations in self.all_compensations.items()
+            for share in compensations.compensated_decryptions
         }
 
         if len(compensated_missing_guardians) < len(missing_guardians):
@@ -193,15 +193,15 @@ class TallyDecryptor:
             MISSING_GUARDIAN_ID, Dict[AVAILABLE_GUARDIAN_ID, ElementModQ]
         ] = dict()
 
-        for available_guardian_id, compensation in self.compensations.items():
-            for share in compensation.compensated_decryptions:
+        for available_guardian_id, compensations in self.all_compensations.items():
+            for share in compensations.compensated_decryptions:
                 # skip if the supposedly missing guardian sent the actual share
                 if share.missing_guardian_id in missing_guardian_ids:
                     if share.missing_guardian_id not in coeffs.keys():
                         coeffs[share.missing_guardian_id] = {}
                     coeffs[share.missing_guardian_id][
                         available_guardian_id
-                    ] = compensation.lagrange_coefficient
+                    ] = compensations.lagrange_coefficient
 
         return coeffs
 
@@ -220,8 +220,8 @@ class TallyDecryptor:
             Dict[AVAILABLE_GUARDIAN_ID, CompensatedDecryptionShare],
         ] = dict()
 
-        for available_guardian_id, compensation in self.compensations.items():
-            for share in compensation.compensated_decryptions:
+        for available_guardian_id, compensations in self.all_compensations.items():
+            for share in compensations.compensated_decryptions:
                 # skip if the supposedly missing guardian sent the actual share
                 if share.missing_guardian_id in missing_guardian_ids:
                     if share.missing_guardian_id not in shares.keys():

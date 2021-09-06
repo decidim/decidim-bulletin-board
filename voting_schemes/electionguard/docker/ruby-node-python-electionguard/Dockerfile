@@ -4,7 +4,7 @@ LABEL author="david@codegram.com"
 ARG ELECTIONGUARD_PYTHON_REF=
 
 ENV ELECTIONGUARD_PYTHON_REF=$ELECTIONGUARD_PYTHON_REF
-ENV PYTHON_VERSION=3.8.8
+ENV PYTHON_VERSION=3.8.11
 ENV PYTHON_CONFIGURE_OPTS='--enable-shared'
 ENV PYENV_ROOT /root/.pyenv
 ENV PATH="$HOME/.poetry/bin:$PATH"
@@ -14,7 +14,7 @@ ENV PATH $PYENV_ROOT/shims:$PYENV_ROOT/bin:/root/.poetry/bin:$PATH
 RUN gem install bundler
 
 # Install system dependencies
-RUN apt-get update && apt-get install -y sudo pipenv git vim curl
+RUN apt-get update --allow-releaseinfo-change && apt-get install -y sudo pipenv git vim curl
 
 # Install python and poetry
 RUN git clone https://github.com/pyenv/pyenv.git ~/.pyenv && \

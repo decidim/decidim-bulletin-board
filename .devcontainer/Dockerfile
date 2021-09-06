@@ -1,4 +1,4 @@
-FROM codegram/ruby-node-python-electionguard:ruby-2.6.6-node-15-python-3.8.8-electionguard-1.2.0
+FROM codegram/ruby-node-python-electionguard:ruby-2.6.6-node-15-python-3.8.11-electionguard-1.2.1
 LABEL author="david@codegram.com"
 
 # [Option] Install zsh
@@ -19,7 +19,7 @@ ARG USERNAME=automatic
 ARG USER_UID=1000
 ARG USER_GID=$USER_UID
 COPY library-scripts/*.sh /tmp/library-scripts/
-RUN apt-get update \
+RUN apt-get update --allow-releaseinfo-change \
     && /bin/bash /tmp/library-scripts/common-debian.sh "${INSTALL_ZSH}" "${USERNAME}" "${USER_UID}" "${USER_GID}" "${UPGRADE_PACKAGES}" \
     # Use Docker script from script library to set things up
     && /bin/bash /tmp/library-scripts/docker-debian.sh "${ENABLE_NONROOT_DOCKER}" "/var/run/docker-host.sock" "/var/run/docker.sock" "${USERNAME}" \

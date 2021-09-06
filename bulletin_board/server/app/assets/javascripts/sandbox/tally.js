@@ -38,6 +38,7 @@ $(() => {
     );
 
     const $startButton = $trustee.find(".start-button");
+    const $reportMissing = $trustee.find(".report-missing");
     const $generateBackupButton = $trustee.find(".generate-backup-button");
     const $restoreButton = $trustee.find(".restore-button");
     const $doneMessage = $trustee.find(".done-message");
@@ -78,9 +79,25 @@ $(() => {
         onEvent(_event) {},
         onBindStartButton(onEventTriggered) {
           $startButton.on("click", onEventTriggered);
+          $reportMissing.on("click", () => {
+            $reportMissing.hide();
+            $.ajax({
+              url: $reportMissing.data("url"),
+              method: "POST",
+              contentType: "application/json",
+              data: JSON.stringify({
+                trustee_id: trusteeContext.uniqueId,
+              }), // eslint-disable-line camelcase
+              headers: {
+                "X-CSRF-Token": $("meta[name=csrf-token]").attr("content"),
+              },
+            });
+            $trustee.addClass("missing");
+          });
         },
         onStart() {
           $startButton.hide();
+          $reportMissing.hide();
         },
         onComplete() {
           $doneMessage.show();
@@ -103,6 +120,7 @@ $(() => {
       });
 
       $startButton.show();
+      $reportMissing.show();
       $generateBackupButton.on("click", (event) => {
         $generateBackupButton.attr(
           "href",

@@ -11,6 +11,8 @@ export const END_KEY_CEREMONY = "end_key_ceremony";
 export const START_TALLY = "start_tally";
 export const TALLY_CAST = "tally.cast";
 export const TALLY_SHARE = "tally.share";
+export const TALLY_MISSING_TRUSTEE = "tally.missing_trustee";
+export const TALLY_COMPENSATION = "tally.compensation";
 export const END_TALLY = "end_tally";
 
 /**
@@ -29,6 +31,8 @@ export class TrusteeWrapper {
     this.trusteeId = trusteeId;
     this.status = CREATED;
     this.electionPublicKey = 0;
+    this.jointElectionKey = 0;
+    this.tallyCastMessage = null;
   }
 
   /**
@@ -58,6 +62,8 @@ export class TrusteeWrapper {
       }
       case KEY_CEREMONY: {
         if (messageType === END_KEY_CEREMONY) {
+          const content = JSON.parse(decodedData.content);
+          this.jointElectionKey = content.joint_election_key;
           this.status = KEY_CEREMONY_ENDED;
         }
         break;
@@ -70,7 +76,8 @@ export class TrusteeWrapper {
       }
       case TALLY: {
         if (messageType === TALLY_CAST) {
-          const contests = JSON.parse(decodedData.content);
+          this.tallyCastMessage = decodedData.content;
+          const contests = JSON.parse(this.tallyCastMessage);
           for (const [question, answers] of Object.entries(contests)) {
             for (const [answer, value] of Object.entries(answers)) {
               contests[question][answer] =
@@ -82,6 +89,27 @@ export class TrusteeWrapper {
             messageType: TALLY_SHARE,
             content: JSON.stringify({
               owner_id: this.trusteeId,
+              contests,
+            }),
+          };
+        } else if (messageType === TALLY_MISSING_TRUSTEE) {
+          const contests = JSON.parse(this.tallyCastMessage);
+          for (const [question, answers] of Object.entries(contests)) {
+            for (const [answer, value] of Object.entries(answers)) {
+              contests[question][answer] =
+                (1.0 *
+                  (value % this.electionPublicKey) *
+                  this.jointElectionKey) /
+                this.electionPublicKey /
+                this.electionPublicKey;
+            }
+          }
+
+          return {
+            messageType: TALLY_COMPENSATION,
+            content: JSON.stringify({
+              owner_id: this.trusteeId,
+              trustee_id: decodedData.trustee_id,
               contests,
             }),
           };

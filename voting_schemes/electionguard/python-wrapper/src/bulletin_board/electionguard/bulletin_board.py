@@ -7,10 +7,9 @@ from electionguard.ballot import (
     from_ciphertext_ballot,
 )
 from electionguard.ballot_validator import ballot_is_valid_for_election
-from electionguard.data_store import DataStore
 from electionguard.decryption_share import DecryptionShare
 from electionguard.election import ElectionConstants
-from electionguard.key_ceremony import ElectionPublicKey, combine_election_public_keys
+from electionguard.key_ceremony import combine_election_public_keys
 from electionguard.tally import CiphertextTally
 from electionguard.types import GUARDIAN_ID
 from electionguard.utils import get_optional
@@ -18,7 +17,7 @@ from electionguard.utils import get_optional
 from .common import Content, Context, ElectionStep, Wrapper
 from .dummy_scheduler import DummyScheduler
 from .messages import (
-    Compensation,
+    Compensations,
     KeyCeremonyResults,
     TrusteeElectionKey,
     TrusteePartialKeys,
@@ -213,7 +212,7 @@ class ProcessTrusteeShare(ElectionStep[BulletinBoardContext]):
     def skip_message(self, message_type: str):
         return (
             message_type != "tally.trustee_share"
-            and message_type != "tally.compensation"
+            and message_type != "tally.compensations"
         )
 
     def process_message(
@@ -222,53 +221,29 @@ class ProcessTrusteeShare(ElectionStep[BulletinBoardContext]):
         if message_type == "tally.trustee_share":
             share = deserialize(message["content"], DecryptionShare)
             context.decryptor.received_share(share)
+        elif message_type == "tally.compensations":
+            compensations = deserialize(message["content"], Compensations)
+            context.decryptor.received_compensations(compensations)
 
-            if not context.decryptor.is_ready_to_decrypt(
-                context.number_of_guardians, context.quorum
-            ):
-                return [], None
+        if not context.decryptor.is_ready_to_decrypt(
+            context.number_of_guardians, context.quorum
+        ):
+            return [], None
 
-            contests, results = context.decryptor.decrypt_tally(
-                context.tally,
-                context.election_context.crypto_extended_base_hash,
-                context.number_of_guardians,
-                context.quorum,
-            )
+        contests, results = context.decryptor.decrypt_tally(
+            context.tally,
+            context.election_context.crypto_extended_base_hash,
+            context.number_of_guardians,
+            context.quorum,
+        )
 
-            return [
-                {
-                    "message_type": "end_tally",
-                    "content": serialize(contests),
-                    "results": results,
-                }
-            ], None
-
-        if message_type == "tally.compensation":
-            compensation = deserialize(message["content"], Compensation)
-            context.decryptor.received_compensation(compensation)
-
-            if not context.decryptor.is_ready_to_decrypt(
-                context.number_of_guardians, context.quorum
-            ):
-                return [], None
-
-            contests, results = context.decryptor.decrypt_tally(
-                context.tally,
-                context.election_context.crypto_extended_base_hash,
-                context.number_of_guardians,
-                context.quorum,
-            )
-
-            return [
-                {
-                    "message_type": "end_tally",
-                    "content": serialize(contests),
-                    "results": results,
-                }
-            ], None
-
-        # impossible, pylance
-        return [], None
+        return [
+            {
+                "message_type": "end_tally",
+                "content": serialize(contests),
+                "results": results,
+            }
+        ], None
 
 
 class BulletinBoard(Wrapper[BulletinBoardContext]):

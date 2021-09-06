@@ -1,5 +1,5 @@
 # This stage builds the python-wrapper package
-FROM codegram/ruby-node-python-electionguard:ruby-2.6.6-node-15-python-3.8.8-electionguard-1.2.0 as python-wrapper-builder
+FROM codegram/ruby-node-python-electionguard:ruby-2.6.6-node-15-python-3.8.11-electionguard-1.2.1 as python-wrapper-builder
 LABEL author="david@codegram.com"
 
 # Add Makefiles
@@ -17,7 +17,7 @@ ADD voting_schemes/electionguard/python-wrapper /code/voting_schemes/electiongua
 RUN cd /code && make build_electionguard_python_wrapper
 
 # This stage builds the pyodide packages for the previous python packages
-FROM codegram/pyodide-electionguard:pyodide-0.16.1-electionguard-1.2.0 as python-to-js-builder
+FROM codegram/pyodide-electionguard:pyodide-0.16.1-electionguard-1.2.1 as python-to-js-builder
 LABEL author="david@codegram.com"
 
 ENV PYODIDE_PACKAGES "electionguard,bulletin_board-electionguard"
@@ -43,7 +43,7 @@ RUN make
 RUN cp -rf /code/voting_schemes/electionguard/python-to-js/override/* /src/pyodide/build/
 
 # This stage builds the bulletin-board application
-FROM codegram/ruby-node-python-electionguard:ruby-2.6.6-node-15-python-3.8.8-electionguard-1.2.0
+FROM codegram/ruby-node-python-electionguard:ruby-2.6.6-node-15-python-3.8.11-electionguard-1.2.1
 LABEL author="david@codegram.com"
 
 # Environment variables
@@ -51,7 +51,7 @@ ENV SECRET_KEY_BASE 1234
 ENV RAILS_ENV production
 
 # Install system dependencies
-RUN apt-get update && \
+RUN apt-get update --allow-releaseinfo-change && \
   apt-get install -y postgresql postgresql-client postgresql-contrib libpq-dev \
   redis-server memcached imagemagick ffmpeg mupdf mupdf-tools libxml2-dev && \
   rm -rf /var/lib/apt/lists/*

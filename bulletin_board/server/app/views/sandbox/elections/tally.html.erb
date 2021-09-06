@@ -31,9 +31,10 @@
             <td><%= trustee.unique_id %></td>
             <td><%= trustee.name %></td>
             <td>
-              <%= link_to "Start", "#", class: "start-button" %>
+              <%= link_to "Start", "#", class: "start-button button" %>
+              <%= link_to "Report as missing", "#", class: "report-missing button", data: { url: report_missing_trustee_sandbox_election_path(election, trustee_id: trustee.slug) } %>
               <%= link_to "Generate backup", "#", class: "generate-backup-button button" %>
-              <label class="restore-button">
+              <label class="restore-button button">
                 <span>Restore</span>
                 <input class="restore-button-input button" style="display: none" type="file" />
               </label>

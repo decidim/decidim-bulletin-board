@@ -53,7 +53,7 @@ class KeyCeremonyResults(Serializable):
 
 
 @dataclass
-class Compensation(Serializable):
+class Compensations(Serializable):
     guardian_id: AVAILABLE_GUARDIAN_ID
     lagrange_coefficient: ElementModQ
     compensated_decryptions: List[CompensatedDecryptionShare]

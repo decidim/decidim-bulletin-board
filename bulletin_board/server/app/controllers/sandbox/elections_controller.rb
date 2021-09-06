@@ -82,6 +82,12 @@ module Sandbox
 
     def tally; end
 
+    def report_missing_trustee
+      pending_message = bulletin_board_client.report_missing_trustee(election_id, params[:trustee_id])
+
+      render json: pending_message.to_json
+    end
+
     def publish_results
       bulletin_board_client.publish_results(election_id)
       go_back

@@ -88,7 +88,9 @@ FactoryBot.define do
         election.voting_scheme_state = Marshal.dump(joint_election_key: Test::Elections.joint_election_key,
                                                     trustees: evaluator.trustees_plus_keys.map(&:first).map(&:slug),
                                                     joint_shares: joint_shares,
-                                                    shares: evaluator.trustees_done.map(&:slug))
+                                                    shares: evaluator.trustees_done.map(&:slug),
+                                                    compensations: {}, joint_compensations: {},
+                                                    compensated: 0)
       end
     end
 
@@ -100,7 +102,9 @@ FactoryBot.define do
         election.voting_scheme_state = Marshal.dump(joint_election_key: Test::Elections.joint_election_key,
                                                     trustees: evaluator.trustees_plus_keys.map(&:first).map(&:slug),
                                                     joint_shares: joint_shares,
-                                                    shares: evaluator.trustees_plus_keys.map(&:first).map(&:slug))
+                                                    shares: evaluator.trustees_plus_keys.map(&:first).map(&:slug),
+                                                    compensations: {}, joint_compensations: {},
+                                                    compensated: 0)
       end
     end
 
