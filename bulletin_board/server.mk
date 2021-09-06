@@ -60,7 +60,7 @@ release_server:
 	docker image push ${DOCKER_WEB_IMAGE}
 
 bump_server:
-	cd ${BULLETIN_BOARD_SERVER_PATH} && bundle
+	cd ${BULLETIN_BOARD_SERVER_PATH} && bundle update decidim-bulletin_board voting_schemes-dummy voting_schemes-electionguard
 
 # SUBTASKS
 

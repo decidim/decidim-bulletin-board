@@ -23,10 +23,10 @@ clean: clean_server \
 		clean_dummy \
 		clean_electionguard
 
-build: build_server \
-		build_client \
+build: build_client \
 		build_dummy \
-		build_electionguard
+		build_electionguard \
+		build_server
 
 test: test_server \
  		test_client \
@@ -83,10 +83,10 @@ help_common:
 	@echo '  deploy_staging_app - Deploy the bulletin board staging application. Requires heroku login and must be run in the main branch.'
 	@echo '  deploy_development_app - Deploy an application to the staging pipeline in the development stage. Requires heroku login.'
 
-bump_versions: bump_server \
-		bump_client \
+bump_versions: bump_client \
 		bump_dummy \
-		bump_electionguard
+		bump_electionguard \
+		bump_server
 
 update_changelog:
 	sed -i.bak -E "s/## Unreleased/## Unreleased\n\n## [${VERSION}] - `date +'%Y-%m-%d'`/g" CHANGELOG.md
