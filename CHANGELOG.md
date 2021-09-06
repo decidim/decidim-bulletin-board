@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## [0.22.0] - 2021-09-06
+
 ## Added
 
 - The bulletin board client now includes a `report_missing_trustee` method to report the absence of a trustee during the Tally phase.
