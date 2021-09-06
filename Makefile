@@ -23,10 +23,10 @@ clean: clean_server \
 		clean_dummy \
 		clean_electionguard
 
-build: build_client \
+build: build_server \
+		build_client \
 		build_dummy \
 		build_electionguard \
-		build_server
 
 test: test_server \
  		test_client \
@@ -50,6 +50,7 @@ sync_develop:
 release: check_clean_repo \
 		check_version \
 		bump_versions \
+		pre_release_server \
 		build \
 		check_release_flag \
 		update_changelog \

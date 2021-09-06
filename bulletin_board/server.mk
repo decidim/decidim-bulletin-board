@@ -55,6 +55,12 @@ test_rails:
 test_e2e:
 	cd ${BULLETIN_BOARD_SERVER_PATH} && npm run e2e:tests -- --browser chrome --headless
 
+pre_release_server:
+	cd ${BULLETIN_BOARD_SERVER_PATH} && bundle exec rails s -P tmp/pids/development.pid &
+	sleep 5 && cd ${BULLETIN_BOARD_SERVER_PATH} && \
+		bundle exec rake schema:generate && npm run schema:generate && \
+		kill -9 $$(cat tmp/pids/development.pid) && rm tmp/pids/development.pid
+
 release_server:
 	docker image build -t ${DOCKER_WEB_IMAGE} -f Dockerfile.web . && \
 	docker image push ${DOCKER_WEB_IMAGE}
