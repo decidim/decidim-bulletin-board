@@ -27,9 +27,16 @@ module Sandbox
         client.cast_vote(election.unique_id.split(".").last, SecureRandom.hex, encrypted_ballot)
       end
 
-      # Uploading the file to transfer.sh and saving its URL in Redis (useful for when background jobs are executed on a different machine)
-      file_url = `curl --upload-file #{file_path} https://transfer.sh/election-#{election.id}-votes-file.csv`
-      redis.set("election-#{election.id}-votes-file:url", file_url.strip)
+      # Uploading the file to ActiveStorage and saving its URL in Redis (useful for when background jobs are executed on a different machine)
+      file = File.open(file_path)
+      blob = ActiveStorage::Blob.create_after_upload!(
+        io: file,
+        filename: "election-#{election.id}-votes-file.csv",
+        content_type: "text/csv",
+        identify: false
+      )
+
+      redis.set("election-#{election.id}-votes-file:signed_id", blob.signed_id)
       redis.set("election-#{election.id}-votes-file:time", Time.zone.now.to_s)
     end
 

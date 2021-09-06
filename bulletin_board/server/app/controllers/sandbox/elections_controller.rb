@@ -241,7 +241,10 @@ module Sandbox
     end
 
     def bulk_votes_file_url(election)
-      redis.get("election-#{election.id}-votes-file:url")
+      signed_id = redis.get("election-#{election.id}-votes-file:signed_id")
+      blob = ActiveStorage::Blob.find_signed(signed_id) if signed_id
+
+      url_for(blob) if blob
     end
 
     def bulk_votes_file_update_time(election)
