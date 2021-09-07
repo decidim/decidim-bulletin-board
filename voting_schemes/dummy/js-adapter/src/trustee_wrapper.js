@@ -54,6 +54,7 @@ export class TrusteeWrapper {
           this.quorum = decodedData.scheme.quorum;
           this.status = CREATED;
         }
+        break;
       }
       case CREATED: {
         if (messageType === START_KEY_CEREMONY) {

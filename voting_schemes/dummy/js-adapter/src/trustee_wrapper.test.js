@@ -1,5 +1,6 @@
 import {
   TrusteeWrapper,
+  NONE,
   CREATED,
   KEY_CEREMONY,
   KEY_CEREMONY_ENDED,
@@ -12,6 +13,7 @@ import {
   TALLY_CAST,
   TALLY_SHARE,
   END_TALLY,
+  CREATE_ELECTION,
 } from "./trustee_wrapper";
 
 describe("TrusteeWrapper", () => {
@@ -31,12 +33,35 @@ describe("TrusteeWrapper", () => {
 
   it("initialises the trustee wrapper with the given params", () => {
     expect(wrapper.trusteeId).toEqual(defaultParams.trusteeId);
-    expect(wrapper.status).toEqual(CREATED);
+    expect(wrapper.status).toEqual(NONE);
     expect(wrapper.electionPublicKey).toEqual(0);
   });
 
   describe("processMessage", () => {
+    describe("when the status is NONE", () => {
+      describe("when it receives the CREATE_ELECTION message", () => {
+        it("changes the wrapper status and stores some data", () => {
+          const response = wrapper.processMessage(CREATE_ELECTION, {
+            scheme: { quorum: 2 },
+          });
+          expect(wrapper.status).toEqual(CREATED);
+          expect(wrapper.quorum).toEqual(2);
+          expect(response).toEqual(undefined);
+        });
+      });
+
+      describe("when it receives any other message", () => {
+        it("doesn't do anything", () => {
+          wrapper.processMessage("some-type", {});
+          expect(wrapper.status).toEqual(NONE);
+        });
+      });
+    });
+
     describe("when the status is CREATED", () => {
+      beforeEach(() => {
+        wrapper.status = CREATED;
+      });
       describe("when it receives the START_KEY_CEREMONY message", () => {
         it("changes the wrapper status and stores some data", () => {
           const response = wrapper.processMessage(START_KEY_CEREMONY, {});
@@ -152,18 +177,19 @@ describe("TrusteeWrapper", () => {
   describe("backup", () => {
     it("returns a JSON representation of the wrapper", () => {
       expect(wrapper.backup()).toEqual(
-        `{"trusteeId":"trustee-1","status":${CREATED},"electionPublicKey":0,"jointElectionKey":0,"tallyCastMessage":null}`
+        `{"trusteeId":"trustee-1","status":${NONE},"electionPublicKey":0,"jointElectionKey":0,"tallyCastMessage":null,"quorum":0,"trusteesKeys":{},"trusteesShares":{}}`
       );
     });
 
     describe("after creating the election keys", () => {
       beforeEach(() => {
+        wrapper.processMessage(CREATE_ELECTION, { scheme: { quorum: 2 } });
         wrapper.processMessage(START_KEY_CEREMONY, {});
       });
 
       it("returns a JSON representation of the wrapper in the KEY_CEREMONY status", () => {
         expect(wrapper.backup()).toEqual(
-          `{"trusteeId":"trustee-1","status":${KEY_CEREMONY},"electionPublicKey":${wrapper.electionPublicKey},"jointElectionKey":0,"tallyCastMessage":null}`
+          `{"trusteeId":"trustee-1","status":${KEY_CEREMONY},"electionPublicKey":${wrapper.electionPublicKey},"jointElectionKey":0,"tallyCastMessage":null,"quorum":2,"trusteesKeys":{},"trusteesShares":{}}`
         );
       });
     });
@@ -175,7 +201,7 @@ describe("TrusteeWrapper", () => {
       const backup = wrapper.backup();
 
       wrapper = buildTrusteeWrapper();
-      expect(wrapper.status).toEqual(CREATED);
+      expect(wrapper.status).toEqual(NONE);
       expect(wrapper.restore(backup, KEY_CEREMONY_STEP_1)).toBeTruthy();
       expect(wrapper.status).toEqual(KEY_CEREMONY);
     });
