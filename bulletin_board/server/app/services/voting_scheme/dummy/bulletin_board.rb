@@ -35,10 +35,12 @@ module VotingScheme
 
       def process_create_election_message(_message_identifier, message, _content)
         raise RejectedMessage, "There must be at least 2 Trustees" if message.fetch(:trustees, []).count < 2
+        @state = { quorum: message[:scheme][:quorum] }
       end
 
       def process_start_key_ceremony_message(_message_identifier, _message, _content)
-        @state = { joint_election_key: 1, trustees: [] }
+        state[:joint_election_key] = 1
+        state[:trustees] = []
       end
 
       def process_key_ceremony_message(message_identifier, _message, content)
@@ -86,11 +88,12 @@ module VotingScheme
           end
         end
 
-        state[:compensations] = {}
-        state[:joint_compensations] = {}
-        state[:compensated] = 0
+
         state[:shares] = []
+        state[:missing] = []
+        state[:compensations] = []
         state[:joint_shares] = build_questions_struct(1)
+        state[:joint_compensations] = build_questions_struct(1)
 
         emit_response "tally.cast"
         append_content results
@@ -98,8 +101,7 @@ module VotingScheme
 
       def process_tally_message(message_identifier, message, content)
         if message_identifier.subtype == "missing_trustee"
-          state[:compensations][message[:trustee_id]] = []
-          state[:joint_compensations][message[:trustee_id]] = build_questions_struct(1)
+          state[:missing] << message[:trustee_id] unless state[:shares].include?(message[:trustee_id])
 
           return
         end
@@ -113,7 +115,22 @@ module VotingScheme
           process_compensation_message content
         end
 
-        return unless state[:shares].count + state[:compensated] == election.trustees.count
+        shares_count = state[:shares].count
+        missing_count = state[:missing].count
+        compensations_count = state[:compensations].count
+
+        return unless missing_count + shares_count == election.trustees.count && shares_count >= state[:quorum]
+
+        if missing_count > 0
+          return unless shares_count == compensations_count
+
+          state[:joint_compensations].each do |question, answers|
+            answers.each do |answer, value|
+              state[:joint_shares][question][answer] *=
+                (value**(1.0/compensations_count) * state[:joint_election_key]).round
+            end
+          end
+        end
 
         results = build_questions_struct(0)
         state[:joint_shares].each do |question, answers|
@@ -129,6 +146,7 @@ module VotingScheme
         raise RejectedMessage, "The trustee already sent their share" if state[:shares].include?(content[:owner_id])
 
         state[:shares] << content[:owner_id]
+        state[:missing].delete(content[:owner_id])
 
         content[:contests].each do |question, answers|
           answers.each do |answer, share|
@@ -138,24 +156,15 @@ module VotingScheme
       end
 
       def process_compensation_message(content)
-        compensation = state[:compensations][content[:trustee_id]]
-        raise RejectedMessage, "The trustee already sent their compensation for #{content[:trustee_id]}" if compensation.include?(content[:owner_id])
+        raise RejectedMessage, "The trustee already sent their compensation" if state[:compensations].include?(content[:owner_id])
 
-        compensation << content[:owner_id]
+        state[:compensations] << content[:owner_id]
+
         content[:contests].each do |question, answers|
-          answers.each do |answer, value|
-            state[:joint_compensations][content[:trustee_id]][question][answer] *= value
+          answers.each do |answer, compensation|
+            state[:joint_compensations][question][answer] *= compensation
           end
         end
-
-        return unless state[:compensations].count + state[:compensations][content[:trustee_id]].count == election.trustees.count
-
-        state[:joint_compensations][content[:trustee_id]].each do |question, answers|
-          answers.each do |answer, value|
-            state[:joint_shares][question][answer] *= (value.round**(1.0 / state[:shares].count)).round
-          end
-        end
-        state[:compensated] += 1
       end
 
       def build_questions_struct(initial_value)

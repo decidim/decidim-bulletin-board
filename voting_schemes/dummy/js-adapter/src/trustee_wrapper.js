@@ -1,8 +1,9 @@
-export const CREATED = 0;
-export const KEY_CEREMONY = 1;
-export const KEY_CEREMONY_ENDED = 2;
-export const TALLY = 3;
-export const TALLY_ENDED = 4;
+export const NONE = 0;
+export const CREATED = 1;
+export const KEY_CEREMONY = 2;
+export const KEY_CEREMONY_ENDED = 3;
+export const TALLY = 4;
+export const TALLY_ENDED = 5;
 
 export const CREATE_ELECTION = "create_election";
 export const START_KEY_CEREMONY = "start_key_ceremony";
@@ -29,10 +30,13 @@ export class TrusteeWrapper {
    */
   constructor({ trusteeId }) {
     this.trusteeId = trusteeId;
-    this.status = CREATED;
+    this.status = NONE;
     this.electionPublicKey = 0;
     this.jointElectionKey = 0;
     this.tallyCastMessage = null;
+    this.quorum = 0;
+    this.trusteesKeys = {};
+    this.trusteesShares = {};
   }
 
   /**
@@ -45,6 +49,12 @@ export class TrusteeWrapper {
    */
   processMessage(messageType, decodedData) {
     switch (this.status) {
+      case NONE: {
+        if (messageType === CREATE_ELECTION) {
+          this.quorum = decodedData.scheme.quorum;
+          this.status = CREATED;
+        }
+      }
       case CREATED: {
         if (messageType === START_KEY_CEREMONY) {
           this.status = KEY_CEREMONY;
@@ -61,7 +71,10 @@ export class TrusteeWrapper {
         break;
       }
       case KEY_CEREMONY: {
-        if (messageType === END_KEY_CEREMONY) {
+        if (messageType === KEY_CEREMONY_STEP_1) {
+          const content = JSON.parse(decodedData.content);
+          this.trusteesKeys[content.owner_id] = content.election_public_key;
+        } else if (messageType === END_KEY_CEREMONY) {
           const content = JSON.parse(decodedData.content);
           this.jointElectionKey = content.joint_election_key;
           this.status = KEY_CEREMONY_ENDED;
@@ -92,30 +105,20 @@ export class TrusteeWrapper {
               contests,
             }),
           };
-        } else if (messageType === TALLY_MISSING_TRUSTEE) {
-          const contests = JSON.parse(this.tallyCastMessage);
-          for (const [question, answers] of Object.entries(contests)) {
-            for (const [answer, value] of Object.entries(answers)) {
-              contests[question][answer] =
-                (1.0 *
-                  (value % this.electionPublicKey) *
-                  this.jointElectionKey) /
-                this.electionPublicKey /
-                this.electionPublicKey;
-            }
-          }
+        } else if (messageType === TALLY_SHARE) {
+          const content = JSON.parse(decodedData.content);
+          this.trusteesShares[content.owner_id] = true;
 
-          return {
-            messageType: TALLY_COMPENSATION,
-            content: JSON.stringify({
-              owner_id: this.trusteeId,
-              trustee_id: decodedData.trustee_id,
-              contests,
-            }),
-          };
+          return this._compensate();
+        } else if (messageType === TALLY_MISSING_TRUSTEE) {
+          if (!(decodedData.truestee_id in this.trusteesShares)) {
+            this.trusteesShares[decodedData.truestee_id] = false;
+            return this._compensate();
+          }
         } else if (messageType === END_TALLY) {
           this.status = TALLY_ENDED;
         }
+
         break;
       }
     }
@@ -127,7 +130,7 @@ export class TrusteeWrapper {
    * @returns {boolean}
    */
   isFresh() {
-    return this.status === CREATED;
+    return this.status === NONE;
   }
 
   /**
@@ -186,5 +189,34 @@ export class TrusteeWrapper {
    */
   isTallyDone() {
     return this.status >= TALLY_ENDED;
+  }
+
+  _compensate() {
+    const trusteesCount = Object.keys(this.trusteesKeys).length;
+    const missingTrustees = Object.values(this.trusteesShares).filter(
+      (val) => !val
+    ).length;
+
+    if (
+      missingTrustees > 0 &&
+      Object.keys(this.trusteesShares).length === trusteesCount
+    ) {
+      const contests = JSON.parse(this.tallyCastMessage);
+      for (const [question, answers] of Object.entries(contests)) {
+        for (const [answer, value] of Object.entries(answers)) {
+          contests[question][answer] =
+            Math.pow(value % this.electionPublicKey, missingTrustees) /
+            Math.pow(this.electionPublicKey, trusteesCount - missingTrustees);
+        }
+      }
+
+      return {
+        messageType: TALLY_COMPENSATION,
+        content: JSON.stringify({
+          owner_id: this.trusteeId,
+          contests,
+        }),
+      };
+    }
   }
 }
