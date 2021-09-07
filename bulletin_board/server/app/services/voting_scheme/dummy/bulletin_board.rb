@@ -35,6 +35,7 @@ module VotingScheme
 
       def process_create_election_message(_message_identifier, message, _content)
         raise RejectedMessage, "There must be at least 2 Trustees" if message.fetch(:trustees, []).count < 2
+
         @state = { quorum: message[:scheme][:quorum] }
       end
 
@@ -88,7 +89,6 @@ module VotingScheme
           end
         end
 
-
         state[:shares] = []
         state[:missing] = []
         state[:compensations] = []
@@ -108,61 +108,60 @@ module VotingScheme
 
         raise RejectedMessage, "The owner_id doesn't match the sender trustee" if content[:owner_id] != message_identifier.author_id
 
-        case message_identifier.subtype
-        when "share"
-          process_tally_share_message content
-        when "compensation"
-          process_compensation_message content
+        process_tally_message_by_subtype message_identifier.subtype, content
+
+        return unless state[:missing].count + state[:shares].count == election.trustees.count &&
+                      state[:shares].count >= state[:quorum]
+
+        if state[:missing].any?
+          return unless state[:shares].count == state[:compensations].count
+
+          join_compensations
         end
 
-        shares_count = state[:shares].count
-        missing_count = state[:missing].count
-        compensations_count = state[:compensations].count
+        emit_response "end_tally", results: join_shares
+      end
 
-        return unless missing_count + shares_count == election.trustees.count && shares_count >= state[:quorum]
+      def process_tally_message_by_subtype(subtype, content)
+        case subtype
+        when "share"
+          raise RejectedMessage, "The trustee already sent their share" if state[:shares].include?(content[:owner_id])
 
-        if missing_count > 0
-          return unless shares_count == compensations_count
+          state[:shares] << content[:owner_id]
+          state[:missing].delete(content[:owner_id])
 
-          state[:joint_compensations].each do |question, answers|
-            answers.each do |answer, value|
-              state[:joint_shares][question][answer] *=
-                (value**(1.0/compensations_count) * state[:joint_election_key]).round
+          content[:contests].each do |question, answers|
+            answers.each do |answer, share|
+              state[:joint_shares][question][answer] *= share
+            end
+          end
+        when "compensation"
+          raise RejectedMessage, "The trustee already sent their compensation" if state[:compensations].include?(content[:owner_id])
+
+          state[:compensations] << content[:owner_id]
+
+          content[:contests].each do |question, answers|
+            answers.each do |answer, compensation|
+              state[:joint_compensations][question][answer] *= compensation
             end
           end
         end
+      end
 
+      def join_compensations
+        state[:joint_compensations].each do |question, answers|
+          answers.each do |answer, value|
+            state[:joint_shares][question][answer] *=
+              (value**(1.0 / state[:compensations].count) * state[:joint_election_key]).round
+          end
+        end
+      end
+
+      def join_shares
         results = build_questions_struct(0)
         state[:joint_shares].each do |question, answers|
           answers.each do |answer, joint_share|
             results[question][answer] = ((joint_share / state[:joint_election_key])**(1.0 / state[:trustees].count)).round
-          end
-        end
-
-        emit_response "end_tally", results: results
-      end
-
-      def process_tally_share_message(content)
-        raise RejectedMessage, "The trustee already sent their share" if state[:shares].include?(content[:owner_id])
-
-        state[:shares] << content[:owner_id]
-        state[:missing].delete(content[:owner_id])
-
-        content[:contests].each do |question, answers|
-          answers.each do |answer, share|
-            state[:joint_shares][question][answer] *= share
-          end
-        end
-      end
-
-      def process_compensation_message(content)
-        raise RejectedMessage, "The trustee already sent their compensation" if state[:compensations].include?(content[:owner_id])
-
-        state[:compensations] << content[:owner_id]
-
-        content[:contests].each do |question, answers|
-          answers.each do |answer, compensation|
-            state[:joint_compensations][question][answer] *= compensation
           end
         end
       end

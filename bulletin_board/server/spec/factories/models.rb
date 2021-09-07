@@ -62,8 +62,10 @@ FactoryBot.define do
 
     trait :key_ceremony_ended do
       status { :key_ceremony_ended }
-      voting_scheme_state { Marshal.dump(quorum: 2, joint_election_key: Test::Elections.joint_election_key,
-                                         trustees: trustees_plus_keys.map(&:first).map(&:slug)) }
+      voting_scheme_state do
+        Marshal.dump(quorum: 2, joint_election_key: Test::Elections.joint_election_key,
+                     trustees: trustees_plus_keys.map(&:first).map(&:slug))
+      end
     end
 
     trait :vote do
@@ -94,7 +96,6 @@ FactoryBot.define do
                                                     compensations: [], joint_compensations: {}, missing: [])
       end
     end
-
 
     trait :tally_ended do
       status { :tally_ended }
