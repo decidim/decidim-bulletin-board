@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    voting_schemes-dummy (0.21.3)
+    voting_schemes-dummy (0.22.1)
       rails (>= 5.0.0)
 
 GEM
@@ -191,4 +191,4 @@ DEPENDENCIES
   voting_schemes-dummy!
 
 BUNDLED WITH
-   2.2.18
+   2.2.27

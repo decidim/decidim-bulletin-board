@@ -26,7 +26,7 @@ clean: clean_server \
 build: build_server \
 		build_client \
 		build_dummy \
-		build_electionguard
+		build_electionguard \
 
 test: test_server \
  		test_client \
@@ -50,6 +50,7 @@ sync_develop:
 release: check_clean_repo \
 		check_version \
 		bump_versions \
+		pre_release_server \
 		build \
 		check_release_flag \
 		update_changelog \
@@ -83,18 +84,19 @@ help_common:
 	@echo '  deploy_staging_app - Deploy the bulletin board staging application. Requires heroku login and must be run in the main branch.'
 	@echo '  deploy_development_app - Deploy an application to the staging pipeline in the development stage. Requires heroku login.'
 
-bump_versions: bump_server \
-		bump_client \
+bump_versions: bump_client \
 		bump_dummy \
-		bump_electionguard
+		bump_electionguard \
+		bump_server
 
 update_changelog:
 	sed -i.bak -E "s/## Unreleased/## Unreleased\n\n## [${VERSION}] - `date +'%Y-%m-%d'`/g" CHANGELOG.md
 
 commit_and_push:
 	git commit -am "chore: bump to version ${VERSION}"
+	git push
 	git tag v${VERSION}
-	git push --tags origin/main
+	git push --tags
 
 check_clean_repo:
 	git diff --quiet

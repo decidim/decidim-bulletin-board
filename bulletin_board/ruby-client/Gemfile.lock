@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    decidim-bulletin_board (0.21.3)
+    decidim-bulletin_board (0.22.1)
       byebug (~> 11.0)
       graphlient (~> 0.4.0)
       jwt (~> 2.2.2)
@@ -245,4 +245,4 @@ DEPENDENCIES
   wisper-rspec (~> 1.1.0)
 
 BUNDLED WITH
-   2.2.18
+   2.2.27

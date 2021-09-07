@@ -64,4 +64,4 @@ release_voting_scheme_dummy_gem:
 	rm voting_schemes-dummy-${VERSION}.gem
 
 release_voting_scheme_dummy_package:
-	cd ${VOTING_SCHEME_DUMMY_JS_LIBRARY_PATH} && npm publish
+	cd ${VOTING_SCHEME_DUMMY_JS_LIBRARY_PATH} && npm publish --access public

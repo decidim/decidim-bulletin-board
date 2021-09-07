@@ -2,6 +2,6 @@
 
 module VotingSchemes
   module Electionguard
-    VERSION = "0.21.3"
+    VERSION = "0.22.1"
   end
 end

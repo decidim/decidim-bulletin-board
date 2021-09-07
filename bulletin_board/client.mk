@@ -61,4 +61,4 @@ release_bulletin_board_client_gem:
 	rm decidim-bulletin_board-${VERSION}.gem
 
 release_bulletin_board_client_package:
-	cd ${BULLETIN_BOARD_CLIENT_JS_LIBRARY_PATH} && npm publish
+	cd ${BULLETIN_BOARD_CLIENT_JS_LIBRARY_PATH} && npm publish --access public
