@@ -200,6 +200,7 @@ export class TrusteeWrapper {
 
     if (
       missingTrustees > 0 &&
+      missingTrustees <= trusteesCount - this.quorum &&
       Object.keys(this.trusteesShares).length === trusteesCount
     ) {
       const contests = JSON.parse(this.tallyCastMessage);
