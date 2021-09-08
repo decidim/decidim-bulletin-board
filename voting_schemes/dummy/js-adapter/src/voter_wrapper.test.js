@@ -93,13 +93,13 @@ describe("VoterWrapper", () => {
 
         expect(response.encryptedData).toEqual(
           `{"ballot_style":"ballot-style","contests":[{"object_id":"question-1","ballot_selections":[{"object_id":"question-1-answer-1","ciphertext":${
-            250 * 123456789 + 1
+            251 * 123456789 + 1
           }},{"object_id":"question-1-answer-2","ciphertext":${
-            250 * 123456789
+            251 * 123456789
           }}]},{"object_id":"question-2","ballot_selections":[{"object_id":"question-2-answer-1","ciphertext":${
-            250 * 123456789
+            251 * 123456789
           }},{"object_id":"question-2-answer-2","ciphertext":${
-            250 * 123456789 + 1
+            251 * 123456789 + 1
           }}]}]}`
         );
       });
@@ -116,13 +116,13 @@ describe("VoterWrapper", () => {
             {
               ballot_selections: [
                 {
-                  ciphertext: 30864197251,
+                  ciphertext: 30987654040,
                   object_id: "question-1-answer-1",
                   plaintext: 1,
                   random: 0.5,
                 },
                 {
-                  ciphertext: 30864197250,
+                  ciphertext: 30987654039,
                   object_id: "question-1-answer-2",
                   plaintext: 0,
                   random: 0.5,
@@ -133,13 +133,13 @@ describe("VoterWrapper", () => {
             {
               ballot_selections: [
                 {
-                  ciphertext: 30864197250,
+                  ciphertext: 30987654039,
                   object_id: "question-2-answer-1",
                   plaintext: 0,
                   random: 0.5,
                 },
                 {
-                  ciphertext: 30864197251,
+                  ciphertext: 30987654040,
                   object_id: "question-2-answer-2",
                   plaintext: 1,
                   random: 0.5,

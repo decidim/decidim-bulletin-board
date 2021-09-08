@@ -94,7 +94,8 @@ export class VoterWrapper {
             return {
               object_id: ballotSelection.object_id,
               ciphertext:
-                plaintext + Math.floor(random * 500) * this.jointElectionKey,
+                plaintext +
+                Math.floor(random * 500 + 1) * this.jointElectionKey,
               random,
               plaintext,
             };

@@ -93,7 +93,7 @@ update_changelog:
 	sed -i.bak -E "s/## Unreleased/## Unreleased\n\n## [${VERSION}] - `date +'%Y-%m-%d'`/g" CHANGELOG.md
 
 commit_and_push:
-	git commit -am "chore: bump to version ${VERSION}"
+	git commit -am "Bump to version ${VERSION}"
 	git push
 	git tag v${VERSION}
 	git push --tags

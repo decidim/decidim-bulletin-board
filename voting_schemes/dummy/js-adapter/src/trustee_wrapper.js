@@ -112,8 +112,8 @@ export class TrusteeWrapper {
 
           return this._compensate();
         } else if (messageType === TALLY_MISSING_TRUSTEE) {
-          if (!(decodedData.truestee_id in this.trusteesShares)) {
-            this.trusteesShares[decodedData.truestee_id] = false;
+          if (!(decodedData.trustee_id in this.trusteesShares)) {
+            this.trusteesShares[decodedData.trustee_id] = false;
             return this._compensate();
           }
         } else if (messageType === END_TALLY) {
@@ -200,6 +200,7 @@ export class TrusteeWrapper {
 
     if (
       missingTrustees > 0 &&
+      missingTrustees <= trusteesCount - this.quorum &&
       Object.keys(this.trusteesShares).length === trusteesCount
     ) {
       const contests = JSON.parse(this.tallyCastMessage);
