@@ -223,9 +223,7 @@ export class ElectionPage {
 
     // Extract the votes answers from the form
     cy.get("input[type=checkbox]").then(($checkbox) => {
-      if ($checkbox.is("checked")) {
-        $checkbox.invoke("val").then((vote) => this.castedVotes.push(vote));
-      }
+      this.castedVotes.push($checkbox.serializeArray());
     });
 
     if (voterId) {
@@ -483,15 +481,19 @@ export class ElectionPage {
    * @returns {undefined}
    */
   assertCorrectResults() {
-    const flatVotes = this.castedVotes.flat();
-    const totals = {};
+    cy.get(".results__content").then(() => {
+      const flatVotes = this.castedVotes.flat();
+      expect(flatVotes).not.to.be.empty;
+      cy.log(JSON.stringify(flatVotes));
 
-    for (const i in flatVotes) {
-      totals[flatVotes[i]] = (totals[flatVotes[i]] || 0) + 1; // increments count if element already exists
-    }
+      const totals = {};
+      flatVotes.forEach((vote) => {
+        totals[vote.value] = (totals[vote.value] || 0) + 1; // increments count if element already exists
+      });
 
-    for (const answer in Object.keys(totals)) {
-      cy.findByText(`${answer}: ${totals[answer]}`).should("be.visible");
-    }
+      Object.entries(totals).forEach((total) => {
+        cy.findByText(`${total[0]}: ${total[1]}`).should("be.visible");
+      });
+    });
   }
 }
