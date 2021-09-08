@@ -90,18 +90,14 @@ describe("Election", () => {
       electionVotingSchemeName: "dummy",
       doTheVoting: () => {
         const voterId = "e98a86b62b97c18129a6be1f890578f069eff369";
-        page.castVote(voterId);
+        page.castVote(voterId, false);
         page.assertVoteHasBeenAccepted();
         page.inPersonVote(voterId);
         page.assertInPersonVoteHasBeenAccepted();
-        page.castVote(voterId);
+        page.castVote(voterId, false);
         page.assertVoteHasBeenRejected();
         page.inPersonVote(voterId);
         page.assertInPersonVoteHasBeenRejected();
-
-        // No votes are going to be counted.
-        // (there was only one online vote, and it was overriden by the in person vote)
-        page.castedVotes = [];
 
         page.castVote(); // Add one vote to have a ballot to tally
         page.assertVoteHasBeenAccepted();

@@ -218,12 +218,14 @@ export class ElectionPage {
    *
    * @returns {undefined}
    */
-  castVote(voterId = null) {
+  castVote(voterId = null, countAsCast = true) {
     cy.findByText("Vote").click();
 
     // Extract the votes answers from the form
     cy.get("input[type=checkbox]").then(($checkbox) => {
-      this.castedVotes.push($checkbox.serializeArray());
+      if (countAsCast) {
+        this.castedVotes.push($checkbox.serializeArray());
+      }
     });
 
     if (voterId) {
