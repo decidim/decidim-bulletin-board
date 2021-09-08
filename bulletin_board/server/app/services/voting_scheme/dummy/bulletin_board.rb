@@ -164,6 +164,8 @@ module VotingScheme
             results[question][answer] = ((joint_share / state[:joint_election_key])**(1.0 / state[:trustees].count)).round
           end
         end
+
+        results
       end
 
       def build_questions_struct(initial_value)
