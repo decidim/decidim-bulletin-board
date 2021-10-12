@@ -13,7 +13,7 @@ gem "pg", ">= 0.18", "< 2.0"
 gem "graphql", "~> 1.9"
 gem "graphql-guard", "~> 2.0"
 # Use Puma as the app server
-gem "puma", "~> 5.3"
+gem "puma", "~> 5.5"
 gem "redcarpet"
 # Use SCSS for stylesheets
 gem "sass-rails", ">= 6"
