@@ -26,12 +26,12 @@ IDENTIFICATION_PRIVATE_KEY=-private-key-for-this-bulletin-board
 
 ```
 
-### Notes:
+#### Notes:
 
 - Generate `SECRET_KEY_BASE` with `rails secret`
 - Generate `IDENTIFICATION_PRIVATE_KEY` with `bin/rails client:generate_identification_private_key`
 
-### Initialization:
+### Configuration steps in this server (bulletin app):
 
 - Initialize the database, database is not included in this docker compose file but it should be pretty straithforward.
   In order to initialize the database you need to run the comand `bin/rails db:create db:migrate`
@@ -46,12 +46,13 @@ IDENTIFICATION_PRIVATE_KEY=-private-key-for-this-bulletin-board
 
 	**Important**: This step throws also an `API KEY` secret that needs to be configured in Decidim too.
 
-### Running the app with docker-compose
+#### Running the app with docker-compose
 
 
 ```bash
 docker-compose up -d
 ```
+
 Note that you still need to configure some proxy around it.
 For instance a simple Nginx conf can be:
 
@@ -80,7 +81,33 @@ Note: you should add SSL configuration, for instance with [letsencrypt](https://
 
 This server is ready, you can access the hompage either at https://localhost:8000 or https:/you-server.com depending on your final configuration.
 
-### Steps in Decidim
+#### Executing console commands when using docker-compose
+
+All previously specified commands need to be executed inside the running docker container. It is pretty easy to do that with docker compose, simply do:
+
+Enter the container
+
+```
+docker-compose exec bulletin bash
+```
+
+Which gives you direct access to the console:
+
+```
+root@7805a01fbabb:/code/bulletin_board/server# 
+```
+
+In there, you can execute the `bin/rails c` to access the rails console, or any other command.
+
+It is also possible to directly execut rails (or rake) comands:
+
+```
+docker-compose exec bulletin bin/rails db:migrate
+```
+
+**Important**, your application needs to be up and running for this to work (aka: `docker-compose up`)
+
+### Configuration steps in Decidim server
 
 This steps needs to be performed in the Decidim instance that wants to use the elections module.
 
