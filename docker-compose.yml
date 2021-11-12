@@ -1,0 +1,47 @@
+version: "3.9"
+services:
+  bulletin:
+    build:
+      context: .
+      dockerfile: Dockerfile.release
+    env_file: .env
+    environment:
+      - RAILS_LOG_TO_STDOUT=1
+      - RAILS_SERVE_STATIC_FILES=1
+      - RACK_ENV=production
+      - RAILS_ENV=production
+      - REDIS_HOST=redis
+      - REDIS_URL=redis://redis:6379
+    volumes:
+      - ./docker-entrypoint.sh:/docker-entrypoint.sh
+    entrypoint: /docker-entrypoint.sh
+    command: ""
+    ports:
+      - "8000:8000"
+
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile.release
+    env_file: .env
+    environment:
+      - RAILS_LOG_TO_STDOUT=1
+      - RACK_ENV=production
+      - RAILS_ENV=production
+      - REDIS_HOST=redis
+      - REDIS_URL=redis://redis:6379
+    command: ""
+    volumes:
+      - ./docker-entrypoint-worker.sh:/docker-entrypoint.sh
+    entrypoint: /docker-entrypoint.sh
+
+  redis:
+    image: "redis:alpine"
+    command: redis-server
+    ports:
+      - "6379:6379"
+    volumes:
+      - 'redis:/data'
+
+volumes:
+  redis:
