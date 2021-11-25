@@ -33,7 +33,7 @@ IDENTIFICATION_PRIVATE_KEY=-private-key-for-this-bulletin-board
 
 ### Configuration steps in this server (bulletin app):
 
-- Initialize the database, database is not included in this docker compose file but it should be pretty straithforward.
+- Initialize the database, database is not included in this docker compose file but it should be pretty straightforward.
   In order to initialize the database you need to run the comand `bin/rails db:create db:migrate`
 
 - In you Decidim server (the one you want to connect with this one), execute
