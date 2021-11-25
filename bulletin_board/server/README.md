@@ -63,13 +63,6 @@ server {
     listen 80 ;
     listen [::]:80 ;
 
-    #listen [::]:443 ssl ipv6only=on; # managed by Certbot
-    #listen 443 ssl; # managed by Certbot
-    #ssl_certificate ...
-    #ssl_certificate_key ...
-    #include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
-    #ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
-
     location / {
         proxy_pass http://127.0.0.1:8000;
    }
@@ -79,7 +72,7 @@ server {
 
 Note: you should add SSL configuration, for instance with [Let's Encrypt](https://certbot.eff.org/lets-encrypt)
 
-This server is ready, you can access the hompage either at https://localhost:8000 or https:/you-server.com depending on your final configuration.
+This server is ready, you can access the hompage either at http://localhost:8000 or https:/bulletin-board.example.org depending on your final configuration.
 
 #### Executing console commands when using docker-compose
 
