@@ -118,7 +118,7 @@ env var `IDENTIFICATION_PRIVATE_KEY`, simply use a browser and navigate to the h
 - Copy the `API KEY` obtained previously into the env var `BULLETIN_BOARD_API_KEY`
 - Ensure you have the env var `AUTHORITY_PRIVATE_KEY` with the **private key** generate with the command `bin/rails decidim_elections:generate_identification_keys`
 - Ensure that the `Authority name` is the same in both places (in Decidim needs to be declarated in the env var `AUTHORITY_NAME`)
-- Be sure to point the env var `BULLETIN_BOARD_SERVER` to the bulletin server API path (that is usually https://yout-server.com/api)
+- Be sure to point the env var `BULLETIN_BOARD_SERVER` to the bulletin server API path (that is usually http://bulletin-board.example.org/api)
 - Env var `ELECTIONS_SCHEME_NAME` can currently be only `electionguard` (unless for testing purposes)
 - Set up `ELECTIONS_NUMBER_OF_TRUSTEES` and `ELECTIONS_QUORUM` to, at least, the number 2
 
