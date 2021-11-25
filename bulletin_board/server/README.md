@@ -77,7 +77,7 @@ server {
 
 ```
 
-Note: you should add SSL configuration, for instance with [letsencrypt](https://certbot.eff.org/lets-encrypt)
+Note: you should add SSL configuration, for instance with [Let's Encrypt](https://certbot.eff.org/lets-encrypt)
 
 This server is ready, you can access the hompage either at https://localhost:8000 or https:/you-server.com depending on your final configuration.
 
