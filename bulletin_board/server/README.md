@@ -12,7 +12,7 @@ The Bulletin Board is a service composed by an Encryption Engine and an Append-O
 The Bulletin Board depends on the existence of a Decidim installation.
 
 
-## Runining on Docker
+## Running on Docker
 
 You can run this application conveniently packaged with docker compose.
 
