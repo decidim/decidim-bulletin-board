@@ -58,7 +58,7 @@ For instance a simple Nginx conf can be:
 
 ```
 server {
-    server_name bulletin.audit.platoniq.net;
+    server_name bulletin-board.example.org;
     client_max_body_size 32M;
     listen 80 ;
     listen [::]:80 ;
