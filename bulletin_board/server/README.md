@@ -28,7 +28,7 @@ IDENTIFICATION_PRIVATE_KEY=-private-key-for-this-bulletin-board
 
 #### Notes:
 
-- Generate `SECRET_KEY_BASE` with `rails secret`
+- Generate `SECRET_KEY_BASE` with `bin/rails secret`
 - Generate `IDENTIFICATION_PRIVATE_KEY` with `bin/rails client:generate_identification_private_key`
 
 ### Configuration steps in this server (bulletin app):
