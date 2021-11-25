@@ -54,7 +54,7 @@ docker-compose up -d
 ```
 
 Note that you still need to configure some proxy around it.
-For instance a simple Nginx conf can be:
+For instance, a simple Nginx conf for a server that's configured at bulletin-board.example.org can be:
 
 ```
 server {
