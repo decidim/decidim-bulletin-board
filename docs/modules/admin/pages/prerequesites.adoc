@@ -1,0 +1,14 @@
+= Prerequesites
+
+To run an election with Evote, we need to have two application running and able to communicate with each other:
+
+* a Decidim instance
+* a Decidim Bulletin Board instance
+
+== Decidim installation
+
+See the installation guide at https://docs.decidim.org/en/install/
+
+== Bulletin board installation
+
+See the installation guide at https://docs.decidim.org/bulletin-board/install/

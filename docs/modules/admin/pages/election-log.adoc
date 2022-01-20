@@ -1,0 +1,17 @@
+= Election log
+
+At every point of an election, anybody can check the status of the election from its public page via the Election Log.
+
+The election log can be accessed from the Voting's menu in the public page.
+
+It details every step of the election lifecycle in the Bulletin Board, specifically:
+
+* Election creation;
+* Key ceremony;
+* Voting period;
+* Tally;
+* Results publication.
+
+It also provides instruction on how to verify the election results once the election results have been published.
+
+image::https://s3-us-west-2.amazonaws.com/secure.notion-static.com/5178bcbd-ea15-4983-b9ca-418d25694bce/Untitled.png[Untitled]

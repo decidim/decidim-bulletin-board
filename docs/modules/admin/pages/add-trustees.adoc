@@ -1,0 +1,17 @@
+= Add Trustees to a participatory space
+
+Election trustees are individuals depositaries of the decryption keys necessary to unlock the results of an election.
+
+They play a key role in the lifecycle of an election: before the election, they need to come together to create the keys to encrypt the votes in a process called 'Key ceremony';
+when the voting period is over, they will have to join the partial decryption keys they have safely stored during the vote in order to decrypt the election results computed by the Bulletin Board.
+
+== Add a Trustee
+
+In order to add a Trustee to your participatory space, go to the `Trustee` section in the space's left-hand menu.
+
+You can add trustees selecting them from a user list.
+If the trustee does not have a Decidim account yet, they will need to create one.
+
+The trustees are specific to a participatory space, so they will act as such for all the elections inside the space you create them.
+
+Once you created all the trustees, they can proceed https://www.notion.so/Create-trustee-identification-keys-81717ff3c4364738948799415b6a8523[creating their identification key] that is necessary to properly set up an election.

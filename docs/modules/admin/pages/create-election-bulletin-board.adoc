@@ -1,0 +1,18 @@
+= Create an Election in the Bulletin Board
+
+At this point, with the election created in Decidim, the Voting all set up and the Trustees identified and created in the Bulletin Board, we can create the election in the Bulletin Board.
+
+From the admin panel, navigate to the election in your participatory space.
+
+Click on the `Manage steps` icon to see if the election is ready to be sent to the Bulletin Board.
+
+image::https://s3-us-west-2.amazonaws.com/secure.notion-static.com/59703b7c-acd5-4ede-b0c0-682440876631/Untitled.png[`Manage steps` gives us an overview of the state of the election]
+
+`Manage steps` gives us an overview of the state of the election
+
+You will see a checklist of what needs to be in place before pushing the election to the Bulletin Board.
+Once everything ticks off, you can click `Setup election`.
+
+image::https://s3-us-west-2.amazonaws.com/secure.notion-static.com/2bdb5441-e43c-45aa-9c4e-2df0de09c789/Untitled.png[`Setup election` will create the election in the Bulletin Board]
+
+`Setup election` will create the election in the Bulletin Board

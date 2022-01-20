@@ -1,0 +1,71 @@
+= Generate Bulletin Board identification keys
+
+The Bulletin Board only accepts and publishes signed messages.
+Thus, all involved parts of an election (authority, trustees and the Bulletin Board itself) need to generate identification keys to sign their messages.
+
+To generate a new identification key pair for the Bulletin Board, run:
+
+`bin/rails client:generate_identification_private_key`
+
+This task will output the generated private key.
+You should copy the private key and store that value on the Bulletin Board application environment variable `IDENTIFICATION_PRIVATE_KEY`.
+
+Ensure that the private key is not lost between deployments and servers reboots and that it can be accessed by the application only.
+
+== Generate Decidim identification keys
+
+In order to send signed messages to the Bulletin Board, also your Decidim instance will need to generate an identification key pair.
+You can do this running the following Decidim task:
+
+`bundle exec rake decidim_elections:generate_identification_keys`
+
+This task will output the generated private and public keys.
+
+Come up with an *Authority name* for your Decidim instance.
+The Authority name will be used to identify your Decidim instance within the Bulletin Board, in case this is used by multiple authorities.
+An example of Authority name is `decidim-barcelona-authority`.
+Notice there is no strict convention on the naming.
+
+You should send the *public key* generated above and the *Authority name* to the Bulletin Board administrator through a secure channel, so they can set up the authority in the Bulletin Board.
+
+You should then store the *private key* in the Decidim environment variable `AUTHORITY_PRIVATE_KEY` and the *Authority name* in the variable `AUTHORITY_NAME`.
+
+Ensure that these environment variables are not lost between deployments and servers reboots and that it can only be accessed by the application.
+
+== Add an authority (Decidim instance) to the Bulletin Board
+
+As an administrator of the Decidim Bulletin Board, you'll receive the name of the Decidim instance (*Authority name*) and the public key (type: string, no spaces allowed) of this authority.
+In order to allow an authority to connect to this Bulletin Board instance, run:
+
+`bin/rails 'client:add_authority[Authority name, public key]'`
+
+"Authority name" needs to be replaced by the authority name of the Decidim instance.
+"public key" needs to be replaced by the public key of the authority.
+
+Please make sure that the "Authority name" you are adding is not already in use in the Bulletin Board.
+If so, ask the Decidim administrator to change it.
+
+As a result of this process, you will obtain an API Key that you will have to send back to the Decidim authority.
+
+== Give Decidim access to the Bulletin board
+
+The last step to correctly connect a Decidim instance with the Bulletin Board is to tell Decidim the URL of the Bulletin Board and the api key to use.
+
+In https://www.notion.so/Bulletin-Board-setup-628285559eea4350b0ec0165ee922ece[the previous step], the Bulletin Board administrator added your Decidim instance as an authority in the Bulletin Board and sent you back an API key.
+Store that API key in the Decidim environment variable `AUTHORITY_API_KEY` and the Bulletin Board URL in `BULLETIN_BOARD_SERVER`.
+
+The following YAML snippet with all the defined environment variables should be used in the `default` block of your application `config/secrets.yml` file.
+Maybe this is already done, as it was included in the Decidim applications generator during the development of the Elections module.
+
+[,yaml]
+----
+elections:
+    bulletin_board_server: <%= ENV["BULLETIN_BOARD_SERVER"] %>
+    bulletin_board_public_key: <%= ENV["BULLETIN_BOARD_PUBLIC_KEY"] %>
+    authority_api_key: <%= ENV["AUTHORITY_API_KEY"] %>
+    authority_name: <%= ENV["AUTHORITY_NAME"] %>
+    authority_private_key: <%= ENV["AUTHORITY_PRIVATE_KEY"] %>
+    scheme_name: <%= ENV["ELECTIONS_SCHEME_NAME"] %>
+    number_of_trustees: <%= ENV["ELECTIONS_NUMBER_OF_TRUSTEES"] %>
+    quorum: <%= ENV["ELECTIONS_QUORUM"] %>
+----

@@ -1,0 +1,60 @@
+= Create and configure an Election in Decidim
+
+As mentioned in the https://www.notion.so/Introduction-ee69f58dd5e346f689b18dfea137fa7a[introduction], an Election component can be used in any participatory space.
+Some of the features of Evote, though, are enabled by the https://www.notion.so/Create-and-configure-a-Voting-7d8c12536de448d38d00718430860762[Voting participatory space].
+If you need one of those features for your election, make sure you create the Election component in a https://www.notion.so/Create-and-configure-a-Voting-7d8c12536de448d38d00718430860762[Voting participatory space].
+
+== Enable Elections in a participatory space
+
+From the admin panel, navigate to participatory space where you want to use Elections.
+In the left-hand menu, click on `Components` and select `Elections` from the `Add component` dropdown menu.
+Click on `Add component` to enable Elections in your participatory space.
+
+== Create an election
+
+Now that Elections are enabled in your participatory space, you can head on and create one.
+In the left-hand menu, click on `Components > Elections` and then on the `New election` button.
+You will have to provide a title, a description and the start and end of the voting period.
+
+== Create election questions and answers
+
+The core setup of an election are its questions, which will be presented to the voters.
+
+=== Questions
+
+Click on the `Manage questions` icons for your election.
+
+image::https://s3-us-west-2.amazonaws.com/secure.notion-static.com/33a75cc6-010d-4355-b6e6-d08691203be3/Untitled.png[https://s3-us-west-2.amazonaws.com/secure.notion-static.com/33a75cc6-010d-4355-b6e6-d08691203be3/Untitled.png]
+
+In the question creation form, you will be asked to fill in:
+
+* Title: the question text as it will presented to the voter;
+* Description: a detailed explanation of the question;
+* Maximum number of selections: the maximum number of options a voter can select to answer this question;
+* Random answers order: whether the answers options for this question shall be randomly shuffled for every voter;
+* None of the above option: whether the voter can skip answering this question by selecting a 'None of the above' option.
+
+For each question you create, you will need to create answers.
+
+=== Answers
+
+Click on the `Manage answers` icon for a specific question to create its answers.
+
+In the answer creation form, you will be asked for:
+
+* Title: the answer text as it will presented to the voter;
+* Description: a detailed explanation of the answer (only shown when the voter wants to see more information about the answer);
+* Weight: when the question is not set to have 'Random answers order', this will determine the order of the answer (an answer with a higher weight will be displayed on top of an answer with a lower weight).
+* Images: images related to this answer (only shown when the voter wants to see more information about the answer);
+* Related proposals: Decidim proposals that are related to this answer (only shown when the voter wants to see more information about the answer).
+
+image::https://s3-us-west-2.amazonaws.com/secure.notion-static.com/dff7ba13-7d59-4a42-8c39-67317e973c40/Screenshot_2021-06-30_at_19.06.16.png[A question with two answers and the 'None of the above' option as seen by a voter]
+
+A question with two answers and the 'None of the above' option as seen by a voter
+
+image::https://s3-us-west-2.amazonaws.com/secure.notion-static.com/270bb31e-69d1-451f-8d76-951a59a827c4/Screenshot_2021-06-30_at_18.47.00.png[How a voter sees an answer when clicking on 'More information']
+
+How a voter sees an answer when clicking on 'More information'
+
+At this point we created and set up an Election in Decidim.
+Before we can https://www.notion.so/Create-an-Election-in-the-Bulletin-Board-186b80aecd1949b193bd534e83a2a27e[push it to the Bulletin Board], we need to https://www.notion.so/Add-Trustees-to-a-participatory-space-1b9f12b21e1243b6a9ba223178ac2c81[create and configure the Trustees].

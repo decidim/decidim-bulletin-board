@@ -1,0 +1,44 @@
+= Perform the tally
+
+Trustees in an election have the key role of decrypting the results of an election tallied by the Bulletin Board.
+
+Once the admin of Decidim has officially started the tally in the Bulletin Board, all the Trustees will have to connect at the same time to put together the decryption keys in their possess and decrypt the results.
+
+As previously done for the https://www.notion.so/Create-trustee-identification-keys-81717ff3c4364738948799415b6a8523[identification key creation] and the https://www.notion.so/Take-part-in-the-Key-Ceremony-9aebcbf319254a03b86edeaccd969dbf[Key Ceremony], the Trustees will have to access the trustee zone from their account page.
+
+image::https://s3-us-west-2.amazonaws.com/secure.notion-static.com/e6879c56-1241-40ae-858c-ccf29060911c/Untitled.png[The Trustee has an election in `tally` status.
+There's an action to perform for the Trustee!]
+
+The Trustee has an election in `tally` status.
+There's an action to perform for the Trustee!
+
+If the Trustee is using a different browser or computer from the one used for the previous steps, they will be asked to https://www.notion.so/Take-part-in-the-Key-Ceremony-9aebcbf319254a03b86edeaccd969dbf[upload their identification keys] again.
+
+Now we are all set to click on `Perform action` and `Start` the tally process.
+
+image::https://s3-us-west-2.amazonaws.com/secure.notion-static.com/d66b2d4d-3c00-4948-8ed8-35e379b17e97/Untitled.png[The tally is ready to be started.
+If the `Start` button is not active, chances are you have not uploaded the identification key as explained [above](https://www.notion.so/Perform-the-tally-832de66242a54c259643e021fe03bc5b).]
+
+The tally is ready to be started.
+If the `Start` button is not active, chances are you have not uploaded the identification key as explained https://www.notion.so/Perform-the-tally-832de66242a54c259643e021fe03bc5b[above].
+
+The Trustee will be asked to provide the https://www.notion.so/Take-part-in-the-Key-Ceremony-9aebcbf319254a03b86edeaccd969dbf[election key created and stored during the Key Ceremony].
+
+image::https://s3-us-west-2.amazonaws.com/secure.notion-static.com/7052d1bf-fbd5-485d-9e17-8c605265b942/Untitled.png[Every Trustee has to provide their share of the election key, to generate the decryption key for the tally.]
+
+Every Trustee has to provide their share of the election key, to generate the decryption key for the tally.
+
+After uploading the election key, the process might get stuck in the `Tally share` step: this happens because all the Trustees of the election must upload their election key before the tally can be finished.
+Once all the Trustees are connected and uploaded their election key, the process will continue on its own - *do not refresh or exit the page*!
+
+image::https://s3-us-west-2.amazonaws.com/secure.notion-static.com/be87b4fd-e321-4669-83bb-b92716801160/Untitled.png[If the `Tally share` step takes long, it means some Trustees still have to upload their election key - the process will resume when all trustees upload their keys.]
+
+If the `Tally share` step takes long, it means some Trustees still have to upload their election key - the process will resume when all trustees upload their keys.
+
+All done!
+The tally has been performed and the results are ready.
+The Monitoring Committe can now review them and the Decidim admin can publish them.
+
+image::https://s3-us-west-2.amazonaws.com/secure.notion-static.com/11a0772d-b608-467a-b399-182120784254/Untitled.png[The tally has finished - this was the last action required from the Trustees in this election.]
+
+The tally has finished - this was the last action required from the Trustees in this election.

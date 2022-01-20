@@ -1,0 +1,75 @@
+= Count votes and create closure certificate
+
+When a Polling Station closes, the Polling Station President or one of the Managers have to report in Decidim the results of the election for their Polling Station, so that this can be taken into account in the total tally.
+
+This can be done from the Polling Officer Zone.
+Read https://www.notion.so/Register-a-voter-in-the-Polling-Station-f7d5b46c076e4b62ae6d564559edd4ff[here] to know how to access the Polling Officer Zone.
+
+== Count votes
+
+To report the recount of the ballots, a Polling Station Officer (the President or one of the Managers) will have to click on `Count votes` for the relevant election displayed in their Polling Officer Zone.
+
+image::https://s3-us-west-2.amazonaws.com/secure.notion-static.com/6870eb64-fb97-4e2e-bbf5-de15c139980c/Untitled.png[After the Polling Station closes, a Polling Station Officer can start the vote recount operation.]
+
+After the Polling Station closes, a Polling Station Officer can start the vote recount operation.
+
+The first step will be to report the number of physical ballots found in the ballot box.
+
+image::https://s3-us-west-2.amazonaws.com/secure.notion-static.com/846b892a-4ac2-4648-a9b4-f1f6e0656d6b/Untitled.png[After counting the physical ballots in the ballot box, the Polling Station Officer will have to introduce the amount as first step in the vote recount procedure.]
+
+After counting the physical ballots in the ballot box, the Polling Station Officer will have to introduce the amount as first step in the vote recount procedure.
+
+Notice that, if the number provided does not match the number of voters registered during the voting period, the Polling Station Officer will be asked to justify the mismatch to the Monitoring Committee.
+
+image::https://s3-us-west-2.amazonaws.com/secure.notion-static.com/ea6cfc93-3d3a-424f-aa69-a8f05d168153/Untitled.png[During the voting period, the Polling Station Officers registered 2 voters, whereas 3 physical ballots were counted in the ballot box.
+This can be amended by changing the recount amount or will have to be justified to the Monitoring Committee explaining the reason for the mismatch.]
+
+During the voting period, the Polling Station Officers registered 2 voters, whereas 3 physical ballots were counted in the ballot box.
+This can be amended by changing the recount amount or will have to be justified to the Monitoring Committee explaining the reason for the mismatch.
+
+Next comes the details recount by answer.
+
+The Polling Station Officer will be asked to:
+
+. Indicate the number of valid, blank and null ballots - the sum will have to match the amount of total ballots provided in the previous step;
+. For every question, indicate the number of preferences by answer.
++
+⚠️ Since some questions allow selecting multiple answers, the application will not validate that the aggregated amount of votes for every answer matches the total amount of valid ballot.
+The Polling Station Officer will have to pay extra attention to the data they insert here.
+
+image::https://s3-us-west-2.amazonaws.com/secure.notion-static.com/e3d025dd-f5a6-4519-a4eb-26b357222670/Untitled.png[In `Total ballots` the Polling Station Officer will have to insert the number of valid, blank and null ballots.
+For each question, they will have to enter the number of votes by answer.]
+
+In `Total ballots` the Polling Station Officer will have to insert the number of valid, blank and null ballots.
+For each question, they will have to enter the number of votes by answer.
+
+image::https://s3-us-west-2.amazonaws.com/secure.notion-static.com/1615f937-8b18-474a-bea1-bc98f7aea9d1/Untitled.png[The sum of the valid, blank and null values inserted does not match the total ballot number inserted in the previous step.
+The Polling Station Officer is asked to review it.]
+
+The sum of the valid, blank and null values inserted does not match the total ballot number inserted in the previous step.
+The Polling Station Officer is asked to review it.
+
+== Upload the electoral closure certificate and sign the closure
+
+The last step to close a Polling Station is to upload one or more pictures of the electoral closure certificate.
+
+After completing the vote recount procedure, the polling Station Officer will see a summary of the data they just entered and a place to upload one or more pictures of the official electoral closure certificate.
+
+image::https://s3-us-west-2.amazonaws.com/secure.notion-static.com/fa166642-91fb-4341-8b55-1fbfb306e9b9/Untitled.png[The Polling Station Officer has to upload one or more pictures of the closure certificate using the uploader.]
+
+The Polling Station Officer has to upload one or more pictures of the closure certificate using the uploader.
+
+Once the Polling Station Officer uploaded the picture(s), they can review one last time the electoral closure and sign it off by checking the last checkbox and hitting `Sign the Closure`
+
+image::https://s3-us-west-2.amazonaws.com/secure.notion-static.com/0a6f8a15-390f-44b0-859e-0b7a688d6d5f/Untitled.png[Last chance for the Polling Station Officer to review the closure.
+Once it is signed, it will be sent to the Monitoring Committee for review.]
+
+Last chance for the Polling Station Officer to review the closure.
+Once it is signed, it will be sent to the Monitoring Committee for review.
+
+Once the closure is signed, the Polling Station Officers will be able to view it but not to modify it anymore.
+From now on it will be visible to the Monitoring Committee.
+
+image::https://s3-us-west-2.amazonaws.com/secure.notion-static.com/670bd738-34b2-467b-95d5-054de11d4a4b/Untitled.png[The closure is signed and not editable]
+
+The closure is signed and not editable

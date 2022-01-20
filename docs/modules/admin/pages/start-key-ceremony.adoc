@@ -1,0 +1,13 @@
+= Start the Key Ceremony
+
+As an administrator of Decidim, you can start the Key Ceremony for an election.
+
+The Key Ceremony is the process that gathers the Trustees of an election to create the encryption keys in the Bulletin Board.
+
+All the trustees need to be connected at the same time to perform the Key Ceremony, so some coordination is needed.
+
+You can kick off the ceremony by clicking `Start the key ceremony` in the election steps.
+
+image::https://s3-us-west-2.amazonaws.com/secure.notion-static.com/d7af4f99-b4fb-4669-9815-92cc0e98a5ad/Screenshot_2021-07-02_at_17.36.48.png[https://s3-us-west-2.amazonaws.com/secure.notion-static.com/d7af4f99-b4fb-4669-9815-92cc0e98a5ad/Screenshot_2021-07-02_at_17.36.48.png]
+
+Now the Trustees can access the Trustee Zone and create the encryption keys.
