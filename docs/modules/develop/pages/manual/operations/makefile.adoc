@@ -1,0 +1,20 @@
+= Makefile
+
+To help to perform operations in the Bulletin Board's rich environment, you can leverage the shortcuts provided by the `Makefile` in the root folder.
+
+Type `make help` to see the operations you can perform.
+
+image::https://s3-us-west-2.amazonaws.com/secure.notion-static.com/ce384816-5de2-45c7-8a87-292e8d37f55e/Untitled.png[Untitled]
+
+For example, if you want to set up and run the Bulletin Board locally, you can simply run the following commands:
+
+`make install` - this will install all the dependencies.
+
+`make serve` - this will spin up the Bulletin Board server in development mode.+++<aside>+++⚠️ The first time you run `make install` it might fail due to missing OS packages.
+Take care of installing them and run the command again.+++</aside>+++
+
+The `Makefile` also comes with several other useful commands, like:
+
+* `VERSION=xx.yy.zz make release`, to bump and publish a new version of all the packages;
+* `make server_test` to start the Bulletin Board in test mode, useful when running Decidim integration tests;
+* `make deploy_staging_app` and `make deploy_development_app` automatically create and deploy an app on Heroku (you need to log in with the Heroku CLI).

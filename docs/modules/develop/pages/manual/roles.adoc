@@ -1,0 +1,64 @@
+= Roles
+
+== Election organizer
+
+The aim of the current project is to help organizations using Decidim with the ability to make democratic decisions.
+So, the first role that we find is the *organizer of the election*, who is represented in Decidim by the existing Administrator role.
+Their main need from the system is being able to ask the voters about the decisions to be made and, at the end of the process, publish the results of the election.
+For this role, being sure that the results represent the true intention of the voters is as important as being able to demonstrate it to everyone else.
+Of course, this also includes that only allowed voters can participate in the process and that each voter intention is counted only once.
+
+== Voters
+
+In Decidim, the participants of the platform are the *voters*, where they can be registered users or just visitors of the website with ad-hoc credentials to participate in the election.
+Their need from the platform is to be able to trust that their choices will be included in the election results, without being revealed to anyone.
+
+The idea of end-to-end verifiable elections was developed to help voters to be confident about the results, and is based on three principles, described below.
+
+. Votes are cast as intended.
+The voter ballot represents the choices that they wanted to choose.
+With physical votes, this means no more than marking the option selected in the paper ballot, typically writing an X in a box next to the option text.
+With online votes, this is more tricky, as it's very hard for the voter to be sure that the ciphered ballot stored in the ballot box represents their original intention.
+The system could, for example, give the voter the appearance that they are choosing a certain option, but effectively cast a vote for another option in the actual ciphered ballot.
+To avoid this, after a ballot is ciphered, the voter can decide to _audit_ their ballot instead of casting it.
+This operation will force the system to reveal the information it used to produce the encrypted ballot so that the voter can check if it corresponds with their intentions.
+Notice that an audited ballot is a spoiled ballot - the voter will have to repeat the voting operation, but this time with an adequate certainty that the cast ballot will reflect their intentions because the system will never know if the voter is going to cast or audit the ballot when ciphering it.
+. Votes are stored as cast.
+The ballot box contains the ballot cast by the voter, without being modified or removed from the moment it is cast until the moment of starting the tally.
+With physical votes, this is achieved by having the ballot boxes monitored by independent observers and/or delegates of the competing options in the election during the entire voting period.
+With online votes, this is done by allowing the voters, at any moment, to query the ballot box for their ciphered ballot content hash, which ensures that the content of it was not modified or removed.
+. Votes are tallied as cast.
+The published results represent accurately the sum of the votes cast by all the voters.
+With physical votes, the same observers that monitor the ballot boxes during the voting period also monitor the opening and the counting of every ballot.
+With online votes, the decryption process should include mathematical proofs that the published results are equivalent to the sum of the ciphered ballots without revealing the information needed to decrypt the individual ballots.
+
+== Trustees
+
+Regarding the secrecy of the votes, this is achieved using opaque envelopes for physical votes and using cryptographic methods for online votes.
+This works great during the cast phase, but to be able to do the tally this secrecy should be, somehow, broken.
+The solution for physical votes is pretty straightforward, that consist in mixing all the envelopes when removing them from the ballot box to remove all the connections between voter and ballot.
+
+In the case of an online vote, this can be done mainly with two approaches, both based on cryptographic methods.
+The first one consists on simulating the mixing of the ballots to remove completely the connection with the voters.
+This uses a technology called https://en.wikipedia.org/wiki/Mix_network[Mix networks], and it's currently not used for this project.
+
+The approach used by this project takes advantage of a special type of encryption, called homomorphic encryption, that permits systems to perform computations over encrypted data without decrypting it first.
+In other words, it allows to sum the votes for each option without decrypting the individual ballots.
+
+But how can the voters be sure that the organizers of the elections are decrypting only the election results and not their individual ballots?
+Here is where the role of the *trustees* appears.
+For each election, each trustee generates their own pair of public and private keys and a big public key is generated with the combination of all the public keys.
+Voters will encrypt their ballots with it.
+After the voting period ends and all the ballots are summed into an encrypted total, the trustees will use their private keys to help decrypting the results.
+In other words, the cooperation of all trustees will be needed to be able to decrypt individual ballots.
+Trustees guarantee the secrecy of the vote.
+
+== Observers
+
+As mentioned before, for organizations it's very important having the published results widely accepted.
+The trustees don't help to ensure the correctness of the results, only that the contents of individual online ballots are not revealed.
+The verifiability of the results is based on transparency and, for the online votes, mathematical proofs.
+The current solution allows *everyone* to audit the process activity during the elections and to verify the elections' outcome after the results are published.
+
+The electoral process can also include a *monitoring committee*, whose members will be responsible for running all the verifications before the results are published.
+Additionally, when the votes were cast physically, they will guarantee the correctness of the results based on the certificates received from each polling station.

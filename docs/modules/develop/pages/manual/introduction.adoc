@@ -1,0 +1,13 @@
+= Introduction
+
+This document describes the design and implementation details of the system that allows Decidim to perform secure online and physical elections.
+A system of this kind has competing requirements: *resisting tampering* and *keeping the data integrity and secrecy of the voters preferences* on one side, and *enforcing participants confidence* through individual and global verifications on the other.
+
+To address a challenge like this, the existing solutions are based on *division of responsibilities* between different parts to avoid tampering, the use of *voting protocols* to safeguard the sensitive data and the *highest possible level of transparency* to increase public confidence in the election output.
+The designed solution applies these principles to the Decidim specific technical environment.
+
+All of these features increase the complexity of the software to design and develop, transforming a basic polls module into a whole system composed by several parts that must coordinate and communicate in a secure and reliable way.
+
+The aim of this document is to share with the Decidim development community the knowledge needed to be able to maintain, improve and expand the current implementation.
+It's recommended to have a good understanding of the system features before reading this document.
+If that's not the case, reading the User manual first should help.

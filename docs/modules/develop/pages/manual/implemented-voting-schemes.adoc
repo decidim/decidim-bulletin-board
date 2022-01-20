@@ -1,0 +1,7 @@
+= Implemented voting schemes
+
+https://www.notion.so/4-1-Dummy-5d15a6042c8b445391ed6e4448795be5[4.1.
+Dummy]
+
+https://www.notion.so/4-2-ElectionGuard-d62f106ecce44564ac96d454a3c7bc22[4.2.
+ElectionGuard]

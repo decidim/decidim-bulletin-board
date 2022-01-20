@@ -1,0 +1,14 @@
+= Decidim integration
+
+So far, we have covered all the parts of the system that are not related to Decidim.
+In fact, it would be possible to integrate the bulletin board with any participation platform.
+However, the development of this system includes the implementation of two complementary Decidim building block, described hereafter.
+
+https://www.notion.so/6-1-Elections-component-dbd8e039d3384229a9ef0076fd50d589[6.1.
+Elections component]
+
+https://www.notion.so/6-2-Voting-participatory-space-9da3abb174f8405f97bb75d49bae3b5e[6.2.
+Voting participatory space]
+
+https://www.notion.so/6-3-Operations-82e750e645af433991614605692f696b[6.3.
+Operations]

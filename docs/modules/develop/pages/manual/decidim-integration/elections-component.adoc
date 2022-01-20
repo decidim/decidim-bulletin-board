@@ -1,0 +1,48 @@
+= Elections component
+
+Elections is a Decidim component, as Proposals, Debates or Surveys, developed to allow administrators to organize end-to-end verifiable elections in their organization's participatory spaces.
+
+It defines the `election` resource that enable administrators to complete all the information related to elections that will be used in the manifest message, including title, description, dates and questions and answers.
+As with other resources, the authorization handlers system can be assigned to the `vote` action, to restrict the participation only to verified users.
+The resource also can be related with questionnaires from the `Decidim::Forms` module, that enable the voters to give feedback about the voting experience.
+
+The Decidim users can act as trustees in the scope of a participatory space.
+Once a user is assigned to be a trustee for the first time, they can access the Trustee zone located in their account page.
+An identification key should be created within this page, to be able to sign the messages sent to the bulletin board.
+These keys are generated using the `IdentificationKeys` class included in the bulletin board's JS client.
+While the generated private key will be stored in the browser's `localStorage` (and in a downloaded backup file), the public key will be stored in the `trustees` table.
+
+When an election is configured and all the trustees have their identification keys, the message to create the election in the bulletin board can be sent.
+This uses the bulletin board's Ruby client, that is configured using the `secrets.yml` file.
+It also needs that the Decidim instance has been added as an authority in the bulletin board instance database.
+
+All the actions performed in the admin zone to interact with the bulletin board are executed asynchronously.
+The server sends the message, stores the message identifier used, and the administrator's browser polls the election log in the bulletin board to confirm that the message was processed.
+The Rake task `decidim:elections:scheduled_tasks` should be scheduled to run periodically to perform this checks when the user closes the browser before the message processing is confirmed.
+
+On the other hand, the trustees actions are performed in a synchronous way.
+Using the bulletin board's JS client, they poll the election log to receive and process all the messages and send the response messages when applicable.
+These actions are idempotent, if they are interrupted, they can be started again and the result will be the same.
+The private data generated during the key ceremony is stored in a backup file to allow the process to continue from that point if interrupted and to be used during the tally phase.
+
+This component also implements the voting booth as a single page, using JavaScript to show all the election questions and answers and the bulletin board JS client to cipher the ballot.
+It may also need the voting scheme JS library to do the ciphering.
+
+Another key topic is the assignation of a unique voter identifier for each user.
+This identifier should not be easily related with a physical person but should change when the election and the user are the same, to allow voters to change their vote casting a new ballot.
+As the voters will not always be the platform users, the implementation of this identifier generation is not fixed.
+The module defines an abstract class called `VoteFlow` that generates the identifiers calculating a SHA256 hash of a structure of data to be defined by the implementation classes.
+Then, it implements the `CurrentUserVoteFlow`, that returns the user's id and creation date for the process.
+
+To cast a vote, the browser sends the ciphered ballot to the Decidim server and then polls the bulletin board until the message is processed, and then verifies that the ciphered ballot hash was added to the election log.
+The voter will not be allowed to cast another vote until their message is processed.
+If they refresh the page or try to start the voting process again, it will be redirected to the page that waits the message to be processed.
+After this happens, the voter can check that the message is still on the election log at any moment.
+
+Finally, the component implements the process to retrieve and store the results from the bulletin board after the tally ends.
+This is done when processing the `end_tally` message, that includes the `results` field, that can only be accessed by the election authority.
+This way, the administrator can know the results before publishing them.
+
+When the administrator performs the results' publication task, the stored results will appear on the election frontend page.
+Also, the bulletin board will disclose the messages of the tally phase and the compressed file including the whole election log.
+The election component also includes a page that helps voters to access all the information directly from the bulletin board using a JavaScript GraphQL client.
