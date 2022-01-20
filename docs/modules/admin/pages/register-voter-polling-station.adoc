@@ -16,7 +16,7 @@ This last operation implies that:
 
 == Access the Polling Officer Zone
 
-After a https://www.notion.so/Create-and-configure-a-Voting-7d8c12536de448d38d00718430860762[Decidim admin made a user a Polling Officer] and assigned them to a Polling Station, the user will be able to access the Polling Officer Zone and see their Polling Stations.
+After a xref:admin:create-voting-decidim.adoc[Decidim admin made a user a Polling Officer] and assigned them to a Polling Station, the user will be able to access the Polling Officer Zone and see their Polling Stations.
 
 The Polling Officer Zone can be accessed by Presidents and Managers from their account page:
 
@@ -49,7 +49,7 @@ If the data provided does not match any census entry, the participant will not b
 
 The Polling Station Officer can try again to make sure they did not make any mistake entering the data.
 
-Notice that the voter had the possibility https://www.notion.so/Check-census-data-and-recover-access-code-3865fc720a6e452589f37d752ef65617[check if they were correctly enlisted in the census] the days prior the election.
+Notice that the voter had the possibility xref:admin:check-census-data.adoc[check if they were correctly enlisted in the census] the days prior the election.
 
 image::https://s3-us-west-2.amazonaws.com/secure.notion-static.com/aaf67f04-067c-43d5-bbbd-7ab0ba8d164f/Untitled.png[The data provided does not match any census entry.]
 

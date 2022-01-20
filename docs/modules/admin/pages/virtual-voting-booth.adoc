@@ -51,9 +51,9 @@ The encryption process is done in the browser and can take a few seconds, depend
 
 Here the voter can decide to:
 
-* https://www.notion.so/Virtual-voting-booth-fa7ab9bb490b4433ae78e10dbaf08d47[Audit the ballot] - check that the ballot has been correctly encrypted by their browser.
+* xref:admin:virtual-voting-booth.adoc[Audit the ballot] - check that the ballot has been correctly encrypted by their browser.
 This will spoil the ballot and they will need to restart the voting process to cast it;
-* https://www.notion.so/Virtual-voting-booth-fa7ab9bb490b4433ae78e10dbaf08d47[Cast the ballot] - send the ballot to the Bulletin Board.
+* xref:admin:virtual-voting-booth.adoc[Cast the ballot] - send the ballot to the Bulletin Board.
 
 image::https://s3-us-west-2.amazonaws.com/secure.notion-static.com/795655a2-5620-4d8f-8282-50d80959ca9b/Untitled.png[https://s3-us-west-2.amazonaws.com/secure.notion-static.com/795655a2-5620-4d8f-8282-50d80959ca9b/Untitled.png]
 
@@ -71,7 +71,7 @@ The voter can check that it corresponds to the selections they made and that not
 
 Clicking on `Cast ballot` the browser will send the encrypted ballot directly to the Bulletin Board (without passing through the Decidim server) and wait for it to confirm the correct reception.
 
-The voter will be presented again with the ballot identifier: they can use this to https://www.notion.so/Virtual-voting-booth-fa7ab9bb490b4433ae78e10dbaf08d47[verify that their ballot is correctly accounted for in Bulletin Board].
+The voter will be presented again with the ballot identifier: they can use this to xref:admin:virtual-voting-booth.adoc[verify that their ballot is correctly accounted for in Bulletin Board].
 
 image::https://s3-us-west-2.amazonaws.com/secure.notion-static.com/a7c90160-bf5b-42cc-9ffd-6346288763e2/Screenshot_2021-07-05_at_17.23.32.png[https://s3-us-west-2.amazonaws.com/secure.notion-static.com/a7c90160-bf5b-42cc-9ffd-6346288763e2/Screenshot_2021-07-05_at_17.23.32.png]
 

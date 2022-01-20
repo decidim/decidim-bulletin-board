@@ -51,7 +51,7 @@ As a result of this process, you will obtain an API Key that you will have to se
 
 The last step to correctly connect a Decidim instance with the Bulletin Board is to tell Decidim the URL of the Bulletin Board and the api key to use.
 
-In https://www.notion.so/Bulletin-Board-setup-628285559eea4350b0ec0165ee922ece[the previous step], the Bulletin Board administrator added your Decidim instance as an authority in the Bulletin Board and sent you back an API key.
+In xref:admin:bulletin-board-setup.adoc[the previous step], the Bulletin Board administrator added your Decidim instance as an authority in the Bulletin Board and sent you back an API key.
 Store that API key in the Decidim environment variable `AUTHORITY_API_KEY` and the Bulletin Board URL in `BULLETIN_BOARD_SERVER`.
 
 The following YAML snippet with all the defined environment variables should be used in the `default` block of your application `config/secrets.yml` file.

@@ -10,7 +10,7 @@ SpecificallyIn the specifics, Monitoring Committee Members can:
 
 == Access the Election
 
-Monitoring Committee Members are appointed by Decidim admins as explained in https://www.notion.so/Create-and-configure-a-Voting-7d8c12536de448d38d00718430860762[the corresponding section].
+Monitoring Committee Members are appointed by Decidim admins as explained in xref:admin:create-voting-decidim.adoc[the corresponding section].
 
 When a Decidim is a Monitoring Committee Member for a Voting, they will gain access to the admin panel for that specific Voting.
 
@@ -33,7 +33,7 @@ image::https://s3-us-west-2.amazonaws.com/secure.notion-static.com/b219f9ce-8aa9
 
 === Validate Certificates
 
-The Monitoring Committee Members can see and validate the https://www.notion.so/Count-votes-and-create-closure-certificate-376a0f16ca0f4cbf85174204c37802b0[electoral closures created by the Polling Station Officers when closing a Polling Station].
+The Monitoring Committee Members can see and validate the xref:admin:count-votes.adoc[electoral closures created by the Polling Station Officers when closing a Polling Station].
 
 The Monitoring Committee Member will see the list of Polling Stations and the status of the electoral closure.
 
@@ -88,7 +88,7 @@ Cloning it and running the specified command we can verify if any incident happe
 == Validate results
 
 The `Validate results` provides the Monitoring Committee a preview of the final results of the election.
-This will only be available after the Trustees have https://www.notion.so/Perform-the-tally-832de66242a54c259643e021fe03bc5b[performed the tally].
+This will only be available after the Trustees have xref:admin:perform-tally.adoc[performed the tally].
 
 On the top part there is a summary of the total number ballots with the detail by valid/blank/null.
 

@@ -2,7 +2,7 @@ The Key Ceremony is one of the main pieces that guarantees the security and the 
 
 In this process the Trustees create the encryption keys used to encrypt the votes during the voting period and decrypt the results at the end of the election.
 
-As a Trustee, you can take part to the Key Ceremony by https://www.notion.so/Create-trustee-identification-keys-81717ff3c4364738948799415b6a8523[accessing the Trustee Zone in your account page].
+As a Trustee, you can take part to the Key Ceremony by xref:admin:create-trustee-identification-keys.adoc[accessing the Trustee Zone in your account page].
 
 When the administrator of the election has started the Key Ceremony, you will see that an action is required for the election you are a Trustee for.
 
@@ -10,7 +10,7 @@ image::https://s3-us-west-2.amazonaws.com/secure.notion-static.com/b12b70e9-d991
 
 You have a pending action in the election `Another election`
 
-If you are asked to `Upload your identification keys` as in the image above, upload the file you downloaded in the https://www.notion.so/Create-trustee-identification-keys-81717ff3c4364738948799415b6a8523[previous step].
+If you are asked to `Upload your identification keys` as in the image above, upload the file you downloaded in the xref:admin:create-trustee-identification-keys.adoc[previous step].
 
 Now click on `Perform action` to enter the Key Ceremony view.
 

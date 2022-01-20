@@ -35,7 +35,7 @@ You can activate/deactivate and reorder specific blocks and create custom HTML b
 
 === Polling Stations
 
-If your voting needs to be integrated with a physical election, here you can create the Polling Stations for which the https://www.notion.so/Create-and-configure-a-Voting-7d8c12536de448d38d00718430860762[Polling Officers] will register and submit votes to the Bulletin Board.
+If your voting needs to be integrated with a physical election, here you can create the Polling Stations for which the xref:admin:create-voting-decidim.adoc[Polling Officers] will register and submit votes to the Bulletin Board.
 
 In the Polling Station creation form, you will be asked to fill in:
 
@@ -56,7 +56,7 @@ You can create a Polling Officer by:
 * Selecting an existing Decidim user;
 * Inviting the officer to register to Decidim by email (they will need to accept the invitation and create an account).
 
-Once you have created a Polling Officer, remember to assign them to their https://www.notion.so/Create-and-configure-a-Voting-7d8c12536de448d38d00718430860762[Polling Station] from the Polling Station itself.
+Once you have created a Polling Officer, remember to assign them to their xref:admin:create-voting-decidim.adoc[Polling Station] from the Polling Station itself.
 
 === Monitoring Committee
 

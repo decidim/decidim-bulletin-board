@@ -4,7 +4,7 @@ Trustees in an election have the key role of decrypting the results of an electi
 
 Once the admin of Decidim has officially started the tally in the Bulletin Board, all the Trustees will have to connect at the same time to put together the decryption keys in their possess and decrypt the results.
 
-As previously done for the https://www.notion.so/Create-trustee-identification-keys-81717ff3c4364738948799415b6a8523[identification key creation] and the https://www.notion.so/Take-part-in-the-Key-Ceremony-9aebcbf319254a03b86edeaccd969dbf[Key Ceremony], the Trustees will have to access the trustee zone from their account page.
+As previously done for the xref:admin:create-trustee-identification-keys.adoc[identification key creation] and the xref:admin:take-part-key-ceremony.adoc[Key Ceremony], the Trustees will have to access the trustee zone from their account page.
 
 image::https://s3-us-west-2.amazonaws.com/secure.notion-static.com/e6879c56-1241-40ae-858c-ccf29060911c/Untitled.png[The Trustee has an election in `tally` status.
 There's an action to perform for the Trustee!]
@@ -12,17 +12,17 @@ There's an action to perform for the Trustee!]
 The Trustee has an election in `tally` status.
 There's an action to perform for the Trustee!
 
-If the Trustee is using a different browser or computer from the one used for the previous steps, they will be asked to https://www.notion.so/Take-part-in-the-Key-Ceremony-9aebcbf319254a03b86edeaccd969dbf[upload their identification keys] again.
+If the Trustee is using a different browser or computer from the one used for the previous steps, they will be asked to xref:admin:take-part-key-ceremony.adoc[upload their identification keys] again.
 
 Now we are all set to click on `Perform action` and `Start` the tally process.
 
 image::https://s3-us-west-2.amazonaws.com/secure.notion-static.com/d66b2d4d-3c00-4948-8ed8-35e379b17e97/Untitled.png[The tally is ready to be started.
-If the `Start` button is not active, chances are you have not uploaded the identification key as explained [above](https://www.notion.so/Perform-the-tally-832de66242a54c259643e021fe03bc5b).]
+If the `Start` button is not active, chances are you have not uploaded the identification key as explained [above](xref:admin:perform-tally.adoc).]
 
 The tally is ready to be started.
-If the `Start` button is not active, chances are you have not uploaded the identification key as explained https://www.notion.so/Perform-the-tally-832de66242a54c259643e021fe03bc5b[above].
+If the `Start` button is not active, chances are you have not uploaded the identification key as explained xref:admin:perform-tally.adoc[above].
 
-The Trustee will be asked to provide the https://www.notion.so/Take-part-in-the-Key-Ceremony-9aebcbf319254a03b86edeaccd969dbf[election key created and stored during the Key Ceremony].
+The Trustee will be asked to provide the xref:admin:take-part-key-ceremony.adoc[election key created and stored during the Key Ceremony].
 
 image::https://s3-us-west-2.amazonaws.com/secure.notion-static.com/7052d1bf-fbd5-485d-9e17-8c605265b942/Untitled.png[Every Trustee has to provide their share of the election key, to generate the decryption key for the tally.]
 

@@ -6,4 +6,4 @@ This can be done by clicking on `End voting period` in the election's `Manage st
 
 image::https://s3-us-west-2.amazonaws.com/secure.notion-static.com/ca16f48d-2784-476e-a16d-9fbed02d2a01/Untitled.png[https://s3-us-west-2.amazonaws.com/secure.notion-static.com/ca16f48d-2784-476e-a16d-9fbed02d2a01/Untitled.png]
 
-As per the https://www.notion.so/Start-the-election-in-the-Bulletin-Board-48572b424e3646d0b78ee54d027343d0[voting period start], if the rake task `decidim_elections:scheduled_tasks` is set up as a recurrent task in your Decidim installation, this will be done automatically after the election has ended.
+As per the xref:admin:start-election-bulletin-board.adoc[voting period start], if the rake task `decidim_elections:scheduled_tasks` is set up as a recurrent task in your Decidim installation, this will be done automatically after the election has ended.

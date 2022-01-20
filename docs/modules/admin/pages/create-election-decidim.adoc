@@ -1,8 +1,8 @@
 = Create and configure an Election in Decidim
 
-As mentioned in the https://www.notion.so/Introduction-ee69f58dd5e346f689b18dfea137fa7a[introduction], an Election component can be used in any participatory space.
-Some of the features of Evote, though, are enabled by the https://www.notion.so/Create-and-configure-a-Voting-7d8c12536de448d38d00718430860762[Voting participatory space].
-If you need one of those features for your election, make sure you create the Election component in a https://www.notion.so/Create-and-configure-a-Voting-7d8c12536de448d38d00718430860762[Voting participatory space].
+As mentioned in the xref:admin:introduction.adoc[introduction], an Election component can be used in any participatory space.
+Some of the features of Evote, though, are enabled by the xref:admin:create-voting-decidim.adoc[Voting participatory space].
+If you need one of those features for your election, make sure you create the Election component in a xref:admin:create-voting-decidim.adoc[Voting participatory space].
 
 == Enable Elections in a participatory space
 
@@ -57,4 +57,4 @@ image::https://s3-us-west-2.amazonaws.com/secure.notion-static.com/270bb31e-69d1
 How a voter sees an answer when clicking on 'More information'
 
 At this point we created and set up an Election in Decidim.
-Before we can https://www.notion.so/Create-an-Election-in-the-Bulletin-Board-186b80aecd1949b193bd534e83a2a27e[push it to the Bulletin Board], we need to https://www.notion.so/Add-Trustees-to-a-participatory-space-1b9f12b21e1243b6a9ba223178ac2c81[create and configure the Trustees].
+Before we can xref:admin:create-election-bulletin-board.adoc[push it to the Bulletin Board], we need to xref:admin:add-trustees.adoc[create and configure the Trustees].

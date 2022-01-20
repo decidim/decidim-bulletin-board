@@ -4,16 +4,16 @@ Decidim Elections enables a Decidim instance to run end-to-end auditable votings
 
 In order for a secure, end-to-end auditable voting to be run on Decidim, you will need to understand and set up the following things:
 
-* The https://www.notion.so/Introduction-ee69f58dd5e346f689b18dfea137fa7a[Decidim Bulletin Board] service, an independent application designed to provide services to Decidim instances;
-* The https://www.notion.so/Introduction-ee69f58dd5e346f689b18dfea137fa7a[Election component], a Decidim component that takes care of the cycle of an election - from the communication with Decidim Bulletin Board to the virtual voting booth;
-* (optional) The https://www.notion.so/Introduction-ee69f58dd5e346f689b18dfea137fa7a[Voting participatory space], a Decidim participatory space that provides additional features to an election (integration with physical election, census management, etc).
+* The xref:admin:introduction.adoc[Decidim Bulletin Board] service, an independent application designed to provide services to Decidim instances;
+* The xref:admin:introduction.adoc[Election component], a Decidim component that takes care of the cycle of an election - from the communication with Decidim Bulletin Board to the virtual voting booth;
+* (optional) The xref:admin:introduction.adoc[Voting participatory space], a Decidim participatory space that provides additional features to an election (integration with physical election, census management, etc).
 
 == Decidim Bulletin Board
 
 The Decidim Bulletin Board is a public, append-only log designed to allow Decidim instances to hold secure end-to-end auditable votings.
 Since it is an independent application, you will need to deploy an instance and connect your Decidim to it.
 
-To find out more about how to deploy, set up and connect a Decidim Bulletin Board and connect it to your Decidim, read on in the https://www.notion.so/Bulletin-Board-setup-628285559eea4350b0ec0165ee922ece[dedicated page].
+To find out more about how to deploy, set up and connect a Decidim Bulletin Board and connect it to your Decidim, read on in the xref:admin:bulletin-board-setup.adoc[dedicated page].
 
 == Election component
 
@@ -30,7 +30,7 @@ The election component will also:
 * (in an online election) create a safe virtual voting booth that will allow voters to fill, encrypt, audit and cast their ballot;
 * Allow the election Trustees to create decryption keys and carry out the tally procedures.
 
-To know how to configure an Election component according to your election needs, check out the https://www.notion.so/Create-and-configure-an-Election-in-Decidim-104cea52e918416ba7e3493b22fbc66d[dedicated section].
+To know how to configure an Election component according to your election needs, check out the xref:admin:create-election-decidim.adoc[dedicated section].
 
 == Voting participatory space
 
@@ -41,4 +41,4 @@ While an Election component can be associated to any type of participatory space
 * Ballot styles (conditional questions);
 * Monitoring Committee.
 
-To find out the detail of the features provided by a Voting in the https://www.notion.so/Create-and-configure-a-Voting-7d8c12536de448d38d00718430860762[dedicated section].
+To find out the detail of the features provided by a Voting in the xref:admin:create-voting-decidim.adoc[dedicated section].

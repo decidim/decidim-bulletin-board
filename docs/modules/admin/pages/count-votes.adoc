@@ -3,7 +3,7 @@
 When a Polling Station closes, the Polling Station President or one of the Managers have to report in Decidim the results of the election for their Polling Station, so that this can be taken into account in the total tally.
 
 This can be done from the Polling Officer Zone.
-Read https://www.notion.so/Register-a-voter-in-the-Polling-Station-f7d5b46c076e4b62ae6d564559edd4ff[here] to know how to access the Polling Officer Zone.
+Read xref:admin:register-voter-polling-station.adoc[here] to know how to access the Polling Officer Zone.
 
 == Count votes
 

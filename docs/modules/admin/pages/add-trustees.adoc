@@ -14,4 +14,4 @@ If the trustee does not have a Decidim account yet, they will need to create one
 
 The trustees are specific to a participatory space, so they will act as such for all the elections inside the space you create them.
 
-Once you created all the trustees, they can proceed https://www.notion.so/Create-trustee-identification-keys-81717ff3c4364738948799415b6a8523[creating their identification key] that is necessary to properly set up an election.
+Once you created all the trustees, they can proceed xref:admin:create-trustee-identification-keys.adoc[creating their identification key] that is necessary to properly set up an election.

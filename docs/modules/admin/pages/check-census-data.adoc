@@ -16,7 +16,7 @@ They can request their access code again in case they did not receive it]
 The voter was found in the census.
 They can request their access code again in case they did not receive it
 
-If the data is not found, the voter will be shown the `[Census contact information` from the voting](https://www.notion.so/Create-and-configure-a-Voting-7d8c12536de448d38d00718430860762).
+If the data is not found, the voter will be shown the `[Census contact information` from the voting](xref:admin:create-voting-decidim.adoc).
 
 image::https://s3-us-west-2.amazonaws.com/secure.notion-static.com/676af66f-7753-483d-a881-3daaac5aba7c/Untitled.png[The data inserted has not been found in the census.
 If the voter thinks it should be, they can ask for it to be changed via the information provided in the voting.]
