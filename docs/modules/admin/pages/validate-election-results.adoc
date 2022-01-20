@@ -17,11 +17,11 @@ When a Decidim is a Monitoring Committee Member for a Voting, they will gain acc
 They can access the admin area from the user menu.
 In the backoffice area, they will only have access to the Voting they are a Monitoring Committee Member for, unless their user also has other kind of admin access.
 
-image::https://s3-us-west-2.amazonaws.com/secure.notion-static.com/32c4d227-d124-4189-9c9d-26f03e01282c/Untitled.png[`Admin dashboard` gives the user access to Decidim's backoffice]
+image::monitoring-commitee-account.png[`Admin dashboard` gives the user access to Decidim's backoffice]
 
 `Admin dashboard` gives the user access to Decidim's backoffice
 
-image::https://s3-us-west-2.amazonaws.com/secure.notion-static.com/02683942-1e95-4e77-969a-673a6c86965f/Untitled.png[Monitoring Committee Members can only access the Voting they are assigned to from the admin panel.
+image::monitoring-commitee-admin.png[Monitoring Committee Members can only access the Voting they are assigned to from the admin panel.
 If their user also has other kinds of admin access, though, those will be preserved.]
 
 Monitoring Committee Members can only access the Voting they are assigned to from the admin panel.
@@ -29,7 +29,7 @@ If their user also has other kinds of admin access, though, those will be preser
 
 Entering the Voting they want to validate, the Monitoring Committee Member can access the actions they want to perform from the left-hand menu.
 
-image::https://s3-us-west-2.amazonaws.com/secure.notion-static.com/b219f9ce-8aa9-40a2-b7cf-23943f3e55d7/Screenshot_2021-07-07_at_09.46.42.png[https://s3-us-west-2.amazonaws.com/secure.notion-static.com/b219f9ce-8aa9-40a2-b7cf-23943f3e55d7/Screenshot_2021-07-07_at_09.46.42.png]
+image::monitoring-commitee-admin-menu.png.png[Actions of the Monitoring Committee Member]
 
 === Validate Certificates
 
@@ -39,7 +39,7 @@ The Monitoring Committee Member will see the list of Polling Stations and the st
 
 `Signed?` indicates whether the Polling Station Officers created&signed the electoral closure for their Polling Station, `Validated?` indicates if any member of the Monitoring Committee has validated the electoral closure.
 
-image::https://s3-us-west-2.amazonaws.com/secure.notion-static.com/5437f662-7460-4ab6-8d40-6f564ee54b92/Untitled.png[Two electoral closures were created and signed, but non of them has been validated yet.]
+image::monitoring-commitee-closures.png[Two electoral closures were created and signed, but non of them has been validated yet.]
 
 Two electoral closures were created and signed, but non of them has been validated yet.
 
@@ -49,13 +49,13 @@ The Monitoring Committee Member will be able to see, on the same page, the physi
 
 The Monitoring Committee Member can report incidences before validating the Polling Station closure certificate.
 
-image::https://s3-us-west-2.amazonaws.com/secure.notion-static.com/82ca1ae3-13a2-432f-9b4d-541b3e223ef9/Untitled.png[The picture(s) of the certificate appear on the left, the results submitted by the Polling Station Officers on the right.]
+image::monitoring-commitee-closures-remarks.png[The picture(s) of the certificate appear on the left, the results submitted by the Polling Station Officers on the right.]
 
 The picture(s) of the certificate appear on the left, the results submitted by the Polling Station Officers on the right.
 
 Once a certificate has been validated, the Monitoring Committee Members can view it but not edit it anymore.
 
-image::https://s3-us-west-2.amazonaws.com/secure.notion-static.com/b4477eaf-b92d-4367-a49c-3d701a936c31/Untitled.png[The certificate has been validated.
+image::monitoring-commitee-closures-validated.png[The certificate has been validated.
 The Monitoring Committee can still view it.]
 
 The certificate has been validated.
@@ -63,7 +63,7 @@ The Monitoring Committee can still view it.
 
 Pro tip: setting a filter for signed and not yet validated certificates will show the certificates that are ready to be validated.
 
-image::https://s3-us-west-2.amazonaws.com/secure.notion-static.com/b818aa0d-cc79-42ad-a164-501f444963e3/Untitled.png[Filter out certificates that have not been signed yet or that have already been validated to know what you can work on right away.]
+image::monitoring-commitee-closures-filters.png[Filter out certificates that have not been signed yet or that have already been validated to know what you can work on right away.]
 
 Filter out certificates that have not been signed yet or that have already been validated to know what you can work on right away.
 
@@ -73,7 +73,7 @@ The online election is handled by the Bulletin Board, which provides a way to ve
 
 After closing the election, the Bulletin Board will publish a file for the election on which the Monitoring Committee can run the verification tool.
 
-image::https://s3-us-west-2.amazonaws.com/secure.notion-static.com/fc1735ed-0807-4b30-a638-7e9b624e96a3/Untitled.png[The Bulletin Board provides a verifiable election file to run the verification of the election.]
+image::monitoring-commitee-verify.png[The Bulletin Board provides a verifiable election file to run the verification of the election.]
 
 The Bulletin Board provides a verifiable election file to run the verification of the election.
 
@@ -96,4 +96,4 @@ Below is reported the detailed results by question.
 
 Notice that all values are reported for Polling Stations (physical election), Bulletin Board (online election) and total.
 
-image::https://s3-us-west-2.amazonaws.com/secure.notion-static.com/24f24302-6efd-4d7d-9107-cb914dd74d4c/Untitled.png[https://s3-us-west-2.amazonaws.com/secure.notion-static.com/24f24302-6efd-4d7d-9107-cb914dd74d4c/Untitled.png]
+image::monitoring-commitee-validate.png[Results for the election]

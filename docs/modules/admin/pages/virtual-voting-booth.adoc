@@ -4,7 +4,7 @@
 
 When the election start time has been reached, the voters will be able to access the voting booth in Decidim.
 
-image::https://s3-us-west-2.amazonaws.com/secure.notion-static.com/2df1d623-463a-4cf9-a3ec-adf087902ea5/Untitled.png[When the election starts, the voter will be able to enter the virtual voting booth clicking on `Start Voting`]
+image::virtual-voting-booth-start.png[When the election starts, the voter will be able to enter the virtual voting booth clicking on `Start Voting`]
 
 When the election starts, the voter will be able to enter the virtual voting booth clicking on `Start Voting`
 
@@ -16,7 +16,7 @@ This is needed to make sure they make part of the census and, in case you are us
 The voter will have to insert their personal data as in the Census and the access code they were sent via postal mail.
 In case they didn't receive it or lost it, they can retrieve it by clicking on `Ask for a new one`.
 
-image::https://s3-us-west-2.amazonaws.com/secure.notion-static.com/1502977f-5f9c-42a4-b886-731e6c681373/Untitled.png[The voter needs to provide their personal details and the access code to enter the voting booth.]
+image::virtual-voting-booth-identify.png[The voter needs to provide their personal details and the access code to enter the voting booth.]
 
 The voter needs to provide their personal details and the access code to enter the voting booth.
 
@@ -26,13 +26,13 @@ Now the voter is in the voting booth.
 Here they are presented with the questions for the elections.
 If Ballot Styles are set up, the voter will only be able to answer the questions corresponding to their Ballot Style.
 
-image::https://s3-us-west-2.amazonaws.com/secure.notion-static.com/9f1a47fc-5515-411a-8248-478178df6938/Untitled.png[Question with only one selection allowed.
+image::virtual-voting-booth-question1.png[Question with only one selection allowed.
 There's a progress indicator on the top-left corner.]
 
 Question with only one selection allowed.
 There's a progress indicator on the top-left corner.
 
-image::https://s3-us-west-2.amazonaws.com/secure.notion-static.com/0e170c63-716f-4f0c-a87e-7d665b4d2afe/Screenshot_2021-07-05_at_17.22.00.png[Question with two selections allowed.
+image::virtual-voting-booth-question2.png[Question with two selections allowed.
 The order of the answers is random.]
 
 Question with two selections allowed.
@@ -41,7 +41,7 @@ The order of the answers is random.
 After the voter finished indicating their preferences, they will be shown a summary of what they selected.
 They can confirm and proceed with the next step or go back and edit their answers.
 
-image::https://s3-us-west-2.amazonaws.com/secure.notion-static.com/fac8d708-31dc-4470-bb65-67bb86950df9/Untitled.png[https://s3-us-west-2.amazonaws.com/secure.notion-static.com/fac8d708-31dc-4470-bb65-67bb86950df9/Untitled.png]
+image::virtual-voting-booth-confirm.png[Confirm your vote]
 
 == Ballot encryption
 
@@ -55,7 +55,7 @@ Here the voter can decide to:
 This will spoil the ballot and they will need to restart the voting process to cast it;
 * xref:admin:virtual-voting-booth.adoc[Cast the ballot] - send the ballot to the Bulletin Board.
 
-image::https://s3-us-west-2.amazonaws.com/secure.notion-static.com/795655a2-5620-4d8f-8282-50d80959ca9b/Untitled.png[https://s3-us-west-2.amazonaws.com/secure.notion-static.com/795655a2-5620-4d8f-8282-50d80959ca9b/Untitled.png]
+image::virtual-voting-booth-audit.png[Audit your ballot]
 
 == Audit the ballot
 
@@ -73,28 +73,28 @@ Clicking on `Cast ballot` the browser will send the encrypted ballot directly to
 
 The voter will be presented again with the ballot identifier: they can use this to xref:admin:virtual-voting-booth.adoc[verify that their ballot is correctly accounted for in Bulletin Board].
 
-image::https://s3-us-west-2.amazonaws.com/secure.notion-static.com/a7c90160-bf5b-42cc-9ffd-6346288763e2/Screenshot_2021-07-05_at_17.23.32.png[https://s3-us-west-2.amazonaws.com/secure.notion-static.com/a7c90160-bf5b-42cc-9ffd-6346288763e2/Screenshot_2021-07-05_at_17.23.32.png]
+image::virtual-voting-booth-cast.png[Cast your ballot]
 
 == Verify the ballot
 
 At any point during and after the voting period, the voter can check if the ballot they casted is in the ballot box using their ballot identifier.
 This is done by asking the Bulletin Board if it received and successfully processed the ballot.
 
-image::https://s3-us-west-2.amazonaws.com/secure.notion-static.com/1ddc0fc4-9795-4b51-a07c-1683eb0936c3/Screenshot_2021-07-05_at_16.39.12.png[The voter can access the ballot verification page from the election landing page.]
+image::virtual-voting-booth-verify.png[The voter can access the ballot verification page from the election landing page.]
 
 The voter can access the ballot verification page from the election landing page.
 
 The voter will be asked to insert their ballot identifier provided at the end of the voting process.
 
-image::https://s3-us-west-2.amazonaws.com/secure.notion-static.com/4ce1d1b9-ac91-4105-9f84-e3c84aa34fb7/Untitled.png[https://s3-us-west-2.amazonaws.com/secure.notion-static.com/4ce1d1b9-ac91-4105-9f84-e3c84aa34fb7/Untitled.png]
+image::virtual-voting-booth-verify-check.png[Verify the ballot]
 
 Clicking on `Check`, the page will check if the ballot is found in the Bulletin Board.
 
-image::https://s3-us-west-2.amazonaws.com/secure.notion-static.com/e06deee9-97bb-404d-bdf8-762309d5d70e/Untitled.png[The ballot was found in the ballot box]
+image::virtual-voting-booth-verify-ok.png[The ballot was found in the ballot box]
 
 The ballot was found in the ballot box
 
-image::https://s3-us-west-2.amazonaws.com/secure.notion-static.com/0dc3b80e-20a7-446a-9466-6c412adf603e/Untitled.png[The ballot was not found in the ballot box]
+image::virtual-voting-booth-verify-ko.png[The ballot was not found in the ballot box]
 
 The ballot was not found in the ballot box
 

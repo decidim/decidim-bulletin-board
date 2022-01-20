@@ -4,11 +4,11 @@ If you are a Trustee in an Election, the first thing you need to do is to create
 
 Head to you account page and click on `Trustee zone`
 
-image::https://s3-us-west-2.amazonaws.com/secure.notion-static.com/e903b9bd-2b4b-4c8a-895c-6415268f7ffd/Screenshot_2021-07-02_at_16.05.05.png[When logged in, go to 'My account']
+image::trustee-account.png[When logged in, go to 'My account']
 
 When logged in, go to 'My account'
 
-image::https://s3-us-west-2.amazonaws.com/secure.notion-static.com/64b74e8d-e53e-4f0c-8544-1e0f042641d4/Screenshot_2021-07-02_at_16.05.30.png[You should see 'Trustee zone' in the menu]
+image::trustee-menu.png[You should see 'Trustee zone' in the menu]
 
 You should see 'Trustee zone' in the menu
 

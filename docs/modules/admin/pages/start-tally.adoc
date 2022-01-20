@@ -6,7 +6,7 @@ The tally will be carried out by the Trustees, but the admin has to officially s
 
 Click on `Start tally` from the election's `Manage steps` section to start the tally.
 
-image::https://s3-us-west-2.amazonaws.com/secure.notion-static.com/5397362e-da42-4a6c-8140-d636e5f739a8/Untitled.png[The election is ready, the tally can get started.]
+image::tally-start.png[The election is ready, the tally can get started.]
 
 The election is ready, the tally can get started.
 
@@ -14,6 +14,6 @@ The admin will see a list of the Trustees that need to come together to perform 
 
 As per the key ceremony performed before the election, the Trustees will have to connect at the same time in order to perform this critical step of the process.
 
-image::https://s3-us-west-2.amazonaws.com/secure.notion-static.com/83e6a05a-d16b-423b-a7e8-219f4700d827/Untitled.png[The admin will see the list of the Trustees that have to come together to perform the tally.]
+image::tally-start-trustees.png[The admin will see the list of the Trustees that have to come together to perform the tally.]
 
 The admin will see the list of the Trustees that have to come together to perform the tally.

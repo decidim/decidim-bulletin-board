@@ -5,7 +5,7 @@ These stats do not take into account the votes casted in the physical Polling St
 
 You can see this page by visiting the `Manage steps` page for the election you are interested in.
 
-image::https://s3-us-west-2.amazonaws.com/secure.notion-static.com/c03b68ed-be49-45d6-9518-f3047457ac7c/Screenshot_2021-07-05_at_18.16.52.png[`Votes` highlights the number of votes casted online, `Voters` counts the number the unique voters that casted a vote.
+image::live-turnout-statistics.png[`Votes` highlights the number of votes casted online, `Voters` counts the number the unique voters that casted a vote.
 Remember that voters can cast multiple ballots, but only the last one will be used to tally the election.]
 
 `Votes` highlights the number of votes casted online, `Voters` counts the number the unique voters that casted a vote.

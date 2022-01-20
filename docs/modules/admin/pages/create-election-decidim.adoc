@@ -24,7 +24,7 @@ The core setup of an election are its questions, which will be presented to the 
 
 Click on the `Manage questions` icons for your election.
 
-image::https://s3-us-west-2.amazonaws.com/secure.notion-static.com/33a75cc6-010d-4355-b6e6-d08691203be3/Untitled.png[https://s3-us-west-2.amazonaws.com/secure.notion-static.com/33a75cc6-010d-4355-b6e6-d08691203be3/Untitled.png]
+image::election-manage-questions.png[Manage questions]
 
 In the question creation form, you will be asked to fill in:
 
@@ -48,11 +48,11 @@ In the answer creation form, you will be asked for:
 * Images: images related to this answer (only shown when the voter wants to see more information about the answer);
 * Related proposals: Decidim proposals that are related to this answer (only shown when the voter wants to see more information about the answer).
 
-image::https://s3-us-west-2.amazonaws.com/secure.notion-static.com/dff7ba13-7d59-4a42-8c39-67317e973c40/Screenshot_2021-06-30_at_19.06.16.png[A question with two answers and the 'None of the above' option as seen by a voter]
+image::election-answers.png[A question with two answers and the 'None of the above' option as seen by a voter]
 
 A question with two answers and the 'None of the above' option as seen by a voter
 
-image::https://s3-us-west-2.amazonaws.com/secure.notion-static.com/270bb31e-69d1-451f-8d76-951a59a827c4/Screenshot_2021-06-30_at_18.47.00.png[How a voter sees an answer when clicking on 'More information']
+image::election-answer-more-information.png[How a voter sees an answer when clicking on 'More information']
 
 How a voter sees an answer when clicking on 'More information'
 

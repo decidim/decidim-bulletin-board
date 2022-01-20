@@ -4,13 +4,13 @@ Before the election starts, the voter can check if they are correctly registered
 
 The voter can insert their personal details in the form in the "Can I vote?" tab of the voting.
 
-image::https://s3-us-west-2.amazonaws.com/secure.notion-static.com/14ae566c-4731-4698-99ec-c06006f12f90/Untitled.png[You can check your status in the election census]
+image::census-data-check.png[You can check your status in the election census]
 
 You can check your status in the election census
 
 If the data inserted is found in the census, the voter will have the possibility to request the access code again, although they should have received it by postal mail already.
 
-image::https://s3-us-west-2.amazonaws.com/secure.notion-static.com/3446647d-2fed-439b-8e4c-bc742b6dd1b4/Untitled.png[The voter was found in the census.
+image::census-data-ok.png[The voter was found in the census.
 They can request their access code again in case they did not receive it]
 
 The voter was found in the census.
@@ -18,7 +18,7 @@ They can request their access code again in case they did not receive it
 
 If the data is not found, the voter will be shown the `[Census contact information` from the voting](xref:admin:create-voting-decidim.adoc).
 
-image::https://s3-us-west-2.amazonaws.com/secure.notion-static.com/676af66f-7753-483d-a881-3daaac5aba7c/Untitled.png[The data inserted has not been found in the census.
+image::census-data-ok.png[The data inserted has not been found in the census.
 If the voter thinks it should be, they can ask for it to be changed via the information provided in the voting.]
 
 The data inserted has not been found in the census.

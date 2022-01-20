@@ -14,4 +14,4 @@ It details every step of the election lifecycle in the Bulletin Board, specifica
 
 It also provides instruction on how to verify the election results once the election results have been published.
 
-image::https://s3-us-west-2.amazonaws.com/secure.notion-static.com/5178bcbd-ea15-4983-b9ca-418d25694bce/Untitled.png[Untitled]
+image::election-log.png[Public election log]

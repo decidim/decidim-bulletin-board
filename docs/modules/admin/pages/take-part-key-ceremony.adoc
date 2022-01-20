@@ -6,7 +6,7 @@ As a Trustee, you can take part to the Key Ceremony by xref:admin:create-trustee
 
 When the administrator of the election has started the Key Ceremony, you will see that an action is required for the election you are a Trustee for.
 
-image::https://s3-us-west-2.amazonaws.com/secure.notion-static.com/b12b70e9-d991-4cc0-b2fc-6dbe8ef49b20/Untitled.png[You have a pending action in the election `Another election`]
+image::trustee-key-upload.png[You have a pending action in the election `Another election`]
 
 You have a pending action in the election `Another election`
 
@@ -16,7 +16,7 @@ Now click on `Perform action` to enter the Key Ceremony view.
 
 Notice that _all the Trustees need to be connected at the same time in order to perform hte Key Ceremony_.
 
-image::https://s3-us-west-2.amazonaws.com/secure.notion-static.com/dfff950c-3986-4776-93fd-87dc993a1139/Untitled.png[You are ready to `Start` the Key Ceremony]
+image::trustee-key-start.png[You are ready to `Start` the Key Ceremony]
 
 You are ready to `Start` the Key Ceremony
 
@@ -28,6 +28,6 @@ After downloading the key, the process will continue.
 If the `Keys publishing` step gets stuck on "Pending", chances are that not all the Trustees are connected.
 Once everybody the process will unstuck on its own - don't leave the page.
 
-image::https://s3-us-west-2.amazonaws.com/secure.notion-static.com/ab058c81-37a6-42d3-bba6-b6c43654240b/Untitled.png[Congratulations 🥳 The Key Ceremony is completed!]
+image::trustee-key-completed.png[Congratulations 🥳 The Key Ceremony is completed!]
 
 Congratulations 🥳 The Key Ceremony is completed!

@@ -20,14 +20,14 @@ After a xref:admin:create-voting-decidim.adoc[Decidim admin made a user a Pollin
 
 The Polling Officer Zone can be accessed by Presidents and Managers from their account page:
 
-image::https://s3-us-west-2.amazonaws.com/secure.notion-static.com/b2800f82-0c37-4717-bfc5-44cea12bbf3a/Screenshot_2021-07-06_at_11.09.25.png[https://s3-us-west-2.amazonaws.com/secure.notion-static.com/b2800f82-0c37-4717-bfc5-44cea12bbf3a/Screenshot_2021-07-06_at_11.09.25.png]
+image::polling-officer-account.png[My account menu]
 
-image::https://s3-us-west-2.amazonaws.com/secure.notion-static.com/e4eb2387-86ba-433e-b308-34841c78aede/Untitled.png[https://s3-us-west-2.amazonaws.com/secure.notion-static.com/e4eb2387-86ba-433e-b308-34841c78aede/Untitled.png]
+image::polling-officer-menu.png[Polling officer zone in the menu of a participant profile]
 
 Here the Polling Officer will see a list of Polling Stations they are assigned to.
 Notice that, if the Voting they are a Polling Officer for has more than one election, they will see as many Polling Stations as the number of elections in the Voting - one for each election.
 
-image::https://s3-us-west-2.amazonaws.com/secure.notion-static.com/9e648091-bc71-4d75-bb03-58a32d7677e8/Screenshot_2021-07-06_at_11.25.56.png[The Polling Officer zone for a Polling Station President in a voting with one only election.]
+image::polling-officer-zone.png[The Polling Officer zone for a Polling Station President in a voting with one only election.]
 
 The Polling Officer zone for a Polling Station President in a voting with one only election.
 
@@ -39,7 +39,7 @@ The Polling Station Officer will have to click on `Identify a person` on the cor
 
 Filling in the form with the data from the identification document provided by the voter, the Polling Station Officer can validate that the voter is in the census.
 
-image::https://s3-us-west-2.amazonaws.com/secure.notion-static.com/d1cba8d6-afbb-46e5-9a7f-98ab865f0a18/Untitled.png[Clicking on `Validate document` the application will check whether the voter is in the census.]
+image::polling-officer-zone-identify.png[Clicking on `Validate document` the application will check whether the voter is in the census.]
 
 Clicking on `Validate document` the application will check whether the voter is in the census.
 
@@ -51,7 +51,7 @@ The Polling Station Officer can try again to make sure they did not make any mis
 
 Notice that the voter had the possibility xref:admin:check-census-data.adoc[check if they were correctly enlisted in the census] the days prior the election.
 
-image::https://s3-us-west-2.amazonaws.com/secure.notion-static.com/aaf67f04-067c-43d5-bbbd-7ab0ba8d164f/Untitled.png[The data provided does not match any census entry.]
+image::polling-officer-zone-identify-ko.png[The data provided does not match any census entry.]
 
 The data provided does not match any census entry.
 
@@ -59,7 +59,7 @@ The data provided does not match any census entry.
 
 If the data provided is found in the census, the Polling Station Officer will see the voter's full name as found in the census, so they can double-check that it corresponds to the one in the ID.
 
-image::https://s3-us-west-2.amazonaws.com/secure.notion-static.com/5b36fa55-70cf-4a52-b3d3-a966b34efe2f/Untitled.png[The Polling Officer can double-check that the census record found corresponds to the ID provided by the voter matching the voter's full name.]
+image::polling-officer-zone-identify-ok.png[The Polling Officer can double-check that the census record found corresponds to the ID provided by the voter matching the voter's full name.]
 
 The Polling Officer can double-check that the census record found corresponds to the ID provided by the voter matching the voter's full name.
 
@@ -76,11 +76,12 @@ In this case, the voter should not be allowed to vote again.
 . the list of questions the voter is entitled to answer
  ** This will indicate the Polling Station Officer what ballots to hand out to the voter.
 
-image::https://s3-us-west-2.amazonaws.com/secure.notion-static.com/c5db4f3c-dd54-4492-92d9-8144865386a7/Untitled.png[https://s3-us-west-2.amazonaws.com/secure.notion-static.com/c5db4f3c-dd54-4492-92d9-8144865386a7/Untitled.png]
+image::polling-officer-zone-identify-not-voted.png[Participant has not voted]
 
-image::https://s3-us-west-2.amazonaws.com/secure.notion-static.com/8b3800bd-fa25-4553-ae3c-be9563a29b31/Untitled.png[https://s3-us-west-2.amazonaws.com/secure.notion-static.com/8b3800bd-fa25-4553-ae3c-be9563a29b31/Untitled.png]
+image::polling-officer-zone-identify-already-voted.png[Participant has already voted]
 
 When the participant has deposited their ballot(s) in the ballot box, the Polling Station Officer can  tick the `The participant has voted` checkbox and hit `Complete voting`.
+
 ⚠️ WARNING: this will complete the voting procedure for the voter and prevent them from voting again in this election, both physically and online.
 
 After a short processing period, during which the Bulletin Board is notified that the voter has voted physically, the Polling Station Officer will be able to register a new voter.
