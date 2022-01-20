@@ -1,4 +1,4 @@
-	= Admin manual
+= Admin manual
 
 * xref:admin:introduction.adoc[Introduction]
 * xref:admin:prerequesites.adoc[Prerequesites]
