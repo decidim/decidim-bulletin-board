@@ -17,7 +17,7 @@ You can use it with VS Code's https://code.visualstudio.com/docs/remote/containe
 Once you have the infrastructure in place, you can set up the Rails application environment leveraging the `Makefile`.
 Type `make install` to install the required dependencies and `make serve` to spin up the server in dev mode.
 
-See the https://www.notion.so/5-3-Makefile-97d5885b4c3e4809a1c04e4218d39477[Makefile section] to learn more about the operations you can perform with it.
+See the xref:develop:manual/operations/makefile.adoc[Makefile section] to learn more about the operations you can perform with it.
 
 [discrete]
 === Dev seeds

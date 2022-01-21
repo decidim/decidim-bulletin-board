@@ -35,7 +35,6 @@ We'll need to set up an array of environment variables in order for the sever to
  ** `REDIS_URL` with the full URL of the Redis instance;
 * ActiveRecord:
  ** The secrets of the cloud storage of your choice;
-see https://www.notion.so/5-4-Deployment-84795a352c714f7d9ec30d8f74db9173[here].
 * CORS:
  ** `CORS_ORIGIN_ALLOWED` with the list of hosts of Decidim instances that will use this Bulletin Board.
 If you don't know what Decidim instances will use this Bulletin Board, you can put `*`

@@ -1,9 +1,7 @@
 # Operations
 
-[5.1. Development](https://www.notion.so/5-1-Development-6d0b056d36624e0b93f2493ef7017292)
+. xref:develop:manual/operations/development.adoc[Development]
+. xref:develop:manual/operations/automated-tests.adoc[Automated tests]
+. xref:develop:manual/operations/makefile.adoc[Makefile]
+. xref:develop:manual/operations/deployment.adoc[Deployment]
 
-[5.2. Automated tests](https://www.notion.so/5-2-Automated-tests-85808bf61f3a41deb8d62b54c2f62781)
-
-[5.3. Makefile](https://www.notion.so/5-3-Makefile-97d5885b4c3e4809a1c04e4218d39477)
-
-[5.4. Deployment](https://www.notion.so/5-4-Deployment-84795a352c714f7d9ec30d8f74db9173)

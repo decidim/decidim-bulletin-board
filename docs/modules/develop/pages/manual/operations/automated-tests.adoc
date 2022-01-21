@@ -22,11 +22,12 @@ In our case, we will primarily focus on load testing the Bulletin Board during e
 
 We divide the test phase in 4 steps:
 
-. https://www.notion.so/5-2-Automated-tests-85808bf61f3a41deb8d62b54c2f62781[Prepare a production-like Bulletin Board environment to execute the test]
-. https://www.notion.so/5-2-Automated-tests-85808bf61f3a41deb8d62b54c2f62781[Generate random, encrypted votes]
-. https://www.notion.so/5-2-Automated-tests-85808bf61f3a41deb8d62b54c2f62781[Send the votes to the Bulletin Board with JMeter]
-. https://www.notion.so/5-2-Automated-tests-85808bf61f3a41deb8d62b54c2f62781[Gather and evaluate the results]
+. <<prepare-environment,Prepare a production-like Bulletin Board environment to execute the test>>
+. <<generate-votes,Generate random, encrypted votes>>
+. <<send-votes,Send the votes to the Bulletin Board with JMeter>>
+. <<gather-results,Gather and evaluate the results>>
 
+[#prepare-environment]
 === 1. Prepare the environment
 
 * The Bulletin Board comes with a sandbox that ships some tools to help with the load tests.
@@ -36,6 +37,7 @@ Make sure you set the `SANDBOX` environment variable to any value to activate it
 * In `bulletin_board/server/config/settings.yml`, set `iat_expiration_minutes` to few hours/days.
 This is the amount of time a vote is considered valid from its emission - since the vote generation phase could take a few hours, you don't want it to be too low and have the Bulletin Board to reject the votes when you start the load test.
 
+[#generate-votes]
 === 2. Generate the votes
 
 As mentioned above, the sandbox provides some utilities to help us to run a load test.
@@ -46,7 +48,7 @@ Notice that the votes are randomly generated - from the selected answers to the 
 
 To generate the votes, follow these steps:
 
-* Access the sandbox at `/sandbox/elections/` - make sure the https://www.notion.so/5-Operations-5f39c101b61349aab330aeb102582acc[sandbox is activated];
+* Access the sandbox at `/sandbox/elections/` - make sure the xref:develop:manual/operations.adoc[sandbox is activated];
 * Set up a new election.
 Notice that the more questions and answers, the slower the encryption and decryption process will be.
 It is hence important to have a similar election setup to the one we are preparing for to have valid results from this test.
@@ -71,6 +73,7 @@ image::https://s3-us-west-2.amazonaws.com/secure.notion-static.com/37b7e168-d388
 
 * If you generated the votes in more than one process, merge the CSVs into one.
 
+[#send-votes]
 === 3. Send the votes to the Bulletin Board
 
 We are now ready to start the actual load test.
@@ -120,6 +123,7 @@ It also logs the results in `testresults.jtl`, that you can later analyse.
 
 While JMeter is running the test, you'll want to check the Sidekiq queues state on its dashboard at `/sidekiq`.
 
+[#gather-results]
 === 4. Gather the results
 
 There are three main metrics we can measure:

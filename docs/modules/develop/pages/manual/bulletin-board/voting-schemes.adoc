@@ -42,7 +42,7 @@ Message sent by the authority to request the creation of an election.
 
 It specifies the voting scheme and its required parameters, along with the complete definition of the election (metadata, dates, questions & answers).
 
-* `scheme` specifies the desired voting scheme (see https://www.notion.so/4-Implemented-voting-schemes-210c1701bf18436a99279aec9720d181[3.b] for the complete list);
+* `scheme` specifies the desired voting scheme (see xref:develop:manual/implemented-voting-schemes.adoc[Implemented voting schemes] for the complete list);
 * `authority` identifies the authority with its public identification key;
 * `trustees` contains the trustees with their public identification keys;
 * `polling_stations` contains the valid polling stations for the in person votes;
