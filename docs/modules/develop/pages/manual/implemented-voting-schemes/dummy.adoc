@@ -19,11 +19,23 @@ After all the keys are published, the bulletin board calculates the joint public
 
 [stem]
 ++++
-N = number\ of\ trustees \\
-T_n = trustee\ with\ index\ n\ (0 < n \le N) \\
+N = number\ of\ trustees\\
+++++
+[stem]
+++++
+T_n = trustee\ with\ index\ n\ (0 < n \le N)\\
+++++
+[stem]
+++++
 -\\
+++++
+[stem]
+++++
 PK_n = rnd(50,249) * 2 + 1\\
-JPK = \prod_{i=0}^N{PK_n}
+++++
+[stem]
+++++
+JPK = \prod_{i=0}^N{PK_n}\\
 ++++
 
 During the voting period, the voting scheme receives a plaintext ballot, consisting of a hash map with an entry for each question, that contains a hash map with an entry for each possible answer, and a zero or a one value depending on the answer: if it was selected or not.
@@ -33,10 +45,25 @@ As expected, the result can be easily decrypted applying modulo of the joint pub
 [stem]
 ++++
 V = number\ of\ votes,\ V < min(PK_1, PK_2, ..., PK_N)\\
+++++
+[stem]
+++++
 A_{j,k} = answer\ with\ index\ k\ for\ question\ j\\
+++++
+[stem]
+++++
 v = a\ voter\ index\\
+++++
+[stem]
+++++
 -\\
+++++
+[stem]
+++++
 noise = rnd(1,500) * JPK\\
+++++
+[stem]
+++++
 CipheredValue(v, A_{j,k}) = noise + PlainValue(v, A_{j,k})
 ++++
 
@@ -56,10 +83,25 @@ When the number of votes is lower than all public keys, applying modulo with the
 [stem]
 ++++
 Share(T_n, A_{j,k}) = (Cast(A_{j,k})\ mod\ PK_n) * PK_n = \\
+++++
+[stem]
+++++
  (\sum_{i=0}^V{ CipheredValue(i,A_{j,k})}\ mod\ PK_n) * PK_n  = \\
+++++
+[stem]
+++++
  ((\sum_{i=0}^V{noise + PlainValue(v, A_{j,k}))}\ mod\ PK_n) * PK_n = \\ (as\ (\sum_{i=0}^V{noise})\ mod\ PK_n = 0 )\\
+++++
+[stem]
+++++
  ((\sum_{i=0}^V{PlainValue(v, A_{j,k})})\ mod\ PK_n) * PK_n =  \\ (as\ \sum_{i=0}^V{PlainValue(v, A_{j,k})}\ < PK_n)\\
+++++
+[stem]
+++++
  \sum_{i=0}^V{PlainValue(v, A_{j,k})}\ * PK_n = \\
+++++
+[stem]
+++++
  Votes(A_{j,k}) * PK_n
 ++++
 . After all shares are received, the bulletin board use them to calculate the number of votes received by each answer.
