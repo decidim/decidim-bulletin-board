@@ -100,7 +100,7 @@ Open its UI by running:
 
 Open the following file to use as a template for the load test configuration:
 
-https://s3-us-west-2.amazonaws.com/secure.notion-static.com/122b9175-9edb-4e4b-b74a-45e37447fc0c/jmeter-bb-load-test-config.jmx[jmeter-bb-load-test-config.jmx]
+link:{attachmentsdir}/jmeter-bb-load-test-config.jmx[jmeter-bb-load-test-config.jmx]
 
 You will need to adjust some configs to your needs:
 
@@ -150,3 +150,4 @@ This metric is provided by JMeter itself using the `testresults.jtl` generated d
 Click on `Load test stats` to gather the stats of the votes processed during the last 2 hours.
 
 *Server resources consumption*: we can check how the server(s) reacted to the load by checking the resource consumption over the time - memory, CPU, response time.
+
