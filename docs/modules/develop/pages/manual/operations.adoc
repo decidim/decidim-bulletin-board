@@ -1,4 +1,4 @@
-# Operations
+= Operations
 
 . xref:develop:manual/operations/development.adoc[Development]
 . xref:develop:manual/operations/automated-tests.adoc[Automated tests]

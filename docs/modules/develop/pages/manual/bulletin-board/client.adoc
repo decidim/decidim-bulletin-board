@@ -6,7 +6,7 @@ But some of the logic, as the message signing, is done in the clients side.
 So, the system also includes some client libraries to be used within the software that manages users and permissions.
 In our case, this software is Decidim, but the solution is prepared to support other options in the future if needed.
 
-= Ruby client
+== Ruby client
 
 To be able to integrate the client inside the Decidim app, we needed to implement a Ruby client, released as a gem (https://rubygems.org/gems/decidim-bulletin_board).
 This gem includes a `Client` class that, once configured, allows to perform all the operations that are expected to be done by the authority:
@@ -27,7 +27,7 @@ There are also some auxiliary methods to retrieve information from the bulletin 
 All the operations will return the identifier of the message sent and will not wait the message to be processed to return the control to the app.
 This method will allow the app to check if the message was already processed or if it is still enqueued.
 
-= The JavaScript client
+== The JavaScript client
 
 Besides the server-side client, we also needed to build a JavaScript client to perform some tasks directly in the user machine.
 There are some scenarios where being able to send some queries from the browser improves the administrator user experience, but the main reason to have a JS client is to implement the trustees and voters logic.

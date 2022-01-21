@@ -5,7 +5,7 @@ The ElectionGuard voting scheme is based on https://www.electionguard.vote/[the 
 The project is an open-source software development kit designed for election system vendors to incorporate end-to-end verifiability into their systems and any interested organization to perform and publish post-election audits using ElectionGuard as a secure publishing platform.
 In fact, this whole system is heavily inspired on ElectionGuard.
 
-= Adapting ElectionGuard
+== Adapting ElectionGuard
 
 ElectionGuard was designed mainly to be used on physical devices, so we had to apply some changes to the original protocol to adapt it to be used for online elections.
 
@@ -33,12 +33,12 @@ They are sent to the authority, that adds the JWT signature before sending them 
 This is done because at the moment we don't have the feature to use digital certificates for each voter, so the authority is responsible to decide which voters can participate, and this authorization is done through the signing process.
 The way that voters can be sure that the server didn't change their ballot content is checking that the content hash of the message in the election log matches the hash of their unsent ballot, as it was explained in the previous chapter.
 
-= Implementation
+== Implementation
 
 This voting scheme uses the python version to implement the classes needed by the different clients that participate in the system.
 To connect all the parts, two steps are required: prepare the python code to be used in the context of this system, and integrate that code to be executed within non-python applications.
 
-== Python wrappers
+=== Python wrappers
 
 The first step done to implement this voting scheme was to transform the existing python classes into something that can be connected with the bulletin board.
 Instead of modifying the ElectionGuard code, we decided to create a new layer of wrapper classes, to be able to update the code when new versions of ElectionGuard are released.
@@ -57,7 +57,7 @@ Finally, during the tally phase, it collects all the stored votes, it creates th
 
 Given that the bulletin board is a Ruby on Rails application, the system uses the https://github.com/mrkn/pycall.rb[pycall.rb] library to be able to use python classes from the server.
 
-== Integration in the trustee wrapper class
+=== Integration in the trustee wrapper class
 
 The `Trustee` wrapper class implements the trustees logic.
 
@@ -72,7 +72,7 @@ For security reasons, all the trustee's logic should be executed on the trustee'
 We used the https://pyodide.org[pyodide] project to convert all the python code to WebAssembly code, to be able to run it in the browser.
 As ElectionGuard depends on some libraries that cannot be compiled with pyodide, we also had to find replacements for them.
 
-== Integration in the trustee wrapper class
+=== Integration in the trustee wrapper class
 
 The `Voter` wrapper class implements the voter logic.
 
