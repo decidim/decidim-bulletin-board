@@ -97,6 +97,6 @@ The first message, the manifest, will use the election unique identifier as the 
 If any message is removed or modified, the chained hashes of the successive messages will not match.
 If external observers store the chained hash of the last message in the log, they will be able to confirm that the election log haven't been corrupted at any moment.
 
-https://whimsical.com/parts-of-a-message-FduKJpmxEk9eEReGMSPofz[The message structure of a message sent by a client to the bulletin board and how it's stored in the database to be published in the election's log.]
+image::develop:manual/bulletin-board/server-message.png[The message structure of a message sent by a client to the bulletin board and how it's stored in the database to be published in the election's log.]
 
 The message structure of a message sent by a client to the bulletin board and how it's stored in the database to be published in the election's log.

@@ -56,7 +56,7 @@ Also, make sure you select `electionguard` as `voting scheme name`;
 * Perform the Key Ceremony following the wizard and start the voting period;
 * You can now click on `stress tests` to access the vote generation utility.
 +
-image::https://s3-us-west-2.amazonaws.com/secure.notion-static.com/9f94e9ae-52e1-4b77-bebc-d1dc0246b94d/Untitled.png[Untitled]
+image::manual/operations/testing-generate-votes.png[Votes generation in testing]
 
 * Input the number of votes you want to generate and hit `Generate votes`.+++<aside>+++⚠️ The vote generation process is heavy and can lead to high memory consumption.
 With 1Gb of RAM you could run out of memory if you generate more than 2000 votes in one go.
@@ -69,7 +69,7 @@ Once the process is finished, you can download the CSV, hitting `Download votes`
 Notice that you're also prompted the time when the file has been uploaded.
 That is for you to know when the new file is available in case you want to launch another votes generation right away.
 +
-image::https://s3-us-west-2.amazonaws.com/secure.notion-static.com/37b7e168-d388-40a0-a3ff-8fa9b4aea216/Untitled.png[Untitled]
+image::manual/operations/testing-download-votes.png[Download votes in testing]
 
 * If you generated the votes in more than one process, merge the CSVs into one.
 
@@ -100,7 +100,7 @@ You will need to adjust some configs to your needs:
  ** How many votes to cast (`Number of Threads`);
  ** What span of time should the votes be sent (`Ramp-up period`).
 +
-image::https://s3-us-west-2.amazonaws.com/secure.notion-static.com/7ef9da7c-08da-48ba-9eab-b1687c102d02/Untitled.png[This configuration will send 1 vote every 0,5 seconds]
+image::manual/operations/testing-ramp-up.png[This configuration will send 1 vote every 0,5 seconds]
 +
 This configuration will send 1 vote every 0,5 seconds
 

@@ -46,7 +46,7 @@ This class receives the plaintext ballot and all the information needed to ciphe
 If the voter decides to cast the ballot, it can be sent to the authority to be signed and sent to the bulletin board.
 The voter can trust that the authority will not change the ballot contents because the ballot should appear in the bulletin board with an equal `contentHash` to the SHA256 calculated by the voter browser before casting it.
 
-https://whimsical.com/content-hash-calculation-JjY3bJEJ3mPPTGwTR1f8nP[The voter calculates a hash of the ciphered ballot, sends it to the Decidim server and checks the election log to be sure that the message content was not changed.]
+image::develop:manual/bulletin-board/client-content-hash-calculation.png[The voter calculates a hash of the ciphered ballot, sends it to the Decidim server and checks the election log to be sure that the message content was not changed.]
 
 The voter calculates a hash of the ciphered ballot, sends it to the Decidim server and checks the election log to be sure that the message content was not changed.
 

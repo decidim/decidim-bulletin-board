@@ -82,6 +82,6 @@ The first part shows how a sample joint public key is generated, based on the tr
 The second part shows how each value in the plaintext ballot is encrypted using the joint public keys and some random values to generate a ciphered ballot.
 The last part assumes that 25 ballots were cast and shows how the bulletin board generates the tally cast, how each trustee generate their shares and how the bulletin board calculates and publishes the number of votes received by each answer of each option.
 
-https://whimsical.com/dummy-scheme-maths-Xe2Yrhp6Y39QE9qtcB1tMB[The three phases of an election, implemented with simple maths for testing purposes.]
+image::develop:manual/implemented-voting-schemes/dummy.png[Dummy schema]
 
 The three phases of an election, implemented with simple maths for testing purposes.

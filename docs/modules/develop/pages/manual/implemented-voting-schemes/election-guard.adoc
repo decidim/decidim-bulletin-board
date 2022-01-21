@@ -82,4 +82,4 @@ It provides the ballot ciphering feature, receiving the plaintext ballot and ret
 
 To conclude this chapter, the following diagram shows how all the wrappers are integrated in the system architecture.
 
-https://whimsical.com/eg-in-decidim-elections-JhmLbXWzQLU25vnhYv3qZE
+image::develop:manual/implemented-voting-schemes/election-guard.png[ElectionGuard schema]

@@ -4,7 +4,7 @@ To help to perform operations in the Bulletin Board's rich environment, you can 
 
 Type `make help` to see the operations you can perform.
 
-image::https://s3-us-west-2.amazonaws.com/secure.notion-static.com/ce384816-5de2-45c7-8a87-292e8d37f55e/Untitled.png[Untitled]
+image::develop:manual/operations/makefile.png[Makefile output]
 
 For example, if you want to set up and run the Bulletin Board locally, you can simply run the following commands:
 
