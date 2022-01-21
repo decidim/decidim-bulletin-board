@@ -43,9 +43,14 @@ To connect all the parts, two steps are required: prepare the python code to be 
 The first step done to implement this voting scheme was to transform the existing python classes into something that can be connected with the bulletin board.
 Instead of modifying the ElectionGuard code, we decided to create a new layer of wrapper classes, to be able to update the code when new versions of ElectionGuard are released.
 Thus, we created three main wrapper classes, `BulletinBoard`, `Trustee` and `Voter` that act as state machines representing the three parts of the system.
-These classes are designed to process received messages from the election log, to use the ElectionGuard python library to process the received information and, if needed, to return a response message to be sent to the election log.+++<aside>+++ℹ️ The python wrapper classes can be found in the folder `decidim-bulletin-board/voting_schemes/electionguard/python-wrapper` in the bulletin board repository.+++</aside>+++
+These classes are designed to process received messages from the election log, to use the ElectionGuard python library to process the received information and, if needed, to return a response message to be sent to the election log.
 
-= Integration of the bulletin board wrapper class
+[NOTE]
+====
+The python wrapper classes can be found in the folder `decidim-bulletin-board/voting_schemes/electionguard/python-wrapper` in the bulletin board repository.
+====
+
+== Integration of the bulletin board wrapper class
 
 The `BulletinBoard` wrapper class implements the bulletin board behaviour.
 

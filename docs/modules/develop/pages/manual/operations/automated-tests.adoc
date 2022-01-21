@@ -58,11 +58,21 @@ Also, make sure you select `electionguard` as `voting scheme name`;
 +
 image::manual/operations/testing-generate-votes.png[Votes generation in testing]
 
-* Input the number of votes you want to generate and hit `Generate votes`.+++<aside>+++⚠️ The vote generation process is heavy and can lead to high memory consumption.
+* Input the number of votes you want to generate and hit `Generate votes`.
+
+[IMPORTANT]
+====
+The vote generation process is heavy and can lead to high memory consumption.
 With 1Gb of RAM you could run out of memory if you generate more than 2000 votes in one go.
-You can launch several consecutive generations and merge the results at the end.+++</aside>++++++<aside>+++⚠️ The vote generation process can take a long time (proportionally to the number of votes).
+You can launch several consecutive generations and merge the results at the end.
+====
+
+[IMPORTANT]
+====
+The vote generation process can take a long time (proportionally to the number of votes).
 Avoid launching other generation processes when one is already running.
-You can check Sidekiq's queues at `/sidekiq` to see whether the process is still running.+++</aside>+++
+You can check Sidekiq's queues at `/sidekiq` to see whether the process is still running.
+====
 
 * The generation process uploads a CSV with the votes data to transfer.sh.
 Once the process is finished, you can download the CSV, hitting `Download votes`.

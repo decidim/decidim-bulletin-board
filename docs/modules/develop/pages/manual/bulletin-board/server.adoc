@@ -4,9 +4,14 @@
 The security and performance requirements, in combination with the transparency requirements, were a strong evidence that part of this solution should be based on an application detached from the Decidim server.
 The application is called *Bulletin Board*, and consists of an append-only log service, where the access to data is exposed through a GraphQL API.
 While it can be only written from authorized applications, almost all of its contents are accessible to anyone.
-For the sake of clarity, from now on, we will refer to the Decidim server as the *authority*.+++<aside>+++💡 While reading this chapter, you can visit the demo bulletin board application at [https://staging-bb-decidim.codegram.com](http://staging-bb-decidim.codegram.com/) and access to the *Elections sandbox* and the *GraphiQL console* to play with some test data and understand better its behaviour.+++</aside>+++
+For the sake of clarity, from now on, we will refer to the Decidim server as the *authority*.
 
-= Message identifiers
+[NOTE]
+====
+While reading this chapter, you can visit the demo bulletin board application at https://staging-bb-decidim.codegram.com[http://staging-bb-decidim.codegram.com/] and access to the *Elections sandbox* and the *GraphiQL console* to play with some test data and understand better its behaviour.
+====
+
+== Message identifiers
 
 The bulletin board contents consist mainly of a list of elections, where each election has a related log with all the activity registered for the electoral process.
 Each log entry consists of a structure with a message identifier and a message sent by any client (the authority, the trustees or the bulletin board itself).
@@ -54,9 +59,15 @@ Between them, the `vote` messages represent each vote cast online (`vote.cast`) 
 
 The authority should generate a unique identifier for each voter, but without including any clue about the person behind the voter.
 The best option is to apply a secure hash function to the voter identifying data with some random salt stored within the election or the voter to avoid https://en.wikipedia.org/wiki/Rainbow_table[rainbow table] attacks.
-These messages are sent by the authority, but using the voter identifier as the author identifier and with a `v` for the author type.+++<aside>+++⚠️ The bulletin board won't check the `start_vote` and `end_vote` dates against the starting and ending date included in the manifest.
+These messages are sent by the authority, but using the voter identifier as the author identifier and with a `v` for the author type.
+
+
+[WARNING]
+====
+The bulletin board won't check the `start_vote` and `end_vote` dates against the starting and ending date included in the manifest.
 Currently, Decidim sends the opening message some hours before the starting date, but it doesn't allow casting votes until the starting date.
-Similarly, it won't allow casting votes after the ending date, but the closing message will be sent some time later.+++</aside>+++
+Similarly, it won't allow casting votes after the ending date, but the closing message will be sent some time later.
+====
 
 == Tally and results publishing
 

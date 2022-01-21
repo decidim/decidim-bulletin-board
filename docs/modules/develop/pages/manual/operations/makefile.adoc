@@ -10,8 +10,13 @@ For example, if you want to set up and run the Bulletin Board locally, you can s
 
 `make install` - this will install all the dependencies.
 
-`make serve` - this will spin up the Bulletin Board server in development mode.+++<aside>+++⚠️ The first time you run `make install` it might fail due to missing OS packages.
-Take care of installing them and run the command again.+++</aside>+++
+`make serve` - this will spin up the Bulletin Board server in development mode.
+
+[WARNING]
+====
+The first time you run `make install` it might fail due to missing OS packages.
+Take care of installing them and run the command again.
+====
 
 The `Makefile` also comes with several other useful commands, like:
 

@@ -29,4 +29,9 @@ For example, if you want to perform the key ceremony from the sandbox, you will 
 You can find them in `bulletin_board/server/lib/assets`.
 
 The seed process also creates a test authority with a pair of test identification keys and a public API key.
-This information can be used to setup a development or test application easily, without having to perform the steps needed to setup the communication between servers.+++<aside>+++⛔ For security reasons, none the data loaded during the seed process should be used in production environments.+++</aside>+++
+This information can be used to setup a development or test application easily, without having to perform the steps needed to setup the communication between servers.
+
+[IMPORTANT]
+====
+For security reasons, none the data loaded during the seed process should be used in production environments.
+====

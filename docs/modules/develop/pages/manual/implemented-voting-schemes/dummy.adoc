@@ -5,8 +5,13 @@
 The Dummy voting scheme during the development of the bulletin board.
 Its first goal was to be able to develop and test the bulletin board before adding the complexity of a real voting scheme.
 In other words, to be able to check manually that votes are being cast and counted properly.
-With this in mind, we created a system based on basic mathematical operations that allows to distinguish between plaintext and ciphered data, and that can simulate the features of a real voting scheme, as joint public key creation, ballot ciphering or partial decryption.+++<aside>+++⛔ This voting schema is not secure at all and should under no circumstances be used in real elections.
-It doesn't provide secrecy of the vote, as every ciphered value can be decrypted using some of the published data and a simple modulo operation.+++</aside>+++
+With this in mind, we created a system based on basic mathematical operations that allows to distinguish between plaintext and ciphered data, and that can simulate the features of a real voting scheme, as joint public key creation, ballot ciphering or partial decryption.
+
+[IMPORTANT]
+====
+This voting schema is not secure at all and should under no circumstances be used in real elections.
+It doesn't provide secrecy of the vote, as every ciphered value can be decrypted using some of the published data and a simple modulo operation.
+====
 
 Once we remove the security requirement, there is no need of having private keys, so each trustee public key is just an integer random odd number between 100 and 500.
 During the key ceremony, each trustee generates and publishes their public key.
