@@ -1,0 +1,7 @@
+= Operations
+
+. xref:develop:manual/operations/development.adoc[Development]
+. xref:develop:manual/operations/automated-tests.adoc[Automated tests]
+. xref:develop:manual/operations/makefile.adoc[Makefile]
+. xref:develop:manual/operations/deployment.adoc[Deployment]
+

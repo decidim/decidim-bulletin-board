@@ -1,0 +1,5 @@
+= Implemented voting schemes
+
+. xref:develop:manual/implemented-voting-schemes/dummy.adoc[Dummy]
+. xref:develop:manual/implemented-voting-schemes/election-guard.adoc[ElectionGuard]
+

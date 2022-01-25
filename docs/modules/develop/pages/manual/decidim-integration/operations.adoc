@@ -1,0 +1,23 @@
+= Operations
+
+== Development environment
+
+The Elections module uses the authority identification keys included in the bulletin board repository for development and testing purposes.
+This means that a development or test application should be able to communicate with a seeded bulletin board application with no configuration necessary.
+
+== Full integration tests
+
+The use of the bulletin board clients in the Elections component and the Votings participatory space is tested mainly using unit tests, where the server response is mocked.
+But there are also some system tests where mocking the server response is almost impossible.
+The only way to execute those tests is using a real instance of the bulletin board.
+But new challenges appeared when trying to run both systems in the repository CI tool.
+
+Having the whole Bulletin Board environment configured and working inside the CI machines can be complex and hard to maintain.
+Thus, we use the Docker image published during the release of the version used by the bulletin board client.
+This image is used in the workflow's definition to simplify the process.
+Its version should be changed when updating the version of the bulletin board client.
+
+In addition, after each test, the bulletin board should be reset to start with some test data ready to be used.
+A  `ResetTestDatabaseMutation` is defined to support this, but it is only allowed if the Rails application is running in test mode.
+This mutation should be called before running each test, to be sure that the database seed data is again at its starting state.
+A RSpec shared context is defined to do that in the Elections component.

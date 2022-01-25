@@ -1,0 +1,113 @@
+= The server
+:doctype: book
+
+The security and performance requirements, in combination with the transparency requirements, were a strong evidence that part of this solution should be based on an application detached from the Decidim server.
+The application is called *Bulletin Board*, and consists of an append-only log service, where the access to data is exposed through a GraphQL API.
+While it can be only written from authorized applications, almost all of its contents are accessible to anyone.
+For the sake of clarity, from now on, we will refer to the Decidim server as the *authority*.
+
+[NOTE]
+====
+While reading this chapter, you can visit the demo bulletin board application at https://staging-bb-decidim.codegram.com[http://staging-bb-decidim.codegram.com/] and access to the *Elections sandbox* and the *GraphiQL console* to play with some test data and understand better its behaviour.
+====
+
+== Message identifiers
+
+The bulletin board contents consist mainly of a list of elections, where each election has a related log with all the activity registered for the electoral process.
+Each log entry consists of a structure with a message identifier and a message sent by any client (the authority, the trustees or the bulletin board itself).
+The message identifier is a string that describes the message content;
+below this text, the used pattern is described, which will be explained in detail later.
+
+----
+<election_id>.<message_type>[.<message_subtype>]+<author_type>.<author_id>
+----
+
+While most of the fields are self-describing and can consist of numbers, letters, dash or underscore, the author type is a bit tricky.
+It consists of only one letter and the allowed values are `a` for authority, `b` for bulletin board, `t` for trustee and `v` for voters.
+Also, the election identifier is a bit different because it should consist of the authority identifier joined with a `.` to the election identifier in the authority scope.
+Here are some examples of real-world message identifiers.
+
+----
+decidim-test-authority.10001.start_key_ceremony+a.decidim-test-authority
+decidim-test-authority.65.key_ceremony.step_1+t.trustee-1
+decidim-test-authority.10005.end_key_ceremony+b.bulletin-board
+decidim-test-authority.123.vote.cast+v.a10b2f7f2c0930792e5246759f70e5e2a1f...
+----
+
+When a message is received by the server, it adds it to a message queue and returns an identifier for the pending message to be processed, that the client can use to check it status.
+To avoid processing duplicated messages, the server will not accept a message when another message with the same identifier is on the messages queue.
+
+== Election creation and setup
+
+The first message is sent by the authority.
+It is called the election's *manifest* and its message type is `create_election`.
+It describes the election, including its title and description, its voting period dates and its questions and possible answers.
+It also includes the unique identifiers of the election authority, the trustees and the bulletin board, along with their identifier public keys.
+The bulletin board server only allows to write in this election log to the clients included in the manifest.
+It also includes the `quorum`, which is the minimum number of trustees needed to decrypt the results.
+
+The following log entries are listed one after another, and can be grouped in three main phases, depending on the message types.
+The first phase starts with a `start_key_ceremony` message sent by the authority, some `key_ceremony` messages and an `end_key_ceremony` message, that includes the public key that will be used to cipher the ballots.
+This phase requires the participation of the trustees, that exchange their public information using the election log.
+They will also send additional data to make the compensation possible if they can't participate on the tally phase.
+The bulletin board could also take part of this exchange, acting as a coordinator of the process.
+
+== Voting period
+
+In a similar way, the voting period is the second phase of the process, enclosed by the `start_vote` and `end_vote` messages sent by the authority.
+Between them, the `vote` messages represent each vote cast online (`vote.cast`) or in person (`vote.in_person`).
+
+The authority should generate a unique identifier for each voter, but without including any clue about the person behind the voter.
+The best option is to apply a secure hash function to the voter identifying data with some random salt stored within the election or the voter to avoid https://en.wikipedia.org/wiki/Rainbow_table[rainbow table] attacks.
+These messages are sent by the authority, but using the voter identifier as the author identifier and with a `v` for the author type.
+
+
+[WARNING]
+====
+The bulletin board won't check the `start_vote` and `end_vote` dates against the starting and ending date included in the manifest.
+Currently, Decidim sends the opening message some hours before the starting date, but it doesn't allow casting votes until the starting date.
+Similarly, it won't allow casting votes after the ending date, but the closing message will be sent some time later.
+====
+
+== Tally and results publishing
+
+The tally is the third phase of the process, and it is analogue to the key ceremony phase, starting with a `start_tally` message, some `tally` messages and concluding with an `end_tally` message, including the results of the election.
+
+The process starts with the bulletin board preparing the message that includes all the votes to be tallied.
+Based on the voter identifiers, it detects messages related to the same voter, and considers only the last ballot cast online or ignore all of them, if the election log includes an in-person vote message for that voter.
+
+The tally phase can also include a `tally.compensate` message.
+This is used to request the present trustees to perform additional steps to compensate the absence of some trustees, only  when the number of active trustees is greater than the quorum value included in the manifest.
+This is done using the information published during the key ceremony.
+
+Even when all the log entries are public, the contents of the messages from the tally phase will not be publicly accessible until the authority sends the `publish_results` message.
+After this, the election will be considered finished, the tally contents will be accessible and a downloadable .tar file including all the election log entries will be published.
+
+== Enhancing the append-only nature of the election log
+
+To prevent manipulation of the elections (for example, changing the text of the questions or the answers) the service doesn't allow to modify the messages written in the log.
+Also, it includes additional measures to prevent modifications at the database level or any other inappropriate activity, by internal or external agents.
+
+First, the clients authorized to send messages to the election log (the authority, the trustees and the bulletin board itself) have an identifying pair of public and private keys.
+The private keys are used to digitally sign the messages sent, using the JWT standard.
+This means that attackers would need the sender's private key to add or modify messages in the election log, and that participants can't dispute the authorship of the messages they have sent.
+
+Also, being a JWT token, the message content (or signed data) consists of a string that can be decoded and verified using the sender's public key and retrieve a JSON structure.
+On every message, this JSON will contain the `message_id` and `iat` fields among others, to prevent the signed message to be sent by other clients in another context, as a different election or at a different moment.
+The rest of the keys included in the signed data depend on their message type.
+For example, `create_election` messages include `scheme`, `bulletin_board`, `authority`, `trustees` and `description` keys.
+
+Another important key included in the JWT data is the `content` key.
+We will dig into its use in the next section, but at the moment we only need to know that it is used to store the ciphered data in the messages.
+When this key is present in the signed data, the system calculates its SHA256 hash, stores it in the `contentHash` attribute and allows clients to search messages using it.
+This is helpful for voters to search votes in the log and confirm that their vote is present in the ballot box and that it will be counted during the tally phase.
+
+Finally, another hash is calculated for each message in the log to ensure that messages are not reordered or removed from the log.
+This is called chained hash and is calculated applying SHA256 to the signed message JWT token joined with the chained hash of the previous message in the log.
+The first message, the manifest, will use the election unique identifier as the previous chained hash.
+If any message is removed or modified, the chained hashes of the successive messages will not match.
+If external observers store the chained hash of the last message in the log, they will be able to confirm that the election log haven't been corrupted at any moment.
+
+image::develop:manual/bulletin-board/server-message.png[The message structure of a message sent by a client to the bulletin board and how it's stored in the database to be published in the election's log.]
+
+The message structure of a message sent by a client to the bulletin board and how it's stored in the database to be published in the election's log.

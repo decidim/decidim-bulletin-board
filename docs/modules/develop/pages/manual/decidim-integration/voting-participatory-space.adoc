@@ -1,0 +1,29 @@
+= Voting participatory space
+
+Voting is a Decidim participatory space, as participatory processes or assemblies, devised to be used for important elections processes.
+It is designed to work with the Election component, but it adds more features.
+
+First, it enables the possibility to celebrate physical elections.
+When this is active, the administrator can define polling stations and assign users to act as polling officers.
+These values should be defined before the creation of the election in the bulletin board, as the list of polling stations will be included in the election's manifest.
+As with trustees, this activates the Polling officer zone for those users, where they can identify in person voters included in the census and register the casting of the vote (not the content, just the action).
+This action sends a `vote.in_person` message to the election log, with the same voter identifier used in the online voting booth for that voter.
+This message should include one of the polling station identifier included in the election's manifest.
+During the tally phase, all the ballots cast by voters with in-person votes will be ignored.
+
+In addition, a Voting requires to upload a census to define the voters that can participate in the elections.
+Thus, it implements asynchronous tasks to upload and process the census definition, and to generate and export the access codes that will be used by voters to log in to the voting booth.
+To protect the sensitive data, the system stores hashes of the data when it's used only to compare to the data given by the voters, and it encrypts the data when it will be needed to be shown to the voter or included in exported files.
+Also, the module implements the class `CensusVoteFlow` to authenticate and generate voter identifiers based on the census data, instead of using the platform users.
+
+Having a census also enables the use of ballot styles, the ability to ask different questions to different users.
+After defining all the Voting elections with their questions, administrators can define ballot styles with a code and the list of questions included.
+In that case, the census file should include an extra column that includes the ballot style code assigned to each voter.
+These ballot styles should be defined before creating the election in the bulletin board, as they will be included in the manifest message.
+The voting scheme will be responsible for considering this information when ciphering and checking the ballots and during the tally process.
+
+The monitoring committee is the last feature added by this type of participatory space.
+It allows them to verify the physical and online electoral process.
+The physical part work as in traditional elections, with certificates generated, signed and uploaded within totals numbers by polling officers for each polling station, and the committee comparing all those files against the results loaded.
+Regarding the online part, the monitoring committee will monitor the election log during the process and, before the results publishing, will have access to the downloadable file including all the election log messages to execute the verification process before it's published.
+That's the reason why this downloadable file will not include the last `publish_results` message, as this message is added to the election log after publishing the results, and we consider that it is more important to publish the same file that was verified by the committee than including it.

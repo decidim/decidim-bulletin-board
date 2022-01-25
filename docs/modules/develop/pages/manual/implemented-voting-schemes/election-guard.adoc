@@ -1,0 +1,90 @@
+= ElectionGuard
+:doctype: book
+
+The ElectionGuard voting scheme is based on https://www.electionguard.vote/[the project with the same name from Microsoft].
+The project is an open-source software development kit designed for election system vendors to incorporate end-to-end verifiability into their systems and any interested organization to perform and publish post-election audits using ElectionGuard as a secure publishing platform.
+In fact, this whole system is heavily inspired on ElectionGuard.
+
+== Adapting ElectionGuard
+
+ElectionGuard was designed mainly to be used on physical devices, so we had to apply some changes to the original protocol to adapt it to be used for online elections.
+
+First, the communication channel between the system parts is different.
+ElectionGuard assumes that there exists direct and private channels connecting the system parts (trustees with the bulletin board, trustees with each other, voter with bulletin board).
+But in our system, the only communication channel between every part of the system is the election log, which is public and transparent to the world.
+This means that we have to take care of the information published in that channel.
+At the moment, it was not necessary to adopt additional measures, but if it's needed, we could use asymmetric encryption to allow clients to write messages to be read only by another client.
+
+More over, making the voting process online adds a few interesting challenges.
+The spoiling of the ballots is more complex when multiple voters are casting votes at the same time.
+When voting physically, the voting process consist of adding the ballot to the ballot box and then deciding if it's going to be cast or spoiled, as an atomic operation.
+The next voter will only start their vote after that decision.
+But in an online scenario, many voters can add their vote message at the same time to the election log, and then the message decision can be added to the log in any order, or it doesn't even reach to the log.
+This complicates the tally process and raises a new issue to decide what to do with ballots sent to the ballot box but not cast nor spoiled.
+Also, having to decrypt the spoiled ballots increases the work needed to be done during the tally phase.
+To replace this feature, we implemented the Benaloh challenge explained in the previous chapter.
+
+Another small change done is related to the votes hash chaining feature included in ElectionGuard.
+As all votes are cast in order in physical devices, for ElectionGuard it's possible to include the chained hash from the previous ballot inside the ciphered ballot to create a strong chained hash.
+In our case, having multiple voters at the same time makes this impossible, so we are not using that field in the cast ballots, and we are adding an external chained hash in the bulletin board, that is not so strong, but it also allows to guarantee the immutability of the election log.
+
+Finally, another minor change done in the protocol is that the ciphered ballots are not sent directly to the election log from the voter machine.
+They are sent to the authority, that adds the JWT signature before sending them to the bulletin board.
+This is done because at the moment we don't have the feature to use digital certificates for each voter, so the authority is responsible to decide which voters can participate, and this authorization is done through the signing process.
+The way that voters can be sure that the server didn't change their ballot content is checking that the content hash of the message in the election log matches the hash of their unsent ballot, as it was explained in the previous chapter.
+
+== Implementation
+
+This voting scheme uses the python version to implement the classes needed by the different clients that participate in the system.
+To connect all the parts, two steps are required: prepare the python code to be used in the context of this system, and integrate that code to be executed within non-python applications.
+
+=== Python wrappers
+
+The first step done to implement this voting scheme was to transform the existing python classes into something that can be connected with the bulletin board.
+Instead of modifying the ElectionGuard code, we decided to create a new layer of wrapper classes, to be able to update the code when new versions of ElectionGuard are released.
+Thus, we created three main wrapper classes, `BulletinBoard`, `Trustee` and `Voter` that act as state machines representing the three parts of the system.
+These classes are designed to process received messages from the election log, to use the ElectionGuard python library to process the received information and, if needed, to return a response message to be sent to the election log.
+
+[NOTE]
+====
+The python wrapper classes can be found in the folder `decidim-bulletin-board/voting_schemes/electionguard/python-wrapper` in the bulletin board repository.
+====
+
+== Integration of the bulletin board wrapper class
+
+The `BulletinBoard` wrapper class implements the bulletin board behaviour.
+
+During the key ceremony phase, it receives and checks the messages sent by trustees and, when the process is complete, it returns the `end_key_ceremony` message with the `joint_public_key` field included in it.
+
+During the voting period, it receives all the cast votes and checks them to verify that they are valid.
+
+Finally, during the tally phase, it collects all the stored votes, it creates the `tally.cast` message with the homomorphical sum of the ciphered ballots, and it publishes the `end_tally` message including the `results` field with the results calculated using the shares sent by the trustees.
+
+Given that the bulletin board is a Ruby on Rails application, the system uses the https://github.com/mrkn/pycall.rb[pycall.rb] library to be able to use python classes from the server.
+
+=== Integration in the trustee wrapper class
+
+The `Trustee` wrapper class implements the trustees logic.
+
+During the key ceremony, it creates the pair of private and public keys for the election (not to be confused with the trustee's identification keys), along with some mathematical proofs of knowledge of possession of the associated private key.
+
+It doesn't participate during the voting period.
+
+Finally, during the tally phase, it reads the `tally.cast` message sent by the bulletin board, it calculates their share as the partial decryption using its private key, and it sends it to the election log.
+It can also handle a `tally.compensate` message to calculate and send their share of the missing trustees shares to the election log.
+
+For security reasons, all the trustee's logic should be executed on the trustee's machine.
+We used the https://pyodide.org[pyodide] project to convert all the python code to WebAssembly code, to be able to run it in the browser.
+As ElectionGuard depends on some libraries that cannot be compiled with pyodide, we also had to find replacements for them.
+
+=== Integration in the trustee wrapper class
+
+The `Voter` wrapper class implements the voter logic.
+
+This class is only used during the voting period.
+It is also compiled to WebAssembly using the pyodide project, as the trustee wrapper.
+It provides the ballot ciphering feature, receiving the plaintext ballot and returning the ciphered ballot and the information needed to audit it.
+
+To conclude this chapter, the following diagram shows how all the wrappers are integrated in the system architecture.
+
+image::develop:manual/implemented-voting-schemes/election-guard.png[ElectionGuard schema]

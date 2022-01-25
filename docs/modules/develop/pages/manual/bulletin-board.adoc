@@ -1,0 +1,13 @@
+= Bulletin Board
+
+. xref:develop:manual/bulletin-board/server.adoc[The server]
+. xref:develop:manual/bulletin-board/voting-schemes.adoc[Voting schemes]
+. xref:develop:manual/bulletin-board/client.adoc[The client]
+. xref:develop:manual/bulletin-board/verifier.adoc[The verifier]
+
+== Some specifications
+
+* Identification keys: `RSASSA-PKCS1-v1_5` signature scheme, with `4096` as modulus length
+* JWT signatures algorithm: `RS256`
+* Chained and content hash algoritms: `SHA256`
+

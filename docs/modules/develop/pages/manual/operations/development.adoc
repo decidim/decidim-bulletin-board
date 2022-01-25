@@ -1,0 +1,37 @@
+= Development
+
+The https://github.com/decidim/decidim-bulletin-board[Bulletin Board repository] is a monorepo that contains all the software related to the Bulletin Board.
+Here you will find the Bulletin Board server, the client libraries to communicate with it, the implementation of the voting schemes and the election verifier.
+
+The Bulletin Board has a rather complex environment, but it comes with some handy tools to ease the setup.
+
+[discrete]
+=== Infrastructure
+
+In `/.devcontainers` you will find a `Dockercompose` file to spin up the required infrastructure.
+You can use it with VS Code's https://code.visualstudio.com/docs/remote/containers[devcontainer extension] or standalone running `docker-compose up`.
+
+[discrete]
+=== App setup
+
+Once you have the infrastructure in place, you can set up the Rails application environment leveraging the `Makefile`.
+Type `make install` to install the required dependencies and `make serve` to spin up the server in dev mode.
+
+See the xref:develop:manual/operations/makefile.adoc[Makefile section] to learn more about the operations you can perform with it.
+
+[discrete]
+=== Dev seeds
+
+You can create the dev seed data by running `bundle exec rake db:seed`.
+Among other things, the task creates three trustees with their identification key.
+This is the key that the trustee user is prompted for when performing any action.
+For example, if you want to perform the key ceremony from the sandbox, you will need to provide these keys.
+You can find them in `bulletin_board/server/lib/assets`.
+
+The seed process also creates a test authority with a pair of test identification keys and a public API key.
+This information can be used to setup a development or test application easily, without having to perform the steps needed to setup the communication between servers.
+
+[IMPORTANT]
+====
+For security reasons, none the data loaded during the seed process should be used in production environments.
+====

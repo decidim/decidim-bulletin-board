@@ -1,0 +1,44 @@
+= Deployment
+
+To deploy the Bulletin Board in a production environment, there are some extra precautions we need to take.
+
+== Infrastructure
+
+The Bulletin Board server is a Ruby on Rails application.
+Apart for the server stack, we will need to set up:
+
+* `Postgresql` as database;
+* `Redis` - used by Sidekiq.
+
+== Docker
+
+The Bulletin Board server is https://hub.docker.com/r/codegram/decidim-bulletin-board[published in Dockerhub] as a Docker container.
+
+If you want to deploy a modified version of the Bulletin Board, we highly recommend to use `Dockerfile.web` in the root folder of the repository to build and release the application.
+
+== ActiveStorage
+
+The Bulletin Board uses ActiveStorage.
+You will need to set it up with the credentials of the cloud storage of your choice in `bulletin_board/server/config/storage.yml`, taking the secrets from environment variables.
+
+== Environment Variables
+
+We'll need to set up an array of environment variables in order for the sever to function correctly.
+
+* Rails:
+ ** `RACK_ENV` and `RAILS_ENV` with value `production`;
+ ** `RAILS_SERVE_STATIC_FILES` with value `true`;
+ ** `SECRET_KEY_BASE`.
+* Connect to Postgres:
+ ** `DATABASE_URL` with the full URL of the database;
+* Redis:
+ ** `REDIS_URL` with the full URL of the Redis instance;
+* ActiveRecord:
+ ** The secrets of the cloud storage of your choice;
+* CORS:
+ ** `CORS_ORIGIN_ALLOWED` with the list of hosts of Decidim instances that will use this Bulletin Board.
+If you don't know what Decidim instances will use this Bulletin Board, you can put `*`
+
+== SSL certificate
+
+To be able to use some advanced cryptography features, both the Bulletin Board as Decidim should be served using HTTPS and a valid SSL certificate.

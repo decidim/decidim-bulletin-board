@@ -1,0 +1,10 @@
+= The verifier
+
+The final part of the bulletin board is the verifier.
+This is a command line tool that allows any observer to verify that the published results of the elections are correct.
+It can be downloaded directly from the project repository, and it is executed locally, to ensure the observer that it was not corrupted by any interested part.
+
+Apart from the verification of the results, the verifier provides another feature.
+It allows the voter to check that an audited ballot was correctly encrypted.
+
+As with other parts of the project, the verifier implements the verification for the bulletin board features, like digital signatures and hashes checking, and let voting schemes to implement their own verifications, adapted for their specific cryptographic methods used.

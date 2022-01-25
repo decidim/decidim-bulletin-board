@@ -1,0 +1,24 @@
+= Future improvements
+
+Currently, the system implements the basic features needed to run elections using the platform, but there are many areas where it could or should be improved.
+In this chapter, we explain some of them.
+
+In first place, it should consider the possibility of unexpected situations to occur.
+The ability to reset or to abort an election at their early stages could help to handle them.
+
+The administrator's election creation flow and the whole polling officers flow could also be improved, to reduce the possibility of human errors.
+To avoid unexpected blocking situations, the system is very liberal on the way these flows work.
+It would be useful to enforce restrictions and provide guidance to the users based on the experience of the usage of the platform.
+
+Regarding security, apart from addressing the possible issues detected, we should work on increasing the reliability of the census, adding methods to guarantee its immutability or explore ways to use voters certificates to allow them to sign their ballots.
+
+The verifiers should also be improved, adding new checks to increase the confidence on the immutability of the bulletin board election log.
+In addition, having an easy to install desktop application to use the verifier would increase the number of users that run them, increasing the global confidence on the results.
+
+On the technical side, adding new voting schemes, based on different cryptographic solutions for the E2E secure votings problem would help to increase the decoupling between bulletin board and the voting schemes, and it would probably make the bulletin board more flexible.
+An example of this could be the implementation of a voting scheme based on fully homomorphic encryption to improve performance reducing the need of calculating of costly mathematical proofs or using post-quantum cryptographic methods to increase the security.
+Another interesting, but a bit tougher, example would be the implementation of voting schemes based on Mix networks to shuffle ballots instead of using homomorphic sums to calculate the results.
+
+Finally, there some expensive refactors that should evaluate, as moving the `decidim-elections` module to the bulletin board repository or splitting the Elections component and the Votings participatory space in different modules.
+They would allow Decidim instances to better handle the features that they are going to use (nothing, only Elections or everything), detach the system releases from Decidim release cycles and enhance its development and testing, being able to do it with just one atomic change on all the system parts (BB server, client and Decidim integration).
+On the other hand, it could increase the effort needed to maintain the system compatibility with new Decidim versions.
