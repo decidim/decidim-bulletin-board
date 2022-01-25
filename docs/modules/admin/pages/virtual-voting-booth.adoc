@@ -1,0 +1,109 @@
+= Virtual voting booth
+
+== Enter the voting booth
+
+When the election start time has been reached, the voters will be able to access the voting booth in Decidim.
+
+image::virtual-voting-booth-start.png[When the election starts, the voter will be able to enter the virtual voting booth clicking on `Start Voting`]
+
+When the election starts, the voter will be able to enter the virtual voting booth clicking on `Start Voting`
+
+== Identify yourself (only when Census is present)
+
+If your election is part of a Voting with a Census, the voters will need to identify themselves in order to take part in the election.
+This is needed to make sure they make part of the census and, in case you are using Ballot Styles, that they are presented with the intended questions in the ballot.
+
+The voter will have to insert their personal data as in the Census and the access code they were sent via postal mail.
+In case they didn't receive it or lost it, they can retrieve it by clicking on `Ask for a new one`.
+
+image::virtual-voting-booth-identify.png[The voter needs to provide their personal details and the access code to enter the voting booth.]
+
+The voter needs to provide their personal details and the access code to enter the voting booth.
+
+== Inside the voting booth
+
+Now the voter is in the voting booth.
+Here they are presented with the questions for the elections.
+If Ballot Styles are set up, the voter will only be able to answer the questions corresponding to their Ballot Style.
+
+image::virtual-voting-booth-question1.png[Question with only one selection allowed.
+There's a progress indicator on the top-left corner.]
+
+Question with only one selection allowed.
+There's a progress indicator on the top-left corner.
+
+image::virtual-voting-booth-question2.png[Question with two selections allowed.
+The order of the answers is random.]
+
+Question with two selections allowed.
+The order of the answers is random.
+
+After the voter finished indicating their preferences, they will be shown a summary of what they selected.
+They can confirm and proceed with the next step or go back and edit their answers.
+
+image::virtual-voting-booth-confirm.png[Confirm your vote]
+
+== Ballot encryption
+
+When the user confirms the selections, we are ready to encrypt the ballot.
+
+The encryption process is done in the browser and can take a few seconds, depending on the voter machine.
+
+Here the voter can decide to:
+
+* xref:admin:virtual-voting-booth.adoc[Audit the ballot] - check that the ballot has been correctly encrypted by their browser.
+This will spoil the ballot and they will need to restart the voting process to cast it;
+* xref:admin:virtual-voting-booth.adoc[Cast the ballot] - send the ballot to the Bulletin Board.
+
+image::virtual-voting-booth-audit.png[Audit your ballot]
+
+== Audit the ballot
+
+Clicking on `Audit ballot` next to the ballot identifier, the voter will be able to verify that their browser has encrypted the ballot correctly and has not tampered with.
+
+NB: for security purposes, once a ballot is audited it gets spoiled and cannot be cast to the Bulletin Board.
+The voter will have to restart the voting process to properly cast the vote.
+
+Hitting on `Audit ballot` the browser will download a file containing the raw data used to encrypt the ballot.
+The voter can check that it corresponds to the selections they made and that nothing and nobody tampered with the ballot.
+
+== Cast the ballot
+
+Clicking on `Cast ballot` the browser will send the encrypted ballot directly to the Bulletin Board (without passing through the Decidim server) and wait for it to confirm the correct reception.
+
+The voter will be presented again with the ballot identifier: they can use this to xref:admin:virtual-voting-booth.adoc[verify that their ballot is correctly accounted for in Bulletin Board].
+
+image::virtual-voting-booth-cast.png[Cast your ballot]
+
+== Verify the ballot
+
+At any point during and after the voting period, the voter can check if the ballot they casted is in the ballot box using their ballot identifier.
+This is done by asking the Bulletin Board if it received and successfully processed the ballot.
+
+image::virtual-voting-booth-verify.png[The voter can access the ballot verification page from the election landing page.]
+
+The voter can access the ballot verification page from the election landing page.
+
+The voter will be asked to insert their ballot identifier provided at the end of the voting process.
+
+image::virtual-voting-booth-verify-check.png[Verify the ballot]
+
+Clicking on `Check`, the page will check if the ballot is found in the Bulletin Board.
+
+image::virtual-voting-booth-verify-ok.png[The ballot was found in the ballot box]
+
+The ballot was found in the ballot box
+
+image::virtual-voting-booth-verify-ko.png[The ballot was not found in the ballot box]
+
+The ballot was not found in the ballot box
+
+== Vote again
+
+The voter will be able to vote as many times as they want from the virtual voting booth.
+At the moment of the election tally, the Bulletin Board will only take into account the latest vote received for the voter.
+
+This way, the voter can change the vote after casting it by casting another ballot.
+
+When the online election is integrated with a physical election, though, votes casted from a physical Polling Station have preference over the online ones.
+This means that, after the voter has voted physically, they will not be allowed to access the virtual booth anymore.

@@ -1,0 +1,33 @@
+The Key Ceremony is one of the main pieces that guarantees the security and the anonymity of the election.
+
+In this process the Trustees create the encryption keys used to encrypt the votes during the voting period and decrypt the results at the end of the election.
+
+As a Trustee, you can take part to the Key Ceremony by xref:admin:create-trustee-identification-keys.adoc[accessing the Trustee Zone in your account page].
+
+When the administrator of the election has started the Key Ceremony, you will see that an action is required for the election you are a Trustee for.
+
+image::trustee-key-upload.png[You have a pending action in the election `Another election`]
+
+You have a pending action in the election `Another election`
+
+If you are asked to `Upload your identification keys` as in the image above, upload the file you downloaded in the xref:admin:create-trustee-identification-keys.adoc[previous step].
+
+Now click on `Perform action` to enter the Key Ceremony view.
+
+Notice that _all the Trustees need to be connected at the same time in order to perform hte Key Ceremony_.
+
+image::trustee-key-start.png[You are ready to `Start` the Key Ceremony]
+
+You are ready to `Start` the Key Ceremony
+
+Hit `Start` and the process will begin.
+During the process, you will be asked to download a back up a file.
+This is the election key - you will need it to decrypt the results at the end of the election.
+
+After downloading the key, the process will continue.
+If the `Keys publishing` step gets stuck on "Pending", chances are that not all the Trustees are connected.
+Once everybody the process will unstuck on its own - don't leave the page.
+
+image::trustee-key-completed.png[Congratulations 🥳 The Key Ceremony is completed!]
+
+Congratulations 🥳 The Key Ceremony is completed!

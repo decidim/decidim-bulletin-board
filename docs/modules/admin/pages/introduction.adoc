@@ -1,0 +1,44 @@
+= Introduction
+
+Decidim Elections enables a Decidim instance to run end-to-end auditable votings, may they be online, physical or a hybrid form of the two.
+
+In order for a secure, end-to-end auditable voting to be run on Decidim, you will need to understand and set up the following things:
+
+* The xref:admin:introduction.adoc[Decidim Bulletin Board] service, an independent application designed to provide services to Decidim instances;
+* The xref:admin:introduction.adoc[Election component], a Decidim component that takes care of the cycle of an election - from the communication with Decidim Bulletin Board to the virtual voting booth;
+* (optional) The xref:admin:introduction.adoc[Voting participatory space], a Decidim participatory space that provides additional features to an election (integration with physical election, census management, etc).
+
+== Decidim Bulletin Board
+
+The Decidim Bulletin Board is a public, append-only log designed to allow Decidim instances to hold secure end-to-end auditable votings.
+Since it is an independent application, you will need to deploy an instance and connect your Decidim to it.
+
+To find out more about how to deploy, set up and connect a Decidim Bulletin Board and connect it to your Decidim, read on in the xref:admin:bulletin-board-setup.adoc[dedicated page].
+
+== Election component
+
+Election is a Decidim component that configures and runs any number of questions and answers in a auditable voting system.
+
+Within an Election component, an admin can configure:
+
+* The voting period;
+* The election's questions and answers;
+
+The election component will also:
+
+* Manage the secure communication with the Decidim Bulletin Board connected to your Decidim instance to ensure the verifiability of the election;
+* (in an online election) create a safe virtual voting booth that will allow voters to fill, encrypt, audit and cast their ballot;
+* Allow the election Trustees to create decryption keys and carry out the tally procedures.
+
+To know how to configure an Election component according to your election needs, check out the xref:admin:create-election-decidim.adoc[dedicated section].
+
+== Voting participatory space
+
+While an Election component can be associated to any type of participatory space, when used in a Voting participatory space it can be integrated with the features this provides:
+
+* Integration with physical polling stations;
+* Census management;
+* Ballot styles (conditional questions);
+* Monitoring Committee.
+
+To find out the detail of the features provided by a Voting in the xref:admin:create-voting-decidim.adoc[dedicated section].

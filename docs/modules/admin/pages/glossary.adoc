@@ -1,0 +1,18 @@
+= Glossary
+
+* *Authority*: the organiser of the election from the xref:admin:glossary.adoc[Bulletin Board]'s perspective.
+In other words, the Decidim instance that created the election.
+* *Bulletin Board* / *Decidim Bulletin Board* / *BB*: an independent application that enables Decidim to run secure and verifiable elections.
+It receives and stores in an append-only log messages from different sources, such as:
+ ** The xref:admin:glossary.adoc[authority] (create an election, start an election, end an election, start the tally for an election, publish the results of an election, etc);
+ ** The xref:admin:glossary.adoc[trustees] (key ceremony, tally);
+ ** The xref:admin:glossary.adoc[voter] (cast a vote);
+* *Key Ceremony*: the process that creates the election encryption keys.
+It requires all the xref:admin:glossary.adoc[Trustees] to take part at the same time, as they will be given a 'piece' of the key.
+They will have to put back together the key for the xref:admin:glossary.adoc[tally] at the end of the election.
+* *Tally*: the process of counting the votes that produces the encrypted election results.
+This happens in the xref:admin:glossary.adoc[Bulletin Board] and follows the encryption standard specified in the election's voting scheme (probably Electionguard's implementation of homomorphic encryption).
+The election results generated can only be decrypted by the xref:admin:glossary.adoc[Trustees].
+* *Trustees*: two or more individuals that are the depositaries of the encryption keys for an election.
+They are the only ones that will be able to decrypt the results of the election putting together the pieces of the decryption key each one of them own.
+* *Voter*: an identified individual (either with Decidim authentication or a Voting Census) that has the right to vote in the election.

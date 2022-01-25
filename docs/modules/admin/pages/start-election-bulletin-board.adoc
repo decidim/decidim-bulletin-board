@@ -1,0 +1,16 @@
+= Start the election in the Bulletin Board
+
+When every is set up and ready, the admin can tell the Bulletin Board to start accepting votes for the election.
+
+As an admin, you are allowed to start the voting period from 6 hours before the election's official start time (unless you configured your Decidim installation otherwise).
+
+If you set up the rake task `decidim_elections:scheduled_tasks` as a recurrent task in your Decidim installation, the voting period on the Bulletin Board will be started automatically 3 or less hours before the election start time (unless you configured your Decidim installation otherwise).
+
+To manually start the voting period, go to the election's `manage steps` section and click `Start voting period`.
+This will make the Bulletin Board accept votes for the election, although the virtual voting booth won't be accessible until the election has started as per the the start time configured on its creation.
+
+image::election-start-bulletin-board.png[Once you click on `Start voting period`, the Bulletin Board will start accepting votes.
+The voting booths, though, won't be accessible until the election start time has been reached.]
+
+Once you click on `Start voting period`, the Bulletin Board will start accepting votes.
+The voting booths, though, won't be accessible until the election start time has been reached.

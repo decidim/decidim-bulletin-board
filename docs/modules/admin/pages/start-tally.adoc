@@ -1,0 +1,19 @@
+= Start the tally process
+
+After the election has finished and all the Polling Stations have a signed electoral closure, the admin can start the tally process.
+
+The tally will be carried out by the Trustees, but the admin has to officially start the process from the admin area.
+
+Click on `Start tally` from the election's `Manage steps` section to start the tally.
+
+image::tally-start.png[The election is ready, the tally can get started.]
+
+The election is ready, the tally can get started.
+
+The admin will see a list of the Trustees that need to come together to perform the tally.
+
+As per the key ceremony performed before the election, the Trustees will have to connect at the same time in order to perform this critical step of the process.
+
+image::tally-start-trustees.png[The admin will see the list of the Trustees that have to come together to perform the tally.]
+
+The admin will see the list of the Trustees that have to come together to perform the tally.

@@ -1,0 +1,12 @@
+= Live turnout statistics
+
+During the voting period, the administrator of Decidim will be able to see live turnout statistics for the online election.
+These stats do not take into account the votes casted in the physical Polling Stations.
+
+You can see this page by visiting the `Manage steps` page for the election you are interested in.
+
+image::live-turnout-statistics.png[`Votes` highlights the number of votes casted online, `Voters` counts the number the unique voters that casted a vote.
+Remember that voters can cast multiple ballots, but only the last one will be used to tally the election.]
+
+`Votes` highlights the number of votes casted online, `Voters` counts the number the unique voters that casted a vote.
+Remember that voters can cast multiple ballots, but only the last one will be used to tally the election.
