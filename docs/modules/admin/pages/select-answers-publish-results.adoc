@@ -1,0 +1,50 @@
+= Select answers and publish results
+
+The election voting period is over, the Trustees performed the tally and the Monitoring Committee validated the election and the results.
+
+It is now time for the Decidim admin to select the prevailing answers that will be shown as winners of the election and to publicly publish the results.
+
+== Select answers
+
+When the admin accesses the election's `Manage steps` section, they will now see the calculated results.
+
+Notice that the answers with the highest number of votes have the value highlighted in green, but for the moment all of them are marked as 'Not selected'.
+
+image::results-select.png[The calculated results.
+No answer has been selected as winner yet.]
+
+The calculated results.
+No answer has been selected as winner yet.
+
+When the admin knows what answers they want to select, they will need to head to the `Manage questions` section of the election.
+
+image::results-select-manage-questions.png[Results: manage questions detail]
+
+For each question, we click on `Manage answers` to access the answer selection page.
+
+image::results-select-manage-answers.png[Results: manage answers detail]
+
+In the list of answers, we can see that now we have the possibility to select the winning answers.
+
+Clicking on the `mark answer as selected` icon the answer will be selected.
+
+image::results-select-manage-answers-selected.png[The first answer has been selected]
+
+The first answer has been selected
+
+Going back to the `Manage steps` section, we will see that now the answers we selected are marked as selected.
+
+image::results-select-manage-answers-selected.png[The answers are selected - everything is ready to publish the results]
+
+The answers are selected - everything is ready to publish the results
+
+== Publish the results
+
+The results we see from the `Manage steps` section are only visible to admins and the Monitoring Committee.
+It is now time to make them publish in Decidim.
+
+Hitting `Publish results` will make the results of the election public and visible from the election's public page.
+
+image::results-select-manage-answers-selected.png[The results are now public, Decidim visitors will be able to see them from the election's page.]
+
+The results are now public, Decidim visitors will be able to see them from the election's page.

@@ -1,0 +1,87 @@
+= Register a voter in the polling station
+
+During the voting period, a Polling Station Officer (President or Manager) can mark that a voter has voted in the Polling Station they are assigned to from the Polling Officer Zone.
+
+When a voter comes to the Polling Station and identify themselves with an ID, the Polling Station Officer should do the following operations in Decidim:
+
+* Verify that the voter is in the Census;
+* Check what ballots the voter can cast;
+* Mark the voter has voted.
+
+This last operation implies that:
+
+* The voter will not be able to vote physically from other Polling Stations;
+* The voter will not be able to vote online;
+* Any previous ballot casted online will be spoiled.
+
+== Access the Polling Officer Zone
+
+After a xref:admin:create-voting-decidim.adoc[Decidim admin made a user a Polling Officer] and assigned them to a Polling Station, the user will be able to access the Polling Officer Zone and see their Polling Stations.
+
+The Polling Officer Zone can be accessed by Presidents and Managers from their account page:
+
+image::polling-officer-account.png[My account menu]
+
+image::polling-officer-menu.png[Polling officer zone in the menu of a participant profile]
+
+Here the Polling Officer will see a list of Polling Stations they are assigned to.
+Notice that, if the Voting they are a Polling Officer for has more than one election, they will see as many Polling Stations as the number of elections in the Voting - one for each election.
+
+image::polling-officer-zone.png[The Polling Officer zone for a Polling Station President in a voting with one only election.]
+
+The Polling Officer zone for a Polling Station President in a voting with one only election.
+
+== Check if a voter is in the census
+
+When a person comes to the Polling Station, the Polling Station Officer will need to ask for an identification document to check if they are in the census and what ballots they can cast.
+
+The Polling Station Officer will have to click on `Identify a person` on the corresponding election to proceed with the identification.
+
+Filling in the form with the data from the identification document provided by the voter, the Polling Station Officer can validate that the voter is in the census.
+
+image::polling-officer-zone-identify.png[Clicking on `Validate document` the application will check whether the voter is in the census.]
+
+Clicking on `Validate document` the application will check whether the voter is in the census.
+
+== The voter in not in the census
+
+If the data provided does not match any census entry, the participant will not be allowed to vote.
+
+The Polling Station Officer can try again to make sure they did not make any mistake entering the data.
+
+Notice that the voter had the possibility xref:admin:check-census-data.adoc[check if they were correctly enlisted in the census] the days prior the election.
+
+image::polling-officer-zone-identify-ko.png[The data provided does not match any census entry.]
+
+The data provided does not match any census entry.
+
+=== The voter is in the census
+
+If the data provided is found in the census, the Polling Station Officer will see the voter's full name as found in the census, so they can double-check that it corresponds to the one in the ID.
+
+image::polling-officer-zone-identify-ok.png[The Polling Officer can double-check that the census record found corresponds to the ID provided by the voter matching the voter's full name.]
+
+The Polling Officer can double-check that the census record found corresponds to the ID provided by the voter matching the voter's full name.
+
+Once the Polling Station Officer properly verified the identification document, they can proceed with the voting process by hitting `Verify document`.
+
+Here they will see several pieces of information:
+
+. a coloured banner stating if the voter has or has not voted physically yet;
+ ** Green if the voter has not voted yet;
+ ** Red if the voter has already voted.
+In this case, the voter should not be allowed to vote again.
+. if the voter already voted online, a disclaimer saying "the participant has already voted online"
+ ** The voter can still vote in person, but the Polling Station Officer should warn the voter that this will spoil the ballot they casted in the online election.
+. the list of questions the voter is entitled to answer
+ ** This will indicate the Polling Station Officer what ballots to hand out to the voter.
+
+image::polling-officer-zone-identify-not-voted.png[Participant has not voted]
+
+image::polling-officer-zone-identify-already-voted.png[Participant has already voted]
+
+When the participant has deposited their ballot(s) in the ballot box, the Polling Station Officer can  tick the `The participant has voted` checkbox and hit `Complete voting`.
+
+⚠️ WARNING: this will complete the voting procedure for the voter and prevent them from voting again in this election, both physically and online.
+
+After a short processing period, during which the Bulletin Board is notified that the voter has voted physically, the Polling Station Officer will be able to register a new voter.

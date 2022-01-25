@@ -1,0 +1,25 @@
+= Check census data and recover access code
+
+Before the election starts, the voter can check if they are correctly registered in the election census.
+
+The voter can insert their personal details in the form in the "Can I vote?" tab of the voting.
+
+image::census-data-check.png[You can check your status in the election census]
+
+You can check your status in the election census
+
+If the data inserted is found in the census, the voter will have the possibility to request the access code again, although they should have received it by postal mail already.
+
+image::census-data-ok.png[The voter was found in the census.
+They can request their access code again in case they did not receive it]
+
+The voter was found in the census.
+They can request their access code again in case they did not receive it
+
+If the data is not found, the voter will be shown the `[Census contact information` from the voting](xref:admin:create-voting-decidim.adoc).
+
+image::census-data-ok.png[The data inserted has not been found in the census.
+If the voter thinks it should be, they can ask for it to be changed via the information provided in the voting.]
+
+The data inserted has not been found in the census.
+If the voter thinks it should be, they can ask for it to be changed via the information provided in the voting.

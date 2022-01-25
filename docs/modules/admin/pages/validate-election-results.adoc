@@ -1,0 +1,99 @@
+= Validate the election results
+
+The role of the Monitoring Committee is to verify that both physical and online elections ran smoothly and are valid.
+
+SpecificallyIn the specifics, Monitoring Committee Members can:
+
+* Validate the Polling Stations election closures created by the Polling Station Officers;
+* Validate the online election using the validation utility;
+* Preview the final results of the election.
+
+== Access the Election
+
+Monitoring Committee Members are appointed by Decidim admins as explained in xref:admin:create-voting-decidim.adoc[the corresponding section].
+
+When a Decidim is a Monitoring Committee Member for a Voting, they will gain access to the admin panel for that specific Voting.
+
+They can access the admin area from the user menu.
+In the backoffice area, they will only have access to the Voting they are a Monitoring Committee Member for, unless their user also has other kind of admin access.
+
+image::monitoring-commitee-account.png[`Admin dashboard` gives the user access to Decidim's backoffice]
+
+`Admin dashboard` gives the user access to Decidim's backoffice
+
+image::monitoring-commitee-admin.png[Monitoring Committee Members can only access the Voting they are assigned to from the admin panel.
+If their user also has other kinds of admin access, though, those will be preserved.]
+
+Monitoring Committee Members can only access the Voting they are assigned to from the admin panel.
+If their user also has other kinds of admin access, though, those will be preserved.
+
+Entering the Voting they want to validate, the Monitoring Committee Member can access the actions they want to perform from the left-hand menu.
+
+image::monitoring-commitee-admin-menu.png.png[Actions of the Monitoring Committee Member]
+
+=== Validate Certificates
+
+The Monitoring Committee Members can see and validate the xref:admin:count-votes.adoc[electoral closures created by the Polling Station Officers when closing a Polling Station].
+
+The Monitoring Committee Member will see the list of Polling Stations and the status of the electoral closure.
+
+`Signed?` indicates whether the Polling Station Officers created&signed the electoral closure for their Polling Station, `Validated?` indicates if any member of the Monitoring Committee has validated the electoral closure.
+
+image::monitoring-commitee-closures.png[Two electoral closures were created and signed, but non of them has been validated yet.]
+
+Two electoral closures were created and signed, but non of them has been validated yet.
+
+Clicking on the `Validate` action the Monitoring Committee Member can review the closure and validate it.
+
+The Monitoring Committee Member will be able to see, on the same page, the physical election closure certificate for the Polling Station, the results submitted to the Bulletin Board by the Polling Station Officers and the notes to the Monitoring Committee by the Officers.
+
+The Monitoring Committee Member can report incidences before validating the Polling Station closure certificate.
+
+image::monitoring-commitee-closures-remarks.png[The picture(s) of the certificate appear on the left, the results submitted by the Polling Station Officers on the right.]
+
+The picture(s) of the certificate appear on the left, the results submitted by the Polling Station Officers on the right.
+
+Once a certificate has been validated, the Monitoring Committee Members can view it but not edit it anymore.
+
+image::monitoring-commitee-closures-validated.png[The certificate has been validated.
+The Monitoring Committee can still view it.]
+
+The certificate has been validated.
+The Monitoring Committee can still view it.
+
+Pro tip: setting a filter for signed and not yet validated certificates will show the certificates that are ready to be validated.
+
+image::monitoring-commitee-closures-filters.png[Filter out certificates that have not been signed yet or that have already been validated to know what you can work on right away.]
+
+Filter out certificates that have not been signed yet or that have already been validated to know what you can work on right away.
+
+== Verify the online elections
+
+The online election is handled by the Bulletin Board, which provides a way to verify that all the operations were carried out smoothly and without any kind of tampering.
+
+After closing the election, the Bulletin Board will publish a file for the election on which the Monitoring Committee can run the verification tool.
+
+image::monitoring-commitee-verify.png[The Bulletin Board provides a verifiable election file to run the verification of the election.]
+
+The Bulletin Board provides a verifiable election file to run the verification of the election.
+
+Download the file for the election you want to verify.
+For extra security, the Monitoring Committee should make sure that the checksum of downloaded file corresponds to the one of the file on the server.
+
+We can then proceed to run the verifier on the downloaded file.
+
+The verifier is included in the Bulletin Board repository linked in the instructions.
+Cloning it and running the specified command we can verify if any incident happened in the online election.
+
+== Validate results
+
+The `Validate results` provides the Monitoring Committee a preview of the final results of the election.
+This will only be available after the Trustees have xref:admin:perform-tally.adoc[performed the tally].
+
+On the top part there is a summary of the total number ballots with the detail by valid/blank/null.
+
+Below is reported the detailed results by question.
+
+Notice that all values are reported for Polling Stations (physical election), Bulletin Board (online election) and total.
+
+image::monitoring-commitee-validate.png[Results for the election]
