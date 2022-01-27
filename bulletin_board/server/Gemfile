@@ -83,7 +83,7 @@ group :test do
 end
 
 group :production do
-  gem "sidekiq", "~> 6.0"
+  gem "sidekiq", "~> 6.4"
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
