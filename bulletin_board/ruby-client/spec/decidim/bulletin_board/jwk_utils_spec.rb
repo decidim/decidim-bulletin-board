@@ -26,7 +26,7 @@ RSpec.describe Decidim::BulletinBoard::JwkUtils do
 
   subject { described_class }
 
-  context "when working with a private key" do
+  context "when working with an invalid private key" do
     let(:json) { PUBLIC_KEY }
     let(:jwk) { JWT::JWK.import(json) }
 
@@ -41,7 +41,7 @@ RSpec.describe Decidim::BulletinBoard::JwkUtils do
     end
   end
 
-  context "when working with a private key" do
+  context "when working with a valid private key" do
     let(:json) { PRIVATE_KEY }
     let(:jwk) { Decidim::BulletinBoard::JwkUtils.import_private_key(json) }
 
