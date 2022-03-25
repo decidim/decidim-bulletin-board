@@ -1,4 +1,4 @@
-FROM ruby:2.6.6
+FROM ruby:3.0.2
 LABEL author="david@codegram.com"
 
 ARG ELECTIONGUARD_PYTHON_REF=
