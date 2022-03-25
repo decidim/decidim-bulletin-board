@@ -27,7 +27,7 @@ Gem::Specification.new do |s|
   s.add_dependency "rails", "~> 6.0", ">= 5.0.0"
 
   s.add_dependency "byebug", "~> 11.0"
-  s.add_dependency "graphlient", "~> 0.4.0"
+  s.add_dependency "graphlient", "~> 0.5.0"
   s.add_dependency "jwt", "~> 2.2.2"
   s.add_dependency "wisper", "~> 2.0.0"
 
