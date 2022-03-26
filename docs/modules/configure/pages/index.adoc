@@ -6,5 +6,10 @@ Just as a reminder, these files are important:
 
 * config/database.yml
 * config/secrets.yml
+* config/storage.yml
+
+== Configuring cloud storage
+
+By default, the bulletin board will store files, such as verifiable election logs, on disk. This is not advisable, and you should edit `config/storage.yml` to configure a cloud storage provider such as Amazon S3. Follow instructions at https://edgeguides.rubyonrails.org/active_storage_overview.html#setup to do so.
 
 You can change most of these settings through xref:configure:environment_variables.adoc[Environment Variables].

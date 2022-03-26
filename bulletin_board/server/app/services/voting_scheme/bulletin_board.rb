@@ -11,11 +11,11 @@ module VotingScheme
     attr_reader :election, :state, :votes
 
     def restore(data)
-      Marshal.load(data) # rubocop:disable Security/MarshalLoad
+      JSON.parse(data).symbolize_keys
     end
 
     def backup
-      Marshal.dump(state)
+      JSON.generate(state)
     end
 
     def self.results_message?(voting_scheme_name, type_subtype)

@@ -76,7 +76,9 @@ class ProcessTrusteeElectionKeys(ElectionStep):
         content = deserialize(message["content"], TrusteeElectionKey)
         guardian_id = content.guardian_record.guardian_id
         context.trustee_election_keys[guardian_id] = content
-        # TO-DO: verify keys?
+
+        for proof in content.guardian_record.election_proofs:
+            assert proof.is_valid(), 'Trustee election proof is invalid'
 
         if len(context.trustee_election_keys) == context.number_of_guardians:
             return [], ProcessTrusteeElectionPartialKeys()
