@@ -39,7 +39,7 @@ FactoryBot.define do
     authority { Authority.first }
     status { :created }
     unique_id { [authority.unique_id, election_id].join(".") }
-    voting_scheme_state { Marshal.dump(quorum: 2) }
+    voting_scheme_state { JSON.generate(quorum: 2) }
 
     after(:build) do |election, evaluator|
       election.trustees << evaluator.trustees_plus_keys.map(&:first)
@@ -57,14 +57,14 @@ FactoryBot.define do
       end
 
       status { :key_ceremony }
-      voting_scheme_state { Marshal.dump(quorum: 2, joint_election_key: 1, trustees: trustees_done.map(&:slug)) }
+      voting_scheme_state { JSON.generate(quorum: 2, joint_election_key: 1, trustees: trustees_done.map(&:slug)) }
     end
 
     trait :key_ceremony_ended do
       status { :key_ceremony_ended }
       voting_scheme_state do
-        Marshal.dump(quorum: 2, joint_election_key: Test::Elections.joint_election_key,
-                     trustees: trustees_plus_keys.map(&:first).map(&:slug))
+        JSON.generate(quorum: 2, joint_election_key: Test::Elections.joint_election_key,
+                      trustees: trustees_plus_keys.map(&:first).map(&:slug))
       end
     end
 
@@ -88,12 +88,12 @@ FactoryBot.define do
 
       after(:build) do |election, evaluator|
         joint_shares = Test::Elections.build_cast(election) { 1 }
-        election.voting_scheme_state = Marshal.dump(quorum: 2,
-                                                    joint_election_key: Test::Elections.joint_election_key,
-                                                    trustees: evaluator.trustees_plus_keys.map(&:first).map(&:slug),
-                                                    joint_shares: joint_shares,
-                                                    shares: evaluator.trustees_done.map(&:slug),
-                                                    compensations: [], joint_compensations: {}, missing: [])
+        election.voting_scheme_state = JSON.generate(quorum: 2,
+                                                     joint_election_key: Test::Elections.joint_election_key,
+                                                     trustees: evaluator.trustees_plus_keys.map(&:first).map(&:slug),
+                                                     joint_shares: joint_shares,
+                                                     shares: evaluator.trustees_done.map(&:slug),
+                                                     compensations: [], joint_compensations: {}, missing: [])
       end
     end
 
@@ -102,11 +102,11 @@ FactoryBot.define do
 
       after(:build) do |election, evaluator|
         joint_shares = Test::Elections.build_cast(election) { Random.random_number(99) + Random.random_number(13) * Test::Elections.joint_election_key }
-        election.voting_scheme_state = Marshal.dump(joint_election_key: Test::Elections.joint_election_key,
-                                                    trustees: evaluator.trustees_plus_keys.map(&:first).map(&:slug),
-                                                    joint_shares: joint_shares,
-                                                    shares: evaluator.trustees_plus_keys.map(&:first).map(&:slug),
-                                                    compensations: [], joint_compensations: {}, missing: [])
+        election.voting_scheme_state = JSON.generate(joint_election_key: Test::Elections.joint_election_key,
+                                                     trustees: evaluator.trustees_plus_keys.map(&:first).map(&:slug),
+                                                     joint_shares: joint_shares,
+                                                     shares: evaluator.trustees_plus_keys.map(&:first).map(&:slug),
+                                                     compensations: [], joint_compensations: {}, missing: [])
       end
     end
 
