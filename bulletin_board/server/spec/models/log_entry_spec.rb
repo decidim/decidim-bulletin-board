@@ -8,9 +8,10 @@ RSpec.describe "LogEntry" do
   let(:election) { create(:election) }
   let(:log_entry) { build(:log_entry, election: election, message: message) }
   let(:iat) { Time.current.to_i }
+  let(:message_type) { "type" }
   let(:message) do
     {
-      message_id: "author.1.type.subtype+a.author",
+      message_id: "author.1.#{message_type}.subtype+a.author",
       content: "the message content",
       data: 123,
       more_data: true,
@@ -69,8 +70,20 @@ RSpec.describe "LogEntry" do
     context "when the log entry is the first one for the election" do
       let(:election) { build(:election, unique_id: "1234") }
 
-      it "returns the unique_id of the election" do
-        expect(subject).to eq("1234")
+      context "and the message is exactly 'create_election'" do
+        let(:message_type) { "create_election" }
+
+        it "returns the unique_id of the election" do
+          expect(subject).to eq("1234")
+        end
+      end
+
+      context "and the message is anything else" do
+        it "returns the unique_id of the election" do
+          expect do
+            subject
+          end.to raise_error(RuntimeError, "No previous hash for 1234")
+        end
       end
     end
   end
