@@ -83,4 +83,4 @@ jobs:
           max_attempts: 3
           command: cd bulletin_board/ruby-client && bundle install --path vendor/bundle --jobs 4 --retry 3
       - name: Run tests
-        run: bundler exec rspec
+        run: bundle exec rspec
