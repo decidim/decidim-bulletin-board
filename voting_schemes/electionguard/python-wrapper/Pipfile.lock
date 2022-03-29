@@ -110,6 +110,7 @@
                 "sha256:1a23edf907975b8d798b25b97834a08d09475c596fd3ab353e42708df8718684",
                 "sha256:4507cc4c20f5227c1b3ac5c4165f86947267dfd1426a643897712dc39700e955",
                 "sha256:6db3d58b55badc93443092b206a6b304aee42b3982a37c1cfe90c1baa42678fa",
+                "sha256:c3038e0f95cf8dfdfe2606a8e6ebb31a073e0b75678ece933d9950309ad857b0",
                 "sha256:f738124eaf7ced0ad703f1624996331fce018a7dafebdd070a9a080c7c8a4bb9"
             ],
             "path": "./../electionguard-python/dist/electionguard-1.2.1-py3-none-any.whl",
