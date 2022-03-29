@@ -26,8 +26,8 @@ test:
 	pipenv run pytest
 
 package:
-	SETUPTOOLS_USE_DISTUTILS=stdlib pipenv run python setup.py sdist bdist_wheel
-	pipenv run python setup.py install
+	PIPENV_VENV_IN_PROJECT=True pipenv run python setup.py sdist bdist_wheel
+	PIPENV_VENV_IN_PROJECT=True pipenv run python setup.py install
 	python3 setup.py install
 
 publish:
