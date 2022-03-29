@@ -10,6 +10,9 @@ ENV PYENV_ROOT /root/.pyenv
 ENV PATH="$HOME/.poetry/bin:$PATH"
 ENV PATH $PYENV_ROOT/shims:$PYENV_ROOT/bin:/root/.poetry/bin:$PATH
 
+# Assume yes for all apt-get prompts
+RUN echo 'APT::Get::Assume-Yes "true";' > /etc/apt/apt.conf.d/90assume-yes
+
 # Install bundler
 RUN gem install bundler
 
