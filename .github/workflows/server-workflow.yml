@@ -216,8 +216,8 @@ jobs:
           RAILS_ENV: test
         run: |
           cd bulletin_board/server
-          bundler exec rails db:create
-          bundler exec rails db:migrate
+          bundle exec rails db:create
+          bundle exec rails db:migrate
       - name: Check if GraphQL schema has changed
         env:
           RAILS_ENV: test
@@ -229,7 +229,7 @@ jobs:
           npm run schema:generate
           git diff --exit-code --ignore-submodules
       - name: Run Rspec tests
-        run: cd bulletin_board/server && bundler exec rake
+        run: cd bulletin_board/server && bundle exec rake
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v1
         with:
@@ -327,8 +327,8 @@ jobs:
           RAILS_ENV: test
         run: |
           cd bulletin_board/server
-          bundler exec rails db:create
-          bundler exec rails db:migrate
+          bundle exec rails db:create
+          bundle exec rails db:migrate
       - name: Install e2e tests dependencies
         run: |
           make install_test_e2e
