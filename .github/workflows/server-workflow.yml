@@ -26,6 +26,12 @@ jobs:
           fetch-depth: 1
       - name: Copy local electionguard
         run: cp -r /code/voting_schemes/electionguard/electionguard-python voting_schemes/electionguard
+      - name: Upgrade setuptools for the virtual environment
+        working-directory: ./voting_schemes/electionguard/python-wrapper
+        run: |
+          pipenv run echo "Initialize"
+          curl -sS https://bootstrap.pypa.io/get-pip.py | $(pipenv --py)
+          pipenv run python -m pip install --upgrade setuptools
       - name: Cache python wrapper
         uses: actions/cache@v2
         env:
