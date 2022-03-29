@@ -26,7 +26,7 @@ test:
 	pipenv run pytest
 
 package:
-	pipenv run python setup.py sdist bdist_wheel
+	SETUPTOOLS_USE_DISTUTILS=stdlib pipenv run python setup.py sdist bdist_wheel
 	pipenv run python setup.py install
 	python3 setup.py install
 
