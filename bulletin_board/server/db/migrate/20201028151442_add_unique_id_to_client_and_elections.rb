@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-class Election < ApplicationRecord; end
-class Client < ApplicationRecord; end
-class Authority < Client; end
-class Trustee < Client; end
-
 class AddUniqueIdToClientAndElections < ActiveRecord::Migration[6.0]
+  class Election < ApplicationRecord; end
+  class Client < ApplicationRecord; end
+  class Authority < Client; end
+  class Trustee < Client; end
+
   def change
     change_table :elections, bulk: true do |t|
       t.remove_index :title
