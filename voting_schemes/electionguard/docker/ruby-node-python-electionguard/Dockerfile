@@ -1,5 +1,5 @@
 FROM ruby:3.0.2
-LABEL author="david@codegram.com"
+LABEL author="hola@decidim.org"
 
 ARG ELECTIONGUARD_PYTHON_REF=
 
