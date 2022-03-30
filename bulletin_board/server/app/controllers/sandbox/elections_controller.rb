@@ -38,7 +38,7 @@ module Sandbox
 
       pending_message = bulletin_board_client.cast_vote(election_id, params[:voter_id], params[:encrypted_ballot])
 
-      render json: pending_message.to_json
+      render json: pending_message.to_h
     end
 
     def in_person_vote
