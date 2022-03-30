@@ -241,6 +241,7 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: decidim/ruby-node-python-electionguard:ruby-3.0.2-node-15-python-3.8.11-electionguard-1.2.1
+      options: --user 1001
     services:
       postgres:
         image: postgres:11
