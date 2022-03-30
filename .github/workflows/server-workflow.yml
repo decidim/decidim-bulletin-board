@@ -33,7 +33,7 @@ jobs:
           curl -sS https://bootstrap.pypa.io/get-pip.py | $(pipenv --py)
           pipenv run python -m pip install --upgrade setuptools
       - name: Cache python wrapper
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         env:
           cache-name: cache-electionguard-python
         with:
@@ -60,7 +60,7 @@ jobs:
         with:
           fetch-depth: 1
       - name: Cache python to js
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         id: cache-electionguard-pyodide-assets
         env:
           cache-name: cache-electionguard-pyodide-assets
@@ -86,7 +86,7 @@ jobs:
         with:
           fetch-depth: 1
       - name: Cache python to js
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         id: cache-electionguard-pyodide-assets
         env:
           cache-name: cache-electionguard-pyodide-assets
@@ -98,7 +98,7 @@ jobs:
             ${{ runner.os }}-build-
             ${{ runner.os }}-
       - name: Cache python wrapper
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         env:
           cache-name: cache-electionguard-python
         with:
@@ -148,7 +148,7 @@ jobs:
         with:
           fetch-depth: 1
       - name: Cache python to js
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         env:
           cache-name: cache-electionguard-pyodide-assets
         with:
@@ -159,7 +159,7 @@ jobs:
             ${{ runner.os }}-build-
             ${{ runner.os }}-
       - name: Cache python wrapper
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         env:
           cache-name: cache-electionguard-python
         with:
@@ -178,14 +178,14 @@ jobs:
       - name: Install system dependencies
         run: sudo apt-get update && sudo apt-get install -y libpq-dev
       - name: Cache Ruby dependencies
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         env:
           cache-name: cache-ruby-gems
         with:
           path: /usr/local/bundle
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ secrets.CACHE_VERSION }}-${{ hashFiles('**/Gemfile.lock') }}
       - name: Cache JS dependencies
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         env:
           cache-name: cache-node-packages
         with:
@@ -270,7 +270,7 @@ jobs:
         with:
           fetch-depth: 1
       - name: Cache python to js
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         env:
           cache-name: cache-electionguard-pyodide-assets
         with:
@@ -281,7 +281,7 @@ jobs:
             ${{ runner.os }}-build-
             ${{ runner.os }}-
       - name: Cache python wrapper
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         env:
           cache-name: cache-electionguard-python
         with:
@@ -300,14 +300,14 @@ jobs:
       - name: Install system dependencies
         run: sudo apt-get update --allow-releaseinfo-change && sudo apt-get install -y libpq-dev libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 libxtst6 xauth xvfb
       - name: Cache Ruby dependencies
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         env:
           cache-name: cache-ruby-gems
         with:
           path: /usr/local/bundle
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ secrets.CACHE_VERSION }}-${{ hashFiles('**/Gemfile.lock') }}
       - name: Cache JS dependencies
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         env:
           cache-name: cache-node-packages
         with:
