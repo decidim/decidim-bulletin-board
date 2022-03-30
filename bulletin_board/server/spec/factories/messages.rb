@@ -301,7 +301,7 @@ FactoryBot.define do
 
     factory :tally_cast_message, parent: :message do
       transient do
-        election { create(:election, :tally) }
+        election { create(:election, :tally_started) }
         joint_election_key { Test::Elections.joint_election_key }
       end
 
@@ -311,7 +311,7 @@ FactoryBot.define do
 
     factory :tally_share_message, parent: :message do
       transient do
-        election { create(:election, :tally) }
+        election { create(:election, :tally_started) }
         trustee { Trustee.first }
         joint_election_key { Test::Elections.joint_election_key }
         tally_cast { Test::Elections.build_cast(election) { Random.random_number(99) + Random.random_number(13) * joint_election_key } }
@@ -324,7 +324,7 @@ FactoryBot.define do
 
     factory :tally_share_message_content do
       transient do
-        election { create(:election, :tally) }
+        election { create(:election, :tally_started) }
         trustee { Trustee.first }
         joint_election_key { Test::Elections.joint_election_key }
         tally_cast { Test::Elections.build_cast(election) { Random.random_number(99) + Random.random_number(13) * joint_election_key } }

@@ -37,7 +37,7 @@ RSpec.describe StartTally do
   end
 
   it "change the election status to tally" do
-    expect { subject }.to change { Election.last.status }.from("vote_ended").to("tally")
+    expect { subject }.to change { Election.last.status }.from("vote_ended").to("tally_started")
   end
 
   it_behaves_like "with an invalid signed data", "starting the tally fails"

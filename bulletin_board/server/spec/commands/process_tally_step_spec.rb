@@ -8,7 +8,7 @@ RSpec.describe ProcessTallyStep do
 
   include_context "with a signed message"
 
-  let!(:election) { create(:election, :tally, trustees_done: trustees_done) }
+  let!(:election) { create(:election, :tally_started, trustees_done: trustees_done) }
   let(:trustees_done) { [] }
   let(:trustee) { Trustee.first }
   let(:client) { trustee }
@@ -29,7 +29,7 @@ RSpec.describe ProcessTallyStep do
   end
 
   it "doesn't change the election status" do
-    expect { subject }.not_to change { Election.last.status }.from("tally")
+    expect { subject }.not_to change { Election.last.status }.from("tally_started")
   end
 
   context "when the voting scheme generates an answer" do
@@ -48,7 +48,7 @@ RSpec.describe ProcessTallyStep do
     end
 
     it "changes the election status" do
-      expect { subject }.to change { Election.last.status }.from("tally").to("tally_ended")
+      expect { subject }.to change { Election.last.status }.from("tally_started").to("tally_ended")
     end
 
     it "generates the verifiable results file" do

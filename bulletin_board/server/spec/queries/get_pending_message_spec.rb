@@ -66,7 +66,7 @@ RSpec.describe "GetPendingMessage" do
   end
 
   describe "pending messages with results data" do
-    let!(:election) { create(:election, :tally) }
+    let!(:election) { create(:election, :tally_started) }
     let!(:pending_message) { create(:pending_message, :by_trustee, election: election, message: build(:tally_share_message, election: election)) }
 
     it "hides the signed data" do

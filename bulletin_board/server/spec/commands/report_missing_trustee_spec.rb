@@ -9,7 +9,7 @@ RSpec.describe ReportMissingTrustee do
   include_context "with a signed message"
 
   let!(:election) { create(:election, election_status) }
-  let(:election_status) { :tally }
+  let(:election_status) { :tally_started }
   let(:client) { Authority.first }
   let(:message_type) { :report_missing_trustee_message }
   let(:message_params) { { election: election } }

@@ -35,7 +35,7 @@ class StartTally < Rectify::Command
       log_entry.election = election
       log_entry.save!
       create_response_log_entries!
-      election.tally!
+      election.tally_started!
     end
 
     broadcast(:ok)
