@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class FixLogEntriesChainedHashType < ActiveRecord::Migration[6.0]
+class FixLogEntriesChainedHashType < ActiveRecord::Migration[6.1]
   def up
     change_column :log_entries, :chained_hash, :string
   end

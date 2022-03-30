@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class AddUniqueIdToClientAndElections < ActiveRecord::Migration[6.0]
+class AddUniqueIdToClientAndElections < ActiveRecord::Migration[6.1]
   class Election < ApplicationRecord; end
   class Client < ApplicationRecord; end
   class Authority < Client; end
