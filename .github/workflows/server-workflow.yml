@@ -38,7 +38,7 @@ jobs:
           cache-name: cache-electionguard-python
         with:
           path: /cache/python
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ secrets.CACHE_VERSION }}-${{ hashFiles('voting_schemes/electionguard/python-wrapper/**') }}
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ secrets.CACHE_VERSION }}-${{ hashFiles('voting_schemes/electionguard/python-wrapper/**', '!voting_schemes/electionguard/python-wrapper/.venv') }}
           restore-keys: |
             ${{ runner.os }}-build-${{ env.cache-name }}-
             ${{ runner.os }}-build-
@@ -103,7 +103,7 @@ jobs:
           cache-name: cache-electionguard-python
         with:
           path: /cache/python
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ secrets.CACHE_VERSION }}-${{ hashFiles('voting_schemes/electionguard/python-wrapper/**') }}
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ secrets.CACHE_VERSION }}-${{ hashFiles('voting_schemes/electionguard/python-wrapper/**', '!voting_schemes/electionguard/python-wrapper/.venv') }}
           restore-keys: |
             ${{ runner.os }}-build-${{ env.cache-name }}-
             ${{ runner.os }}-build-
@@ -164,7 +164,7 @@ jobs:
           cache-name: cache-electionguard-python
         with:
           path: /cache/python
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ secrets.CACHE_VERSION }}-${{ hashFiles('voting_schemes/electionguard/python-wrapper/**') }}
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ secrets.CACHE_VERSION }}-${{ hashFiles('voting_schemes/electionguard/python-wrapper/**', '!voting_schemes/electionguard/python-wrapper/.venv') }}
           restore-keys: |
             ${{ runner.os }}-build-${{ env.cache-name }}-
             ${{ runner.os }}-build-
@@ -286,7 +286,7 @@ jobs:
           cache-name: cache-electionguard-python
         with:
           path: /cache/python
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ secrets.CACHE_VERSION }}-${{ hashFiles('voting_schemes/electionguard/python-wrapper/**') }}
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ secrets.CACHE_VERSION }}-${{ hashFiles('voting_schemes/electionguard/python-wrapper/**', '!voting_schemes/electionguard/python-wrapper/.venv') }}
           restore-keys: |
             ${{ runner.os }}-build-${{ env.cache-name }}-
             ${{ runner.os }}-build-
