@@ -317,7 +317,7 @@ jobs:
             bulletin_board/js-client/node_modules
             voting_schemes/dummy/js-adapter/node_modules
             voting_schemes/electionguard/js-adapter/node_modules
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ secrets.CACHE_VERSION }}-${{ hashFiles('**/package-lock.json') }}
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ secrets.CACHE_VERSION }}-${{ hashFiles('!bulletin_board/server/cypress', '**/package-lock.json') }}
       - name: Install dependencies
         run: make install
       - name: Build artifacts
