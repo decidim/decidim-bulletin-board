@@ -361,3 +361,5 @@ jobs:
         with:
           name: cypress downloads
           path: bulletin_board/server/cypress/downloads/
+      - name: Clear the cypress downloads folder
+        run: rm -rf bulletin_board/server/cypress/downloads
