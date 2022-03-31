@@ -5,6 +5,8 @@ require "redis"
 
 module Sandbox
   class ElectionsController < ApplicationController
+    include RedisProvider
+
     helper_method :elections, :election,
                   :bulletin_board_server, :authority_slug, :authority_public_key,
                   :random_voter_id,
@@ -253,10 +255,6 @@ module Sandbox
 
     def generated_votes_number(election)
       `wc -l "#{bulk_votes_file_path(election)}"`.strip.split(" ")[0].to_i
-    end
-
-    def redis
-      Redis.current
     end
   end
 end
