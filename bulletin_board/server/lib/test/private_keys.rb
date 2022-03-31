@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# rubocop:disable Metrics/LineLength
+# rubocop:disable Layout/LineLength
 
 module Test
   module PrivateKeys
@@ -80,4 +80,4 @@ module Test
   end
 end
 
-# rubocop:enable Metrics/LineLength
+# rubocop:enable Layout/LineLength
