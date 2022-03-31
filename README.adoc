@@ -31,7 +31,7 @@ Assuming you already know how to if you are already working with Decidim.
 
 ==== Install Python
 
-You can use e.g. [pyenv](https://github.com/pyenv/pyenv) to install the correct version.
+You can use e.g. https://github.com/pyenv/pyenv[pyenv] to install the correct version.
 
 - Run `curl -L https://github.com/pyenv/pyenv-installer/raw/master/bin/pyenv-installer | bash`
 - Add the following to your `~/.bashrc`:
