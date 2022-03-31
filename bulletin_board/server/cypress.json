@@ -3,6 +3,5 @@
   "defaultCommandTimeout": 30000,
   "ignoreTestFiles": "*.page.js",
   "redirectionLimit": 50,
-  "videoUploadOnPasses": false,
-  "chromeWebSecurity": false
+  "videoUploadOnPasses": false
 }
