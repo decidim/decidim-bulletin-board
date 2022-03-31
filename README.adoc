@@ -11,6 +11,51 @@ This repository follows the monorepo pattern and includes the following projects
 - **verifier**: A command line application to audit ballots and verify the election results.
 - **voting_schemes**: Implementation of different cryptographic voting schemes to be used to run the elections. Currently, it includes the Dummy scheme, used only for testing purposes, and the ElectionGuard scheme, based on the Python implementation of the protocol.
 
-## License
+== Getting started with this repository
+
+- Clone this repository with submodules `git clone --recurse-submodules -j8 https://github.com/decidim/decidim-bulletin-board.git`
+- Or clone the submodules separately after the initial clone by running `git submodule update --init --recursive` in the repository folder
+- Use one of the development methods below
+
+=== Devcontainer
+
+This repository ships with a dev container to get you up and running quickly. This make is easy to get the development environment running without having to install all the dependencies.
+
+To lear more, read: https://code.visualstudio.com/docs/remote/containers
+
+=== Manual development environment
+
+- Install Ruby (assuming you already know how to if you are already working with Decidim)
+- Install Node (assuming you already know how to if you are already working with Decidim)
+- Install Python (you can use e.g. [pyenv](https://github.com/pyenv/pyenv) to install the correct version)
+  * Run `curl -L https://github.com/pyenv/pyenv-installer/raw/master/bin/pyenv-installer | bash`
+  * Add the following to your `~/.bashrc`:
+```
+export PYENV_ROOT="$HOME/.pyenv"
+export PATH="$PYENV_ROOT/bin:$PATH"
+eval "$(pyenv init --path)"
+eval "$(pyenv init -)"
+eval "$(pyenv virtualenv-init -)"
+```
+  * Restart the console
+  * Check the correct Python version by running `cat voting_schemes/electionguard/python-wrapper/Pipfile | grep python_version`
+  * Run `PYTHON_CONFIGURE_OPTS="--enable-shared" pyenv install 3.x.x` (replace 3.x.x with the correct python version, note the configuration options)
+- Install Poetry
+  * Run `curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python -`
+  * Add the following to your `~/.bashrc`: `export PATH="$HOME/.poetry/bin:$PATH"`
+- Install pipenv: `pip install pipenv`
+- Install the needed packages for building the extensions `apt-get install libgmp3-dev`
+- Install the dependency gems in the Ruby adapter `cd voting_schemes/electionguard/ruby-adapter && bundle`
+- Install the necessary software to run the bulletin board server `apt-get install postgresql redis-server`
+
+Now you should have everything you need to build the different modules, which you can do by running the `make build` command at the root of the repository. If this fails, please update this guide how you fixed the problem.
+
+For running the bulletin board server, you need to configure the `DATABASE_USERNAME` and `DATABASE_PASSWORD` environment variables with a user that has access to create new databases on the local PostgreSQL server.
+
+== Building and publishing the docker images
+
+Go to the `voting_schemes/electionguard` folder and run `make -f makefile.mk help_electionguard` to get help about building and publishing the docker images.
+
+== License
 
 See https://github.com/decidim/decidim[Decidim].
