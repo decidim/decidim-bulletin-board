@@ -25,11 +25,16 @@ To lear more, read: https://code.visualstudio.com/docs/remote/containers
 
 === Manual development environment
 
-- Install Ruby (assuming you already know how to if you are already working with Decidim)
-- Install Node (assuming you already know how to if you are already working with Decidim)
-- Install Python (you can use e.g. [pyenv](https://github.com/pyenv/pyenv) to install the correct version)
-  * Run `curl -L https://github.com/pyenv/pyenv-installer/raw/master/bin/pyenv-installer | bash`
-  * Add the following to your `~/.bashrc`:
+==== Install Ruby and Node
+
+Assuming you already know how to if you are already working with Decidim.
+
+==== Install Python
+
+You can use e.g. [pyenv](https://github.com/pyenv/pyenv) to install the correct version.
+
+- Run `curl -L https://github.com/pyenv/pyenv-installer/raw/master/bin/pyenv-installer | bash`
+- Add the following to your `~/.bashrc`:
 ```
 export PYENV_ROOT="$HOME/.pyenv"
 export PATH="$PYENV_ROOT/bin:$PATH"
@@ -37,16 +42,32 @@ eval "$(pyenv init --path)"
 eval "$(pyenv init -)"
 eval "$(pyenv virtualenv-init -)"
 ```
-  * Restart the console
-  * Check the correct Python version by running `cat voting_schemes/electionguard/python-wrapper/Pipfile | grep python_version`
-  * Run `PYTHON_CONFIGURE_OPTS="--enable-shared" pyenv install 3.x.x` (replace 3.x.x with the correct python version, note the configuration options)
-- Install Poetry
-  * Run `curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python -`
-  * Add the following to your `~/.bashrc`: `export PATH="$HOME/.poetry/bin:$PATH"`
-- Install pipenv: `pip install pipenv`
-- Install the needed packages for building the extensions `apt-get install libgmp3-dev`
-- Install the dependency gems in the Ruby adapter `cd voting_schemes/electionguard/ruby-adapter && bundle`
-- Install the necessary software to run the bulletin board server `apt-get install postgresql redis-server`
+- Restart the console
+- Check the correct Python version by running `cat voting_schemes/electionguard/python-wrapper/Pipfile | grep python_version`
+- Run `PYTHON_CONFIGURE_OPTS="--enable-shared" pyenv install 3.x.x` (replace 3.x.x with the correct python version, note the configuration options)
+
+==== Install Poetry
+
+- Run `curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python -`
+- Add the following to your `~/.bashrc`: `export PATH="$HOME/.poetry/bin:$PATH"`
+
+==== Install Pipenv
+
+Run: `pip install pipenv`
+
+==== Install the build dependencies
+
+Install the needed packages for building the extensions `apt-get install libgmp3-dev`
+
+==== Install the Ruby adapter dependencies
+
+Install the dependency gems in the Ruby adapter `cd voting_schemes/electionguard/ruby-adapter && bundle`
+
+==== Install the necessary software
+
+Install the necessary software to run the bulletin board server `apt-get install postgresql redis-server`
+
+==== Build and configure
 
 Now you should have everything you need to build the different modules, which you can do by running the `make build` command at the root of the repository. If this fails, please update this guide how you fixed the problem.
 
