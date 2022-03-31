@@ -84,7 +84,7 @@ module Sandbox
     def report_missing_trustee
       pending_message = bulletin_board_client.report_missing_trustee(election_id, params[:trustee_id])
 
-      render json: pending_message.to_json
+      render json: { data: pending_message.to_h }
     end
 
     def publish_results
