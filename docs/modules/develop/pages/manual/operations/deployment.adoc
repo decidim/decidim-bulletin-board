@@ -12,7 +12,7 @@ Apart for the server stack, we will need to set up:
 
 == Docker
 
-The Bulletin Board server is https://hub.docker.com/r/codegram/decidim-bulletin-board[published in Dockerhub] as a Docker container.
+The Bulletin Board server is https://hub.docker.com/r/decidim/decidim-bulletin-board[published in Dockerhub] as a Docker container.
 
 If you want to deploy a modified version of the Bulletin Board, we highly recommend to use `Dockerfile.web` in the root folder of the repository to build and release the application.
 
