@@ -1,6 +1,6 @@
 # This stage builds the python-wrapper package
 FROM decidim/ruby-node-python-electionguard:ruby-3.0.2-node-15-python-3.8.11-electionguard-1.2.1 as python-wrapper-builder
-LABEL author="david@codegram.com"
+LABEL author="hola@decidim.org"
 
 # Add Makefile
 ADD Makefile /code/Makefile
@@ -13,7 +13,7 @@ RUN cd /code && make build_electionguard_python_wrapper
 
 # This stage builds the pyodide packages for the previous python packages
 FROM codegram/pyodide-electionguard:pyodide-0.16.1-electionguard-1.2.1 as python-to-js-builder
-LABEL author="david@codegram.com"
+LABEL author="hola@decidim.org"
 
 ENV PYODIDE_PACKAGES "electionguard,bulletin_board-electionguard"
 
@@ -39,7 +39,7 @@ RUN cp -rf /code/voting_schemes/electionguard/python-to-js/override/* /src/pyodi
 
 # This stage builds the bulletin-board application
 FROM decidim/ruby-node-python-electionguard:ruby-3.0.2-node-15-python-3.8.11-electionguard-1.2.1
-LABEL author="david@codegram.com"
+LABEL author="hola@decidim.org"
 
 # Dummy environment variables used to compile assets
 ENV SECRET_KEY_BASE 1234
