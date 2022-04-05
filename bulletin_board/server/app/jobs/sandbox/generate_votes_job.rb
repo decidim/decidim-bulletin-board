@@ -4,6 +4,8 @@ require "redis"
 
 module Sandbox
   class GenerateVotesJob < ApplicationJob
+    include RedisProvider
+
     queue_as :vote
 
     def perform(number_of_votes, election_id, file_path, client_settings = {})
@@ -68,10 +70,6 @@ module Sandbox
 
     def log_entry_for(message_type)
       election.log_entries.where(message_type: message_type).last
-    end
-
-    def redis
-      Redis.current
     end
   end
 end

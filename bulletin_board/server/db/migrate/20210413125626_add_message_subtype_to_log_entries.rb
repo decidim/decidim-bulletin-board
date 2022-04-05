@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class AddMessageSubtypeToLogEntries < ActiveRecord::Migration[6.0]
+class AddMessageSubtypeToLogEntries < ActiveRecord::Migration[6.1]
   def change
     add_column :log_entries, :message_subtype, :string
 

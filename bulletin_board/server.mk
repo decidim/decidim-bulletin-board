@@ -1,7 +1,7 @@
 # CONSTANTS
 
 BULLETIN_BOARD_SERVER_PATH = bulletin_board/server
-DOCKER_WEB_IMAGE = codegram/decidim-bulletin-board:${VERSION}
+DOCKER_WEB_IMAGE = decidim/decidim-bulletin-board:${VERSION}
 
 # SPECIFIC TASKS
 
