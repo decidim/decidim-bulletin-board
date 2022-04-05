@@ -81,7 +81,10 @@ ADD bulletin_board/server/Gemfile.lock /code/bulletin_board/server/Gemfile.lock
 ADD bulletin_board/server/Gemfile /code/bulletin_board/server/Gemfile
 
 # Prevent npm ERR! code ERR_SOCKET_TIMEOUT
-RUN npm install --global npm@latest && npm config set fetch-timeout 1800000 -g
+RUN npm install --global npm@latest && \
+  npm config set fetch-timeout 1800000 -g && \
+  npm config set fetch-retry-mintimeout 600000 -g && \
+  npm config set fetch-retry-maxtimeout 1800000 -g
 
 # Install all dependencies, build artifacts and remove unnecessary files
 RUN cd /code && make install && make build SKIP_PYODIDE=true && \
