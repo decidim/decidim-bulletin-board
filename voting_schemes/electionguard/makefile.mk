@@ -31,7 +31,7 @@ VOTING_SCHEME_ELECTIONGUARD_JS_LIBRARY_OUTPUT = \
 
 VERIFIER_ELECTIONGUARD_PATH = voting_schemes/electionguard/verifier
 
-DOCKER_BASE_IMAGE = decidim/ruby-node-python-electionguard:ruby-3.0.2-node-15-python-3.8.11-electionguard-${ELECTIONGUARD_PYTHON_VERSION}
+DOCKER_BASE_IMAGE = decidim/ruby-node-python-electionguard:ruby-3.0.2-node-16-python-3.8.11-electionguard-${ELECTIONGUARD_PYTHON_VERSION}
 DOCKER_PYODIDE_IMAGE = codegram/pyodide-electionguard:pyodide-0.16.1-electionguard-${ELECTIONGUARD_PYTHON_VERSION}
 
 # SPECIFIC TASKS
