@@ -70,6 +70,9 @@ ADD bulletin_board/server/package.json /code/bulletin_board/server/package.json
 ADD bulletin_board/server/Gemfile.lock /code/bulletin_board/server/Gemfile.lock
 ADD bulletin_board/server/Gemfile /code/bulletin_board/server/Gemfile
 
+# Prevent npm ERR! code ERR_SOCKET_TIMEOUT
+RUN npm install --global npm@latest && npm config set fetch-timeout 1800000 -g
+
 # Install all dependencies, build artifacts and remove unnecessary files
 RUN cd /code && make install && make build && \
   rm -rf /code/bulletin_board/js-client && \
