@@ -6,7 +6,7 @@ RSpec.describe ReportMissingTrusteeJob do
   subject { described_class.perform_now(pending_message.id) }
 
   let!(:pending_message) { create(:pending_message, election: election, message: message) }
-  let(:election) { create(:election, :tally) }
+  let(:election) { create(:election, :tally_started) }
   let(:message) { build(:report_missing_trustee_message, election: election) }
 
   it "processes the message" do

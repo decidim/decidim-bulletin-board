@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## Changed
+
+- The minimum required Ruby version is now 3.0.2
+
 ## [0.22.3] - 2021-09-08
 
 ## [0.22.2] - 2021-09-07

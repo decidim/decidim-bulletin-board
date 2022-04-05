@@ -78,13 +78,13 @@ FactoryBot.define do
       status { :vote_ended }
     end
 
-    trait :tally do
+    trait :tally_started do
       transient do
         trustees_done { [] }
       end
 
       vote_ended
-      status { :tally }
+      status { :tally_started }
 
       after(:build) do |election, evaluator|
         joint_shares = Test::Elections.build_cast(election) { 1 }

@@ -355,7 +355,7 @@ export class ElectionPage {
    */
   assertTallyHasStarted() {
     cy.findByText("vote_ended").should("not.exist");
-    cy.findByText("tally").should("be.visible");
+    cy.findByText("tally_started").should("be.visible");
 
     cy.log("Tally started");
   }
@@ -438,7 +438,7 @@ export class ElectionPage {
 
     cy.findByText("Back").click();
 
-    cy.findByText("tally").should("not.exist");
+    cy.findByText("tally_started").should("not.exist");
     cy.findByText("tally_ended").should("be.visible");
 
     cy.log("Tally ended");

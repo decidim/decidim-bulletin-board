@@ -5,6 +5,8 @@ require "redis"
 
 module Sandbox
   class ElectionsController < ApplicationController
+    include RedisProvider
+
     helper_method :elections, :election,
                   :bulletin_board_server, :authority_slug, :authority_public_key,
                   :random_voter_id,
@@ -38,7 +40,7 @@ module Sandbox
 
       pending_message = bulletin_board_client.cast_vote(election_id, params[:voter_id], params[:encrypted_ballot])
 
-      render json: pending_message.to_json
+      render json: { data: pending_message.to_h }
     end
 
     def in_person_vote
@@ -84,7 +86,7 @@ module Sandbox
     def report_missing_trustee
       pending_message = bulletin_board_client.report_missing_trustee(election_id, params[:trustee_id])
 
-      render json: pending_message.to_json
+      render json: { data: pending_message.to_h }
     end
 
     def publish_results
@@ -253,10 +255,6 @@ module Sandbox
 
     def generated_votes_number(election)
       `wc -l "#{bulk_votes_file_path(election)}"`.strip.split(" ")[0].to_i
-    end
-
-    def redis
-      Redis.current
     end
   end
 end
