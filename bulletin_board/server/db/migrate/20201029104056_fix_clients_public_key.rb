@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class FixClientsPublicKey < ActiveRecord::Migration[6.0]
+class FixClientsPublicKey < ActiveRecord::Migration[6.1]
   def up
     change_table :clients, bulk: true do |t|
       t.change :public_key, "jsonb USING public_key::jsonb"

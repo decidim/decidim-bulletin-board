@@ -72,7 +72,7 @@ RSpec.describe PublishResults do
   it_behaves_like "with an invalid signed data", "publishing results fails"
 
   context "when the election status is not results" do
-    let(:election_status) { :tally }
+    let(:election_status) { :tally_started }
 
     it_behaves_like "publishing results fails"
 

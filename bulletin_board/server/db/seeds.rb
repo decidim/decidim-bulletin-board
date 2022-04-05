@@ -112,7 +112,7 @@ Test::PrivateKeys.trustees_public_keys.each_with_index.map do |trustee_public_ke
 end
 
 TEST_ELECTION_ID_OFFSET = 10_000
-[:created, :key_ceremony, :key_ceremony_ended, :vote, :vote_ended, :tally, :tally_ended, :results_published].each_with_index do |status, i|
+[:created, :key_ceremony, :key_ceremony_ended, :vote, :vote_ended, :tally_started, :tally_ended, :results_published].each_with_index do |status, i|
   election = FactoryBot.create(:election, status, election_id: TEST_ELECTION_ID_OFFSET + i)
 
   next if status == :created
@@ -132,7 +132,7 @@ TEST_ELECTION_ID_OFFSET = 10_000
   next if status == :vote_ended
 
   create_start_tally_log_entries(election)
-  next if status == :tally
+  next if status == :tally_started
 
   create_tally_log_entries(election)
   create_end_tally_log_entry(election)

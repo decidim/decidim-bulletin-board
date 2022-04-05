@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class CreateElections < ActiveRecord::Migration[6.0]
+class CreateElections < ActiveRecord::Migration[6.1]
   def change
     create_table :elections do |t|
       t.references :authority, null: false, foreign_key: { to_table: :clients }

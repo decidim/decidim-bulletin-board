@@ -29,7 +29,7 @@ class ReportMissingTrustee < Rectify::Command
       return broadcast(:invalid, error) unless
         valid_client?(authority.authority? && election.authority == authority) &&
         valid_author?(message_identifier.from_authority?) &&
-        valid_step?(election.tally?) &&
+        valid_step?(election.tally_started?) &&
         process_message
 
       log_entry.election = election

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class AddCalculatedFieldsToLogEntries < ActiveRecord::Migration[6.0]
+class AddCalculatedFieldsToLogEntries < ActiveRecord::Migration[6.1]
   def change
     change_table :log_entries, bulk: true do |t|
       t.integer :iat, null: false, index: true

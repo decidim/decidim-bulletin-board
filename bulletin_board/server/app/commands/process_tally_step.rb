@@ -29,7 +29,7 @@ class ProcessTallyStep < Rectify::Command
       return broadcast(:invalid, error) unless
         valid_client?(client.trustee? && election.trustees.member?(client)) &&
         valid_author?(message_identifier.from_trustee?) &&
-        valid_step?(election.tally?) &&
+        valid_step?(election.tally_started?) &&
         process_message
 
       log_entry.election = election
