@@ -7,6 +7,11 @@ ADD Makefile /code/Makefile
 
 # Add the source files
 ADD voting_schemes/electionguard/python-wrapper /code/voting_schemes/electionguard/python-wrapper
+ADD voting_schemes/electionguard/makefile.mk /code/voting_schemes/electionguard/makefile.mk
+ADD voting_schemes/dummy/makefile.mk /code/voting_schemes/dummy/makefile.mk
+ADD verifier/makefile.mk /code/verifier/makefile.mk
+ADD bulletin_board/client.mk /code/bulletin_board/client.mk
+ADD bulletin_board/server.mk /code/bulletin_board/server.mk
 
 # This step builds the electionguard-python package and the python wrapper
 RUN cd /code && make build_electionguard_python_wrapper
@@ -63,6 +68,11 @@ COPY --from=python-to-js-builder /code/voting_schemes/electionguard /code/voting
 ADD voting_schemes/electionguard/js-adapter /code/voting_schemes/electionguard/js-adapter
 ADD voting_schemes/electionguard/ruby-adapter /code/voting_schemes/electionguard/ruby-adapter
 COPY --from=python-to-js-builder /src/pyodide/build /code/voting_schemes/electionguard/ruby-adapter/public/assets/electionguard
+ADD verifier/makefile.mk /code/verifier/makefile.mk
+ADD voting_schemes/dummy/makefile.mk /code/voting_schemes/dummy/makefile.mk
+ADD voting_schemes/electionguard/makefile.mk /code/voting_schemes/electionguard/makefile.mk
+ADD bulletin_board/client.mk /code/bulletin_board/client.mk
+ADD bulletin_board/server.mk /code/bulletin_board/server.mk
 
 # Add dependencies manifests
 ADD bulletin_board/server/package-lock.json /code/bulletin_board/server/package-lock.json
