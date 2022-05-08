@@ -126,7 +126,7 @@ class ProcessTrusteeElectionKeys(ElectionStep):
                         guardian_id=context.guardian_id,
                         partial_keys=[
                             unwrap(
-                                context.guardian.share_election_public_key(
+                                context.guardian.share_election_partial_key_backup(
                                     guardian_id
                                 )
                             )
@@ -155,15 +155,17 @@ class ProcessTrusteePartialElectionKeys(ElectionStep):
         else:
             for partial_keys_backup in content.partial_keys:
                 if partial_keys_backup.designated_id == context.guardian_id:
-                    context.guardian.save_election_public_key(
+                    context.guardian.save_election_partial_key_backup(
                         partial_keys_backup
                     )
 
         if (
             not self.mine_received
-            or not context.guardian.all_election_public_keys_received()
+            or not context.guardian.all_election_partial_key_backups_received()
         ):
             return [], None
+
+        # TODO: check that verifications are OK
 
         return [
             {
