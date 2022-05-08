@@ -9,6 +9,7 @@ on:
     branches:
       - develop
       - main
+      - fix-github-build
 
 env:
   CI: "true"
@@ -29,9 +30,9 @@ jobs:
       - name: Upgrade setuptools for the virtual environment
         working-directory: ./voting_schemes/electionguard/python-wrapper
         run: |
-          pipenv run echo "Initialize"
+          python3 -m pipenv run echo "Initialize"
           curl -sS https://bootstrap.pypa.io/get-pip.py | $(pipenv --py)
-          pipenv run python -m pip install --upgrade setuptools
+          python3 -m pipenv run python -m pip install --upgrade setuptools
       - name: Cache python wrapper
         uses: actions/cache@v3
         env:
