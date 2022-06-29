@@ -62,6 +62,7 @@ group :development, :test do
   gem "rspec-rails", "~> 4.1"
   gem "rubocop", "~> 1.28.0"
   gem "rubocop-faker", "~> 1.1.0"
+  gem "rubocop-graphql", "~> 0.14.4"
   gem "rubocop-rails", "~> 2.14"
   gem "rubocop-rspec", "~> 2.10"
 end
