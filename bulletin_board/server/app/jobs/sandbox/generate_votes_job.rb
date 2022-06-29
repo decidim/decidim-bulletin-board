@@ -51,13 +51,13 @@ module Sandbox
     end
 
     def random_plaintext_ballot
-      election.manifest[:description][:contests].map do |contest|
+      election.manifest[:description][:contests].to_h do |contest|
         [
           contest[:object_id],
           contest[:ballot_selections].sample(Random.rand(contest[:number_elected] + 1))
                                      .map { |ballot_selection| ballot_selection[:object_id] }
         ]
-      end.to_h
+      end
     end
 
     def election

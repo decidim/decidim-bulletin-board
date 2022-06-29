@@ -338,17 +338,17 @@ FactoryBot.define do
       end
 
       after(:build) do |content, evaluator|
-        content[:contests] = evaluator.tally_cast.map do |question, answers|
+        content[:contests] = evaluator.tally_cast.to_h do |question, answers|
           [
             question,
-            answers.map do |answer, votes_sum|
+            answers.to_h do |answer, votes_sum|
               [
                 answer,
                 (votes_sum % evaluator.election_public_key) * evaluator.election_public_key
               ]
-            end.to_h
+            end
           ]
-        end.to_h
+        end
       end
     end
 
@@ -374,17 +374,17 @@ FactoryBot.define do
       message_id { "#{election.unique_id}.end_tally+b.#{BulletinBoard.slug}" }
 
       after(:build) do |message, evaluator|
-        message[:results] = evaluator.tally_cast.map do |question, answers|
+        message[:results] = evaluator.tally_cast.to_h do |question, answers|
           [
             question,
-            answers.map do |answer, votes_sum|
+            answers.to_h do |answer, votes_sum|
               [
                 answer,
                 votes_sum % evaluator.joint_election_key
               ]
-            end.to_h
+            end
           ]
-        end.to_h
+        end
       end
     end
 

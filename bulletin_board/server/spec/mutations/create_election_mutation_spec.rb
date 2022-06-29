@@ -42,7 +42,7 @@ module Mutations
         election: {
           id: be_present,
           status: "created",
-          title: payload[:description][:name][:text].map { |title| [title[:language].to_sym, title[:value]] }.to_h,
+          title: payload[:description][:name][:text].to_h { |title| [title[:language].to_sym, title[:value]] },
           authority: {
             id: authority.unique_id
           }
