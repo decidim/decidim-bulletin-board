@@ -24,14 +24,13 @@ class ProcessTallyStep < Rectify::Command
   def call
     return broadcast(:invalid, error) unless
       valid_log_entry?("tally")
+    return broadcast(:invalid, error) unless
+      valid_client?(client.trustee? && election.trustees.member?(client)) &&
+      valid_author?(message_identifier.from_trustee?) &&
+      valid_step?(election.tally_started?) &&
+      process_message
 
     election.with_lock do
-      return broadcast(:invalid, error) unless
-        valid_client?(client.trustee? && election.trustees.member?(client)) &&
-        valid_author?(message_identifier.from_trustee?) &&
-        valid_step?(election.tally_started?) &&
-        process_message
-
       log_entry.election = election
       log_entry.save!
       create_response_log_entries!

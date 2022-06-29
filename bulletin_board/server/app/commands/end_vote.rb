@@ -24,14 +24,13 @@ class EndVote < Rectify::Command
   def call
     return broadcast(:invalid, error) unless
       valid_log_entry?("end_vote")
+    return broadcast(:invalid, error) unless
+      valid_step?(election.vote?) &&
+      valid_client?(authority.authority? && election.authority == authority) &&
+      valid_author?(message_identifier.from_authority?) &&
+      process_message
 
     election.with_lock do
-      return broadcast(:invalid, error) unless
-        valid_step?(election.vote?) &&
-        valid_client?(authority.authority? && election.authority == authority) &&
-        valid_author?(message_identifier.from_authority?) &&
-        process_message
-
       election.log_entries << log_entry
       log_entry.save!
       election.vote_ended!

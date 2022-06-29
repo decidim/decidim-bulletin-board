@@ -24,14 +24,13 @@ class StartKeyCeremony < Rectify::Command
   def call
     return broadcast(:invalid, error) unless
       valid_log_entry?("start_key_ceremony")
+    return broadcast(:invalid, error) unless
+      valid_client?(authority.authority? && election.authority == authority) &&
+      valid_author?(message_identifier.from_authority?) &&
+      valid_step?(election.created?) &&
+      process_message
 
     election.with_lock do
-      return broadcast(:invalid, error) unless
-        valid_client?(authority.authority? && election.authority == authority) &&
-        valid_author?(message_identifier.from_authority?) &&
-        valid_step?(election.created?) &&
-        process_message
-
       log_entry.election = election
       log_entry.save!
       create_response_log_entries!
