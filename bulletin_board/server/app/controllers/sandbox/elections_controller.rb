@@ -254,7 +254,7 @@ module Sandbox
     end
 
     def generated_votes_number(election)
-      `wc -l "#{bulk_votes_file_path(election)}"`.strip.split(" ")[0].to_i
+      `wc -l "#{bulk_votes_file_path(election)}"`.strip.split[0].to_i
     end
   end
 end
