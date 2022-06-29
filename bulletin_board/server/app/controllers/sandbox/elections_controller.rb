@@ -138,7 +138,7 @@ module Sandbox
     end
 
     def polling_stations
-      @polling_stations ||= params[:election][:polling_stations].reject(&:blank?)
+      @polling_stations ||= params[:election][:polling_stations].compact_blank
     end
 
     def questions
