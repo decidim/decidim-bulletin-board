@@ -101,7 +101,7 @@ FactoryBot.define do
       status { :tally_ended }
 
       after(:build) do |election, evaluator|
-        joint_shares = Test::Elections.build_cast(election) { Random.random_number(99) + Random.random_number(13) * Test::Elections.joint_election_key }
+        joint_shares = Test::Elections.build_cast(election) { Random.random_number(99) + (Random.random_number(13) * Test::Elections.joint_election_key) }
         election.voting_scheme_state = JSON.generate(joint_election_key: Test::Elections.joint_election_key,
                                                      trustees: evaluator.trustees_plus_keys.map(&:first).map(&:slug),
                                                      joint_shares: joint_shares,
@@ -117,7 +117,7 @@ FactoryBot.define do
       after(:build) do |election, _evaluator|
         verifiable_results_path = File.expand_path("assets/verifiable-results.tar", __dir__)
         election.verifiable_results.attach(io: File.open(verifiable_results_path), filename: "verifiable-results.tar")
-        election.verifiable_results_hash = Digest::SHA256.base64digest(File.open(verifiable_results_path).read)
+        election.verifiable_results_hash = Digest::SHA256.base64digest(File.read(verifiable_results_path))
       end
     end
   end

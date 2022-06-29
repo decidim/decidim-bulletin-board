@@ -152,7 +152,7 @@ module VotingScheme
         state[:joint_compensations].each do |question, answers|
           answers.each do |answer, value|
             state[:joint_shares][question][answer] *=
-              (value**(1.0 / state[:compensations].count) * state[:joint_election_key]).round
+              ((value**(1.0 / state[:compensations].count)) * state[:joint_election_key]).round
           end
         end
       end

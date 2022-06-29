@@ -22,8 +22,8 @@ RSpec.describe RedisProvider do
     it "returns a Redis instance with the correct configurations" do
       expect(redis).to be_a(Redis)
       expect(options).to include(
-        host: ENV["REDIS_HOST"] || "localhost",
-        port: ENV["REDIS_PORT"] || 6379,
+        host: ENV.fetch("REDIS_HOST", "localhost"),
+        port: ENV.fetch("REDIS_PORT", 6379),
         ssl_params: { verify_mode: OpenSSL::SSL::VERIFY_NONE }
       )
     end

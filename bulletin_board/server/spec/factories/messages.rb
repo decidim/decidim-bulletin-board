@@ -263,7 +263,7 @@ FactoryBot.define do
             ballot_selections: contest[:ballot_selections].map do |ballot_selection|
               {
                 object_id: ballot_selection[:object_id],
-                ciphertext: (selection.member?(ballot_selection) ? 1 : 0) + Random.random_number(500) * evaluator.joint_election_key
+                ciphertext: (selection.member?(ballot_selection) ? 1 : 0) + (Random.random_number(500) * evaluator.joint_election_key)
               }
             end
           }
@@ -306,7 +306,7 @@ FactoryBot.define do
       end
 
       message_id { "#{election.unique_id}.tally.cast+b.#{BulletinBoard.slug}" }
-      content { Test::Elections.build_cast(election) { Random.random_number(99) + Random.random_number(13) * joint_election_key }.to_json }
+      content { Test::Elections.build_cast(election) { Random.random_number(99) + (Random.random_number(13) * joint_election_key) }.to_json }
     end
 
     factory :tally_share_message, parent: :message do
@@ -314,7 +314,7 @@ FactoryBot.define do
         election { create(:election, :tally_started) }
         trustee { Trustee.first }
         joint_election_key { Test::Elections.joint_election_key }
-        tally_cast { Test::Elections.build_cast(election) { Random.random_number(99) + Random.random_number(13) * joint_election_key } }
+        tally_cast { Test::Elections.build_cast(election) { Random.random_number(99) + (Random.random_number(13) * joint_election_key) } }
         election_public_key { Test::Elections.trustees_election_keys.first }
       end
 
@@ -327,7 +327,7 @@ FactoryBot.define do
         election { create(:election, :tally_started) }
         trustee { Trustee.first }
         joint_election_key { Test::Elections.joint_election_key }
-        tally_cast { Test::Elections.build_cast(election) { Random.random_number(99) + Random.random_number(13) * joint_election_key } }
+        tally_cast { Test::Elections.build_cast(election) { Random.random_number(99) + (Random.random_number(13) * joint_election_key) } }
         election_public_key { Test::Elections.trustees_election_keys.first }
       end
 
@@ -368,7 +368,7 @@ FactoryBot.define do
         election { create(:election, :tally_ended) }
         authority { Authority.first }
         joint_election_key { Test::Elections.joint_election_key }
-        tally_cast { Test::Elections.build_cast(election) { Random.random_number(99) + Random.random_number(13) * joint_election_key } }
+        tally_cast { Test::Elections.build_cast(election) { Random.random_number(99) + (Random.random_number(13) * joint_election_key) } }
       end
 
       message_id { "#{election.unique_id}.end_tally+b.#{BulletinBoard.slug}" }

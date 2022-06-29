@@ -37,7 +37,7 @@ namespace :client do
 
     jwk = JWT::JWK.import(jwk)
 
-    jwk.export.yield_self do |hash|
+    jwk.export.then do |hash|
       [hash, Decidim::BulletinBoard::JwkUtils.thumbprint(hash)]
     end
   end
