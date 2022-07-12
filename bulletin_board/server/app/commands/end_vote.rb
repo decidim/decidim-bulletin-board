@@ -27,10 +27,11 @@ class EndVote < Rectify::Command
     return broadcast(:invalid, error) unless
       valid_step?(election.vote?) &&
       valid_client?(authority.authority? && election.authority == authority) &&
-      valid_author?(message_identifier.from_authority?) &&
-      process_message
+      valid_author?(message_identifier.from_authority?)
 
     election.with_lock do
+      return broadcast(:invalid, error) unless process_message # rubocop:disable Rails/TransactionExitStatement
+
       election.log_entries << log_entry
       log_entry.save!
       election.vote_ended!

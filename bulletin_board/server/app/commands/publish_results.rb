@@ -27,10 +27,11 @@ class PublishResults < Rectify::Command
     return broadcast(:invalid, error) unless
       valid_step?(election.tally_ended?) &&
       valid_client?(authority.authority? && election.authority == authority) &&
-      valid_author?(message_identifier.from_authority?) &&
-      process_message
+      valid_author?(message_identifier.from_authority?)
 
     election.with_lock do
+      return broadcast(:invalid, error) unless process_message # rubocop:disable Rails/TransactionExitStatement
+
       log_entry.election = election
       log_entry.save!
 

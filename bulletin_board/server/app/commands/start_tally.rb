@@ -27,10 +27,11 @@ class StartTally < Rectify::Command
     return broadcast(:invalid, error) unless
       valid_client?(authority.authority? && election.authority == authority) &&
       valid_author?(message_identifier.from_authority?) &&
-      valid_step?(election.vote_ended?) &&
-      process_message
+      valid_step?(election.vote_ended?)
 
     election.with_lock do
+      return broadcast(:invalid, error) unless process_message # rubocop:disable Rails/TransactionExitStatement
+
       log_entry.election = election
       log_entry.save!
       create_response_log_entries!
