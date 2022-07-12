@@ -96,6 +96,7 @@ ActiveRecord::Schema.define(version: 2021_04_13_125626) do
     t.string "message_subtype"
     t.index ["chained_hash"], name: "index_log_entries_on_chained_hash", unique: true
     t.index ["client_id"], name: "index_log_entries_on_client_id"
+    t.index ["content_hash"], name: "index_log_entries_on_content_hash"
     t.index ["election_id", "message_type", "message_subtype", "author_unique_id"], name: "index_log_entries_on_type_subtype_author"
     t.index ["election_id"], name: "index_log_entries_on_election_id"
     t.index ["iat"], name: "index_log_entries_on_iat"
