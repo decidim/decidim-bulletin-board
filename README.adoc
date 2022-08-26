@@ -31,6 +31,8 @@ Assuming you already know how to if you are already working with Decidim.
 
 ==== Install Python
 
+This guide is assuming that you don't have any python development tooling installed on your home folder. If so, we recommend that you start with a clean state just to be sure, for instance, deleting .local/bin/pip with rm $[HOME}/.local/bin/pip
+
 You can use e.g. https://github.com/pyenv/pyenv[pyenv] to install the correct version.
 
 - Run `curl -L https://github.com/pyenv/pyenv-installer/raw/master/bin/pyenv-installer | bash`
