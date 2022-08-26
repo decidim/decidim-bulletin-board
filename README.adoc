@@ -21,7 +21,7 @@ This repository follows the monorepo pattern and includes the following projects
 
 This repository ships with a dev container to get you up and running quickly. This make is easy to get the development environment running without having to install all the dependencies.
 
-To lear more, read: https://code.visualstudio.com/docs/remote/containers
+Read more about https://code.visualstudio.com/docs/remote/containers[devcontainers on Visual Studio Code documentation].
 
 === Manual development environment
 
@@ -43,7 +43,7 @@ eval "$(pyenv init -)"
 eval "$(pyenv virtualenv-init -)"
 ```
 - Restart the console
-- Check the correct Python version by running `cat voting_schemes/electionguard/python-wrapper/Pipfile | grep python_version`
+- Check the correct Python version by running `grep python_version voting_schemes/electionguard/python-wrapper/Pipfile`
 - Run `PYTHON_CONFIGURE_OPTS="--enable-shared" pyenv install 3.x.x` (replace 3.x.x with the correct python version, note the configuration options)
 
 ==== Install Poetry
@@ -75,7 +75,7 @@ For running the bulletin board server, you need to configure the `DATABASE_USERN
 
 == Building and publishing the docker images
 
-Go to the `voting_schemes/electionguard` folder and run `make -f makefile.mk help_electionguard` to get help about building and publishing the docker images.
+Run `make help_electionguard` to get help about building and publishing the docker images.
 
 == License
 
