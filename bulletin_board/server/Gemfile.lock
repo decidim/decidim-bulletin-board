@@ -127,6 +127,7 @@ GEM
     descendants_tracker (0.0.4)
       thread_safe (~> 0.3, >= 0.3.1)
     diff-lcs (1.5.0)
+    digest (3.1.0)
     docile (1.4.0)
     equalizer (0.0.11)
     erubi (1.11.0)
@@ -207,6 +208,20 @@ GEM
     minitest (5.16.3)
     msgpack (1.5.6)
     multipart-post (2.2.3)
+    net-imap (0.2.3)
+      digest
+      net-protocol
+      strscan
+    net-pop (0.1.1)
+      digest
+      net-protocol
+      timeout
+    net-protocol (0.1.3)
+      timeout
+    net-smtp (0.3.1)
+      digest
+      net-protocol
+      timeout
     nio4r (2.5.8)
     nokogiri (1.13.8)
       mini_portile2 (~> 2.8.0)
@@ -363,9 +378,11 @@ GEM
       actionpack (>= 5.2)
       activesupport (>= 5.2)
       sprockets (>= 3.0.0)
+    strscan (3.0.4)
     thor (1.2.1)
     thread_safe (0.3.6)
     tilt (2.0.11)
+    timeout (0.3.0)
     turbolinks (5.2.1)
       turbolinks-source (~> 5.2)
     turbolinks-source (5.2.0)
@@ -418,6 +435,9 @@ DEPENDENCIES
   jsonl
   jwt
   listen (~> 3.2)
+  net-imap (~> 0.2.3)
+  net-pop (~> 0.1.1)
+  net-smtp (~> 0.3.1)
   pg (>= 0.18, < 2.0)
   pry-rails
   puma (~> 5.3)
