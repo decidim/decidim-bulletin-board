@@ -20,7 +20,7 @@ module Decidim
       def complete_message(message_id, message)
         message.merge({
                         iat: Time.now.to_i,
-                        message_id: message_id
+                        message_id:
                       })
       end
 

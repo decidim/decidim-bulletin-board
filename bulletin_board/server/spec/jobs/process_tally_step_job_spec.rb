@@ -5,11 +5,11 @@ require "rails_helper"
 RSpec.describe ProcessTallyStepJob do
   subject { described_class.perform_now(pending_message.id) }
 
-  let!(:pending_message) { create(:pending_message, election: election, message: message, client: trustee, private_key: private_key) }
+  let!(:pending_message) { create(:pending_message, election:, message:, client: trustee, private_key:) }
   let(:election) { create(:election, :tally_started) }
   let(:trustee) { Trustee.first }
   let(:private_key) { Test::PrivateKeys.trustees_private_keys.first }
-  let(:message) { build(:tally_share_message, content_traits: content_traits, election: election, trustee: trustee) }
+  let(:message) { build(:tally_share_message, content_traits:, election:, trustee:) }
   let(:content_traits) { [] }
 
   it "processes the message" do

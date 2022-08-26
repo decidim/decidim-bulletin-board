@@ -16,9 +16,9 @@ module LogEntryCommand
 
     def log_entry
       @log_entry ||= LogEntry.new(
-        message_id: message_id,
-        signed_data: signed_data,
-        client: client
+        message_id:,
+        signed_data:,
+        client:
       )
     end
 
@@ -84,9 +84,9 @@ module LogEntryCommand
         )
 
         LogEntry.create!(
-          election: election,
-          message_id: message_id,
-          signed_data: BulletinBoard.sign(response_message.merge(message_id: message_id, iat: Time.current.to_i)),
+          election:,
+          message_id:,
+          signed_data: BulletinBoard.sign(response_message.merge(message_id:, iat: Time.current.to_i)),
           bulletin_board: true
         )
       end

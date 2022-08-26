@@ -31,7 +31,7 @@ class LogEntry < ApplicationRecord
   def previous_hash
     return election.unique_id if message_identifier.type == "create_election"
 
-    LogEntry.where(election: election).order(id: :desc).pick(:chained_hash) ||
+    LogEntry.where(election:).order(id: :desc).pick(:chained_hash) ||
       raise("No previous hash for #{election.unique_id}")
   end
 end

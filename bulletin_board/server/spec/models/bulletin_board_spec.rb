@@ -64,6 +64,6 @@ RSpec.describe "BulletinBoard" do
   end
 
   it "is configered when private key is present" do
-    expect(subject.configured?).to eq(true)
+    expect(subject.configured?).to be(true)
   end
 end

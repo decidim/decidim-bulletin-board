@@ -10,8 +10,8 @@ class ElectionguardTestData
       @enumerable = enumerable
     end
 
-    def each(&block)
-      @enumerable.each(&block)
+    def each(&)
+      @enumerable.each(&)
     end
 
     def of_type(type)

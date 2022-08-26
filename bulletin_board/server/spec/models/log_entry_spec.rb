@@ -6,7 +6,7 @@ RSpec.describe "LogEntry" do
   subject { log_entry }
 
   let(:election) { create(:election) }
-  let(:log_entry) { build(:log_entry, election: election, message: message) }
+  let(:log_entry) { build(:log_entry, election:, message:) }
   let(:iat) { Time.current.to_i }
   let(:message_type) { "type" }
   let(:message) do
@@ -15,7 +15,7 @@ RSpec.describe "LogEntry" do
       content: "the message content",
       data: 123,
       more_data: true,
-      iat: iat
+      iat:
     }.with_indifferent_access
   end
 
@@ -55,7 +55,7 @@ RSpec.describe "LogEntry" do
     end
 
     context "when the election has cached log_entries" do
-      let(:last_log_entry) { create(:log_entry, election: election, message: message) }
+      let(:last_log_entry) { create(:log_entry, election:, message:) }
 
       before do
         election.log_entries

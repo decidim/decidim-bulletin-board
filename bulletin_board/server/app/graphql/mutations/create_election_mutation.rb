@@ -17,10 +17,10 @@ module Mutations
 
       CreateElection.call(authority, message_id, signed_data) do
         on(:ok) do |election|
-          result = { election: election }
+          result = { election: }
         end
         on(:invalid) do |error|
-          result = { error: error }
+          result = { error: }
         end
       end
 

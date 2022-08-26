@@ -12,7 +12,7 @@ class ElectionCastedVotes < Rectify::Query
 
   def query
     LogEntry.includes(:client).where(
-      election: election,
+      election:,
       message_type: "vote",
       message_subtype: "cast"
     )

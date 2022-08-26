@@ -5,11 +5,11 @@ require "rails_helper"
 RSpec.describe ProcessKeyCeremonyStepJob do
   subject { described_class.perform_now(pending_message.id) }
 
-  let!(:pending_message) { create(:pending_message, election: election, message: message, client: trustee, private_key: private_key) }
+  let!(:pending_message) { create(:pending_message, election:, message:, client: trustee, private_key:) }
   let(:election) { create(:election, :key_ceremony) }
   let(:trustee) { Trustee.first }
   let(:private_key) { Test::PrivateKeys.trustees_private_keys.first }
-  let(:message) { build(:key_ceremony_message, content_traits: content_traits, election: election) }
+  let(:message) { build(:key_ceremony_message, content_traits:, election:) }
   let(:content_traits) { [] }
 
   it "processes the message" do

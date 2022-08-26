@@ -12,7 +12,7 @@ RSpec.describe StartKeyCeremony do
   let(:election_status) { :created }
   let(:client) { Authority.first }
   let(:message_type) { :start_key_ceremony_message }
-  let(:message_params) { { election: election } }
+  let(:message_params) { { election: } }
 
   shared_examples "starting the key ceremony fails" do
     it "doesn't create a log entry" do
@@ -53,7 +53,7 @@ RSpec.describe StartKeyCeremony do
   end
 
   context "when the client is not the election authority" do
-    let(:client) { create(:authority, private_key: private_key) }
+    let(:client) { create(:authority, private_key:) }
     let(:private_key) { generate(:private_key) }
 
     it_behaves_like "starting the key ceremony fails"

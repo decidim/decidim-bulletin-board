@@ -19,7 +19,7 @@ FactoryBot.define do
   factory :electionguard_election, class: "Election" do
     transient do
       authority_private_key { generate(:private_key) }
-      trustees_plus_keys { generate_list(:private_key, 3).zip(ELECTION_TRUSTEES_IDS).map { |private_key, id| [build(:trustee, unique_id: id, private_key: private_key), private_key] } }
+      trustees_plus_keys { generate_list(:private_key, 3).zip(ELECTION_TRUSTEES_IDS).map { |private_key, id| [build(:trustee, unique_id: id, private_key:), private_key] } }
       last_step { :end_key_ceremony }
       voting_scheme { :electionguard }
     end
@@ -53,7 +53,7 @@ def create_election_step(election, evaluator)
     create_election_message["trustees"][order]["public_key"] = trustee.public_key
   end
 
-  election.log_entries << FactoryBot.build(:log_entry, election: election, client: election.authority,
+  election.log_entries << FactoryBot.build(:log_entry, election:, client: election.authority,
                                                        private_key: evaluator.authority_private_key, message: create_election_message)
 end
 
@@ -62,7 +62,7 @@ def start_key_ceremony_step(election, evaluator)
   start_key_ceremony_message["iat"] = Time.current.to_i
   start_key_ceremony_message["message_id"] = "#{election.unique_id}.start_key_ceremony+a.#{election.authority.slug}"
 
-  election.log_entries << FactoryBot.build(:log_entry, election: election, client: election.authority,
+  election.log_entries << FactoryBot.build(:log_entry, election:, client: election.authority,
                                                        private_key: evaluator.authority_private_key, message: start_key_ceremony_message)
 end
 
@@ -77,8 +77,8 @@ def trustee_election_keys_step(election, evaluator)
     trustee_public_key_message["iat"] = Time.current.to_i
     trustee_public_key_message["message_id"] = "#{election.unique_id}.key_ceremony.trustee_election_keys+t.#{trustee.slug}"
 
-    election.log_entries << FactoryBot.build(:log_entry, election: election, client: trustee,
-                                                         private_key: private_key, message: trustee_public_key_message)
+    election.log_entries << FactoryBot.build(:log_entry, election:, client: trustee,
+                                                         private_key:, message: trustee_public_key_message)
   end
 end
 
@@ -92,8 +92,8 @@ def trustee_partial_election_keys_step(election, evaluator)
     trustee_partial_public_key_message["iat"] = Time.current.to_i
     trustee_partial_public_key_message["message_id"] = "#{election.unique_id}.key_ceremony.trustee_partial_election_keys+t.#{trustee.slug}"
 
-    election.log_entries << FactoryBot.build(:log_entry, election: election, client: trustee,
-                                                         private_key: private_key, message: trustee_partial_public_key_message)
+    election.log_entries << FactoryBot.build(:log_entry, election:, client: trustee,
+                                                         private_key:, message: trustee_partial_public_key_message)
   end
 end
 
@@ -107,8 +107,8 @@ def trustee_verification_step(election, evaluator)
     trustee_verification_message["iat"] = Time.current.to_i
     trustee_verification_message["message_id"] = "#{election.unique_id}.key_ceremony.trustee_verification+t.#{trustee.slug}"
 
-    election.log_entries << FactoryBot.build(:log_entry, election: election, client: trustee,
-                                                         private_key: private_key, message: trustee_verification_message)
+    election.log_entries << FactoryBot.build(:log_entry, election:, client: trustee,
+                                                         private_key:, message: trustee_verification_message)
   end
 end
 
@@ -117,6 +117,6 @@ def end_key_ceremony_step(election, _evaluator)
   end_key_ceremony_message["iat"] = Time.current.to_i
   end_key_ceremony_message["message_id"] = "#{election.unique_id}.end_key_ceremony+b.#{BulletinBoard.slug}"
 
-  election.log_entries << FactoryBot.build(:log_entry, election: election, bulletin_board: true,
+  election.log_entries << FactoryBot.build(:log_entry, election:, bulletin_board: true,
                                                        signed_data: BulletinBoard.sign(end_key_ceremony_message), message: end_key_ceremony_message)
 end
