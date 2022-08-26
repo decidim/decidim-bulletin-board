@@ -67,6 +67,9 @@ Install the dependency gems in the Ruby adapter `cd voting_schemes/electionguard
 
 Install the necessary software to run the bulletin board server `apt-get install postgresql redis-server`
 
+You will also need to have Docker installed on your machine in order to build the images and push them to the Docker Hub. To install, please follow the official guides at:
+https://docs.docker.com/engine/install/
+
 ==== Build and configure
 
 Now you should have everything you need to build the different modules, which you can do by running the `make build` command at the root of the repository. If this fails, please update this guide how you fixed the problem.
