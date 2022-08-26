@@ -24,5 +24,5 @@ help_verifier:
 test_verify_election: install_verifier
 	cd ${VERIFIER_PATH} && node src/index.js test/fixtures/electionguard/election-ok.tar
 
-test_verify_ballot: install_verifier_dependencies
+test_verify_ballot: install_verifier
 	cd ${VERIFIER_PATH} && node src/index.js test/fixtures/electionguard/ballot-ok.txt

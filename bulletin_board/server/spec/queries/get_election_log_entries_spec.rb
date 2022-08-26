@@ -3,7 +3,7 @@
 require "rails_helper"
 
 RSpec.describe "GetElectionLogEntries" do
-  subject { DecidimBulletinBoardSchema.execute(query, context: context) }
+  subject { DecidimBulletinBoardSchema.execute(query, context:) }
 
   let!(:election) { create(:election) }
   let(:context) { {} }
@@ -53,9 +53,9 @@ RSpec.describe "GetElectionLogEntries" do
 
   describe "log entries with temporary hidden data" do
     let!(:election) { create(:election, :tally_started) }
-    let(:tally_cast) { create(:log_entry, :by_bulletin_board, election: election, message: build(:tally_cast_message, election: election)) }
-    let(:tally_share) { create(:log_entry, :by_trustee, election: election, message: build(:tally_share_message, election: election)) }
-    let(:end_tally) { create(:log_entry, :by_bulletin_board, election: election, message: build(:end_tally_message, election: election)) }
+    let(:tally_cast) { create(:log_entry, :by_bulletin_board, election:, message: build(:tally_cast_message, election:)) }
+    let(:tally_share) { create(:log_entry, :by_trustee, election:, message: build(:tally_share_message, election:)) }
+    let(:end_tally) { create(:log_entry, :by_bulletin_board, election:, message: build(:end_tally_message, election:)) }
 
     before { tally_cast && tally_share && end_tally }
 

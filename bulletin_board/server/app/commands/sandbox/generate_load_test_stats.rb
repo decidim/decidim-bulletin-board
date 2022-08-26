@@ -49,12 +49,12 @@ module Sandbox
 
     def aggregate_stats
       {
-        votes_number: votes_number,
-        accepted_votes_number: accepted_votes_number,
+        votes_number:,
+        accepted_votes_number:,
         accepted_votes_percentage: accepted_votes_number * 100 / votes_number,
-        total_processing_time: total_processing_time,
+        total_processing_time:,
         avg_processing_time: total_processing_time / votes_number,
-        total_running_time: total_running_time
+        total_running_time:
       }
     end
 
@@ -76,7 +76,7 @@ module Sandbox
 
     def pertinent_pending_messages
       @pertinent_pending_messages ||= PendingMessage
-                                      .where(election_id: election_id)
+                                      .where(election_id:)
                                       .where("created_at >= :date", date: earliest_vote_time)
                                       .where("created_at <= :date", date: latest_vote_time)
     end

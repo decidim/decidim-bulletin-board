@@ -19,5 +19,5 @@ trustees = Test::PrivateKeys.trustees_public_keys.each_with_index.map do |truste
 end
 
 {
-  trustees: trustees
+  trustees:
 }

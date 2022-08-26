@@ -18,7 +18,7 @@ module Decidim
         def call
           # arguments used inside the graphql operation
           args = {
-            message_id: message_id,
+            message_id:,
             signed_data: sign_message(message_id, message)
           }
 
@@ -46,18 +46,18 @@ module Decidim
 
         def message
           {
-            scheme: scheme,
-            bulletin_board: bulletin_board,
-            authority: authority,
-            trustees: trustees,
-            polling_stations: polling_stations,
+            scheme:,
+            bulletin_board:,
+            authority:,
+            trustees:,
+            polling_stations:,
             description: {
               name: text(election_data[:title]),
               start_date: election_data[:start_date].strftime("%FT%T%:z"),
               end_date: election_data[:end_date].strftime("%FT%T%:z"),
-              candidates: candidates,
-              contests: contests,
-              ballot_styles: ballot_styles
+              candidates:,
+              contests:,
+              ballot_styles:
             }
           }
         end
@@ -149,7 +149,7 @@ module Decidim
 
         def text(field)
           {
-            text: field.map { |locale, value| { language: locale.to_s, value: value } }
+            text: field.map { |locale, value| { language: locale.to_s, value: } }
           }
         end
 

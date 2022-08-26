@@ -3,7 +3,7 @@
 require "rails_helper"
 
 RSpec.describe "GetElection" do
-  subject { DecidimBulletinBoardSchema.execute(query, context: context) }
+  subject { DecidimBulletinBoardSchema.execute(query, context:) }
 
   let(:election) { create(:election) }
   let(:context) { {} }

@@ -27,8 +27,8 @@ module Decidim
             ],
             default_locale: "en",
             title: {
-              "en": "An election",
-              "es": "Una elección"
+              en: "An election",
+              es: "Una elección"
             },
             start_date: Time.new(2023, 4, 5, 6, 7, 8, "+03:00"),
             end_date: Time.new(2023, 4, 7, 6, 5, 4, "+03:00"),
@@ -38,12 +38,12 @@ module Decidim
                 slug: "question-1",
                 max_selections: 1,
                 title: {
-                  "en": "A question",
-                  "es": "Una pregunta"
+                  en: "A question",
+                  es: "Una pregunta"
                 },
                 description: {
-                  "en": "A question description",
-                  "es": "Una descripción de pregunta"
+                  en: "A question description",
+                  es: "Una descripción de pregunta"
                 },
                 answers: [
                   {
@@ -58,12 +58,12 @@ module Decidim
                 slug: "question-2",
                 max_selections: 2,
                 title: {
-                  "en": "Another question",
-                  "es": "Otra pregunta"
+                  en: "Another question",
+                  es: "Otra pregunta"
                 },
                 description: {
-                  "en": "Another question description",
-                  "es": "Otra descripción de pregunta"
+                  en: "Another question description",
+                  es: "Otra descripción de pregunta"
                 },
                 answers: [
                   {
@@ -79,36 +79,38 @@ module Decidim
               {
                 slug: "answer-1",
                 title: {
-                  "en": "An answer",
-                  "es": "Una respuesta"
+                  en: "An answer",
+                  es: "Una respuesta"
                 }
               },
               {
                 slug: "answer-2",
                 title: {
-                  "en": "Another answer",
-                  "es": "Otra respuesta"
+                  en: "Another answer",
+                  es: "Otra respuesta"
                 }
               },
               {
                 slug: "answer-3",
                 title: {
-                  "en": "An answer for another question",
-                  "es": "Una respuesta para otra pregunta"
+                  en: "An answer for another question",
+                  es: "Una respuesta para otra pregunta"
                 }
               },
               {
                 slug: "answer-4",
                 title: {
-                  "en": "Another answer for another question",
-                  "es": "Otra respuesta para otra pregunta"
+                  en: "Another answer for another question",
+                  es: "Otra respuesta para otra pregunta"
                 }
               }
             ],
             ballot_styles: {
-              "ballot_style_1": ["question-1"],
-              "ballot_style_2": ["question-2"],
-              "ballot_style_3": ["question-1", "question-2"]
+              # rubocop:disable Naming/VariableNumber
+              ballot_style_1: ["question-1"],
+              ballot_style_2: ["question-2"],
+              ballot_style_3: ["question-1", "question-2"]
+              # rubocop:enable Naming/VariableNumber
             }
           }
         end

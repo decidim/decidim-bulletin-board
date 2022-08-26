@@ -109,13 +109,13 @@ module Sandbox
 
     def election_data
       @election_data ||= params.require(:election).permit(:default_locale, title: {}).to_h.merge(
-        trustees: trustees,
-        start_date: start_date,
-        end_date: end_date,
-        polling_stations: polling_stations,
-        questions: questions,
-        answers: answers,
-        ballot_styles: ballot_styles
+        trustees:,
+        start_date:,
+        end_date:,
+        polling_stations:,
+        questions:,
+        answers:,
+        ballot_styles:
       )
     end
 
@@ -138,7 +138,7 @@ module Sandbox
     end
 
     def polling_stations
-      @polling_stations ||= params[:election][:polling_stations].reject(&:blank?)
+      @polling_stations ||= params[:election][:polling_stations].compact_blank
     end
 
     def questions
@@ -254,7 +254,7 @@ module Sandbox
     end
 
     def generated_votes_number(election)
-      `wc -l "#{bulk_votes_file_path(election)}"`.strip.split(" ")[0].to_i
+      `wc -l "#{bulk_votes_file_path(election)}"`.strip.split[0].to_i
     end
   end
 end

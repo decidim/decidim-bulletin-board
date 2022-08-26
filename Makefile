@@ -26,7 +26,7 @@ clean: clean_server \
 build: build_server \
 		build_client \
 		build_dummy \
-		build_electionguard \
+		build_electionguard
 
 test: test_server \
  		test_client \

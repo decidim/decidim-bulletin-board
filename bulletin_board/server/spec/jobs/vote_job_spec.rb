@@ -5,16 +5,16 @@ require "rails_helper"
 RSpec.describe VoteJob do
   subject { described_class.perform_now(pending_message.id) }
 
-  let!(:pending_message) { create(:pending_message, election: election, message: message) }
+  let!(:pending_message) { create(:pending_message, election:, message:) }
   let(:election) { create(:election, :vote) }
-  let(:message) { build(:vote_message, election: election) }
+  let(:message) { build(:vote_message, election:) }
 
   it "processes the message" do
     expect { subject }.to change { PendingMessage.last.status }.from("enqueued").to("accepted")
   end
 
   context "when the message is rejected" do
-    let(:message) { build(:vote_message, content_traits: [:invalid], election: election) }
+    let(:message) { build(:vote_message, content_traits: [:invalid], election:) }
 
     it "rejects the message" do
       expect { subject }.to change { PendingMessage.last.status }.from("enqueued").to("rejected")

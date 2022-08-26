@@ -152,7 +152,7 @@ module VotingScheme
         state[:joint_compensations].each do |question, answers|
           answers.each do |answer, value|
             state[:joint_shares][question][answer] *=
-              (value**(1.0 / state[:compensations].count) * state[:joint_election_key]).round
+              ((value**(1.0 / state[:compensations].count)) * state[:joint_election_key]).round
           end
         end
       end
@@ -169,17 +169,17 @@ module VotingScheme
       end
 
       def build_questions_struct(initial_value)
-        election.manifest[:description][:contests].map do |contest|
+        election.manifest[:description][:contests].to_h do |contest|
           [
             contest[:object_id],
-            contest[:ballot_selections].map do |ballot_selection|
+            contest[:ballot_selections].to_h do |ballot_selection|
               [
                 ballot_selection[:object_id],
                 initial_value
               ]
-            end.to_h
+            end
           ]
-        end.to_h
+        end
       end
     end
   end

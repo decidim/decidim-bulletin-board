@@ -1,4 +1,4 @@
-FROM ruby:3.0.2
+FROM ruby:3.1.1
 LABEL author="hola@decidim.org"
 
 ARG ELECTIONGUARD_PYTHON_REF=
@@ -25,7 +25,7 @@ RUN git clone https://github.com/pyenv/pyenv.git ~/.pyenv && \
 RUN curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python -
 
 # Install node
-RUN curl -fsSL https://deb.nodesource.com/setup_15.x | bash - && apt-get install -y nodejs
+RUN curl -fsSL https://deb.nodesource.com/setup_16.x | bash - && apt-get install -y nodejs
 
 # Create the source folder
 RUN mkdir -p /code

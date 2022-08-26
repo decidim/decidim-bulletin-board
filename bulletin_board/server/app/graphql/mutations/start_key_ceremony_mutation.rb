@@ -17,7 +17,7 @@ module Mutations
 
       EnqueueMessage.call(authority, message_id, signed_data, StartKeyCeremonyJob) do
         on(:ok) do |pending_message|
-          result = { pending_message: pending_message }
+          result = { pending_message: }
         end
       end
 

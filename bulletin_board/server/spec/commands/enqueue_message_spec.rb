@@ -46,7 +46,7 @@ RSpec.describe EnqueueMessage do
 
   describe "broadcasting invalid" do
     context "with pending messages" do
-      let!(:pending_message) { create(:pending_message, :message_model, election: election, client: client, message_id: message_id) }
+      let!(:pending_message) { create(:pending_message, :message_model, election:, client:, message_id:) }
 
       it "is not valid" do
         expect { subject }.to broadcast(:invalid)
