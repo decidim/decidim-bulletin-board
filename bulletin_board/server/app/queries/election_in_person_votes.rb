@@ -12,7 +12,7 @@ class ElectionInPersonVotes < Rectify::Query
 
   def query
     LogEntry.where(
-      election: election,
+      election:,
       message_type: "vote",
       message_subtype: "in_person"
     )

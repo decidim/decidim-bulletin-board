@@ -35,4 +35,5 @@ Gem::Specification.new do |s|
   s.add_development_dependency "rspec", "~> 3.7"
   s.add_development_dependency "webmock", "~> 3.6"
   s.add_development_dependency "wisper-rspec", "~> 1.1.0"
+  s.metadata["rubygems_mfa_required"] = "true"
 end

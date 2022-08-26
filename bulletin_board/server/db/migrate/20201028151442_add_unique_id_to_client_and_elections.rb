@@ -2,8 +2,11 @@
 
 class AddUniqueIdToClientAndElections < ActiveRecord::Migration[6.1]
   class Election < ApplicationRecord; end
+
   class Client < ApplicationRecord; end
+
   class Authority < Client; end
+
   class Trustee < Client; end
 
   def change

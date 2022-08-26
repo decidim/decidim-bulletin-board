@@ -3,11 +3,11 @@
 require "rails_helper"
 
 RSpec.describe "client:add_authority", type: :task do
-  subject { task.execute(name: name, public_key: public_key) }
+  subject { task.execute(name:, public_key:) }
 
   let(:name) { authority.name }
   let(:public_key) { private_key.export.map { |k, v| "#{k}=#{v}" }.join("&") }
-  let(:authority) { build(:authority, private_key: private_key) }
+  let(:authority) { build(:authority, private_key:) }
   let(:private_key) { generate(:private_key) }
 
   it "creates a new authority" do
@@ -17,7 +17,7 @@ RSpec.describe "client:add_authority", type: :task do
   end
 
   context "when authority's public key already exists" do
-    let(:authority) { create(:authority, private_key: private_key) }
+    let(:authority) { create(:authority, private_key:) }
     let(:name) { "#{authority.name}2" }
 
     it "detects the existing public key" do
@@ -28,7 +28,7 @@ RSpec.describe "client:add_authority", type: :task do
   end
 
   context "when authority's name already exists" do
-    let(:authority) { create(:authority, private_key: private_key) }
+    let(:authority) { create(:authority, private_key:) }
     let(:public_key) { private_key.export.map { |k, v| "#{k}=#{v}" }.join("&") }
 
     it "detects the existing name" do
