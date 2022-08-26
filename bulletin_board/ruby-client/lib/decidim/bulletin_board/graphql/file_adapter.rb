@@ -8,7 +8,7 @@ module Decidim
       class FileAdapter
         attr_reader :file_name
 
-        def initialize(file_name, _options = {}, &_block)
+        def initialize(file_name, _options = {}, &)
           @file_name = file_name
         end
 
