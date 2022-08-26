@@ -4,7 +4,7 @@ require "rails_helper"
 
 module Mutations
   RSpec.describe StartKeyCeremonyMutation, type: :request do
-    subject { post "/api", params: { query: query, variables: { messageId: message_id, signedData: signed_data } }, headers: headers }
+    subject { post "/api", params: { query:, variables: { messageId: message_id, signedData: signed_data } }, headers: }
 
     let(:query) do
       <<~GQL
@@ -31,7 +31,7 @@ module Mutations
     let(:authority) { Authority.first }
     let(:headers) { { Authorization: authority.api_key } }
     let(:signed_data) { JWT.encode(payload.as_json, Test::PrivateKeys.authority_private_key.keypair, "RS256") }
-    let(:payload) { build(:start_key_ceremony_message, election: election) }
+    let(:payload) { build(:start_key_ceremony_message, election:) }
     let(:message_id) { payload["message_id"] }
 
     it "adds the message to the pending messages table" do

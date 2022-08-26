@@ -109,13 +109,13 @@ module Sandbox
 
     def election_data
       @election_data ||= params.require(:election).permit(:default_locale, title: {}).to_h.merge(
-        trustees: trustees,
-        start_date: start_date,
-        end_date: end_date,
-        polling_stations: polling_stations,
-        questions: questions,
-        answers: answers,
-        ballot_styles: ballot_styles
+        trustees:,
+        start_date:,
+        end_date:,
+        polling_stations:,
+        questions:,
+        answers:,
+        ballot_styles:
       )
     end
 

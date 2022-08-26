@@ -7,7 +7,7 @@ module VotingScheme
     RSpec.describe BulletinBoard do
       subject(:instance) { described_class.new(election) }
 
-      let(:election) { build(:electionguard_election, last_step: last_step) }
+      let(:election) { build(:electionguard_election, last_step:) }
 
       describe "process_message" do
         subject do

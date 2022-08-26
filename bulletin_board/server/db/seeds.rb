@@ -7,92 +7,92 @@ require "test/private_keys"
 
 def create_start_key_ceremony_log_entry(election)
   FactoryBot.create(:log_entry,
-                    election: election,
+                    election:,
                     message: FactoryBot.build(:start_key_ceremony_message,
-                                              election: election))
+                                              election:))
 end
 
 def create_key_ceremony_log_entries(election)
   Trustee.first(3).zip(Test::PrivateKeys.trustees_private_keys, Test::Elections.trustees_election_keys).each do |trustee, private_key, election_key|
     FactoryBot.create(:log_entry,
-                      election: election,
+                      election:,
                       client: trustee,
-                      private_key: private_key,
+                      private_key:,
                       message: FactoryBot.build(:key_ceremony_message,
                                                 election_public_key: election_key,
-                                                election: election,
-                                                trustee: trustee))
+                                                election:,
+                                                trustee:))
   end
 end
 
 def create_end_key_ceremony_log_entry(election)
   FactoryBot.create(:log_entry,
                     :by_bulletin_board,
-                    election: election,
+                    election:,
                     message: FactoryBot.build(:end_key_ceremony_message,
-                                              election: election))
+                                              election:))
 end
 
 def create_start_vote_log_entry(election)
   FactoryBot.create(:log_entry,
-                    election: election,
+                    election:,
                     message: FactoryBot.build(:start_vote_message,
-                                              election: election))
+                                              election:))
 end
 
 def create_vote_log_entries(election, amount = 3)
   amount.times do
-    vote_message = FactoryBot.build(:vote_message, election: election)
-    FactoryBot.create(:pending_message, :accepted, election: election, message: vote_message)
-    FactoryBot.create(:log_entry, election: election, message: vote_message)
+    vote_message = FactoryBot.build(:vote_message, election:)
+    FactoryBot.create(:pending_message, :accepted, election:, message: vote_message)
+    FactoryBot.create(:log_entry, election:, message: vote_message)
   end
 end
 
 def create_end_vote_log_entry(election)
   FactoryBot.create(:log_entry,
-                    election: election,
+                    election:,
                     message: FactoryBot.build(:end_vote_message,
-                                              election: election))
+                                              election:))
 end
 
 def create_start_tally_log_entries(election)
   FactoryBot.create(:log_entry,
-                    election: election,
+                    election:,
                     message: FactoryBot.build(:start_tally_message,
-                                              election: election))
+                                              election:))
   FactoryBot.create(:log_entry,
                     :by_bulletin_board,
-                    election: election,
+                    election:,
                     message: FactoryBot.build(:tally_cast_message,
-                                              election: election))
+                                              election:))
 end
 
 def create_tally_log_entries(election)
   Trustee.first(3).zip(Test::PrivateKeys.trustees_private_keys, Test::Elections.trustees_election_keys).each do |trustee, private_key, election_key|
     FactoryBot.create(:log_entry,
-                      election: election,
+                      election:,
                       client: trustee,
-                      private_key: private_key,
+                      private_key:,
                       message: FactoryBot.build(:tally_share_message,
                                                 election_public_key: election_key,
-                                                election: election,
-                                                trustee: trustee))
+                                                election:,
+                                                trustee:))
   end
 end
 
 def create_end_tally_log_entry(election)
   FactoryBot.create(:log_entry,
                     :by_bulletin_board,
-                    election: election,
+                    election:,
                     message: FactoryBot.build(:end_tally_message,
-                                              election: election))
+                                              election:))
 end
 
 def create_publish_results_log_entry(election)
   FactoryBot.create(:log_entry,
-                    election: election,
+                    election:,
                     message: FactoryBot.build(:publish_results_message,
-                                              election: election))
+                                              election:))
 end
 
 Authority.create!(

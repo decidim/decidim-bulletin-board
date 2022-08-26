@@ -4,7 +4,7 @@ require "rails_helper"
 
 module Mutations
   RSpec.describe CreateElectionMutation, type: :request do
-    subject { post "/api", params: { query: query, variables: { messageId: message_id, signedData: signed_data } }, headers: headers }
+    subject { post "/api", params: { query:, variables: { messageId: message_id, signedData: signed_data } }, headers: }
 
     let(:query) do
       <<~GQL

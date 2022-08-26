@@ -16,7 +16,7 @@ namespace :client do
       next
     end
 
-    authority = Authority.new(name: name, public_key: public_key, public_key_thumbprint: public_key_thumbprint, api_key: generate_api_key)
+    authority = Authority.new(name:, public_key:, public_key_thumbprint:, api_key: generate_api_key)
     begin
       authority.save!
       puts "Authority '#{authority.name}' successfuly added!"

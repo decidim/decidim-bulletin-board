@@ -21,7 +21,7 @@ RSpec.describe "GetLogEntry" do
       }
     GQL
   end
-  let!(:log_entry) { create(:log_entry, election: election, message: build(:vote_message, election: election)) }
+  let!(:log_entry) { create(:log_entry, election:, message: build(:vote_message, election:)) }
   let(:election) { create(:election) }
   let(:election_unique_id) { election.unique_id }
   let(:content_hash) { log_entry.content_hash }

@@ -19,7 +19,7 @@ class GraphqlController < ApplicationController
       trustee_unique_id: request.headers["TrusteeUniqueId"] || headers["TrusteeUniqueId"]
     }
 
-    result = DecidimBulletinBoardSchema.execute(query, variables: variables, context: context, operation_name: operation_name)
+    result = DecidimBulletinBoardSchema.execute(query, variables:, context:, operation_name:)
     render json: result
   rescue StandardError => e
     raise e unless Rails.env.development?

@@ -69,7 +69,7 @@ module Sandbox
     end
 
     def log_entry_for(message_type)
-      election.log_entries.where(message_type: message_type).last
+      election.log_entries.where(message_type:).last
     end
   end
 end

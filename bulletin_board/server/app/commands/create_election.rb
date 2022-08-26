@@ -49,16 +49,16 @@ class CreateElection < Rectify::Command
   def election
     @election ||= log_entry.election = Election.new(
       unique_id: message_identifier.election_id,
-      title: title,
+      title:,
       status: :created,
-      authority: authority,
+      authority:,
       log_entries: [log_entry]
     )
   end
 
   def create_trustees
     trustees.each do |trustee|
-      find_or_create_trustee(trustee).election_trustees.create!(election: election)
+      find_or_create_trustee(trustee).election_trustees.create!(election:)
     end
   end
 

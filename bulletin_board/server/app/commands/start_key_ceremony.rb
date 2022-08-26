@@ -50,7 +50,7 @@ class StartKeyCeremony < Rectify::Command
 
     @response_log_entries = response_messages.map do |response_message|
       LogEntry.create!(
-        election: election,
+        election:,
         message_id: response_message["message_id"],
         signed_data: BulletinBoard.sign(response_message),
         bulletin_board: true

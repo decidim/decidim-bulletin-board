@@ -55,9 +55,9 @@ FactoryBot.define do
       scheme { build(:voting_scheme, name: voting_scheme) }
       bulletin_board { build(:json_bulletin_board) }
       authority { build(:json_authority, authority: authority_client) }
-      trustees { trustees_plus_keys.map { |trustee, private_key| build(:json_trustee, trustee: trustee, private_key: private_key) } }
+      trustees { trustees_plus_keys.map { |trustee, private_key| build(:json_trustee, trustee:, private_key:) } }
       polling_stations { [] }
-      description { build(:description, number_of_questions: number_of_questions, start_date: start_date, title: title) }
+      description { build(:description, number_of_questions:, start_date:, title:) }
     end
 
     factory :voting_scheme do
@@ -143,7 +143,7 @@ FactoryBot.define do
         value { Faker::Quotes::Shakespeare.as_you_like_it }
       end
 
-      text { build_list(:text_value, 1, value: value) }
+      text { build_list(:text_value, 1, value:) }
     end
 
     factory :text_value do
@@ -185,7 +185,7 @@ FactoryBot.define do
           "#{election.unique_id}.key_ceremony.trustee_election_keys+t.#{trustee.slug}"
         end
       end
-      content { build(:key_ceremony_message_content, *content_traits, election: election, trustee: trustee).to_json }
+      content { build(:key_ceremony_message_content, *content_traits, election:, trustee:).to_json }
     end
 
     factory :key_ceremony_message_content do
@@ -213,7 +213,7 @@ FactoryBot.define do
       end
 
       message_id { "#{election.unique_id}.end_key_ceremony+b.#{BulletinBoard.slug}" }
-      content { build(:joint_election_message_content, *content_traits, election: election).to_json }
+      content { build(:joint_election_message_content, *content_traits, election:).to_json }
     end
 
     factory :joint_election_message_content do
@@ -240,7 +240,7 @@ FactoryBot.define do
       end
 
       message_id { "#{election.unique_id}.vote.cast+v.#{voter_id}" }
-      content { build(:vote_message_content, *content_traits, election: election).to_json }
+      content { build(:vote_message_content, *content_traits, election:).to_json }
     end
 
     factory :vote_message_content do
@@ -319,7 +319,7 @@ FactoryBot.define do
       end
 
       message_id { "#{election.unique_id}.tally.share+t.#{trustee.slug}" }
-      content { build(:tally_share_message_content, *content_traits, election: election, trustee: trustee, tally_cast: tally_cast, election_public_key: election_public_key).to_json }
+      content { build(:tally_share_message_content, *content_traits, election:, trustee:, tally_cast:, election_public_key:).to_json }
     end
 
     factory :tally_share_message_content do
