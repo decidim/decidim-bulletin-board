@@ -12,7 +12,7 @@ Gem::Specification.new do |s|
   s.description = ""
   s.homepage = "https://github.com/decidim/decidim-bulletin-board"
   s.license = "AGPL-3.0"
-  s.required_ruby_version = Gem::Requirement.new(">= 3.0.2")
+  s.required_ruby_version = Gem::Requirement.new(">= 3.1.1")
 
   # Specify which files should be added to the gem when it is released.
   # The `git ls-files -z` loads the files in the RubyGem that have been added into git.
