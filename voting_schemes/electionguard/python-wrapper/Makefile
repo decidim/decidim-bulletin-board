@@ -25,7 +25,10 @@ test:
 	python3 -m pipenv run python setup.py install
 	python3 -m pipenv run pytest
 
-package:
+package: install \
+	package_python
+
+package_python:
 	python3 -m pipenv run python setup.py sdist bdist_wheel
 	python3 -m pipenv run python setup.py install
 	python3 setup.py install
