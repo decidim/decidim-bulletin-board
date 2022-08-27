@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Changed
 
 - The minimum required Ruby version is now 3.1.1
+- The bulletin board client now supports OpenSSL 3.0 through update of the `jwt` dependency to 2.5.0
 
 ## [0.23.0] - 2022-04-05
 
