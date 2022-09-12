@@ -13,13 +13,8 @@ module Decidim
         (json.keys & JWK_PRIVATE_FIELDS).any?
       end
 
-      # TODO: remove everything below here when https://github.com/jwt/ruby-jwt/pull/375 is released
       def self.import_private_key(json)
-        jwk = JWT::JWK.import(json)
-        jwk.keypair.set_key(decode_open_ssl_bn(json[:n]), decode_open_ssl_bn(json[:e]), decode_open_ssl_bn(json[:d]))
-        jwk.keypair.set_factors(decode_open_ssl_bn(json[:p]), decode_open_ssl_bn(json[:q]))
-        jwk.keypair.set_crt_params(decode_open_ssl_bn(json[:dp]), decode_open_ssl_bn(json[:dq]), decode_open_ssl_bn(json[:qi]))
-        jwk
+        JWT::JWK.import(json)
       end
 
       def self.private_export(jwk)
