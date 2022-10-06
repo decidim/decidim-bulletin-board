@@ -55,7 +55,7 @@ jobs:
   rspec-test:
     name: RSpec tests
     needs: lint
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - uses: rokroskar/workflow-run-cleanup-action@v0.3.2
         if: "github.ref != 'refs/heads/develop'"
