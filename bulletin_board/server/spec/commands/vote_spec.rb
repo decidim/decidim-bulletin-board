@@ -12,7 +12,7 @@ RSpec.describe Vote do
   let(:election_status) { :vote }
   let(:client) { Authority.first }
   let(:message_type) { :vote_message }
-  let(:message_params) { { election: election, voter_id: voter_id } }
+  let(:message_params) { { election:, voter_id: } }
   let(:voter_id) { generate(:voter_id) }
 
   it "broadcasts ok" do
@@ -57,7 +57,7 @@ RSpec.describe Vote do
   end
 
   context "when the client is not the election authority" do
-    let(:client) { create(:authority, private_key: private_key) }
+    let(:client) { create(:authority, private_key:) }
     let(:private_key) { generate(:private_key) }
 
     it "broadcasts invalid" do
@@ -76,7 +76,7 @@ RSpec.describe Vote do
 
   context "when the message author is not a voter" do
     let(:message_id) { "#{election.unique_id}.vote.cast+x.#{voter_id}" }
-    let(:extra_message_params) { { message_id: message_id } }
+    let(:extra_message_params) { { message_id: } }
 
     it "broadcasts invalid" do
       expect { subject }.to broadcast(:invalid, "Invalid message author")
@@ -84,8 +84,8 @@ RSpec.describe Vote do
   end
 
   context "when the voter has already voted in person" do
-    let!(:in_person_vote) { create(:log_entry, election: election, message: previous_message) }
-    let(:previous_message) { build(:in_person_vote_message, election: election, voter_id: voter_id) }
+    let!(:in_person_vote) { create(:log_entry, election:, message: previous_message) }
+    let(:previous_message) { build(:in_person_vote_message, election:, voter_id:) }
 
     it "broadcasts invalid" do
       expect { subject }.to broadcast(:invalid, "Can't cast a vote after voting in person.")
@@ -105,8 +105,8 @@ RSpec.describe Vote do
     end
 
     context "when the voter has already voted in person" do
-      let!(:in_person_vote) { create(:log_entry, election: election, message: previous_message) }
-      let(:previous_message) { build(:in_person_vote_message, election: election, voter_id: voter_id) }
+      let!(:in_person_vote) { create(:log_entry, election:, message: previous_message) }
+      let(:previous_message) { build(:in_person_vote_message, election:, voter_id:) }
 
       it "broadcasts invalid" do
         expect { subject }.to broadcast(:invalid, "Can't cast a vote after voting in person.")

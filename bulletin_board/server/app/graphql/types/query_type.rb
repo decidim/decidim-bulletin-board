@@ -37,7 +37,7 @@ module Types
     end
 
     def election(unique_id:)
-      Election.find_by(unique_id: unique_id)
+      Election.find_by(unique_id:)
     end
 
     field :pending_message,

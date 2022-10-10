@@ -14,7 +14,8 @@ Click on `Add component` to enable Elections in your participatory space.
 
 Now that Elections are enabled in your participatory space, you can head on and create one.
 In the left-hand menu, click on `Components > Elections` and then on the `New election` button.
-You will have to provide a title, a description and the start and end of the voting period.
+You will have to provide a title, a description and the start and end of the voting period. 
+Before setting up your election, we suggest you see what steps you need to take to get started. For example, an elecction with less than 3 hours before the start of voting may not be started. Check xref:admin:create-election-bulletin-board.adoc[Create an Election in the Bulletin Board]
 
 == Create election questions and answers
 

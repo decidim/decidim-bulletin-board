@@ -19,7 +19,7 @@ module VotingScheme
                 plaintext = vote[contest[:object_id]].present? && vote[contest[:object_id]].include?(ballot_selection[:object_id]) ? 1 : 0
                 {
                   object_id: ballot_selection[:object_id],
-                  ciphertext: plaintext + (rand * 500).floor * joint_election_key
+                  ciphertext: plaintext + ((rand * 500).floor * joint_election_key)
                 }
               end
             }

@@ -76,7 +76,9 @@ module Decidim
         let(:election_id) { "test.1" }
         let(:voter_id) { "voter.1" }
         let(:encrypted_vote) do
+          # rubocop:disable Naming/VariableNumber
           { question_1: "aNsWeR 1" }.to_json
+          # rubocop:enable Naming/VariableNumber
         end
         let(:result) { [:ok, double(status: "enqueued")] }
 

@@ -1,4 +1,4 @@
-FROM ruby:3.0.2
+FROM ruby:3.1.1
 LABEL author="hola@decidim.org"
 
 ARG ELECTIONGUARD_PYTHON_REF=

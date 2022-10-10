@@ -26,7 +26,7 @@ RSpec.shared_examples_for "with an invalid signed data" do |examples|
     it_behaves_like examples
 
     it "broadcasts invalid" do
-      expect { subject }.to broadcast(:invalid, "Signature verification raised")
+      expect { subject }.to broadcast(:invalid, "Signature verification failed")
     end
   end
 

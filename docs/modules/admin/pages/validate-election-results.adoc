@@ -29,7 +29,7 @@ If their user also has other kinds of admin access, though, those will be preser
 
 Entering the Voting they want to validate, the Monitoring Committee Member can access the actions they want to perform from the left-hand menu.
 
-image::monitoring-commitee-admin-menu.png.png[Actions of the Monitoring Committee Member]
+image::monitoring-commitee-admin-menu.png[Actions of the Monitoring Committee Member]
 
 === Validate Certificates
 
