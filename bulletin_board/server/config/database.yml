@@ -85,5 +85,4 @@ test:
 production:
   <<: *default
   database: decidim_bulletin_board_production
-  username: decidim_bulletin_board
-  password: <%= ENV['DECIDIM_BULLETIN_BOARD_DATABASE_PASSWORD'] %>
+
