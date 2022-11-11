@@ -148,7 +148,9 @@ In the email you will receive the instructions on how to decrypt the export file
 
 image::voting-census-export.png[The access codes have been generated - next step: export them.]
 
-The access codes have been generated - next step: export them. NB: You can only export one time
+The access codes have been generated - next step: export them.
+
+NOTE: You can only export one time.
 
 Now the census is frozen and cannot be modified anymore.
 
