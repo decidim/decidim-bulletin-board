@@ -25,15 +25,17 @@ Read more about https://code.visualstudio.com/docs/remote/containers[devcontaine
 
 === Manual development environment
 
+These instructions assume you're using the last stable version of Ubuntu (Ubuntu 22.04 LTS). It should work for other GNU/Linux based systems, but you'll need to translate the commands to your environment. For instance, instead of using apt, using your distribution package manager, the names of the packages will also change, etc. 
+
 ==== Install Ruby and Node
 
 Assuming you already know how to if you are already working with Decidim.
 
 ==== Install Python
 
-This guide is assuming that you don't have any python development tooling installed on your home folder. If so, we recommend that you start with a clean state just to be sure, for instance, deleting .local/bin/pip with rm $[HOME}/.local/bin/pip
+This guide is assuming that you don't have any python development tooling installed on your home folder. If so, we recommend that you start with a clean state just to be sure, for instance, deleting .local/bin/pip with `rm $[HOME}/.local/bin/pip`
 
-You can use e.g. https://github.com/pyenv/pyenv[pyenv] to install the correct version.
+You can use e.g. https://github.com/pyenv/pyenv[pyenv] to install the correct version. You should fulfill the dependencies on you Operating System, see the https://github.com/pyenv/pyenv/wiki#suggested-build-environment[pyenv's suggested build environment].
 
 - Run `curl -L https://github.com/pyenv/pyenv-installer/raw/master/bin/pyenv-installer | bash`
 - Add the following to your `~/.bashrc`:
@@ -45,12 +47,11 @@ eval "$(pyenv init -)"
 eval "$(pyenv virtualenv-init -)"
 ```
 - Restart the console
-- Check the correct Python version by running `grep python_version voting_schemes/electionguard/python-wrapper/Pipfile`
-- Run `PYTHON_CONFIGURE_OPTS="--enable-shared" pyenv install 3.x.x` (replace 3.x.x with the correct python version, note the configuration options)
+- `PYTHON_CONFIGURE_OPTS="--enable-shared" pyenv install`
 
 ==== Install Poetry
 
-- Run `curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python -`
+- Run `curl -sSL https://install.python-poetry.org | python3 -`
 - Add the following to your `~/.bashrc`: `export PATH="$HOME/.poetry/bin:$PATH"`
 
 ==== Install Pipenv
@@ -67,7 +68,7 @@ Install the dependency gems in the Ruby adapter `cd voting_schemes/electionguard
 
 ==== Install the necessary software
 
-Install the necessary software to run the bulletin board server `apt-get install postgresql redis-server`
+Install the necessary software to run the bulletin board server `apt-get install postgresql libpq-dev redis-server`
 
 You will also need to have Docker installed on your machine in order to build the images and push them to the Docker Hub. To install, please follow the official guides at:
 https://docs.docker.com/engine/install/
