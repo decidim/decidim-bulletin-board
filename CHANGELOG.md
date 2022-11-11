@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## [0.24.1] - 2022-11-11
+
+## Fixed
+
+- Fixed issue with bulletin board Ruby client OpenSSL 3.0 compatibility
+
 ## [0.24.0] - 2022-08-26
 
 ## Changed
