@@ -11,6 +11,80 @@ This repository follows the monorepo pattern and includes the following projects
 - **verifier**: A command line application to audit ballots and verify the election results.
 - **voting_schemes**: Implementation of different cryptographic voting schemes to be used to run the elections. Currently, it includes the Dummy scheme, used only for testing purposes, and the ElectionGuard scheme, based on the Python implementation of the protocol.
 
-## License
+== Getting started with this repository
+
+- Clone this repository with submodules `git clone --recurse-submodules -j8 https://github.com/decidim/decidim-bulletin-board.git`
+- Or clone the submodules separately after the initial clone by running `git submodule update --init --recursive` in the repository folder
+- Use one of the development methods below
+
+=== Devcontainer
+
+This repository ships with a dev container to get you up and running quickly. This make is easy to get the development environment running without having to install all the dependencies.
+
+Read more about https://code.visualstudio.com/docs/remote/containers[devcontainers on Visual Studio Code documentation].
+
+=== Manual development environment
+
+These instructions assume you're using the last stable version of Ubuntu (Ubuntu 22.04 LTS). It should work for other GNU/Linux based systems, but you'll need to translate the commands to your environment. For instance, instead of using apt, using your distribution package manager, the names of the packages will also change, etc.
+
+==== Install Ruby and Node
+
+Assuming you already know how to if you are already working with Decidim.
+
+==== Install Python
+
+This guide is assuming that you don't have any python development tooling installed on your home folder. If so, we recommend that you start with a clean state just to be sure, for instance, deleting .local/bin/pip with `rm $[HOME}/.local/bin/pip`
+
+You can use e.g. https://github.com/pyenv/pyenv[pyenv] to install the correct version. You should fulfill the dependencies on you Operating System, see the https://github.com/pyenv/pyenv/wiki#suggested-build-environment[pyenv's suggested build environment].
+
+- Run `curl -L https://github.com/pyenv/pyenv-installer/raw/master/bin/pyenv-installer | bash`
+- Add the following to your `~/.bashrc`:
+```
+export PYENV_ROOT="$HOME/.pyenv"
+export PATH="$PYENV_ROOT/bin:$PATH"
+eval "$(pyenv init --path)"
+eval "$(pyenv init -)"
+eval "$(pyenv virtualenv-init -)"
+```
+- Restart the console
+- `PYTHON_CONFIGURE_OPTS="--enable-shared" pyenv install`
+
+==== Install Poetry
+
+- Run `curl -sSL https://install.python-poetry.org | python3 -`
+- Add the following to your `~/.bashrc`: `export PATH="$HOME/.poetry/bin:$PATH"`
+
+==== Install Pipenv
+
+Run: `pip install pipenv`
+
+==== Install the build dependencies
+
+Install the needed packages for building the extensions `apt-get install libgmp3-dev`
+
+==== Install the Ruby adapter dependencies
+
+Install the dependency gems in the Ruby adapter `cd voting_schemes/electionguard/ruby-adapter && bundle`
+
+==== Install the necessary software
+
+Install the necessary software to run the bulletin board server `apt-get install postgresql libpq-dev redis-server`
+
+You will also need to have Docker installed on your machine in order to build the images and push them to the Docker Hub. To install, please follow the official guides at:
+https://docs.docker.com/engine/install/
+
+Finally, install all the necessary local dependencies by running `make install`.
+
+==== Build and configure
+
+Now you should have everything you need to build the different modules, which you can do by running the `make build` command at the root of the repository. If this fails, please update this guide how you fixed the problem.
+
+For running the bulletin board server, you need to configure the `DATABASE_USERNAME` and `DATABASE_PASSWORD` environment variables with a user that has access to create new databases on the local PostgreSQL server.
+
+== Building and publishing the docker images
+
+Run `make help_electionguard` to get help about building and publishing the docker images.
+
+== License
 
 See https://github.com/decidim/decidim[Decidim].
