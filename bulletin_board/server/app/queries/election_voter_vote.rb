@@ -13,7 +13,7 @@ class ElectionVoterVote < Rectify::Query
 
   def query
     LogEntry.where(
-      election: election,
+      election:,
       author_unique_id: voter_id
     )
   end

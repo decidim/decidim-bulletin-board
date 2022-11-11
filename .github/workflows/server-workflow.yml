@@ -9,6 +9,7 @@ on:
     branches:
       - develop
       - main
+      - fix/github-ci
 
 env:
   CI: "true"
@@ -19,20 +20,31 @@ jobs:
     name: Build electionguard
     runs-on: ubuntu-latest
     container:
-      image: codegram/ruby-node-python-electionguard:ruby-2.6.6-node-15-python-3.8.11-electionguard-1.2.1
+      image: decidim/ruby-node-python-electionguard:ruby-3.1.1-node-16-python-3.8.11-electionguard-1.2.1
     steps:
       - uses: actions/checkout@v2.0.0
         with:
           fetch-depth: 1
       - name: Copy local electionguard
         run: cp -r /code/voting_schemes/electionguard/electionguard-python voting_schemes/electionguard
+
+      - name: Install pipenv
+        run: |
+          python3 -m pip install --upgrade pipenv wheel
+
+      - name: Upgrade setuptools for the virtual environment
+        working-directory: ./voting_schemes/electionguard/python-wrapper
+        run: |
+          python3 -m pipenv run echo "Initialize"
+          curl -sS https://bootstrap.pypa.io/get-pip.py | $(pipenv --py)
+          python3 -m pipenv run python -m pip install --upgrade setuptools
       - name: Cache python wrapper
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         env:
           cache-name: cache-electionguard-python
         with:
           path: /cache/python
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ secrets.CACHE_VERSION }}-${{ hashFiles('voting_schemes/electionguard/python-wrapper/**') }}
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ secrets.CACHE_VERSION }}-${{ hashFiles('voting_schemes/electionguard/python-wrapper/**', '!voting_schemes/electionguard/python-wrapper/.venv') }}
           restore-keys: |
             ${{ runner.os }}-build-${{ env.cache-name }}-
             ${{ runner.os }}-build-
@@ -54,7 +66,7 @@ jobs:
         with:
           fetch-depth: 1
       - name: Cache python to js
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         id: cache-electionguard-pyodide-assets
         env:
           cache-name: cache-electionguard-pyodide-assets
@@ -80,7 +92,7 @@ jobs:
         with:
           fetch-depth: 1
       - name: Cache python to js
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         id: cache-electionguard-pyodide-assets
         env:
           cache-name: cache-electionguard-pyodide-assets
@@ -92,12 +104,12 @@ jobs:
             ${{ runner.os }}-build-
             ${{ runner.os }}-
       - name: Cache python wrapper
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         env:
           cache-name: cache-electionguard-python
         with:
           path: /cache/python
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ secrets.CACHE_VERSION }}-${{ hashFiles('voting_schemes/electionguard/python-wrapper/**') }}
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ secrets.CACHE_VERSION }}-${{ hashFiles('voting_schemes/electionguard/python-wrapper/**', '!voting_schemes/electionguard/python-wrapper/.venv') }}
           restore-keys: |
             ${{ runner.os }}-build-${{ env.cache-name }}-
             ${{ runner.os }}-build-
@@ -121,7 +133,7 @@ jobs:
     needs: build_python_to_js
     runs-on: ubuntu-latest
     container:
-      image: codegram/ruby-node-python-electionguard:ruby-2.6.6-node-15-python-3.8.11-electionguard-1.2.1
+      image: decidim/ruby-node-python-electionguard:ruby-3.1.1-node-16-python-3.8.11-electionguard-1.2.1
     services:
       postgres:
         image: postgres:11
@@ -142,7 +154,7 @@ jobs:
         with:
           fetch-depth: 1
       - name: Cache python to js
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         env:
           cache-name: cache-electionguard-pyodide-assets
         with:
@@ -153,12 +165,12 @@ jobs:
             ${{ runner.os }}-build-
             ${{ runner.os }}-
       - name: Cache python wrapper
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         env:
           cache-name: cache-electionguard-python
         with:
           path: /cache/python
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ secrets.CACHE_VERSION }}-${{ hashFiles('voting_schemes/electionguard/python-wrapper/**') }}
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ secrets.CACHE_VERSION }}-${{ hashFiles('voting_schemes/electionguard/python-wrapper/**', '!voting_schemes/electionguard/python-wrapper/.venv') }}
           restore-keys: |
             ${{ runner.os }}-build-${{ env.cache-name }}-
             ${{ runner.os }}-build-
@@ -170,16 +182,16 @@ jobs:
           mkdir -p voting_schemes/electionguard/ruby-adapter/public/assets/electionguard
           cp -r /cache/python-to-js/electionguard-assets/* voting_schemes/electionguard/ruby-adapter/public/assets/electionguard
       - name: Install system dependencies
-        run: sudo apt-get update && sudo apt-get install -y libpq-dev
+        run: sudo apt-get update && sudo apt-get install -y libpq-dev libgmp-dev libmpfr-dev libmpc-dev
       - name: Cache Ruby dependencies
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         env:
           cache-name: cache-ruby-gems
         with:
           path: /usr/local/bundle
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ secrets.CACHE_VERSION }}-${{ hashFiles('**/Gemfile.lock') }}
       - name: Cache JS dependencies
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         env:
           cache-name: cache-node-packages
         with:
@@ -210,8 +222,8 @@ jobs:
           RAILS_ENV: test
         run: |
           cd bulletin_board/server
-          bundler exec rails db:create
-          bundler exec rails db:migrate
+          bundle exec rails db:create
+          bundle exec rails db:migrate
       - name: Check if GraphQL schema has changed
         env:
           RAILS_ENV: test
@@ -223,7 +235,7 @@ jobs:
           npm run schema:generate
           git diff --exit-code --ignore-submodules
       - name: Run Rspec tests
-        run: cd bulletin_board/server && bundler exec rake
+        run: cd bulletin_board/server && bundle exec rake
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v1
         with:
@@ -234,7 +246,7 @@ jobs:
     needs: [check_python_to_js_cache, build_python_to_js]
     runs-on: ubuntu-latest
     container:
-      image: codegram/ruby-node-python-electionguard:ruby-2.6.6-node-15-python-3.8.11-electionguard-1.2.1
+      image: decidim/ruby-node-python-electionguard:ruby-3.1.1-node-16-python-3.8.11-electionguard-1.2.1
     services:
       postgres:
         image: postgres:11
@@ -264,7 +276,7 @@ jobs:
         with:
           fetch-depth: 1
       - name: Cache python to js
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         env:
           cache-name: cache-electionguard-pyodide-assets
         with:
@@ -275,12 +287,12 @@ jobs:
             ${{ runner.os }}-build-
             ${{ runner.os }}-
       - name: Cache python wrapper
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         env:
           cache-name: cache-electionguard-python
         with:
           path: /cache/python
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ secrets.CACHE_VERSION }}-${{ hashFiles('voting_schemes/electionguard/python-wrapper/**') }}
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ secrets.CACHE_VERSION }}-${{ hashFiles('voting_schemes/electionguard/python-wrapper/**', '!voting_schemes/electionguard/python-wrapper/.venv') }}
           restore-keys: |
             ${{ runner.os }}-build-${{ env.cache-name }}-
             ${{ runner.os }}-build-
@@ -294,14 +306,14 @@ jobs:
       - name: Install system dependencies
         run: sudo apt-get update --allow-releaseinfo-change && sudo apt-get install -y libpq-dev libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 libxtst6 xauth xvfb
       - name: Cache Ruby dependencies
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         env:
           cache-name: cache-ruby-gems
         with:
           path: /usr/local/bundle
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ secrets.CACHE_VERSION }}-${{ hashFiles('**/Gemfile.lock') }}
       - name: Cache JS dependencies
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         env:
           cache-name: cache-node-packages
         with:
@@ -321,8 +333,8 @@ jobs:
           RAILS_ENV: test
         run: |
           cd bulletin_board/server
-          bundler exec rails db:create
-          bundler exec rails db:migrate
+          bundle exec rails db:create
+          bundle exec rails db:migrate
       - name: Install e2e tests dependencies
         run: |
           make install_test_e2e
@@ -355,3 +367,5 @@ jobs:
         with:
           name: cypress downloads
           path: bulletin_board/server/cypress/downloads/
+      - name: Clear the cypress downloads folder
+        run: rm -rf bulletin_board/server/cypress/downloads

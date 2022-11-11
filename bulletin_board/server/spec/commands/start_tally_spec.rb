@@ -12,7 +12,7 @@ RSpec.describe StartTally do
   let(:election_status) { :vote_ended }
   let(:client) { Authority.first }
   let(:message_type) { :start_tally_message }
-  let(:message_params) { { election: election } }
+  let(:message_params) { { election: } }
 
   shared_examples "starting the tally fails" do
     it "doesn't create a log entry" do
@@ -37,7 +37,7 @@ RSpec.describe StartTally do
   end
 
   it "change the election status to tally" do
-    expect { subject }.to change { Election.last.status }.from("vote_ended").to("tally")
+    expect { subject }.to change { Election.last.status }.from("vote_ended").to("tally_started")
   end
 
   it_behaves_like "with an invalid signed data", "starting the tally fails"
@@ -53,7 +53,7 @@ RSpec.describe StartTally do
   end
 
   context "when the client is not the election authority" do
-    let(:client) { create(:authority, private_key: private_key) }
+    let(:client) { create(:authority, private_key:) }
     let(:private_key) { generate(:private_key) }
 
     it_behaves_like "starting the tally fails"

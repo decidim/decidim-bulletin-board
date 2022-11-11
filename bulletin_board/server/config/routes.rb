@@ -11,7 +11,7 @@ Rails.application.routes.draw do
 
   root to: "pages#index"
 
-  if !Rails.env.production? || ENV["SANDBOX"]
+  if !Rails.env.production? || ENV.fetch("SANDBOX", nil)
     mount Sidekiq::Web => "/sidekiq"
     scope "/sandbox", module: :sandbox, as: :sandbox do
       resources :elections, only: [:new, :create, :index] do

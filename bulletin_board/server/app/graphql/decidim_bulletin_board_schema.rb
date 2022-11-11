@@ -5,6 +5,6 @@ class DecidimBulletinBoardSchema < GraphQL::Schema
   query(Types::QueryType)
   use GraphQL::Guard.new(
     policy_object: Policies::VisibilityPolicy,
-    not_authorized: ->(_type, _field) { nil }
+    not_authorized: ->(_type, _field) {}
   )
 end

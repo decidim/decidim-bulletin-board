@@ -5,6 +5,8 @@ require "redis"
 
 module Sandbox
   class ElectionsController < ApplicationController
+    include RedisProvider
+
     helper_method :elections, :election,
                   :bulletin_board_server, :authority_slug, :authority_public_key,
                   :random_voter_id,
@@ -38,7 +40,7 @@ module Sandbox
 
       pending_message = bulletin_board_client.cast_vote(election_id, params[:voter_id], params[:encrypted_ballot])
 
-      render json: pending_message.to_json
+      render json: { data: pending_message.to_h }
     end
 
     def in_person_vote
@@ -84,7 +86,7 @@ module Sandbox
     def report_missing_trustee
       pending_message = bulletin_board_client.report_missing_trustee(election_id, params[:trustee_id])
 
-      render json: pending_message.to_json
+      render json: { data: pending_message.to_h }
     end
 
     def publish_results
@@ -107,13 +109,13 @@ module Sandbox
 
     def election_data
       @election_data ||= params.require(:election).permit(:default_locale, title: {}).to_h.merge(
-        trustees: trustees,
-        start_date: start_date,
-        end_date: end_date,
-        polling_stations: polling_stations,
-        questions: questions,
-        answers: answers,
-        ballot_styles: ballot_styles
+        trustees:,
+        start_date:,
+        end_date:,
+        polling_stations:,
+        questions:,
+        answers:,
+        ballot_styles:
       )
     end
 
@@ -136,7 +138,7 @@ module Sandbox
     end
 
     def polling_stations
-      @polling_stations ||= params[:election][:polling_stations].reject(&:blank?)
+      @polling_stations ||= params[:election][:polling_stations].compact_blank
     end
 
     def questions
@@ -252,11 +254,7 @@ module Sandbox
     end
 
     def generated_votes_number(election)
-      `wc -l "#{bulk_votes_file_path(election)}"`.strip.split(" ")[0].to_i
-    end
-
-    def redis
-      Redis.current
+      `wc -l "#{bulk_votes_file_path(election)}"`.strip.split[0].to_i
     end
   end
 end

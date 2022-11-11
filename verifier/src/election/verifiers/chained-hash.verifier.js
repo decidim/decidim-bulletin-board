@@ -5,7 +5,7 @@ import { hash } from "../../crypto-utils.js";
 export const verifyChainedHashes = (allElectionFilesStream) => {
   let previousHash = null;
 
-  return new Promise((resolve) => {
+  return new Promise((resolve, fail) => {
     allElectionFilesStream.on("data", ({ value: data }) => {
       const { signed_data: signedData, chained_hash: chainedHash } = data;
       // The first hash is computed using the election unique id.

@@ -1,5 +1,5 @@
-FROM ruby:2.6.6
-LABEL author="david@codegram.com"
+FROM ruby:3.1.1
+LABEL author="hola@decidim.org"
 
 ARG ELECTIONGUARD_PYTHON_REF=
 
@@ -9,6 +9,9 @@ ENV PYTHON_CONFIGURE_OPTS='--enable-shared'
 ENV PYENV_ROOT /root/.pyenv
 ENV PATH="$HOME/.poetry/bin:$PATH"
 ENV PATH $PYENV_ROOT/shims:$PYENV_ROOT/bin:/root/.poetry/bin:$PATH
+
+# Assume yes for all apt-get prompts
+RUN echo 'APT::Get::Assume-Yes "true";' > /etc/apt/apt.conf.d/90assume-yes
 
 # Install bundler
 RUN gem install bundler
@@ -22,7 +25,7 @@ RUN git clone https://github.com/pyenv/pyenv.git ~/.pyenv && \
 RUN curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python -
 
 # Install node
-RUN curl -fsSL https://deb.nodesource.com/setup_15.x | bash - && apt-get install -y nodejs
+RUN curl -fsSL https://deb.nodesource.com/setup_16.x | bash - && apt-get install -y nodejs
 
 # Create the source folder
 RUN mkdir -p /code

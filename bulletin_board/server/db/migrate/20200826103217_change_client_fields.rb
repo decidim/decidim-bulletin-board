@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class ChangeClientFields < ActiveRecord::Migration[6.0]
+class ChangeClientFields < ActiveRecord::Migration[6.1]
   def up
     add_index :clients, :name, unique: true
     add_index :clients, :public_key, unique: true

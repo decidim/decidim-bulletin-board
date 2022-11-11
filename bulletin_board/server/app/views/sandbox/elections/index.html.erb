@@ -52,7 +52,7 @@
                 </div>
               <% elsif election.vote_ended? %>
                 <%= link_to "Start tally", start_tally_sandbox_election_path(election), class: "button" %>
-              <% elsif election.tally? %>
+              <% elsif election.tally_started? %>
                 <%= link_to "Perform tally", tally_sandbox_election_path(election), class: "button" %>
               <% else %>
                 <%= link_to "View results", results_sandbox_election_path(election), class: "button" %>

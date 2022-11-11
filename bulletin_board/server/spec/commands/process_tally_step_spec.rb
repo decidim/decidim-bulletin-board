@@ -8,13 +8,13 @@ RSpec.describe ProcessTallyStep do
 
   include_context "with a signed message"
 
-  let!(:election) { create(:election, :tally, trustees_done: trustees_done) }
+  let!(:election) { create(:election, :tally_started, trustees_done:) }
   let(:trustees_done) { [] }
   let(:trustee) { Trustee.first }
   let(:client) { trustee }
   let(:private_key) { Test::PrivateKeys.trustees_private_keys.first }
   let(:message_type) { :tally_share_message }
-  let(:message_params) { { election: election, trustee: trustee } }
+  let(:message_params) { { election:, trustee: } }
 
   it "broadcasts ok" do
     expect { subject }.to broadcast(:ok)
@@ -29,7 +29,7 @@ RSpec.describe ProcessTallyStep do
   end
 
   it "doesn't change the election status" do
-    expect { subject }.not_to change { Election.last.status }.from("tally")
+    expect { subject }.not_to change { Election.last.status }.from("tally_started")
   end
 
   context "when the voting scheme generates an answer" do
@@ -48,7 +48,7 @@ RSpec.describe ProcessTallyStep do
     end
 
     it "changes the election status" do
-      expect { subject }.to change { Election.last.status }.from("tally").to("tally_ended")
+      expect { subject }.to change { Election.last.status }.from("tally_started").to("tally_ended")
     end
 
     it "generates the verifiable results file" do
@@ -103,7 +103,7 @@ RSpec.describe ProcessTallyStep do
   end
 
   context "when the client is not an election trustee" do
-    let(:trustee) { create(:trustee, private_key: private_key) }
+    let(:trustee) { create(:trustee, private_key:) }
     let(:private_key) { generate(:private_key) }
 
     it_behaves_like "tally fails"

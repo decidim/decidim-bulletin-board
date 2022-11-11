@@ -1,19 +1,24 @@
 # This stage builds the python-wrapper package
-FROM codegram/ruby-node-python-electionguard:ruby-2.6.6-node-15-python-3.8.11-electionguard-1.2.1 as python-wrapper-builder
-LABEL author="david@codegram.com"
+FROM decidim/ruby-node-python-electionguard:ruby-3.1.1-node-16-python-3.8.11-electionguard-1.2.1 as python-wrapper-builder
+LABEL author="hola@decidim.org"
 
 # Add Makefile
 ADD Makefile /code/Makefile
 
 # Add the source files
 ADD voting_schemes/electionguard/python-wrapper /code/voting_schemes/electionguard/python-wrapper
+ADD voting_schemes/electionguard/makefile.mk /code/voting_schemes/electionguard/makefile.mk
+ADD voting_schemes/dummy/makefile.mk /code/voting_schemes/dummy/makefile.mk
+ADD verifier/makefile.mk /code/verifier/makefile.mk
+ADD bulletin_board/client.mk /code/bulletin_board/client.mk
+ADD bulletin_board/server.mk /code/bulletin_board/server.mk
 
 # This step builds the electionguard-python package and the python wrapper
 RUN cd /code && make build_electionguard_python_wrapper
 
 # This stage builds the pyodide packages for the previous python packages
 FROM codegram/pyodide-electionguard:pyodide-0.16.1-electionguard-1.2.1 as python-to-js-builder
-LABEL author="david@codegram.com"
+LABEL author="hola@decidim.org"
 
 ENV PYODIDE_PACKAGES "electionguard,bulletin_board-electionguard"
 
@@ -38,8 +43,8 @@ RUN make
 RUN cp -rf /code/voting_schemes/electionguard/python-to-js/override/* /src/pyodide/build/
 
 # This stage builds the bulletin-board application
-FROM codegram/ruby-node-python-electionguard:ruby-2.6.6-node-15-python-3.8.11-electionguard-1.2.1
-LABEL author="david@codegram.com"
+FROM decidim/ruby-node-python-electionguard:ruby-3.1.1-node-16-python-3.8.11-electionguard-1.2.1
+LABEL author="hola@decidim.org"
 
 # Dummy environment variables used to compile assets
 ENV SECRET_KEY_BASE 1234
@@ -63,12 +68,23 @@ COPY --from=python-to-js-builder /code/voting_schemes/electionguard /code/voting
 ADD voting_schemes/electionguard/js-adapter /code/voting_schemes/electionguard/js-adapter
 ADD voting_schemes/electionguard/ruby-adapter /code/voting_schemes/electionguard/ruby-adapter
 COPY --from=python-to-js-builder /src/pyodide/build /code/voting_schemes/electionguard/ruby-adapter/public/assets/electionguard
+ADD verifier/makefile.mk /code/verifier/makefile.mk
+ADD voting_schemes/dummy/makefile.mk /code/voting_schemes/dummy/makefile.mk
+ADD voting_schemes/electionguard/makefile.mk /code/voting_schemes/electionguard/makefile.mk
+ADD bulletin_board/client.mk /code/bulletin_board/client.mk
+ADD bulletin_board/server.mk /code/bulletin_board/server.mk
 
 # Add dependencies manifests
 ADD bulletin_board/server/package-lock.json /code/bulletin_board/server/package-lock.json
 ADD bulletin_board/server/package.json /code/bulletin_board/server/package.json
 ADD bulletin_board/server/Gemfile.lock /code/bulletin_board/server/Gemfile.lock
 ADD bulletin_board/server/Gemfile /code/bulletin_board/server/Gemfile
+
+# Prevent npm ERR! code ERR_SOCKET_TIMEOUT
+RUN npm install --global npm@latest && \
+  npm config set fetch-timeout 1800000 -g && \
+  npm config set fetch-retry-mintimeout 600000 -g && \
+  npm config set fetch-retry-maxtimeout 1800000 -g
 
 # Install all dependencies, build artifacts and remove unnecessary files
 RUN cd /code && make install && make build && \

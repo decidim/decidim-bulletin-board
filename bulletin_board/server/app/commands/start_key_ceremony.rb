@@ -24,13 +24,13 @@ class StartKeyCeremony < Rectify::Command
   def call
     return broadcast(:invalid, error) unless
       valid_log_entry?("start_key_ceremony")
+    return broadcast(:invalid, error) unless
+      valid_client?(authority.authority? && election.authority == authority) &&
+      valid_author?(message_identifier.from_authority?) &&
+      valid_step?(election.created?)
 
     election.with_lock do
-      return broadcast(:invalid, error) unless
-        valid_client?(authority.authority? && election.authority == authority) &&
-        valid_author?(message_identifier.from_authority?) &&
-        valid_step?(election.created?) &&
-        process_message
+      return broadcast(:invalid, error) unless process_message # rubocop:disable Rails/TransactionExitStatement
 
       log_entry.election = election
       log_entry.save!
@@ -50,7 +50,7 @@ class StartKeyCeremony < Rectify::Command
 
     @response_log_entries = response_messages.map do |response_message|
       LogEntry.create!(
-        election: election,
+        election:,
         message_id: response_message["message_id"],
         signed_data: BulletinBoard.sign(response_message),
         bulletin_board: true

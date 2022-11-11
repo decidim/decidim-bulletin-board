@@ -4,6 +4,8 @@ require "redis"
 
 module Sandbox
   class GenerateVotesJob < ApplicationJob
+    include RedisProvider
+
     queue_as :vote
 
     def perform(number_of_votes, election_id, file_path, client_settings = {})
@@ -49,13 +51,13 @@ module Sandbox
     end
 
     def random_plaintext_ballot
-      election.manifest[:description][:contests].map do |contest|
+      election.manifest[:description][:contests].to_h do |contest|
         [
           contest[:object_id],
           contest[:ballot_selections].sample(Random.rand(contest[:number_elected] + 1))
                                      .map { |ballot_selection| ballot_selection[:object_id] }
         ]
-      end.to_h
+      end
     end
 
     def election
@@ -67,11 +69,7 @@ module Sandbox
     end
 
     def log_entry_for(message_type)
-      election.log_entries.where(message_type: message_type).last
-    end
-
-    def redis
-      Redis.current
+      election.log_entries.where(message_type:).last
     end
   end
 end

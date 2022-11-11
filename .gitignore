@@ -46,3 +46,4 @@
 *.bak
 =======
 .env
+.rbenv-vars

@@ -3,9 +3,9 @@
 require "rails_helper"
 
 RSpec.describe "GetPendingMessage" do
-  subject { DecidimBulletinBoardSchema.execute(query, context: context) }
+  subject { DecidimBulletinBoardSchema.execute(query, context:) }
 
-  let!(:pending_message) { create(:pending_message, election: election, message: build(:vote_message, election: election)) }
+  let!(:pending_message) { create(:pending_message, election:, message: build(:vote_message, election:)) }
   let(:election) { create(:election) }
   let(:pending_message_id) { pending_message.id }
   let(:context) { {} }
@@ -66,8 +66,8 @@ RSpec.describe "GetPendingMessage" do
   end
 
   describe "pending messages with results data" do
-    let!(:election) { create(:election, :tally) }
-    let!(:pending_message) { create(:pending_message, :by_trustee, election: election, message: build(:tally_share_message, election: election)) }
+    let!(:election) { create(:election, :tally_started) }
+    let!(:pending_message) { create(:pending_message, :by_trustee, election:, message: build(:tally_share_message, election:)) }
 
     it "hides the signed data" do
       expect(subject.deep_symbolize_keys).to include(

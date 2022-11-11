@@ -12,7 +12,7 @@ RSpec.describe PublishResults do
   let(:election_status) { :tally_ended }
   let(:client) { Authority.first }
   let(:message_type) { :publish_results_message }
-  let(:message_params) { { election: election } }
+  let(:message_params) { { election: } }
 
   it "broadcasts ok" do
     expect { subject }.to broadcast(:ok, election)
@@ -72,7 +72,7 @@ RSpec.describe PublishResults do
   it_behaves_like "with an invalid signed data", "publishing results fails"
 
   context "when the election status is not results" do
-    let(:election_status) { :tally }
+    let(:election_status) { :tally_started }
 
     it_behaves_like "publishing results fails"
 
@@ -82,7 +82,7 @@ RSpec.describe PublishResults do
   end
 
   context "when the client is not the election authority" do
-    let(:client) { create(:authority, private_key: private_key) }
+    let(:client) { create(:authority, private_key:) }
     let(:private_key) { generate(:private_key) }
 
     it_behaves_like "publishing results fails"

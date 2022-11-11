@@ -9,10 +9,10 @@ RSpec.describe ReportMissingTrustee do
   include_context "with a signed message"
 
   let!(:election) { create(:election, election_status) }
-  let(:election_status) { :tally }
+  let(:election_status) { :tally_started }
   let(:client) { Authority.first }
   let(:message_type) { :report_missing_trustee_message }
-  let(:message_params) { { election: election } }
+  let(:message_params) { { election: } }
 
   shared_examples "reporting the missing trustee fails" do
     it "doesn't create a log entry" do
@@ -45,7 +45,7 @@ RSpec.describe ReportMissingTrustee do
   end
 
   context "when the client is not the election authority" do
-    let(:client) { create(:authority, private_key: private_key) }
+    let(:client) { create(:authority, private_key:) }
     let(:private_key) { generate(:private_key) }
 
     it_behaves_like "reporting the missing trustee fails"

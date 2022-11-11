@@ -7,7 +7,7 @@ module VotingScheme
     RSpec.describe BulletinBoard do
       subject(:instance) { described_class.new(election) }
 
-      let(:election) { build(:electionguard_election, last_step: last_step) }
+      let(:election) { build(:electionguard_election, last_step:) }
 
       describe "process_message" do
         subject do
@@ -51,7 +51,7 @@ module VotingScheme
           let(:dont_process_count) { 1 }
 
           it "returns the joint election key message" do
-            expect(JSON.parse(election.log_entries.last.decoded_data["content"])["election_joint_key"]["joint_public_key"]).not_to eq(nil)
+            expect(JSON.parse(election.log_entries.last.decoded_data["content"])["election_joint_key"]["joint_public_key"]).not_to be_nil
           end
         end
       end

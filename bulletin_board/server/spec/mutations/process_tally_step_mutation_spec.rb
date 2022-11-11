@@ -4,7 +4,7 @@ require "rails_helper"
 
 module Mutations
   RSpec.describe ProcessTallyStepMutation, type: :request do
-    subject { post "/api", params: { query: query, variables: { messageId: message_id, signedData: signed_data } } }
+    subject { post "/api", params: { query:, variables: { messageId: message_id, signedData: signed_data } } }
 
     let(:query) do
       <<~GQL
@@ -27,10 +27,10 @@ module Mutations
       GQL
     end
 
-    let!(:election) { create(:election, :tally) }
+    let!(:election) { create(:election, :tally_started) }
     let(:trustee) { Trustee.first }
     let(:signed_data) { JWT.encode(payload.as_json, Test::PrivateKeys.trustees_private_keys.first.keypair, "RS256") }
-    let(:payload) { build(:tally_share_message, trustee: trustee, election: election) }
+    let(:payload) { build(:tally_share_message, trustee:, election:) }
     let(:message_id) { payload["message_id"] }
 
     it "adds the message to the pending messages table" do
@@ -64,7 +64,7 @@ module Mutations
     end
 
     context "when the trustee is not authorized" do
-      let(:trustee) { build(:trustee, private_key: private_key) }
+      let(:trustee) { build(:trustee, private_key:) }
       let(:private_key) { generate(:private_key) }
 
       it "doesn't create a pending message" do

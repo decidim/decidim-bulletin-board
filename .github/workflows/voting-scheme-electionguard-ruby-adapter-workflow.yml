@@ -12,7 +12,7 @@ on:
 env:
   CI: "true"
   SIMPLECOV: "true"
-  RUBY_VERSION: 2.6.6
+  RUBY_VERSION: 3.1.1
 
 defaults:
   run:
@@ -83,4 +83,4 @@ jobs:
           max_attempts: 3
           command: cd voting_schemes/electionguard/ruby-adapter && bundle install --path vendor/bundle --jobs 4 --retry 3
       - name: Run tests
-        run: bundler exec rspec
+        run: bundle exec rspec

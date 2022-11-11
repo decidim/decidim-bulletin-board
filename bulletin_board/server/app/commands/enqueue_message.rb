@@ -44,15 +44,15 @@ class EnqueueMessage < Rectify::Command
   end
 
   def pending_messages?
-    PendingMessage.enqueued.exists?(client: client, election: election, message_id: message_id)
+    PendingMessage.enqueued.exists?(client:, election:, message_id:)
   end
 
   def create_pending_message!
     @pending_message = PendingMessage.create!(
-      client: client,
-      election: election,
-      message_id: message_id,
-      signed_data: signed_data,
+      client:,
+      election:,
+      message_id:,
+      signed_data:,
       status: :enqueued
     )
   end

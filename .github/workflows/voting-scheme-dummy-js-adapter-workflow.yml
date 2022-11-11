@@ -12,7 +12,7 @@ on:
 env:
   CI: "true"
   SIMPLECOV: "true"
-  RUBY_VERSION: 2.6.6
+  RUBY_VERSION: 3.1.1
   ACTIONS_ALLOW_UNSECURE_COMMANDS: "true"
   NODE_VERSION: "15"
 
