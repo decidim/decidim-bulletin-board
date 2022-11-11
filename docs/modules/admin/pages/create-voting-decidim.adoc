@@ -150,6 +150,8 @@ image::voting-census-export.png[The access codes have been generated - next step
 
 The access codes have been generated - next step: export them.
 
+NOTE: You can only export one time.
+
 Now the census is frozen and cannot be modified anymore.
 
 image::voting-census-frozen.png[The census can't be modified]
