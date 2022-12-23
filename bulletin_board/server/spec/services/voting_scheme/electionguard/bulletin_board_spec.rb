@@ -15,7 +15,7 @@ module VotingScheme
         end
 
         before do
-          election.log_entries.excluding(election.log_entries.last(dont_process_count)).each do |log_entry|
+          election.log_entries.first(election.log_entries.length - dont_process_count).each do |log_entry|
             instance.process_message(Decidim::BulletinBoard::MessageIdentifier.new(log_entry.message_id), log_entry.decoded_data)
           end
         end
