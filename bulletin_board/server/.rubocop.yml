@@ -1,4 +1,7 @@
-inherit_from: https://raw.githubusercontent.com/decidim/decidim/develop/.rubocop.yml
+inherit_from:
+  - https://raw.githubusercontent.com/decidim/decidim/develop/decidim-dev/config/rubocop/ruby.yml
+  - https://raw.githubusercontent.com/decidim/decidim/develop/decidim-dev/config/rubocop/rspec.yml
+  - https://raw.githubusercontent.com/decidim/decidim/develop/decidim-dev/config/rubocop/rails.yml
 
 AllCops:
   Include:
@@ -11,3 +14,9 @@ AllCops:
     - "node_modules/**/*"
     - "db/schema.rb"
     - "vendor/**/*"
+
+Style/OpenStructUse:
+  Enabled: false
+
+Rails/HasManyOrHasOneDependent:
+  Enabled: false
