@@ -17,7 +17,7 @@ ADD bulletin_board/server.mk /code/bulletin_board/server.mk
 RUN cd /code && make build_electionguard_python_wrapper
 
 # This stage builds the pyodide packages for the previous python packages
-FROM codegram/pyodide-electionguard:pyodide-0.16.1-electionguard-1.2.1 as python-to-js-builder
+FROM decidim/pyodide-electionguard:pyodide-0.16.1-electionguard-1.2.1 as python-to-js-builder
 LABEL author="hola@decidim.org"
 
 ENV PYODIDE_PACKAGES "electionguard,bulletin_board-electionguard"

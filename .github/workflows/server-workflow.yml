@@ -86,7 +86,7 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ needs.check_python_to_js_cache.outputs.cache-hit != 'true' }}
     container:
-      image: codegram/pyodide-electionguard:pyodide-0.16.1-electionguard-1.2.1
+      image: decidim/pyodide-electionguard:pyodide-0.16.1-electionguard-1.2.1
     steps:
       - uses: actions/checkout@v2.0.0
         with:
