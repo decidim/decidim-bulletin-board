@@ -1,1 +1,1 @@
-Dockerfile.web
+Dockerfile.release
