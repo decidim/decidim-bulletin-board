@@ -105,3 +105,4 @@ RUN bundle exec rake assets:precompile
 # Run the entrypoint script
 COPY ./docker-entrypoint.sh /
 ENTRYPOINT ["/docker-entrypoint.sh"]
+CMD ["bundle", "exec", "rails", "s", "-b", "0.0.0.0"]
