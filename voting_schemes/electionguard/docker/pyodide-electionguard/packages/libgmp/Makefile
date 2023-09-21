@@ -20,7 +20,7 @@ clean:
 
 $(TARBALL):
 	[ -d $(ROOT)/downloads ] || mkdir $(ROOT)/downloads
-	wget -q -O $@ $(URL)
+	wget -v -O $@ $(URL)
 	sha256sum --quiet --check checksums || (rm $@; false)
 
 

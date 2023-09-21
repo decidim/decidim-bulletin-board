@@ -17,12 +17,12 @@ RUN echo 'APT::Get::Assume-Yes "true";' > /etc/apt/apt.conf.d/90assume-yes
 RUN gem install bundler
 
 # Install system dependencies
-RUN apt-get update --allow-releaseinfo-change && apt-get install -y sudo pipenv git vim curl
+RUN apt-get update --allow-releaseinfo-change && apt-get install -y sudo pipenv git vim curl wget
 
 # Install python and poetry
 RUN git clone https://github.com/pyenv/pyenv.git ~/.pyenv && \
   pyenv install $PYTHON_VERSION && pyenv global $PYTHON_VERSION
-RUN curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python -
+RUN curl -sSL https://install.python-poetry.org | python3 -
 
 # Install node
 RUN curl -fsSL https://deb.nodesource.com/setup_16.x | bash - && apt-get install -y nodejs

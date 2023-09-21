@@ -1,5 +1,5 @@
 FROM iodide/pyodide:0.16.1
-LABEL author="david@codegram.com"
+LABEL author="hola@decidim.org"
 
 ENV PYODIDE_PACKAGES "pyasn1,libgmp,gmpy2,micropip,attrs,sortedcontainers,hypothesis,jsons,typish,rsa"
 

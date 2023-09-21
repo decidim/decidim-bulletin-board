@@ -8,5 +8,12 @@ if [ "$SEED" ]; then
   bundle exec rake db:create db:setup db:seed
 fi
 
-echo "Running Rails server..."
-bundle exec rails s
+# Check for pending migrations
+if [ -z "$SKIP_MIGRATIONS" ]; then
+  bundle exec rails db:migrate
+else
+  echo "⚠️ Skipping migrations"
+fi
+
+echo "🚀 $@"
+exec "$@"

@@ -11,7 +11,7 @@ setup(
     license="MIT",
     package_dir={"": "src", "tests": "tests"},
     packages=find_packages("src", "tests"),
-    install_requires=["electionguard==1.2.1", "jsons==1.2"],
+    install_requires=["electionguard==1.2.3", "jsons==1.2"],
     dependency_links=[
         os.path.join(
             os.getcwd(),

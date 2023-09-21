@@ -1,5 +1,5 @@
 # This stage builds the python-wrapper package
-FROM decidim/ruby-node-python-electionguard:ruby-3.1.1-node-16-python-3.8.11-electionguard-1.2.1 as python-wrapper-builder
+FROM decidim/ruby-node-python-electionguard:ruby-3.1.1-node-16-python-3.8.11-electionguard-1.2.3 as python-wrapper-builder
 LABEL author="hola@decidim.org"
 
 # Add Makefiles
@@ -17,7 +17,7 @@ ADD voting_schemes/electionguard/python-wrapper /code/voting_schemes/electiongua
 RUN cd /code && make build_electionguard_python_wrapper
 
 # This stage builds the pyodide packages for the previous python packages
-FROM decidim/pyodide-electionguard:pyodide-0.16.1-electionguard-1.2.1 as python-to-js-builder
+FROM decidim/pyodide-electionguard:pyodide-0.16.1-electionguard-1.2.3 as python-to-js-builder
 LABEL author="hola@decidim.org"
 
 ENV PYODIDE_PACKAGES "electionguard,bulletin_board-electionguard"
@@ -43,7 +43,7 @@ RUN make
 RUN cp -rf /code/voting_schemes/electionguard/python-to-js/override/* /src/pyodide/build/
 
 # This stage builds the bulletin-board application
-FROM decidim/ruby-node-python-electionguard:ruby-3.1.1-node-16-python-3.8.11-electionguard-1.2.1
+FROM decidim/ruby-node-python-electionguard:ruby-3.1.1-node-16-python-3.8.11-electionguard-1.2.3
 LABEL author="hola@decidim.org"
 
 # Dummy environment variables used to compile assets
@@ -80,12 +80,6 @@ ADD bulletin_board/server/package.json /code/bulletin_board/server/package.json
 ADD bulletin_board/server/Gemfile.lock /code/bulletin_board/server/Gemfile.lock
 ADD bulletin_board/server/Gemfile /code/bulletin_board/server/Gemfile
 
-# Prevent npm ERR! code ERR_SOCKET_TIMEOUT
-RUN npm install --global npm@latest && \
-  npm config set fetch-timeout 1800000 -g && \
-  npm config set fetch-retry-mintimeout 600000 -g && \
-  npm config set fetch-retry-maxtimeout 1800000 -g
-
 # Install all dependencies, build artifacts and remove unnecessary files
 RUN cd /code && make install && make build SKIP_PYODIDE=true && \
   rm -rf /code/bulletin_board/js-client && \
@@ -102,5 +96,4 @@ RUN npm install --global yarn
 RUN bundle
 RUN bundle exec rake assets:precompile
 
-# Migrate and seed database
-CMD ["bundle", "exec", "rake", "db:migrate"]
+CMD ["bundle", "exec", "rails", "s", "-b", "0.0.0.0"]
