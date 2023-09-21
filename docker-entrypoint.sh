@@ -8,7 +8,7 @@ if [ "$SEED" ]; then
   bundle exec rake db:create db:setup db:seed
 fi
 
-# Check no migrations are pending migrations
+# Check for pending migrations
 if [ -z "$SKIP_MIGRATIONS" ]; then
   bundle exec rails db:migrate
 else
