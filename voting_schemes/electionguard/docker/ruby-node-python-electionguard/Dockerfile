@@ -17,7 +17,7 @@ RUN echo 'APT::Get::Assume-Yes "true";' > /etc/apt/apt.conf.d/90assume-yes
 RUN gem install bundler
 
 # Install system dependencies
-RUN apt-get update --allow-releaseinfo-change && apt-get install -y sudo pipenv git vim curl
+RUN apt-get update --allow-releaseinfo-change && apt-get install -y sudo pipenv git vim curl wget
 
 # Install python and poetry
 RUN git clone https://github.com/pyenv/pyenv.git ~/.pyenv && \
