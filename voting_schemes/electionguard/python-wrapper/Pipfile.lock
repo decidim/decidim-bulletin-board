@@ -113,8 +113,8 @@
                 "sha256:c3038e0f95cf8dfdfe2606a8e6ebb31a073e0b75678ece933d9950309ad857b0",
                 "sha256:f738124eaf7ced0ad703f1624996331fce018a7dafebdd070a9a080c7c8a4bb9"
             ],
-            "path": "./../electionguard-python/dist/electionguard-1.2.1-py3-none-any.whl",
-            "version": "==1.2.1"
+            "path": "./../electionguard-python/dist/electionguard-1.2.3-py3-none-any.whl",
+            "version": "==1.2.3"
         },
         "gmpy2": {
             "hashes": [

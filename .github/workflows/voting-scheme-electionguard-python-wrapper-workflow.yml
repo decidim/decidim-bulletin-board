@@ -23,7 +23,7 @@ jobs:
     name: Test code
     runs-on: ubuntu-latest
     container:
-      image: decidim/ruby-node-python-electionguard:ruby-3.1.1-node-16-python-3.8.11-electionguard-1.2.1
+      image: decidim/ruby-node-python-electionguard:ruby-3.1.1-node-16-python-3.8.11-electionguard-1.2.3
     steps:
       - uses: rokroskar/workflow-run-cleanup-action@v0.3.2
         if: "github.ref != 'refs/heads/develop'"

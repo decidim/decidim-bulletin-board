@@ -2,8 +2,8 @@ diff --git a/pyproject.toml b/pyproject.toml
 index 93b2adb..38a2d6c 100644
 --- a/pyproject.toml
 +++ b/pyproject.toml
-@@ -40,7 +40,6 @@ gmpy2 = ">=2.0.8"
- numpy = ">=1.18.2"
+@@ -39,7 +39,6 @@
+ # gmpy2 = { path = "./packages/gmpy2-2.0.8-cp38-cp38-win32.whl" } # 32 bit
  jsons = ">=1.1.2"
  jsonschema = ">=3.2"
 -cryptography = ">=3.2"

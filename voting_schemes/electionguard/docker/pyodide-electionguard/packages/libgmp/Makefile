@@ -20,7 +20,9 @@ clean:
 
 $(TARBALL):
 	[ -d $(ROOT)/downloads ] || mkdir $(ROOT)/downloads
-	wget -q -O $@ $(URL)
+	# probably the original docker with pyodide 0.16.1 has a builtin wget with old certificates and 
+	# the download fails when checking for it in the gmplib.org site
+	wget --no-check-certificate -v -O $@ $(URL)
 	sha256sum --quiet --check checksums || (rm $@; false)
 
 
