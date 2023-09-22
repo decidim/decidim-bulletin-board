@@ -39,14 +39,23 @@ DOCKER_PYODIDE_IMAGE = decidim/pyodide-electionguard:pyodide-0.16.1-electionguar
 electionguard_submodules:
 	git submodule init && git submodule update
 
-electionguard_docker_base:
-	docker image build --build-arg ELECTIONGUARD_PYTHON_REF=${ELECTIONGUARD_PYTHON_VERSION} -t ${DOCKER_BASE_IMAGE} ${ELECTIONGUARD_DOCKER_PATH}/ruby-node-python-electionguard && \
+electionguard_docker_base: build_electionguard_docker_base \
+	push_electionguard_docker_base
+
+build_electionguard_docker_base:
+	docker image build --build-arg ELECTIONGUARD_PYTHON_REF=${ELECTIONGUARD_PYTHON_VERSION} -t ${DOCKER_BASE_IMAGE} ${ELECTIONGUARD_DOCKER_PATH}/ruby-node-python-electionguard
+
+push_electionguard_docker_base:
 	docker image push ${DOCKER_BASE_IMAGE}
 
-electionguard_docker_pyodide:
-	docker image build -t ${DOCKER_PYODIDE_IMAGE} ${ELECTIONGUARD_DOCKER_PATH}/pyodide-electionguard && \
-	docker image push ${DOCKER_PYODIDE_IMAGE}
+electionguard_docker_pyodide: build_electionguard_docker_pyodide \
+	push_electionguard_docker_pyodide
 
+build_electionguard_docker_pyodide:
+	docker image build -t ${DOCKER_PYODIDE_IMAGE} ${ELECTIONGUARD_DOCKER_PATH}/pyodide-electionguard
+
+push_electionguard_docker_pyodide:
+	docker image push ${DOCKER_PYODIDE_IMAGE}
 
 # COMMON TASKS
 
