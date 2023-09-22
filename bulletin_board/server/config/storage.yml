@@ -17,25 +17,25 @@ s3:
 
 azure:
   service: AzureStorage
-  storage_account_name: <%= env['AZURE_STORAGE_ACCOUNT_NAME'] %>
-  storage_access_key: <%= env['AZURE_STORAGE_ACCESS_KEY'] %>
-  container: <%= env['AZURE_CONTAINER'] %>
+  storage_account_name: <%= ENV['AZURE_STORAGE_ACCOUNT_NAME'] %>
+  storage_access_key: <%= ENV['AZURE_STORAGE_ACCESS_KEY'] %>
+  container: <%= ENV['AZURE_CONTAINER'] %>
 
 gcs:
   service: GCS
-  project: <%= env['GCS_PROJECT`] %>
-  bucket: <%= env['GCS_BUCKET`] %>
+  project: <%= ENV['GCS_PROJECT'] %>
+  bucket: <%= ENV['GCS_BUCKET'] %>
   credentials:
-    type: <%= env['GCS_TYPE`] %>
-    project_id: <%= env['GCS_PROJECT_ID`] %>
-    private_key_id: <%= env['GCS_PRIVATE_KEY_ID`] %>
-    private_key: <%= env['GCS_PRIVATE_KEY`] %>
-    client_email: <%= env['GCS_CLIENT_EMAIL`] %>
-    client_id: <%= env['GCS_CLIENT_ID`] %>
-    auth_uri: <%= env['GCS_AUTH_URI`] %>
-    token_uri: <%= env['GCS_TOKEN_URI`] %>
-    auth_provider_x509_cert_url: <%= env['GCS_AUTH_PROVIDER_X509_CERT_URL`] %>
-    client_x509_cert_url: <%= env['GCS_CLIENT_X509_CERT_URL`] %>
+    type: <%= ENV['GCS_TYPE'] %>
+    project_id: <%= ENV['GCS_PROJECT_ID'] %>
+    private_key_id: <%= ENV['GCS_PRIVATE_KEY_ID'] %>
+    private_key: <%= ENV['GCS_PRIVATE_KEY'] %>
+    client_email: <%= ENV['GCS_CLIENT_EMAIL'] %>
+    client_id: <%= ENV['GCS_CLIENT_ID'] %>
+    auth_uri: <%= ENV['GCS_AUTH_URI'] %>
+    token_uri: <%= ENV['GCS_TOKEN_URI'] %>
+    auth_provider_x509_cert_url: <%= ENV['GCS_AUTH_PROVIDER_X509_CERT_URL'] %>
+    client_x509_cert_url: <%= ENV['GCS_CLIENT_X509_CERT_URL'] %>
 
 # mirror:
 #   service: Mirror
