@@ -11,6 +11,7 @@ services:
       - RACK_ENV=production
       - RAILS_ENV=production
       - REDIS_URL=redis://redis:6379
+      - CORS_ORIGIN_ALLOWED=*
     volumes:
       - ./docker-entrypoint.sh:/docker-entrypoint.sh
     ports:

@@ -35,6 +35,12 @@ We'll need to set up an array of environment variables in order for the sever to
  ** `REDIS_URL` with the full URL of the Redis instance;
 * ActiveRecord:
  ** The secrets of the cloud storage of your choice;
+ ** For instance, if using a compatible AWS provider you should define:
+   *** ACTIVE_STORAGE_SERVICE=amazon
+   *** AWS_ACCESS_KEY_ID=********
+   *** AWS_SECRET_ACCESS_KEY=********
+   *** AWS_REGION=eu-west-1
+   *** AWS_BUCKET=bucket-name
 * CORS:
  ** `CORS_ORIGIN_ALLOWED` with the list of hosts of Decidim instances that will use this Bulletin Board.
 If you don't know what Decidim instances will use this Bulletin Board, you can put `*`
