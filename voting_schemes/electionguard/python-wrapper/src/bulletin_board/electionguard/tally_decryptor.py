@@ -10,7 +10,7 @@ from electionguard.decryption_share import CompensatedDecryptionShare, Decryptio
 from electionguard.group import ElementModQ
 from electionguard.key_ceremony import ElectionPublicKey
 from electionguard.tally import CiphertextTally, PlaintextTally, PlaintextTallyContest
-from electionguard.types import CONTEST_ID, GUARDIAN_ID, SELECTION_ID
+from electionguard.type import CONTEST_ID, GUARDIAN_ID, SELECTION_ID
 
 from .messages import Compensations
 

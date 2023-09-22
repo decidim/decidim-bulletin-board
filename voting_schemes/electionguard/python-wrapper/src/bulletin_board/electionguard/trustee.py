@@ -16,7 +16,7 @@ from electionguard.guardian import Guardian
 from electionguard.manifest import InternalManifest
 from electionguard.serializable import Serializable
 from electionguard.tally import CiphertextTally, CiphertextTallyContest
-from electionguard.types import CONTEST_ID, GUARDIAN_ID, SELECTION_ID
+from electionguard.type import CONTEST_ID, GUARDIAN_ID, SELECTION_ID
 from electionguard.utils import get_optional
 
 from .common import Content, Context, ElectionStep, Wrapper, unwrap
