@@ -62,7 +62,7 @@ pre_release_server:
 		kill -9 $$(cat tmp/pids/development.pid) && rm tmp/pids/development.pid
 
 release_server:
-	docker image build -t ${DOCKER_WEB_IMAGE} -f Dockerfile.web . && \
+	docker image build -t ${DOCKER_WEB_IMAGE} -f Dockerfile . && \
 	docker image push ${DOCKER_WEB_IMAGE}
 
 bump_server:

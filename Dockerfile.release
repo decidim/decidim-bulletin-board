@@ -53,7 +53,7 @@ ENV RAILS_ENV production
 # Install system dependencies
 RUN apt-get update --allow-releaseinfo-change && \
   apt-get install -y postgresql postgresql-client postgresql-contrib libpq-dev \
-  redis-server memcached imagemagick ffmpeg mupdf mupdf-tools libxml2-dev && \
+  redis-server memcached imagemagick ffmpeg mupdf mupdf-tools libxml2-dev curl && \
   rm -rf /var/lib/apt/lists/*
 
 # Add Makefiles
@@ -96,6 +96,4 @@ RUN npm install --global yarn
 RUN bundle
 RUN bundle exec rake assets:precompile
 
-ENTRYPOINT ["/docker-entrypoint.sh"]
-COPY ./docker-entrypoint.sh /
-CMD ["bundle", "exec", "rails", "s", "-b", "0.0.0.0"]
+CMD ["bundle", "exec", "rake", "db:migrate"]
