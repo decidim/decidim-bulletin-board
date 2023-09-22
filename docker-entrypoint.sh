@@ -15,5 +15,12 @@ else
   echo "⚠️ Skipping migrations"
 fi
 
-echo "🚀 $@"
-exec "$@"
+# run the command if non-forced sidekiq execution
+if [ -z "$RUN_SIDEKIQ" ]; then
+  echo "🚀 $@"
+  exec "$@"
+else
+  echo "🚀 Starting Sidekiq"
+  bundle exec sidekiq -e ${RACK_ENV:-production} -C config/sidekiq.yml
+fi
+

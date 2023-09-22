@@ -18,6 +18,9 @@ If you want to deploy a modified version of the Bulletin Board, we highly recomm
 
 Note that there are is also `Dockerfile.release` in the repository. It is the same but without using and entrypoint and changing the default command to execute the db:migrate task. This is mostly intended for its use in heroku.
 
+**Important**
+You need to spin up two instances of the Bulletin Board, one for the server and one for the worker. The default entrypoint provided in the `Dockerfile` executes whatever command is defined (by default `rails server`), however you can use the ENV var `RUN_SIDEKIQ` to override the command and use the same Dockerfile as a worker without any other modification. See the `docker-compose.yml` file for an example.
+
 == ActiveStorage
 
 The Bulletin Board uses ActiveStorage.
