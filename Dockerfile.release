@@ -96,4 +96,6 @@ RUN npm install --global yarn
 RUN bundle
 RUN bundle exec rake assets:precompile
 
+ENTRYPOINT ["/docker-entrypoint.sh"]
+COPY ./docker-entrypoint.sh /
 CMD ["bundle", "exec", "rails", "s", "-b", "0.0.0.0"]

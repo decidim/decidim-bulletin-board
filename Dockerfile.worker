@@ -97,5 +97,6 @@ RUN bundle
 RUN bundle exec rake assets:precompile
 
 # Run the entrypoint script
-COPY ./docker-entrypoint-worker.sh /
-ENTRYPOINT ["/docker-entrypoint-worker.sh"]
+COPY ./docker-entrypoint.sh /
+ENTRYPOINT ["/docker-entrypoint.sh"]
+CMD ["bundle", "exec", "sidekiq", "-C", "config/sidekiq.yml"]
