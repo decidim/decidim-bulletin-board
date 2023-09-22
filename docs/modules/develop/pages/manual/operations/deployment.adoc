@@ -14,7 +14,9 @@ Apart for the server stack, we will need to set up:
 
 The Bulletin Board server is https://hub.docker.com/r/decidim/decidim-bulletin-board[published in Dockerhub] as a Docker container.
 
-If you want to deploy a modified version of the Bulletin Board, we highly recommend to use `Dockerfile` in the root folder of the repository to build and release the application.
+If you want to deploy a modified version of the Bulletin Board, we highly recommend to use `Dockerfile` in the root folder of the repository to build and release the application. The file `Dockerfile.worker` is the same but changing the endpoint to use it as a worker. Take a look at the `docker-compose.yml` provided in order to see how can you use the normal `Dockerfile` just changing the command to execute.
+
+Note that there are is also `Dockerfile.release` in the repository. It is the same but without using and entrypoint and changing the default command to execute the db:migrate task. This is mostly intended for its use in heroku.
 
 == ActiveStorage
 
@@ -28,7 +30,7 @@ We'll need to set up an array of environment variables in order for the sever to
 * Rails:
  ** `RACK_ENV` and `RAILS_ENV` with value `production`;
  ** `RAILS_SERVE_STATIC_FILES` with value `true`;
- ** `SECRET_KEY_BASE`.
+ ** `SECRET_KEY_BASE` as in any Rails application;
 * Connect to Postgres:
  ** `DATABASE_URL` with the full URL of the database;
 * Redis:
@@ -42,7 +44,7 @@ We'll need to set up an array of environment variables in order for the sever to
    *** `AWS_REGION=eu-west-1`
    *** `AWS_BUCKET_NAME=bucket-name`
    *** If using a provider that is not Amazon also define `AWS_ENDPOINT` with the endpoint of the provider.
- ** You can also easily use Azure or GCS providers (see the previous mentioned `storage.yml` file for the ENV vars), but in this case add the line that applies in your case to the file `bulletin_board/server/Gemfile`;
+ ** You can also easily use Azure or GCS providers (see the previous mentioned `storage.yml` file for the ENV vars), but in this case add the line that applies in your case to the file `bulletin_board/server/Gemfile`:
    *** `gem "azure-storage-blob", require: false`
    *** `gem "google-cloud-storage", "~> 1.11", require: false`
 * CORS:
