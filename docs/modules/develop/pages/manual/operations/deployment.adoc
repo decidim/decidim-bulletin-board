@@ -36,11 +36,15 @@ We'll need to set up an array of environment variables in order for the sever to
 * ActiveRecord:
  ** The secrets of the cloud storage of your choice;
  ** For instance, if using a compatible AWS provider you should define:
-   *** ACTIVE_STORAGE_SERVICE=amazon
-   *** AWS_ACCESS_KEY_ID=********
-   *** AWS_SECRET_ACCESS_KEY=********
-   *** AWS_REGION=eu-west-1
-   *** AWS_BUCKET=bucket-name
+   *** `ACTIVE_STORAGE_SERVICE=s3`
+   *** `AWS_ACCESS_KEY_ID=********`
+   *** `AWS_SECRET_ACCESS_KEY=********`
+   *** `AWS_REGION=eu-west-1`
+   *** `AWS_BUCKET_NAME=bucket-name`
+   *** If using a provider that is not Amazon also define `AWS_ENDPOINT` with the endpoint of the provider.
+ ** You can also easily use Azure or GCS providers (see the previous mentioned `storage.yml` file for the ENV vars), but in this case add the line that applies in your case to the file `bulletin_board/server/Gemfile`;
+   *** `gem "azure-storage-blob", require: false`
+   *** `gem "google-cloud-storage", "~> 1.11", require: false`
 * CORS:
  ** `CORS_ORIGIN_ALLOWED` with the list of hosts of Decidim instances that will use this Bulletin Board.
 If you don't know what Decidim instances will use this Bulletin Board, you can put `*`
