@@ -7,7 +7,8 @@ services:
       - POSTGRES_DB=decidim_bulletin_board
     volumes:
       - pg-data:/var/lib/postgresql/data
-  bulletin:
+
+  app:
     build:
       context: .
       dockerfile: Dockerfile
