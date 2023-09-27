@@ -1,1 +1,101 @@
-Dockerfile.release
+# This stage builds the python-wrapper package
+FROM decidim/ruby-node-python-electionguard:ruby-3.1.1-node-16-python-3.8.11-electionguard-1.2.3 as python-wrapper-builder
+LABEL author="hola@decidim.org"
+
+# Add Makefiles
+ADD Makefile /code/Makefile
+ADD bulletin_board/server.mk /code/bulletin_board/server.mk
+ADD bulletin_board/client.mk /code/bulletin_board/client.mk
+ADD voting_schemes/dummy/makefile.mk /code/voting_schemes/dummy/makefile.mk
+ADD voting_schemes/electionguard/makefile.mk /code/voting_schemes/electionguard/makefile.mk
+ADD verifier/makefile.mk /code/verifier/makefile.mk
+
+# Add the source files
+ADD voting_schemes/electionguard/python-wrapper /code/voting_schemes/electionguard/python-wrapper
+
+# This step builds the electionguard-python package and the python wrapper
+RUN cd /code && make build_electionguard_python_wrapper
+
+# This stage builds the pyodide packages for the previous python packages
+FROM decidim/pyodide-electionguard:pyodide-0.16.1-electionguard-1.2.3 as python-to-js-builder
+LABEL author="hola@decidim.org"
+
+ENV PYODIDE_PACKAGES "electionguard,bulletin_board-electionguard"
+
+# Create the source folder
+RUN mkdir -p /code
+
+# Add the source files
+COPY --from=python-wrapper-builder /code/voting_schemes/electionguard /code/voting_schemes/electionguard
+ADD voting_schemes/electionguard/python-to-js /code/voting_schemes/electionguard/python-to-js
+
+# Copy packages definitions to the pyodide source folder
+RUN cp -r /code/voting_schemes/electionguard/python-to-js/packages/* /src/pyodide/packages
+
+# Copy the python packages
+RUN cp -r /code/voting_schemes/electionguard/electionguard-python/dist /src/pyodide/packages/electionguard/dist
+RUN cp -r /code/voting_schemes/electionguard/python-wrapper/dist /src/pyodide/packages/bulletin_board-electionguard/dist
+
+# This step compiles both packages using pyodide
+RUN make
+
+# Override some files in the pyodide build
+RUN cp -rf /code/voting_schemes/electionguard/python-to-js/override/* /src/pyodide/build/
+
+# This stage builds the bulletin-board application
+FROM decidim/ruby-node-python-electionguard:ruby-3.1.1-node-16-python-3.8.11-electionguard-1.2.3
+LABEL author="hola@decidim.org"
+
+# Dummy environment variables used to compile assets
+ENV SECRET_KEY_BASE 1234
+ENV RAILS_ENV production
+
+# Install system dependencies
+RUN apt-get update --allow-releaseinfo-change && \
+  apt-get install -y postgresql postgresql-client postgresql-contrib libpq-dev \
+  redis-server memcached imagemagick ffmpeg mupdf mupdf-tools libxml2-dev curl && \
+  rm -rf /var/lib/apt/lists/*
+
+# Add Makefiles
+ADD Makefile /code/Makefile
+ADD bulletin_board/server.mk /code/bulletin_board/server.mk
+ADD bulletin_board/client.mk /code/bulletin_board/client.mk
+ADD voting_schemes/dummy/makefile.mk /code/voting_schemes/dummy/makefile.mk
+ADD voting_schemes/electionguard/makefile.mk /code/voting_schemes/electionguard/makefile.mk
+ADD verifier/makefile.mk /code/verifier/makefile.mk
+
+# Add local dependencies and copy some artifacts from previous stages
+ADD bulletin_board/js-client /code/bulletin_board/js-client
+ADD bulletin_board/ruby-client /code/bulletin_board/ruby-client
+ADD voting_schemes/dummy/js-adapter /code/voting_schemes/dummy/js-adapter
+ADD voting_schemes/dummy/ruby-adapter /code/voting_schemes/dummy/ruby-adapter
+COPY --from=python-to-js-builder /code/voting_schemes/electionguard /code/voting_schemes/electionguard
+ADD voting_schemes/electionguard/js-adapter /code/voting_schemes/electionguard/js-adapter
+ADD voting_schemes/electionguard/ruby-adapter /code/voting_schemes/electionguard/ruby-adapter
+COPY --from=python-to-js-builder /src/pyodide/build /code/voting_schemes/electionguard/ruby-adapter/public/assets/electionguard
+
+# Add dependencies manifests
+ADD bulletin_board/server/package-lock.json /code/bulletin_board/server/package-lock.json
+ADD bulletin_board/server/package.json /code/bulletin_board/server/package.json
+ADD bulletin_board/server/Gemfile.lock /code/bulletin_board/server/Gemfile.lock
+ADD bulletin_board/server/Gemfile /code/bulletin_board/server/Gemfile
+
+# Install all dependencies, build artifacts and remove unnecessary files
+RUN cd /code && make install && make build SKIP_PYODIDE=true && \
+  rm -rf /code/bulletin_board/js-client && \
+  rm -rf /code/voting_schemes/dummy/js-adapter && \
+  rm -rf /code/voting_schemes/electionguard/js-adapter && \
+  rm -rf /root/.cache/Cypress
+
+# Add application source code
+ADD bulletin_board/server /code/bulletin_board/server
+WORKDIR /code/bulletin_board/server
+
+# Precompile assets
+RUN npm install --global yarn
+RUN bundle
+RUN bundle exec rake assets:precompile
+
+COPY ./docker-entrypoint.sh /
+ENTRYPOINT ["/docker-entrypoint.sh"]
+CMD ["bundle", "exec", "rails", "s", "-b", "0.0.0.0"]

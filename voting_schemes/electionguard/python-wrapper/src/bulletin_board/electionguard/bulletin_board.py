@@ -11,7 +11,7 @@ from electionguard.decryption_share import DecryptionShare
 from electionguard.election import ElectionConstants
 from electionguard.key_ceremony import combine_election_public_keys
 from electionguard.tally import CiphertextTally
-from electionguard.types import GUARDIAN_ID
+from electionguard.type import GUARDIAN_ID
 from electionguard.utils import get_optional
 
 from .common import Content, Context, ElectionStep, Wrapper

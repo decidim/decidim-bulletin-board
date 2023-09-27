@@ -2,16 +2,16 @@
 FROM decidim/ruby-node-python-electionguard:ruby-3.1.1-node-16-python-3.8.11-electionguard-1.2.3 as python-wrapper-builder
 LABEL author="hola@decidim.org"
 
-# Add Makefile
+# Add Makefiles
 ADD Makefile /code/Makefile
+ADD bulletin_board/server.mk /code/bulletin_board/server.mk
+ADD bulletin_board/client.mk /code/bulletin_board/client.mk
+ADD voting_schemes/dummy/makefile.mk /code/voting_schemes/dummy/makefile.mk
+ADD voting_schemes/electionguard/makefile.mk /code/voting_schemes/electionguard/makefile.mk
+ADD verifier/makefile.mk /code/verifier/makefile.mk
 
 # Add the source files
 ADD voting_schemes/electionguard/python-wrapper /code/voting_schemes/electionguard/python-wrapper
-ADD voting_schemes/electionguard/makefile.mk /code/voting_schemes/electionguard/makefile.mk
-ADD voting_schemes/dummy/makefile.mk /code/voting_schemes/dummy/makefile.mk
-ADD verifier/makefile.mk /code/verifier/makefile.mk
-ADD bulletin_board/client.mk /code/bulletin_board/client.mk
-ADD bulletin_board/server.mk /code/bulletin_board/server.mk
 
 # This step builds the electionguard-python package and the python wrapper
 RUN cd /code && make build_electionguard_python_wrapper
@@ -51,13 +51,18 @@ ENV SECRET_KEY_BASE 1234
 ENV RAILS_ENV production
 
 # Install system dependencies
-RUN apt-get update && \
+RUN apt-get update --allow-releaseinfo-change && \
   apt-get install -y postgresql postgresql-client postgresql-contrib libpq-dev \
   redis-server memcached imagemagick ffmpeg mupdf mupdf-tools libxml2-dev curl && \
   rm -rf /var/lib/apt/lists/*
 
-# Add Makefile
+# Add Makefiles
 ADD Makefile /code/Makefile
+ADD bulletin_board/server.mk /code/bulletin_board/server.mk
+ADD bulletin_board/client.mk /code/bulletin_board/client.mk
+ADD voting_schemes/dummy/makefile.mk /code/voting_schemes/dummy/makefile.mk
+ADD voting_schemes/electionguard/makefile.mk /code/voting_schemes/electionguard/makefile.mk
+ADD verifier/makefile.mk /code/verifier/makefile.mk
 
 # Add local dependencies and copy some artifacts from previous stages
 ADD bulletin_board/js-client /code/bulletin_board/js-client
@@ -68,11 +73,6 @@ COPY --from=python-to-js-builder /code/voting_schemes/electionguard /code/voting
 ADD voting_schemes/electionguard/js-adapter /code/voting_schemes/electionguard/js-adapter
 ADD voting_schemes/electionguard/ruby-adapter /code/voting_schemes/electionguard/ruby-adapter
 COPY --from=python-to-js-builder /src/pyodide/build /code/voting_schemes/electionguard/ruby-adapter/public/assets/electionguard
-ADD verifier/makefile.mk /code/verifier/makefile.mk
-ADD voting_schemes/dummy/makefile.mk /code/voting_schemes/dummy/makefile.mk
-ADD voting_schemes/electionguard/makefile.mk /code/voting_schemes/electionguard/makefile.mk
-ADD bulletin_board/client.mk /code/bulletin_board/client.mk
-ADD bulletin_board/server.mk /code/bulletin_board/server.mk
 
 # Add dependencies manifests
 ADD bulletin_board/server/package-lock.json /code/bulletin_board/server/package-lock.json
@@ -81,7 +81,7 @@ ADD bulletin_board/server/Gemfile.lock /code/bulletin_board/server/Gemfile.lock
 ADD bulletin_board/server/Gemfile /code/bulletin_board/server/Gemfile
 
 # Install all dependencies, build artifacts and remove unnecessary files
-RUN cd /code && make install && make build && \
+RUN cd /code && make install && make build SKIP_PYODIDE=true && \
   rm -rf /code/bulletin_board/js-client && \
   rm -rf /code/voting_schemes/dummy/js-adapter && \
   rm -rf /code/voting_schemes/electionguard/js-adapter && \
@@ -96,6 +96,6 @@ RUN npm install --global yarn
 RUN bundle
 RUN bundle exec rake assets:precompile
 
-# Run the entrypoint script
-COPY ./docker-entrypoint-worker.sh /
-ENTRYPOINT ["/docker-entrypoint-worker.sh"]
+COPY ./docker-entrypoint.sh /
+ENTRYPOINT ["/docker-entrypoint.sh"]
+CMD ["bundle", "exec", "sidekiq", "-C", "config/sidekiq.yml"]
