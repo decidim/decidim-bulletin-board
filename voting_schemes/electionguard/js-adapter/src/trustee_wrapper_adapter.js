@@ -25,8 +25,8 @@ export class TrusteeWrapperAdapter extends WrapperAdapter {
    *
    * @returns {Promise<undefined>}
    */
-  setup() {
-    return this.processPythonCodeOnWorker(
+  async setup() {
+    return await this.processPythonCode(
       `
         from js import trustee_id
         from bulletin_board.electionguard.trustee import Trustee
@@ -47,11 +47,14 @@ export class TrusteeWrapperAdapter extends WrapperAdapter {
    * @returns {Promise<Object|undefined>}
    */
   async processMessage(messageType, decodedData) {
-    const result = await this.processPythonCodeOnWorker(
+    const result = await this.processPythonCode(
       `
-      import json
       from js import message_type, decoded_data
-      trustee.process_message(message_type, json.loads(decoded_data))
+      import json
+      trustee.process_message(
+        message_type,
+        json.loads(decoded_data)
+      )
     `,
       {
         message_type: messageType,
@@ -75,7 +78,7 @@ export class TrusteeWrapperAdapter extends WrapperAdapter {
    * @returns {Promise<Boolean>}
    */
   isFresh() {
-    return this.processPythonCodeOnWorker(
+    return this.processPythonCode(
       `
       trustee.is_fresh()
     `
@@ -88,7 +91,7 @@ export class TrusteeWrapperAdapter extends WrapperAdapter {
    * @returns {Promise<String>}
    */
   backup() {
-    return this.processPythonCodeOnWorker(
+    return this.processPythonCode(
       `
       trustee.backup().hex()
     `
@@ -102,10 +105,9 @@ export class TrusteeWrapperAdapter extends WrapperAdapter {
    * @returns {Promise<Boolean>}
    */
   restore(state) {
-    return this.processPythonCodeOnWorker(
+    return this.processPythonCode(
       `
       from js import state
-
       trustee = Trustee.restore(bytes.fromhex(state))
       True
     `,
@@ -121,7 +123,7 @@ export class TrusteeWrapperAdapter extends WrapperAdapter {
    * @returns {Promise<Boolean>}
    */
   isKeyCeremonyDone() {
-    return this.processPythonCodeOnWorker(
+    return this.processPythonCode(
       `
       trustee.is_key_ceremony_done()
     `
@@ -134,7 +136,7 @@ export class TrusteeWrapperAdapter extends WrapperAdapter {
    * @returns {Promise<Boolean>}
    */
   isTallyDone() {
-    return this.processPythonCodeOnWorker(
+    return this.processPythonCode(
       `
       trustee.is_tally_done()
     `

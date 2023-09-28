@@ -66,7 +66,7 @@ export class KeyCeremonyComponent extends TrusteeComponent {
     onBindBackupButton,
     onBackupStarted,
   }) {
-    const onSetupDone = this.trustee.setup();
+    const onSetupDone = await this.trustee.setup();
 
     this.trustee.events.subscribe(onEvent);
 

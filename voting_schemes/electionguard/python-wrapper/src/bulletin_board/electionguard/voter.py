@@ -10,7 +10,7 @@ from electionguard.group import ElementModQ
 from electionguard.key_ceremony import ElectionJointKey
 from electionguard.utils import get_optional
 
-from .common import Content, Context, ElectionStep, Wrapper, unwrap
+from .common import AsyncWrapper, Content, Context, ElectionStep, Wrapper, async_wrap, unwrap
 from .messages import KeyCeremonyResults
 from .utils import MissingJointKey, deserialize, remove_nonces, serialize
 
@@ -59,13 +59,14 @@ class ProcessStartVote(ElectionStep):
         return [], None
 
 
-class Voter(Wrapper[VoterContext]):
+class Voter(AsyncWrapper[VoterContext]):
     ballot_id: str
 
     def __init__(self, ballot_id: str, recorder=None) -> None:
         super().__init__(VoterContext(), ProcessCreateElection(), recorder=recorder)
         self.ballot_id = ballot_id
 
+    @async_wrap
     def encrypt(
         self, ballot: dict, ballot_style: Optional[str] = None, master_nonce: int = None
     ) -> Tuple[str, str]:

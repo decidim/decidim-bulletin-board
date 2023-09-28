@@ -6,6 +6,7 @@ verify_ssl = true
 [dev-packages]
 flake8 = ">=3.8.3"
 pytest = "*"
+pytest-asyncio = "*"
 black = "*"
 
 [packages]

@@ -2,28 +2,36 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-var */
 /* eslint-disable no-undef */
-self.languagePluginUrl = "./";
 importScripts("./pyodide.js");
 
-var onmessage = function (e) {
-  // eslint-disable-line no-unused-vars
-  languagePluginLoader
-    .then(() => {
-      return self.pyodide.loadPackage("bulletin_board-electionguard");
-    })
-    .then(() => {
-      const data = e.data;
-      const keys = Object.keys(data);
-      for (let key of keys) {
-        if (key !== "python") {
-          self[key] = data[key];
-        }
-      }
+async function load() {
+  if (typeof self.__pyodideLoading === "undefined") {
+    await loadPyodide({indexURL : './'});
+  }
+  return pyodide.loadPackage("bulletin_board-electionguard");
+}
 
-      self.pyodide
-        .runPythonAsync(data.python, () => {})
-        .then((results) => {
-          self.postMessage({ results });
-        });
-    });
-};
+self.loaded = load()
+
+onmessage = async function(e) {
+  try {
+    await loaded
+    const data = e.data;
+    for (let key of Object.keys(data)) {
+      if (key !== 'python') {
+        self[key] = data[key]
+      }
+    }
+
+    let out;
+    const results = await pyodide.runPythonAsync(data.python)
+    if (results && results.toJs !== undefined) {
+      out = results.toJs();
+    } else {
+      out = results;
+    }
+    self.postMessage({results: out})
+  } catch (err) {
+    setTimeout(() => { throw err; });
+  }
+}
