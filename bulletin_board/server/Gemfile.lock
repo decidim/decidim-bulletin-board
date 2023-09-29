@@ -116,7 +116,7 @@ GEM
     coercible (1.0.0)
       descendants_tracker (~> 0.0.1)
     concurrent-ruby (1.2.2)
-    connection_pool (2.2.5)
+    connection_pool (2.4.1)
     crass (1.0.6)
     cypress-on-rails (1.13.1)
       rack
@@ -242,7 +242,7 @@ GEM
       nio4r (~> 2.0)
     pycall (1.4.1)
     racc (1.6.2)
-    rack (2.2.6.4)
+    rack (2.2.8)
     rack-cors (1.1.1)
       rack (>= 2.0.0)
     rack-proxy (0.7.2)
@@ -287,7 +287,7 @@ GEM
       virtus (~> 1.0.5)
       wisper (>= 1.6.1)
     redcarpet (3.5.1)
-    redis (4.8.0)
+    redis (4.8.1)
     regexp_parser (2.5.0)
     rexml (3.2.5)
     rspec (3.11.0)
@@ -349,10 +349,10 @@ GEM
       sprockets-rails
       tilt
     semantic_range (3.0.0)
-    sidekiq (6.5.5)
-      connection_pool (>= 2.2.2)
+    sidekiq (6.5.9)
+      connection_pool (>= 2.2.5, < 3)
       rack (~> 2.0)
-      redis (>= 4.5.0)
+      redis (>= 4.5.0, < 5)
     simplecov (0.21.2)
       docile (~> 1.1)
       simplecov-html (~> 0.11)
@@ -412,7 +412,6 @@ GEM
     zlib (2.1.1)
 
 PLATFORMS
-  ruby
   x86_64-darwin-19
   x86_64-linux
 
