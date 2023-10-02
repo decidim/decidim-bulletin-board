@@ -26,14 +26,14 @@ export class VoterWrapperAdapter extends WrapperAdapter {
    * @returns {Promise<undefined>}
    */
   async setup() {
-    return await this.processPythonCode(
+    return await this.processPythonCodeOnWorker(
       `
         from js import voter_id
         from bulletin_board.electionguard.voter import Voter
         voter = Voter(voter_id)
       `,
       {
-        voter_id: this.voterId,
+        voter_id: this.voterId
       }
     );
   }
@@ -47,7 +47,7 @@ export class VoterWrapperAdapter extends WrapperAdapter {
    * @returns {Promise<Object|undefined>}
    */
   async processMessage(messageType, decodedData) {
-    const result = await this.processPythonCode(
+    const result = await this.processPythonCodeOnWorker(
       `
       from js import message_type, decoded_data
       import json
@@ -55,16 +55,17 @@ export class VoterWrapperAdapter extends WrapperAdapter {
     `,
       {
         message_type: messageType,
-        decoded_data: JSON.stringify(decodedData),
+        decoded_data: JSON.stringify(decodedData)
       }
     );
 
-    if (result && result[0]) {
+    if (result && result.length > 0) {
       // eslint-disable-next-line camelcase
-      const { message_type, content } = result[0];
+      // Pyodide 0.17 return a Map instead of a object when python is a dict
+      const { message_type, content } = result[0] instanceof Map ? Object.fromEntries(result[0]) : result[0];
       return {
         messageType: message_type,
-        content: content.toJs(),
+        content: content
       };
     }
   }
@@ -80,17 +81,19 @@ export class VoterWrapperAdapter extends WrapperAdapter {
    * @returns {Promise<Object|undefined>}
    */
   async encrypt(plainVote, ballotStyle) {
-    const [auditableData, encryptedData] = await this.processPythonCode(
+    console.log("Encrypting vote", plainVote, ballotStyle);
+    const [auditableData, encryptedData] = await this.processPythonCodeOnWorker(
       `
       from js import plain_vote, ballot_style
       voter.encrypt(plain_vote.to_py(), ballot_style)
     `,
       {
         plain_vote: plainVote,
-        ballot_style: ballotStyle,
+        ballot_style: ballotStyle
       }
     );
-
+    console.log("Encrypted vote: auditableData:", auditableData, "encryptedData:", encryptedData);
+// TODO, FIXME check if we need Object.fromEntries
     return { auditableData, encryptedData };
   }
 }

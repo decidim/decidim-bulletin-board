@@ -26,14 +26,14 @@ export class TrusteeWrapperAdapter extends WrapperAdapter {
    * @returns {Promise<undefined>}
    */
   async setup() {
-    return await this.processPythonCode(
+    return await this.processPythonCodeOnWorker(
       `
         from js import trustee_id
         from bulletin_board.electionguard.trustee import Trustee
         trustee = Trustee(trustee_id)
       `,
       {
-        trustee_id: this.trusteeId,
+        trustee_id: this.trusteeId
       }
     );
   }
@@ -47,7 +47,7 @@ export class TrusteeWrapperAdapter extends WrapperAdapter {
    * @returns {Promise<Object|undefined>}
    */
   async processMessage(messageType, decodedData) {
-    const result = await this.processPythonCode(
+    const result = await this.processPythonCodeOnWorker(
       `
       from js import message_type, decoded_data
       import json
@@ -58,16 +58,17 @@ export class TrusteeWrapperAdapter extends WrapperAdapter {
     `,
       {
         message_type: messageType,
-        decoded_data: JSON.stringify(decodedData),
+        decoded_data: JSON.stringify(decodedData)
       }
     );
 
     if (result && result.length > 0) {
       // eslint-disable-next-line camelcase
-      const [{ message_type, content }] = result;
+      // Pyodide 0.17 return a Map instead of a object when python is a dict
+      const { message_type, content } = result[0] instanceof Map ? Object.fromEntries(result[0]) : result[0];
       return {
         messageType: message_type,
-        content,
+        content
       };
     }
   }
@@ -78,7 +79,7 @@ export class TrusteeWrapperAdapter extends WrapperAdapter {
    * @returns {Promise<Boolean>}
    */
   isFresh() {
-    return this.processPythonCode(
+    return this.processPythonCodeOnWorker(
       `
       trustee.is_fresh()
     `
@@ -91,7 +92,7 @@ export class TrusteeWrapperAdapter extends WrapperAdapter {
    * @returns {Promise<String>}
    */
   backup() {
-    return this.processPythonCode(
+    return this.processPythonCodeOnWorker(
       `
       trustee.backup().hex()
     `
@@ -105,14 +106,14 @@ export class TrusteeWrapperAdapter extends WrapperAdapter {
    * @returns {Promise<Boolean>}
    */
   restore(state) {
-    return this.processPythonCode(
+    return this.processPythonCodeOnWorker(
       `
       from js import state
       trustee = Trustee.restore(bytes.fromhex(state))
       True
     `,
       {
-        state,
+        state
       }
     );
   }
@@ -123,7 +124,7 @@ export class TrusteeWrapperAdapter extends WrapperAdapter {
    * @returns {Promise<Boolean>}
    */
   isKeyCeremonyDone() {
-    return this.processPythonCode(
+    return this.processPythonCodeOnWorker(
       `
       trustee.is_key_ceremony_done()
     `
@@ -136,7 +137,7 @@ export class TrusteeWrapperAdapter extends WrapperAdapter {
    * @returns {Promise<Boolean>}
    */
   isTallyDone() {
-    return this.processPythonCode(
+    return this.processPythonCodeOnWorker(
       `
       trustee.is_tally_done()
     `
