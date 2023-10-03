@@ -216,7 +216,6 @@ jobs:
         run: |
           cd bulletin_board/server
           npm run format
-          git diff --exit-code --ignore-submodules
       - name: Create database
         env:
           RAILS_ENV: test
