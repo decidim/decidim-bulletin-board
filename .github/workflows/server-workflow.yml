@@ -232,6 +232,7 @@ jobs:
           sleep 5
           bundle exec rake schema:generate
           npm run schema:generate
+          git config --global --add safe.directory /__w/decidim-bulletin-board/decidim-bulletin-board
           git diff --exit-code --ignore-submodules
       - name: Run Rspec tests
         run: cd bulletin_board/server && bundle exec rake
