@@ -33,7 +33,7 @@ export class TrusteeWrapperAdapter extends WrapperAdapter {
         trustee = Trustee(trustee_id)
       `,
       {
-        trustee_id: this.trusteeId
+        trustee_id: this.trusteeId,
       }
     );
   }
@@ -58,17 +58,18 @@ export class TrusteeWrapperAdapter extends WrapperAdapter {
     `,
       {
         message_type: messageType,
-        decoded_data: JSON.stringify(decodedData)
+        decoded_data: JSON.stringify(decodedData),
       }
     );
 
     if (result && result.length > 0) {
       // eslint-disable-next-line camelcase
       // Pyodide 0.17 return a Map instead of a object when python is a dict
-      const { messageTypeResult, content } = result[0] instanceof Map ? Object.fromEntries(result[0]) : result[0];
+      const { messageTypeResult, content } =
+        result[0] instanceof Map ? Object.fromEntries(result[0]) : result[0];
       return {
         messageType: messageTypeResult,
-        content
+        content,
       };
     }
   }
@@ -113,7 +114,7 @@ export class TrusteeWrapperAdapter extends WrapperAdapter {
       True
     `,
       {
-        state
+        state,
       }
     );
   }

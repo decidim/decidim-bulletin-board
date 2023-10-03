@@ -24,7 +24,7 @@ export class WrapperAdapter {
 
       this.worker.postMessage({
         python: pythonCode,
-        ...pythonData
+        ...pythonData,
       });
     });
   }
