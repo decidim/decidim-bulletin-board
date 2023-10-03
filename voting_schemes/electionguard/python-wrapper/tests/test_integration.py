@@ -17,6 +17,7 @@ from .utils import (
     create_election_test_message_v1,
     create_election_test_message_v2,
     end_vote_message,
+    missing_guardian_message,
     start_tally_message,
     start_vote_message,
 )
