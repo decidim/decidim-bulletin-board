@@ -65,9 +65,9 @@ export class TrusteeWrapperAdapter extends WrapperAdapter {
     if (result && result.length > 0) {
       // eslint-disable-next-line camelcase
       // Pyodide 0.17 return a Map instead of a object when python is a dict
-      const { message_type, content } = result[0] instanceof Map ? Object.fromEntries(result[0]) : result[0];
+      const { messageTypeResult, content } = result[0] instanceof Map ? Object.fromEntries(result[0]) : result[0];
       return {
-        messageType: message_type,
+        messageType: messageTypeResult,
         content
       };
     }

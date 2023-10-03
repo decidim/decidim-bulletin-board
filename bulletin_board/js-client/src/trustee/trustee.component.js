@@ -27,7 +27,7 @@ export class TrusteeComponent {
       uniqueId: trusteeUniqueId,
       authorityPublicKeyJSON,
       identificationKeys: trusteeIdentificationKeys,
-      wrapperAdapter: trusteeWrapperAdapter
+      wrapperAdapter: trusteeWrapperAdapter,
     });
   }
 
@@ -69,14 +69,14 @@ export class TrusteeComponent {
       ...bulletinBoardClientParams,
       headers: {
         Authorization: authorizationHeader,
-        TrusteeUniqueId: trusteeUniqueIdHeader
+        TrusteeUniqueId: trusteeUniqueIdHeader,
       },
     });
 
     const election = new Election({
       uniqueId: electionUniqueId,
       bulletinBoardClient,
-      typesFilter
+      typesFilter,
     });
 
     this.trustee.election = election;

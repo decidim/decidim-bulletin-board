@@ -31,7 +31,7 @@ export class TallyComponent extends TrusteeComponent {
         "end_key_ceremony",
         "start_tally",
         "tally",
-        "end_tally"
+        "end_tally",
       ],
     });
   }
@@ -60,7 +60,7 @@ export class TallyComponent extends TrusteeComponent {
     onRestore,
     onComplete,
     onStart,
-    onTrusteeNeedsToBeRestored
+    onTrusteeNeedsToBeRestored,
   }) {
     const onSetupDone = this.trustee.setup();
 

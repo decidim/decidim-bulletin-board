@@ -18,7 +18,7 @@ export class KeyCeremonyComponent extends TrusteeComponent {
   setupElection({
     bulletinBoardClientParams,
     electionUniqueId,
-    authorizationExpirationTimestamp
+    authorizationExpirationTimestamp,
   }) {
     return this.setupElectionWithTypesFilter({
       electionUniqueId,
@@ -28,7 +28,7 @@ export class KeyCeremonyComponent extends TrusteeComponent {
         "create_election",
         "start_key_ceremony",
         "key_ceremony",
-        "end_key_ceremony"
+        "end_key_ceremony",
       ],
     });
   }
@@ -64,7 +64,7 @@ export class KeyCeremonyComponent extends TrusteeComponent {
     onTrusteeNeedsToBeRestored,
     onBackupNeeded,
     onBindBackupButton,
-    onBackupStarted
+    onBackupStarted,
   }) {
     const onSetupDone = await this.trustee.setup();
 
