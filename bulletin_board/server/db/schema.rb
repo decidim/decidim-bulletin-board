@@ -10,8 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_04_13_125626) do
-
+ActiveRecord::Schema[7.0].define(version: 2021_04_13_125626) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -20,7 +19,7 @@ ActiveRecord::Schema.define(version: 2021_04_13_125626) do
     t.string "record_type", null: false
     t.bigint "record_id", null: false
     t.bigint "blob_id", null: false
-    t.datetime "created_at", null: false
+    t.datetime "created_at", precision: nil, null: false
     t.index ["blob_id"], name: "index_active_storage_attachments_on_blob_id"
     t.index ["record_type", "record_id", "name", "blob_id"], name: "index_active_storage_attachments_uniqueness", unique: true
   end
@@ -32,7 +31,7 @@ ActiveRecord::Schema.define(version: 2021_04_13_125626) do
     t.text "metadata"
     t.bigint "byte_size", null: false
     t.string "checksum", null: false
-    t.datetime "created_at", null: false
+    t.datetime "created_at", precision: nil, null: false
     t.string "service_name", null: false
     t.index ["key"], name: "index_active_storage_blobs_on_key", unique: true
   end
@@ -48,8 +47,8 @@ ActiveRecord::Schema.define(version: 2021_04_13_125626) do
     t.text "name", null: false
     t.jsonb "public_key", null: false
     t.text "api_key"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.string "unique_id", null: false
     t.string "public_key_thumbprint"
     t.index ["api_key"], name: "index_clients_on_api_key", unique: true
@@ -61,8 +60,8 @@ ActiveRecord::Schema.define(version: 2021_04_13_125626) do
   create_table "election_trustees", force: :cascade do |t|
     t.bigint "election_id", null: false
     t.bigint "trustee_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["election_id", "trustee_id"], name: "index_election_trustees_on_election_id_and_trustee_id", unique: true
     t.index ["election_id"], name: "index_election_trustees_on_election_id"
     t.index ["trustee_id"], name: "index_election_trustees_on_trustee_id"
@@ -71,8 +70,8 @@ ActiveRecord::Schema.define(version: 2021_04_13_125626) do
   create_table "elections", force: :cascade do |t|
     t.bigint "authority_id", null: false
     t.jsonb "title", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.string "unique_id", null: false
     t.binary "voting_scheme_state"
     t.integer "status", default: 0, null: false
@@ -87,8 +86,8 @@ ActiveRecord::Schema.define(version: 2021_04_13_125626) do
     t.text "signed_data", null: false
     t.string "chained_hash", null: false
     t.string "message_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.string "content_hash"
     t.integer "iat", null: false
     t.string "author_unique_id", null: false
@@ -106,8 +105,8 @@ ActiveRecord::Schema.define(version: 2021_04_13_125626) do
     t.bigint "election_id", null: false
     t.bigint "client_id", null: false
     t.text "signed_data", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.string "message_id", null: false
     t.integer "status", default: 0, null: false
     t.index ["client_id"], name: "index_pending_messages_on_client_id"
