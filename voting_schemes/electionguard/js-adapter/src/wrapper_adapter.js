@@ -18,8 +18,7 @@ export class WrapperAdapter {
       };
 
       this.worker.onerror = (error) => {
-        console.error("Error in worker, pythonCode:", pythonCode, "pythonData:", pythonData);
-        console.error(error);
+        console.error("Error in worker", error);
         reject(error);
       };
 

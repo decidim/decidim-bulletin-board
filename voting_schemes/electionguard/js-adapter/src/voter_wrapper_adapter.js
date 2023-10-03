@@ -81,7 +81,6 @@ export class VoterWrapperAdapter extends WrapperAdapter {
    * @returns {Promise<Object|undefined>}
    */
   async encrypt(plainVote, ballotStyle) {
-    console.log("Encrypting vote", plainVote, ballotStyle);
     const [auditableData, encryptedData] = await this.processPythonCodeOnWorker(
       `
       from js import plain_vote, ballot_style
@@ -92,8 +91,6 @@ export class VoterWrapperAdapter extends WrapperAdapter {
         ballot_style: ballotStyle
       }
     );
-    console.log("Encrypted vote: auditableData:", auditableData, "encryptedData:", encryptedData);
-// TODO, FIXME check if we need Object.fromEntries
     return { auditableData, encryptedData };
   }
 }
