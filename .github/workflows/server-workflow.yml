@@ -22,7 +22,7 @@ jobs:
     container:
       image: decidim/ruby-node-python-electionguard:ruby-3.1.1-node-16-python-3.8.11-electionguard-1.2.3
     steps:
-      - uses: actions/checkout@v3.0.0
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 1
       - name: Copy local electionguard
@@ -62,7 +62,7 @@ jobs:
     outputs:
       cache-hit: ${{ steps.save-output.outputs.cache-hit }}
     steps:
-      - uses: actions/checkout@v3.0.0
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 1
       - name: Cache python to js
@@ -88,7 +88,7 @@ jobs:
     container:
       image: decidim/pyodide-electionguard:pyodide-0.17.0-electionguard-1.2.3
     steps:
-      - uses: actions/checkout@v3.0.0
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 1
       - name: Cache python to js
@@ -150,7 +150,7 @@ jobs:
       DATABASE_PASSWORD: postgres
       DATABASE_HOST: postgres
     steps:
-      - uses: actions/checkout@v3.0.0
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 1
       - name: Cache python to js
@@ -272,7 +272,7 @@ jobs:
       REDIS_HOST: redis
       REDIS_PORT: 6379
     steps:
-      - uses: actions/checkout@v3.0.0
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 1
       - name: Cache python to js
