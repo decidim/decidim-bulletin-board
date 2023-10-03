@@ -2,7 +2,10 @@ body {
   max-width: unset;
 }
 
-.button, button, input[type=button], input[type=submit] {
+.button,
+button,
+input[type="button"],
+input[type="submit"] {
   border: 1px solid darkblue;
   text-decoration: none;
   margin: 2px;
