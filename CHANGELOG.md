@@ -7,7 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+- Fixes for the pyodide upgrade
+- Libraries updates
+
 ## [0.24.1] - 2022-11-11
+
+- Pyodide has been upgraded to v0.17.0
 
 ## Fixed
 
