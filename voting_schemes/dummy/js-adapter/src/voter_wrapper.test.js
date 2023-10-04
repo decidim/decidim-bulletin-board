@@ -100,7 +100,7 @@ describe("VoterWrapper", () => {
             251 * 123456789
           }},{"object_id":"question-2-answer-2","ciphertext":${
             251 * 123456789 + 1
-          }}]}]}`
+          }}]}]}`,
         );
       });
 

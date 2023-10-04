@@ -16,7 +16,7 @@ const ELECTIONGUARD_JAVA_JAR_PATH = join(
   "electionguard-java",
   "build",
   "libs",
-  "electionguard-java-0.9.2-SNAPSHOT-all.jar"
+  "electionguard-java-0.9.2-SNAPSHOT-all.jar",
 );
 
 /**
@@ -32,7 +32,7 @@ export const verifyElection = (allElectionFilesStream) => {
     allElectionFilesStream.on("data", ({ value: data }) => {
       const { signed_data: signedData, message_id: messageId } = data;
       const decodedData = JSON.parse(
-        jose.util.base64url.decode(signedData.split(".")[1])
+        jose.util.base64url.decode(signedData.split(".")[1]),
       );
       const [message] = messageId.split("+");
       const [, , messageType, messageSubType] = message.split(".");
@@ -56,7 +56,7 @@ export const verifyElection = (allElectionFilesStream) => {
             console.log(`\t${chalk.green("[OK]")} Electionguard verified.`);
             resolve(true);
           }
-        }
+        },
       );
     });
 

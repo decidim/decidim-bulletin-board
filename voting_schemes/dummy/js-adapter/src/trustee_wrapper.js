@@ -195,7 +195,7 @@ export class TrusteeWrapper {
   _compensate() {
     const trusteesCount = Object.keys(this.trusteesKeys).length;
     const missingTrustees = Object.values(this.trusteesShares).filter(
-      (val) => !val
+      (val) => !val,
     ).length;
 
     if (

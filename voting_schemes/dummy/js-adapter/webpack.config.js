@@ -14,7 +14,7 @@ module.exports = {
       "assets",
       "javascripts",
       "voting_schemes",
-      "dummy"
+      "dummy",
     ),
     filename: "dummy.js",
     library: "dummyVotingScheme",

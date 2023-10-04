@@ -177,7 +177,7 @@ describe("TrusteeWrapper", () => {
   describe("backup", () => {
     it("returns a JSON representation of the wrapper", () => {
       expect(wrapper.backup()).toEqual(
-        `{"trusteeId":"trustee-1","status":${NONE},"electionPublicKey":0,"jointElectionKey":0,"tallyCastMessage":null,"quorum":0,"trusteesKeys":{},"trusteesShares":{}}`
+        `{"trusteeId":"trustee-1","status":${NONE},"electionPublicKey":0,"jointElectionKey":0,"tallyCastMessage":null,"quorum":0,"trusteesKeys":{},"trusteesShares":{}}`,
       );
     });
 
@@ -189,7 +189,7 @@ describe("TrusteeWrapper", () => {
 
       it("returns a JSON representation of the wrapper in the KEY_CEREMONY status", () => {
         expect(wrapper.backup()).toEqual(
-          `{"trusteeId":"trustee-1","status":${KEY_CEREMONY},"electionPublicKey":${wrapper.electionPublicKey},"jointElectionKey":0,"tallyCastMessage":null,"quorum":2,"trusteesKeys":{},"trusteesShares":{}}`
+          `{"trusteeId":"trustee-1","status":${KEY_CEREMONY},"electionPublicKey":${wrapper.electionPublicKey},"jointElectionKey":0,"tallyCastMessage":null,"quorum":2,"trusteesKeys":{},"trusteesShares":{}}`,
         );
       });
     });

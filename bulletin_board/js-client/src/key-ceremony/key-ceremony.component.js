@@ -91,7 +91,7 @@ export class KeyCeremonyComponent extends TrusteeComponent {
             await keyCeremonySetup.next();
             await this.trustee.runKeyCeremony();
             onComplete();
-          }
+          },
         );
       }
     });

@@ -42,7 +42,7 @@ describe("Election", () => {
         electionTitle,
         electionUniqueId,
         trustees,
-        missingTrustees
+        missingTrustees,
       );
       page.assertTallyHasEnded(trustees, missingTrustees);
 

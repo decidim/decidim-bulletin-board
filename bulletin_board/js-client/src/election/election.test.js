@@ -32,7 +32,7 @@ describe("Election", () => {
 
   it("initializes the election with the correct params", () => {
     expect(election.bulletinBoardClient).toEqual(
-      defaultParams.bulletinBoardClient
+      defaultParams.bulletinBoardClient,
     );
     expect(election.uniqueId).toEqual(defaultParams.uniqueId);
     expect(election.logEntries).toEqual([]);
@@ -97,7 +97,7 @@ describe("Election", () => {
               election.uniqueId,
               "some-subtype",
               TRUSTEE_TYPE,
-              "some-other-trustee"
+              "some-other-trustee",
             ),
             signedData: "5678",
           },
@@ -117,7 +117,7 @@ describe("Election", () => {
               election.uniqueId,
               "some-subtype",
               TRUSTEE_TYPE,
-              trusteeId
+              trusteeId,
             ),
             signedData: "1234",
           },
@@ -126,7 +126,7 @@ describe("Election", () => {
               election.uniqueId,
               "some-subtype",
               TRUSTEE_TYPE,
-              trusteeId
+              trusteeId,
             ),
             signedData: "5678",
           },
