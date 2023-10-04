@@ -24,10 +24,8 @@ export const verify = async (path) => {
   const ballotData = await parseBallotFile(path);
   const { electionUniqueId } = ballotData;
   const bulletinBoardClient = new BulletinBoardClient(BULLETIN_BOARD_API_URL);
-  const {
-    createElectionMessage,
-    endKeyCeremonyMessage,
-  } = await bulletinBoardClient.getMessagesToAuditBallot(electionUniqueId);
+  const { createElectionMessage, endKeyCeremonyMessage } =
+    await bulletinBoardClient.getMessagesToAuditBallot(electionUniqueId);
 
   console.log(`${chalk.yellow("Verifying ballot...")}`);
 

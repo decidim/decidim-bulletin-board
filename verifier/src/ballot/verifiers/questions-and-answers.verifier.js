@@ -12,7 +12,7 @@ const LOCALE = process.env.LOCALE || "en";
  */
 export const verifyQuestionsAndAnswers = (
   ballotData,
-  createElectionMessage
+  createElectionMessage,
 ) => {
   try {
     const { plainVote } = ballotData;
@@ -34,7 +34,7 @@ export const verifyQuestionsAndAnswers = (
             ({ object_id: answerId, candidate_id: questionCandidateId }) => {
               const candidate = candidates.find(
                 ({ object_id: candidateId }) =>
-                  candidateId === questionCandidateId
+                  candidateId === questionCandidateId,
               );
               const {
                 ballot_name: { text },
@@ -43,15 +43,15 @@ export const verifyQuestionsAndAnswers = (
 
               if (plainVote[questionId].includes(answerId)) {
                 console.log(
-                  `\t\t\t${chalk.underline.black.bgWhite(`${candidateTitle}`)}`
+                  `\t\t\t${chalk.underline.black.bgWhite(`${candidateTitle}`)}`,
                 );
               } else {
                 console.log(`\t\t\t${candidateTitle}`);
               }
-            }
+            },
           );
         }
-      }
+      },
     );
   } catch (error) {
     console.log(`\t${chalk.red("[ERROR]")} Questions and answers verified.`);
