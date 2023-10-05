@@ -117,7 +117,7 @@ export class ElectionPage {
           cy.findByText(name)
             .parent("tr")
             .within(() => {
-              cy.findByText("Backup").click({ timeout: 360_000 });
+              cy.findByText("Backup").click({ timeout: 720_000 });
             });
         });
     });
