@@ -2,6 +2,6 @@
 
 module VotingSchemes
   module Dummy
-    VERSION = "0.24.3"
+    VERSION = "0.24.4"
   end
 end
