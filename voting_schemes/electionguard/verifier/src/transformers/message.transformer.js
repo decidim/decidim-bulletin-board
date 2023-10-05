@@ -49,8 +49,8 @@ export const transform = (path, messageType, messageSubType, decodedData) => {
             ],
           },
           null,
-          2
-        )
+          2,
+        ),
       );
 
       fs.writeFileSync(
@@ -61,8 +61,8 @@ export const transform = (path, messageType, messageSubType, decodedData) => {
             quorum,
           },
           null,
-          2
-        )
+          2,
+        ),
       );
 
       fs.mkdirSync(join(path, COEFFICIENTS_FOLDER_NAME));
@@ -74,15 +74,15 @@ export const transform = (path, messageType, messageSubType, decodedData) => {
           join(
             path,
             COEFFICIENTS_FOLDER_NAME,
-            `${COEFFICIENT_VALIDATION_FILE_NAME_PREFIX}_${slug}.json`
+            `${COEFFICIENT_VALIDATION_FILE_NAME_PREFIX}_${slug}.json`,
           ),
           JSON.stringify(
             {
               owner_id: slug,
             },
             null,
-            2
-          )
+            2,
+          ),
         );
       });
 
@@ -101,16 +101,16 @@ export const transform = (path, messageType, messageSubType, decodedData) => {
             join(
               path,
               COEFFICIENTS_FOLDER_NAME,
-              `${COEFFICIENT_VALIDATION_FILE_NAME_PREFIX}_${guardian_id}.json`
-            )
-          )
+              `${COEFFICIENT_VALIDATION_FILE_NAME_PREFIX}_${guardian_id}.json`,
+            ),
+          ),
         );
 
         fs.writeFileSync(
           join(
             path,
             COEFFICIENTS_FOLDER_NAME,
-            `${COEFFICIENT_VALIDATION_FILE_NAME_PREFIX}_${guardian_id}.json`
+            `${COEFFICIENT_VALIDATION_FILE_NAME_PREFIX}_${guardian_id}.json`,
           ),
           JSON.stringify(
             {
@@ -131,12 +131,12 @@ export const transform = (path, messageType, messageSubType, decodedData) => {
                   public_key: parseBase64(public_key),
                   response: parseBase64(response),
                   usage,
-                })
+                }),
               ),
             },
             null,
-            2
-          )
+            2,
+          ),
         );
       }
 
@@ -147,7 +147,7 @@ export const transform = (path, messageType, messageSubType, decodedData) => {
       const { election_joint_key, context, constants } = JSON.parse(content);
 
       const existingContext = JSON.parse(
-        fs.readFileSync(join(path, CONTEXT_FILE_NAME))
+        fs.readFileSync(join(path, CONTEXT_FILE_NAME)),
       );
 
       fs.writeFileSync(
@@ -156,18 +156,18 @@ export const transform = (path, messageType, messageSubType, decodedData) => {
           {
             ...existingContext,
             elgamal_public_key: parseBase64(
-              election_joint_key.joint_public_key
+              election_joint_key.joint_public_key,
             ),
             commitment_hash: parseBase64(context.commitment_hash),
             crypto_base_hash: parseBase64(context.crypto_base_hash),
             crypto_extended_base_hash: parseBase64(
-              context.crypto_extended_base_hash
+              context.crypto_extended_base_hash,
             ),
             description_hash: parseBase64(context.description_hash),
           },
           null,
-          2
-        )
+          2,
+        ),
       );
 
       fs.writeFileSync(
@@ -180,8 +180,8 @@ export const transform = (path, messageType, messageSubType, decodedData) => {
             small_prime: parseBase64(constants.small_prime),
           },
           null,
-          2
-        )
+          2,
+        ),
       );
       break;
     }
@@ -201,7 +201,7 @@ export const transform = (path, messageType, messageSubType, decodedData) => {
         join(
           path,
           ENCRYPTED_BALLOTS_FOLDER_NAME,
-          `${ENCRYPTED_BALLOT_FILE_NAME_PREFIX}_${object_id}.json`
+          `${ENCRYPTED_BALLOT_FILE_NAME_PREFIX}_${object_id}.json`,
         ),
         JSON.stringify(
           {
@@ -239,22 +239,22 @@ export const transform = (path, messageType, messageSubType, decodedData) => {
                       challenge: parseBase64(proof.challenge),
                       name: proof.name,
                       proof_one_challenge: parseBase64(
-                        proof.proof_one_challenge
+                        proof.proof_one_challenge,
                       ),
                       proof_one_data: parseBase64(proof.proof_one_data),
                       proof_one_pad: parseBase64(proof.proof_one_pad),
                       proof_one_response: parseBase64(proof.proof_one_response),
                       proof_zero_challenge: parseBase64(
-                        proof.proof_zero_challenge
+                        proof.proof_zero_challenge,
                       ),
                       proof_zero_data: parseBase64(proof.proof_zero_data),
                       proof_zero_pad: parseBase64(proof.proof_zero_pad),
                       proof_zero_response: parseBase64(
-                        proof.proof_zero_response
+                        proof.proof_zero_response,
                       ),
                       usage: proof.usage,
                     },
-                  })
+                  }),
                 ),
                 ciphertext_accumulation: {
                   pad: parseBase64(ciphertext_accumulation.pad),
@@ -272,14 +272,14 @@ export const transform = (path, messageType, messageSubType, decodedData) => {
                   response: parseBase64(proof.response),
                   usage: proof.usage,
                 },
-              })
+              }),
             ),
             previous_code: parseBase64(previous_code),
             code: parseBase64(code),
           },
           null,
-          2
-        )
+          2,
+        ),
       );
 
       break;
@@ -295,7 +295,7 @@ export const transform = (path, messageType, messageSubType, decodedData) => {
               contests: Object.entries(JSON.parse(content)).reduce(
                 (
                   result,
-                  [contestName, { description_hash, object_id, selections }]
+                  [contestName, { description_hash, object_id, selections }],
                 ) => {
                   result[contestName] = {
                     description_hash: parseBase64(description_hash),
@@ -306,7 +306,7 @@ export const transform = (path, messageType, messageSubType, decodedData) => {
                         [
                           selectionName,
                           { object_id, description_hash, ciphertext },
-                        ]
+                        ],
                       ) => {
                         result[selectionName] = {
                           ciphertext: {
@@ -318,18 +318,18 @@ export const transform = (path, messageType, messageSubType, decodedData) => {
                         };
                         return result;
                       },
-                      {}
+                      {},
                     ),
                   };
                   return result;
                 },
-                {}
+                {},
               ),
               object_id: "election-results",
             },
             null,
-            2
-          )
+            2,
+          ),
         );
       }
       break;
@@ -351,7 +351,7 @@ export const transform = (path, messageType, messageSubType, decodedData) => {
                       [
                         selectionName,
                         { message, object_id, shares, tally, value },
-                      ]
+                      ],
                     ) => {
                       result[selectionName] = {
                         message: {
@@ -372,25 +372,25 @@ export const transform = (path, messageType, messageSubType, decodedData) => {
                               usage: proof.usage,
                             },
                             share: parseBase64(share),
-                          })
+                          }),
                         ),
                         tally,
                         value: parseBase64(value),
                       };
                       return result;
                     },
-                    {}
+                    {},
                   ),
                 };
                 return result;
               },
-              {}
+              {},
             ),
             object_id: "election-results",
           },
           null,
-          2
-        )
+          2,
+        ),
       );
       break;
     }

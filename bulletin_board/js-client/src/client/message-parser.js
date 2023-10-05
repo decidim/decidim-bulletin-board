@@ -47,7 +47,7 @@ export class MessageParser {
     });
 
     const decodedData = JSON.parse(
-      new TextDecoder("utf-8").decode(result.payload)
+      new TextDecoder("utf-8").decode(result.payload),
     );
 
     if (!this.keys) {
@@ -61,7 +61,7 @@ export class MessageParser {
   async parseCreateElection({ authority, bulletin_board, trustees }) {
     if (!samePublicKeys(authority.public_key, this.authorityPublicKeyJSON)) {
       throw new Error(
-        "The authority public key doesn't match the election's authority public key."
+        "The authority public key doesn't match the election's authority public key.",
       );
     }
 
@@ -75,13 +75,13 @@ export class MessageParser {
     promises.push(
       this.loadKey(bulletin_board).then((key) => {
         result[BULLETIN_BOARD_TYPE][bulletin_board.slug] = key;
-      })
+      }),
     );
     for (const trustee of trustees) {
       promises.push(
         this.loadKey(trustee).then((key) => {
           result[TRUSTEE_TYPE][trustee.slug] = key;
-        })
+        }),
       );
     }
 

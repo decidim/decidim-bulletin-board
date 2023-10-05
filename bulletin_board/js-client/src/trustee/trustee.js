@@ -142,7 +142,7 @@ export class Trustee {
    */
   async needsToBeRestored() {
     const lastMessageFromTrustee = this.election.getLastMessageFromTrustee(
-      this.uniqueId
+      this.uniqueId,
     );
 
     return lastMessageFromTrustee && (await this.wrapperAdapter.isFresh());
@@ -156,7 +156,7 @@ export class Trustee {
    */
   async restore(wrapperState) {
     const lastMessageFromTrustee = this.election.getLastMessageFromTrustee(
-      this.uniqueId
+      this.uniqueId,
     );
 
     this.hasSetupKeyCeremony =
@@ -206,7 +206,7 @@ export class Trustee {
 
     const result = await this.wrapperAdapter.processMessage(
       messageIdentifier.typeSubtype,
-      decodedData
+      decodedData,
     );
 
     this.events.broadcastMessageProcessed(message, result);
@@ -220,7 +220,7 @@ export class Trustee {
           this.election.uniqueId,
           messageType,
           TRUSTEE_TYPE,
-          this.uniqueId
+          this.uniqueId,
         ),
         content,
       };

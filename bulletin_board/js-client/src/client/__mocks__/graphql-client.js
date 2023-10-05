@@ -63,20 +63,20 @@ export class GraphQLClient {
       logEntriesByElection[electionUniqueId].data.election.logEntries.find(
         (logEntry) => {
           return logEntry.contentHash === contentHash;
-        }
-      )
+        },
+      ),
     );
   }
 
   getElectionLogEntries({ electionUniqueId }) {
     return Promise.resolve(
-      logEntriesByElection[electionUniqueId].data.election.logEntries
+      logEntriesByElection[electionUniqueId].data.election.logEntries,
     );
   }
 
   getPendingMessageByMessageId({ messageId }) {
     return Promise.resolve(
-      pendingMessageByMessageId[messageId].data.pendingMessage
+      pendingMessageByMessageId[messageId].data.pendingMessage,
     );
   }
 

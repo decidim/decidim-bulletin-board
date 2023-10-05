@@ -6,12 +6,10 @@
 
 $(() => {
   const { IdentificationKeys, TallyComponent } = window.decidimBulletinBoard;
-  const {
-    TrusteeWrapperAdapter: DummyTrusteeWrapperAdapter,
-  } = window.dummyVotingScheme;
-  const {
-    TrusteeWrapperAdapter: ElectionGuardTrusteeWrapperAdapter,
-  } = window.electionGuardVotingScheme;
+  const { TrusteeWrapperAdapter: DummyTrusteeWrapperAdapter } =
+    window.dummyVotingScheme;
+  const { TrusteeWrapperAdapter: ElectionGuardTrusteeWrapperAdapter } =
+    window.electionGuardVotingScheme;
 
   // UI Elements
   const $trusteeTable = $(".trustee-table");
@@ -34,7 +32,7 @@ $(() => {
 
     const trusteeIdentificationKeys = new IdentificationKeys(
       trusteeContext.uniqueId,
-      trusteeContext.publicKeyJSON
+      trusteeContext.publicKeyJSON,
     );
 
     const $startButton = $trustee.find(".start-button");
@@ -110,7 +108,7 @@ $(() => {
           $restoreButton.on(
             "change",
             ".restore-button-input",
-            onEventTriggered
+            onEventTriggered,
           );
         },
         onRestore() {
@@ -124,11 +122,11 @@ $(() => {
       $generateBackupButton.on("click", (event) => {
         $generateBackupButton.attr(
           "href",
-          `data:text/plain;charset=utf-8,{"trusteeId":"${trusteeContext.uniqueId}","electionId":"${electionUniqueId}","status":1,"electionTrusteesCount":3,"processedMessages":[]}`
+          `data:text/plain;charset=utf-8,{"trusteeId":"${trusteeContext.uniqueId}","electionId":"${electionUniqueId}","status":1,"electionTrusteesCount":3,"processedMessages":[]}`,
         );
         $generateBackupButton.attr(
           "download",
-          `${trusteeContext.uniqueId}-election-${electionUniqueId}.bak`
+          `${trusteeContext.uniqueId}-election-${electionUniqueId}.bak`,
         );
       });
     };

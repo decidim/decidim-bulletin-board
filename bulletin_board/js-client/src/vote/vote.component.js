@@ -83,7 +83,7 @@ export class VoteComponent {
             onBindAuditBallotButton(() => {
               onAuditBallot(
                 ballot,
-                `${this.voter.uniqueId}-election-${this.voter.election.uniqueId}.txt`
+                `${this.voter.uniqueId}-election-${this.voter.election.uniqueId}.txt`,
               );
               onAuditComplete();
             });
@@ -100,7 +100,7 @@ export class VoteComponent {
         },
         () => {
           onInvalid();
-        }
+        },
       );
     });
   }

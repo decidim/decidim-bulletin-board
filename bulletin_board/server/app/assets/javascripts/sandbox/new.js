@@ -11,14 +11,14 @@ $(() => {
     const newQuestionElement = $questionTemplate[0].cloneNode(true);
     newQuestionElement.innerHTML = newQuestionElement.innerHTML.replace(
       /{{questionIndex}}/g,
-      currentQuestionIndex
+      currentQuestionIndex,
     );
     newQuestionElement.innerHTML = newQuestionElement.innerHTML.replace(
       /{{questionIndexPlusOne}}/g,
-      currentQuestionIndex + 1
+      currentQuestionIndex + 1,
     );
     $questionsPlaceholder.append(
-      document.importNode(newQuestionElement.content, true)
+      document.importNode(newQuestionElement.content, true),
     );
     questionIndex += 1;
     return currentQuestionIndex;
@@ -30,9 +30,9 @@ $(() => {
       (_, $ballotStyleQuestionPlaceholder) => {
         addQuestionToExistingBallotStyle(
           lastIndexAdded,
-          $ballotStyleQuestionPlaceholder
+          $ballotStyleQuestionPlaceholder,
         );
-      }
+      },
     );
     event.preventDefault();
   });
@@ -40,7 +40,7 @@ $(() => {
   const $addBallotStyleButton = $(".new_election__add-ballot-style-button");
   const $ballotStyleTemplate = $(".ballot-style-template");
   const $ballotStylesPlaceholder = $(
-    ".new_election__form-ballot-styles-placeholder"
+    ".new_election__form-ballot-styles-placeholder",
   );
   const $ballotStyleQuestionTemplate = $(".ballot-style-question-template");
   let ballotStyleIndex = 0;
@@ -49,21 +49,21 @@ $(() => {
     const newBallotStyleElement = $ballotStyleTemplate[0].cloneNode(true);
     newBallotStyleElement.innerHTML = newBallotStyleElement.innerHTML.replace(
       /{{ballotStyleIndexPlusOne}}/g,
-      ballotStyleIndex + 1
+      ballotStyleIndex + 1,
     );
 
     const ballotStyleNode = document.importNode(
       newBallotStyleElement.content,
-      true
+      true,
     );
 
     $(".election-question").each((questionIndex) => {
       const $ballotStyleQuestionPlaceholder = $(ballotStyleNode).find(
-        ".new_election__form-ballot-style-questions-placeholder"
+        ".new_election__form-ballot-style-questions-placeholder",
       );
       addQuestionToExistingBallotStyle(
         questionIndex,
-        $ballotStyleQuestionPlaceholder
+        $ballotStyleQuestionPlaceholder,
       );
     });
 
@@ -73,23 +73,24 @@ $(() => {
 
   const addQuestionToExistingBallotStyle = (
     questionIndex,
-    $ballotStyleQuestionPlaceholder
+    $ballotStyleQuestionPlaceholder,
   ) => {
-    const newBallotStyleQuestionElement = $ballotStyleQuestionTemplate[0].cloneNode(
-      true
-    );
+    const newBallotStyleQuestionElement =
+      $ballotStyleQuestionTemplate[0].cloneNode(true);
 
-    newBallotStyleQuestionElement.innerHTML = newBallotStyleQuestionElement.innerHTML.replace(
-      /{{ballotStyleIndexPlusOne}}/g,
-      ballotStyleIndex + 1
-    );
-    newBallotStyleQuestionElement.innerHTML = newBallotStyleQuestionElement.innerHTML.replace(
-      /{{questionIndexPlusOne}}/g,
-      questionIndex + 1
-    );
+    newBallotStyleQuestionElement.innerHTML =
+      newBallotStyleQuestionElement.innerHTML.replace(
+        /{{ballotStyleIndexPlusOne}}/g,
+        ballotStyleIndex + 1,
+      );
+    newBallotStyleQuestionElement.innerHTML =
+      newBallotStyleQuestionElement.innerHTML.replace(
+        /{{questionIndexPlusOne}}/g,
+        questionIndex + 1,
+      );
 
     $ballotStyleQuestionPlaceholder.append(
-      document.importNode(newBallotStyleQuestionElement.content, true)
+      document.importNode(newBallotStyleQuestionElement.content, true),
     );
   };
 

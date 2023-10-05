@@ -49,10 +49,8 @@ export class BulletinBoardClient {
       `,
     });
 
-    const [
-      createElectionLogEntry,
-      endKeyCeremonyLogEntry,
-    ] = data.election.logEntries;
+    const [createElectionLogEntry, endKeyCeremonyLogEntry] =
+      data.election.logEntries;
 
     return {
       createElectionMessage: createElectionLogEntry.decodedData,

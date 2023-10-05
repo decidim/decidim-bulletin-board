@@ -34,7 +34,7 @@ export class TrusteeWrapperAdapter extends WrapperAdapter {
       `,
       {
         trustee_id: this.trusteeId,
-      }
+      },
     );
   }
 
@@ -59,17 +59,17 @@ export class TrusteeWrapperAdapter extends WrapperAdapter {
       {
         message_type: messageType,
         decoded_data: JSON.stringify(decodedData),
-      }
+      },
     );
 
     if (result && result.length > 0) {
-      // eslint-disable-next-line camelcase
       // Pyodide 0.17 return a Map instead of a object when python is a dict
-      const { messageTypeResult, content } =
+      // eslint-disable-next-line camelcase
+      const { message_type, content } =
         result[0] instanceof Map ? Object.fromEntries(result[0]) : result[0];
       return {
-        messageType: messageTypeResult,
-        content,
+        messageType: message_type,
+        content: content,
       };
     }
   }
@@ -83,7 +83,7 @@ export class TrusteeWrapperAdapter extends WrapperAdapter {
     return this.processPythonCodeOnWorker(
       `
       trustee.is_fresh()
-    `
+    `,
     );
   }
 
@@ -96,7 +96,7 @@ export class TrusteeWrapperAdapter extends WrapperAdapter {
     return this.processPythonCodeOnWorker(
       `
       trustee.backup().hex()
-    `
+    `,
     );
   }
 
@@ -115,7 +115,7 @@ export class TrusteeWrapperAdapter extends WrapperAdapter {
     `,
       {
         state,
-      }
+      },
     );
   }
 
@@ -128,7 +128,7 @@ export class TrusteeWrapperAdapter extends WrapperAdapter {
     return this.processPythonCodeOnWorker(
       `
       trustee.is_key_ceremony_done()
-    `
+    `,
     );
   }
 
@@ -141,7 +141,7 @@ export class TrusteeWrapperAdapter extends WrapperAdapter {
     return this.processPythonCodeOnWorker(
       `
       trustee.is_tally_done()
-    `
+    `,
     );
   }
 }

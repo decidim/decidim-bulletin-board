@@ -22,7 +22,7 @@ describe("GraphQLClient", () => {
       const logEntryResult = { messageId: "dummy.1", signedData: "1234" };
 
       fetch.mockResponseOnce(
-        JSON.stringify({ data: { logEntry: logEntryResult } })
+        JSON.stringify({ data: { logEntry: logEntryResult } }),
       );
 
       const logEntry = await client.getLogEntry({
@@ -40,7 +40,7 @@ describe("GraphQLClient", () => {
         client.getLogEntry({
           electionUniqueId: "example.1",
           contentHash: "1234",
-        })
+        }),
       ).rejects.toThrow("something went wrong");
     });
   });
@@ -53,7 +53,9 @@ describe("GraphQLClient", () => {
       ];
 
       fetch.mockResponseOnce(
-        JSON.stringify({ data: { election: { logEntries: logEntriesResult } } })
+        JSON.stringify({
+          data: { election: { logEntries: logEntriesResult } },
+        }),
       );
 
       const logEntries = await client.getElectionLogEntries({
@@ -69,7 +71,7 @@ describe("GraphQLClient", () => {
       await expect(
         client.getElectionLogEntries({
           electionUniqueId: "example.1",
-        })
+        }),
       ).rejects.toThrow("something went wrong");
     });
   });
@@ -79,7 +81,7 @@ describe("GraphQLClient", () => {
       const pendingMessageResult = { status: "accepted" };
 
       fetch.mockResponseOnce(
-        JSON.stringify({ data: { pendingMessage: pendingMessageResult } })
+        JSON.stringify({ data: { pendingMessage: pendingMessageResult } }),
       );
 
       const pendingMessage = await client.getPendingMessageByMessageId({
@@ -95,7 +97,7 @@ describe("GraphQLClient", () => {
       await expect(
         client.getPendingMessageByMessageId({
           messageId: "dummy.1",
-        })
+        }),
       ).rejects.toThrow("something went wrong");
     });
   });
@@ -109,7 +111,7 @@ describe("GraphQLClient", () => {
           data: {
             processKeyCeremonyStep: { pendingMessage: pendingMessageResult },
           },
-        })
+        }),
       );
 
       const pendingMessage = await client.processKeyCeremonyStep({
@@ -127,13 +129,13 @@ describe("GraphQLClient", () => {
           data: {
             processKeyCeremonyStep: { error: errorMessage },
           },
-        })
+        }),
       );
 
       await expect(
         client.processKeyCeremonyStep({
           electionUniqueId: "example.1",
-        })
+        }),
       ).rejects.toThrow(errorMessage);
     });
 
@@ -143,7 +145,7 @@ describe("GraphQLClient", () => {
       await expect(
         client.processKeyCeremonyStep({
           electionUniqueId: "example.1",
-        })
+        }),
       ).rejects.toThrow("something went wrong");
     });
   });

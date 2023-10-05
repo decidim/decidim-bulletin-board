@@ -47,13 +47,12 @@ export class Voter {
       })
       .then(async (logEntries) => {
         for (const logEntry of logEntries) {
-          const { messageIdentifier, decodedData } = await this.parser.parse(
-            logEntry
-          );
+          const { messageIdentifier, decodedData } =
+            await this.parser.parse(logEntry);
 
           await this.wrapperAdapter.processMessage(
             messageIdentifier.typeSubtype,
-            decodedData
+            decodedData,
           );
         }
       });
@@ -70,7 +69,7 @@ export class Voter {
   async encrypt(plainVote, ballotStyle) {
     const { encryptedData, auditableData } = await this.wrapperAdapter.encrypt(
       plainVote,
-      ballotStyle
+      ballotStyle,
     );
     const encryptedDataHash = await this.hash(encryptedData);
 

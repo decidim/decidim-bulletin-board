@@ -19,7 +19,7 @@ describe("Client", () => {
 
   it("initialise the api client with the given params", () => {
     expect(client.apiClient.apiEndpointUrl).toEqual(
-      defaultParams.apiEndpointUrl
+      defaultParams.apiEndpointUrl,
     );
     expect(client.apiClient.wsEndpointUrl).toEqual(defaultParams.wsEndpointUrl);
   });
@@ -49,9 +49,8 @@ describe("Client", () => {
 
   describe("waitForPendingMessageToBeProcessed", () => {
     it("returns the pending message for the given messageId", async () => {
-      const pendingMessage = await client.waitForPendingMessageToBeProcessed(
-        "dummy.1"
-      );
+      const pendingMessage =
+        await client.waitForPendingMessageToBeProcessed("dummy.1");
       expect(pendingMessage).toEqual({
         status: "accepted",
       });

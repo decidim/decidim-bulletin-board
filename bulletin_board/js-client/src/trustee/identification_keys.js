@@ -16,7 +16,7 @@ export class IdentificationKeys {
     this.usages = ["sign"];
     this.publicKeyAttrs = ["alg", "e", "kty", "n"];
     this.jwtHeader = this._encode64(
-      JSON.stringify({ alg: "RS256", typ: "JWT" })
+      JSON.stringify({ alg: "RS256", typ: "JWT" }),
     );
 
     this.trusteeUniqueId = trusteeUniqueId;
@@ -60,8 +60,8 @@ export class IdentificationKeys {
                 element.setAttribute(
                   "href",
                   `data:text/plain;charset=utf-8,${encodeURIComponent(
-                    JSON.stringify(jwk)
-                  )}`
+                    JSON.stringify(jwk),
+                  )}`,
                 );
                 element.setAttribute("download", `${this.keyIdentifier}.jwk`);
                 element.style.display = "none";
@@ -149,10 +149,10 @@ export class IdentificationKeys {
     const signature = await this.crypto.subtle.sign(
       this.algorithm,
       this.privateKey,
-      this.textEncoder.encode(data)
+      this.textEncoder.encode(data),
     );
     return `${data}.${btoa(
-      Reflect.apply(String.fromCharCode, null, new Uint8Array(signature))
+      Reflect.apply(String.fromCharCode, null, new Uint8Array(signature)),
     )
       .replace(/[=]/g, "")
       .replace(/\+/g, "-")
@@ -211,7 +211,7 @@ export class IdentificationKeys {
           privateKey: this.privateKey,
           publicKey: this.publicKey,
         },
-        this.keyIdentifier
+        this.keyIdentifier,
       );
     });
   }

@@ -6,12 +6,10 @@
 
 $(() => {
   const { VoteComponent } = window.decidimBulletinBoard;
-  const {
-    VoterWrapperAdapter: DummyVoterWrapperAdapter,
-  } = window.dummyVotingScheme;
-  const {
-    VoterWrapperAdapter: ElectionGuardVoterWrapperAdapter,
-  } = window.electionGuardVotingScheme;
+  const { VoterWrapperAdapter: DummyVoterWrapperAdapter } =
+    window.dummyVotingScheme;
+  const { VoterWrapperAdapter: ElectionGuardVoterWrapperAdapter } =
+    window.electionGuardVotingScheme;
 
   // UI Elements
   const $voter = $(".voter");
@@ -107,7 +105,7 @@ $(() => {
       try {
         const formData = $voter.serializeArray();
         const [ballotStyleData] = formData.filter(
-          ({ name }) => name === "ballot_style"
+          ({ name }) => name === "ballot_style",
         );
         const voteData = formData
           .filter(({ name }) => name !== "ballot_style" && name !== "voter_id")
@@ -132,7 +130,7 @@ $(() => {
     },
     castOrAuditBallot({ encryptedDataHash }) {
       $benchmark.text(
-        `The encryption took ${(new Date() - encryptStart) / 1000} seconds.`
+        `The encryption took ${(new Date() - encryptStart) / 1000} seconds.`,
       );
       $ballotHash.text(`Your ballot identifier is: ${encryptedDataHash}`);
       $encryptVote.prop("disabled", true);

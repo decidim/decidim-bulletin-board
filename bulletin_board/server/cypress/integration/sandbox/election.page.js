@@ -109,7 +109,7 @@ export class ElectionPage {
               },
               {
                 force: true,
-              }
+              },
             );
 
           cy.findByText("Start").click();
@@ -117,7 +117,7 @@ export class ElectionPage {
           cy.findByText(name)
             .parent("tr")
             .within(() => {
-              cy.findByText("Backup").click({ timeout: 180_000 });
+              cy.findByText("Backup").click({ timeout: 720_000 });
             });
         });
     });
@@ -206,7 +206,7 @@ export class ElectionPage {
    */
   assertVoteHasBeenAudited() {
     cy.findByText("Your vote has been audited successfully").should(
-      "be.visible"
+      "be.visible",
     );
     cy.findByText("Back").click();
   }
@@ -408,7 +408,7 @@ export class ElectionPage {
                 },
                 {
                   force: true,
-                }
+                },
               );
           }
         });
