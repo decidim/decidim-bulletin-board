@@ -19,8 +19,8 @@ rm -rf $SHARED_FOLDER/electionguard/*
 cp -rf .. $SHARED_FOLDER/electionguard/
 
 # Build packages with Pyodide
-docker run --rm --mount type=bind,source=$HOST_SHARED_FOLDER/electionguard,target=/electionguard -e PYODIDE_PACKAGES="electionguard,bulletin_board-electionguard" -it decidim/pyodide-electionguard:pyodide-0.16.1-electionguard-1.2.3 /electionguard/python-to-js/build-pyodide
+docker run --rm --mount type=bind,source=$HOST_SHARED_FOLDER/electionguard,target=/electionguard -e PYODIDE_PACKAGES="electionguard,bulletin_board-electionguard" -it decidim/pyodide-electionguard:pyodide-0.17.0-electionguard-1.2.3 /electionguard/python-to-js/build-pyodide
 
 # Move generated files to the vendor folder of the js-adapter
 cp -rf $SHARED_FOLDER/electionguard/python-to-js/output/* ../ruby-adapter/public/assets/electionguard/
-rm -rf $SHARED_FOLDER/electionguard
+rm -rf $SHARED_FOLDER/electionguard || sudo rm -rf $SHARED_FOLDER/electionguard

@@ -45,7 +45,7 @@ describe("Trustee", () => {
   it("initialises the trustee with the given params", () => {
     expect(trustee.uniqueId).toEqual(defaultParams.uniqueId);
     expect(trustee.identificationKeys).toEqual(
-      defaultParams.identificationKeys
+      defaultParams.identificationKeys,
     );
     expect(trustee.nextLogEntryIndexToProcess).toEqual(0);
     expect(trustee.lastMessageProcessedWithResult).toBeNull();
@@ -103,7 +103,7 @@ describe("Trustee", () => {
         await keyCeremonySetup.next();
         await keyCeremonySetup.next();
         expect(
-          trustee.election.bulletinBoardClient.processKeyCeremonyStep
+          trustee.election.bulletinBoardClient.processKeyCeremonyStep,
         ).toHaveBeenCalledWith({
           messageId: buildMessageId("dummy.response_save"),
           signedData: "5678",
@@ -124,7 +124,7 @@ describe("Trustee", () => {
         it("processes messages until a done message", async () => {
           await trustee.runKeyCeremony();
           expect(
-            trustee.election.bulletinBoardClient.processKeyCeremonyStep
+            trustee.election.bulletinBoardClient.processKeyCeremonyStep,
           ).toHaveBeenCalledWith({
             messageId: buildMessageId("dummy.response_send"),
             signedData: "1234",
@@ -134,7 +134,7 @@ describe("Trustee", () => {
         it("skips the processed log entries that doesn't output a result", async () => {
           await trustee.runKeyCeremony();
           expect(
-            trustee.election.bulletinBoardClient.processKeyCeremonyStep
+            trustee.election.bulletinBoardClient.processKeyCeremonyStep,
           ).not.toHaveBeenCalledWith({
             message_id: buildMessageId("dummy.nothing"),
             content: "1234",
@@ -144,7 +144,7 @@ describe("Trustee", () => {
         it("doesn't send a message already sent", async () => {
           await trustee.runKeyCeremony();
           expect(
-            trustee.election.bulletinBoardClient.processKeyCeremonyStep
+            trustee.election.bulletinBoardClient.processKeyCeremonyStep,
           ).toHaveBeenCalledWith({
             messageId: buildMessageId("dummy.response_send"),
             signedData: "1234",
@@ -162,7 +162,7 @@ describe("Trustee", () => {
           ];
           await trustee.runKeyCeremony();
           expect(
-            trustee.election.bulletinBoardClient.processKeyCeremonyStep
+            trustee.election.bulletinBoardClient.processKeyCeremonyStep,
           ).not.toHaveBeenCalledWith({
             messageId: buildMessageId("dummy.response_send"),
             signedData: "aaaa",
@@ -252,15 +252,15 @@ describe("Trustee", () => {
         await trustee.runTally();
         expect(trustee.wrapperAdapter.processMessage).toHaveBeenCalledWith(
           "dummy.send",
-          "1234"
+          "1234",
         );
         expect(trustee.wrapperAdapter.processMessage).toHaveBeenCalledWith(
           "dummy.send",
-          "5678"
+          "5678",
         );
         expect(trustee.wrapperAdapter.processMessage).toHaveBeenCalledWith(
           "dummy.cast",
-          "0912"
+          "0912",
         );
       });
 
@@ -274,7 +274,7 @@ describe("Trustee", () => {
         jest.spyOn(trustee.election.bulletinBoardClient, "processTallyStep");
         await trustee.runTally();
         expect(
-          trustee.election.bulletinBoardClient.processTallyStep
+          trustee.election.bulletinBoardClient.processTallyStep,
         ).toHaveBeenCalledWith({
           messageId: buildMessageId("dummy.response_cast"),
           signedData: "0912",

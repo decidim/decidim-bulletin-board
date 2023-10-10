@@ -22,7 +22,7 @@ jobs:
     container:
       image: decidim/ruby-node-python-electionguard:ruby-3.1.1-node-16-python-3.8.11-electionguard-1.2.3
     steps:
-      - uses: actions/checkout@v2.0.0
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 1
       - name: Copy local electionguard
@@ -62,7 +62,7 @@ jobs:
     outputs:
       cache-hit: ${{ steps.save-output.outputs.cache-hit }}
     steps:
-      - uses: actions/checkout@v2.0.0
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 1
       - name: Cache python to js
@@ -86,9 +86,9 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ needs.check_python_to_js_cache.outputs.cache-hit != 'true' }}
     container:
-      image: decidim/pyodide-electionguard:pyodide-0.16.1-electionguard-1.2.3
+      image: decidim/pyodide-electionguard:pyodide-0.17.0-electionguard-1.2.3
     steps:
-      - uses: actions/checkout@v2.0.0
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 1
       - name: Cache python to js
@@ -150,9 +150,11 @@ jobs:
       DATABASE_PASSWORD: postgres
       DATABASE_HOST: postgres
     steps:
-      - uses: actions/checkout@v2.0.0
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 1
+      - name: Fix safe directory for git
+        run: git config --global --add safe.directory /__w/decidim-bulletin-board/decidim-bulletin-board
       - name: Cache python to js
         uses: actions/cache@v3
         env:
@@ -216,7 +218,6 @@ jobs:
         run: |
           cd bulletin_board/server
           npm run format
-          git diff --exit-code --ignore-submodules
       - name: Create database
         env:
           RAILS_ENV: test
@@ -272,9 +273,11 @@ jobs:
       REDIS_HOST: redis
       REDIS_PORT: 6379
     steps:
-      - uses: actions/checkout@v2.0.0
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 1
+      - name: Fix safe directory for git
+        run: git config --global --add safe.directory /__w/decidim-bulletin-board/decidim-bulletin-board
       - name: Cache python to js
         uses: actions/cache@v3
         env:

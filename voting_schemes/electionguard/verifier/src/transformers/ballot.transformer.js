@@ -5,10 +5,8 @@
  */
 export const transform = (ballotData) => {
   const { auditableData } = ballotData;
-  const {
-    plaintext_ballot,
-    ciphered_ballot: expectedCipheredBallot,
-  } = auditableData;
+  const { plaintext_ballot, ciphered_ballot: expectedCipheredBallot } =
+    auditableData;
   const {
     contests,
     style_id: ballotStyle,

@@ -3,9 +3,7 @@
   "documents": "../js-client/**/*.gql",
   "generates": {
     "../js-client/src/types.d.ts": {
-      "plugins": [
-        "typescript"
-      ]
+      "plugins": ["typescript"]
     }
   }
 }

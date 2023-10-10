@@ -6,16 +6,12 @@
 //= require voting_schemes/electionguard/electionguard
 
 $(() => {
-  const {
-    IdentificationKeys,
-    KeyCeremonyComponent,
-  } = window.decidimBulletinBoard;
-  const {
-    TrusteeWrapperAdapter: DummyTrusteeWrapperAdapter,
-  } = window.dummyVotingScheme;
-  const {
-    TrusteeWrapperAdapter: ElectionGuardTrusteeWrapperAdapter,
-  } = window.electionGuardVotingScheme;
+  const { IdentificationKeys, KeyCeremonyComponent } =
+    window.decidimBulletinBoard;
+  const { TrusteeWrapperAdapter: DummyTrusteeWrapperAdapter } =
+    window.dummyVotingScheme;
+  const { TrusteeWrapperAdapter: ElectionGuardTrusteeWrapperAdapter } =
+    window.electionGuardVotingScheme;
 
   // UI Elements
   const $trusteeTable = $(".trustee-table");
@@ -38,7 +34,7 @@ $(() => {
 
     const trusteeIdentificationKeys = new IdentificationKeys(
       trusteeContext.uniqueId,
-      trusteeContext.publicKeyJSON
+      trusteeContext.publicKeyJSON,
     );
 
     const $startButton = $trustee.find(".start-button");
@@ -87,7 +83,7 @@ $(() => {
           $restoreButton.on(
             "change",
             ".restore-button-input",
-            onEventTriggered
+            onEventTriggered,
           );
         },
         onBindStartButton(onEventTriggered) {
@@ -96,7 +92,7 @@ $(() => {
         onBindBackupButton(backupData, backupFilename, onEventTriggered) {
           $backupButton.attr(
             "href",
-            `data:text/plain;charset=utf-8,${backupData}`
+            `data:text/plain;charset=utf-8,${backupData}`,
           );
           $backupButton.attr("download", backupFilename);
           $backupButton.on("click", onEventTriggered);

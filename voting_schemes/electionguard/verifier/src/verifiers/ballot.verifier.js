@@ -18,15 +18,10 @@ import { transform } from "../transformers/ballot.transformer.js";
 export const verifyBallot = async (
   ballotData,
   createElectionMessage,
-  endKeyCeremonyMessage
+  endKeyCeremonyMessage,
 ) => {
-  const {
-    expectedCipheredBallot,
-    voterId,
-    plainVote,
-    ballotStyle,
-    nonce,
-  } = transform(ballotData);
+  const { expectedCipheredBallot, voterId, plainVote, ballotStyle, nonce } =
+    transform(ballotData);
 
   const actualCipheredBallot = await encryptVote({
     voterId,

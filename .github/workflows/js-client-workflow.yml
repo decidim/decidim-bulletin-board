@@ -28,7 +28,7 @@ jobs:
         if: "github.ref != 'refs/heads/develop'"
         env:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
-      - uses: actions/checkout@v2.0.0
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 1
       - uses: actions/setup-node@v2-beta
@@ -62,7 +62,7 @@ jobs:
         if: "github.ref != 'refs/heads/develop'"
         env:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
-      - uses: actions/checkout@v2.0.0
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 1
       - uses: actions/setup-node@v2-beta

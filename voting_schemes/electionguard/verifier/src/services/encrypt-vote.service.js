@@ -8,7 +8,7 @@ const PYTHON_SCRIPT_PATH = path.join(
   "..",
   "..",
   "scripts",
-  "encrypt-vote.py"
+  "encrypt-vote.py",
 );
 
 /**

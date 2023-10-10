@@ -64,7 +64,7 @@ export const createAllElectionFilesStream = (path) => {
 
   fs.readdirSync(path).forEach((filename) => {
     combinedStream.append(
-      fs.createReadStream(join(path, filename)).pipe(zlib.createGunzip())
+      fs.createReadStream(join(path, filename)).pipe(zlib.createGunzip()),
     );
   });
 
@@ -105,7 +105,7 @@ export const parseBallotFile = (path) => {
           plainVote,
           electionUniqueId,
         };
-      }
+      },
     );
 
     stream.on("end", () => {

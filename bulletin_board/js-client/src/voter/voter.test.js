@@ -40,7 +40,7 @@ describe("Voter", () => {
         Promise.resolve({
           encryptedData,
           actualAuditableData,
-        })
+        }),
       );
 
       jest
@@ -52,7 +52,7 @@ describe("Voter", () => {
       await voter.encrypt(plainVote, null);
       expect(voter.wrapperAdapter.encrypt).toHaveBeenCalledWith(
         plainVote,
-        null
+        null,
       );
     });
 
@@ -68,7 +68,7 @@ describe("Voter", () => {
           question1: ["answer-1-option-a"],
           question2: ["answer-2-option-a", "answer-2-option-b"],
         },
-        null
+        null,
       );
 
       expect(actualEncryptedData).toEqual(encryptedData);

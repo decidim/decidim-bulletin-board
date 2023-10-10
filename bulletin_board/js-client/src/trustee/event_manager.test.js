@@ -44,7 +44,7 @@ describe("EventManager", () => {
           expect(message).toEqual("foo");
           expect(result).toEqual("bar");
           done();
-        }
+        },
       );
       eventManager.broadcastMessageProcessed("foo", "bar");
       subscription.unsubscribe();

@@ -58,11 +58,11 @@ export class VoterWrapper {
 
         const auditableData = this.createAuditableBallot(plainVote);
         const encryptedData = JSON.stringify(
-          this.createEncryptedData(JSON.parse(JSON.stringify(auditableData)))
+          this.createEncryptedData(JSON.parse(JSON.stringify(auditableData))),
         );
 
         return { auditableData, encryptedData };
-      }
+      },
     );
   }
 

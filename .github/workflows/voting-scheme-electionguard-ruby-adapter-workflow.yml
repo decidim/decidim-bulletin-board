@@ -27,7 +27,7 @@ jobs:
         if: "github.ref != 'refs/heads/develop'"
         env:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
-      - uses: actions/checkout@v2.0.0
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 1
       - uses: ruby/setup-ruby@master
@@ -61,7 +61,7 @@ jobs:
         if: "github.ref != 'refs/heads/develop'"
         env:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
-      - uses: actions/checkout@v2.0.0
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 1
       - uses: ruby/setup-ruby@master

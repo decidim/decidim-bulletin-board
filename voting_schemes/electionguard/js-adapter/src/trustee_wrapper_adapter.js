@@ -25,8 +25,8 @@ export class TrusteeWrapperAdapter extends WrapperAdapter {
    *
    * @returns {Promise<undefined>}
    */
-  setup() {
-    return this.processPythonCodeOnWorker(
+  async setup() {
+    return await this.processPythonCodeOnWorker(
       `
         from js import trustee_id
         from bulletin_board.electionguard.trustee import Trustee
@@ -34,7 +34,7 @@ export class TrusteeWrapperAdapter extends WrapperAdapter {
       `,
       {
         trustee_id: this.trusteeId,
-      }
+      },
     );
   }
 
@@ -49,22 +49,27 @@ export class TrusteeWrapperAdapter extends WrapperAdapter {
   async processMessage(messageType, decodedData) {
     const result = await this.processPythonCodeOnWorker(
       `
-      import json
       from js import message_type, decoded_data
-      trustee.process_message(message_type, json.loads(decoded_data))
+      import json
+      trustee.process_message(
+        message_type,
+        json.loads(decoded_data)
+      )
     `,
       {
         message_type: messageType,
         decoded_data: JSON.stringify(decodedData),
-      }
+      },
     );
 
     if (result && result.length > 0) {
+      // Pyodide 0.17 return a Map instead of a object when python is a dict
       // eslint-disable-next-line camelcase
-      const [{ message_type, content }] = result;
+      const { message_type, content } =
+        result[0] instanceof Map ? Object.fromEntries(result[0]) : result[0];
       return {
         messageType: message_type,
-        content,
+        content: content,
       };
     }
   }
@@ -78,7 +83,7 @@ export class TrusteeWrapperAdapter extends WrapperAdapter {
     return this.processPythonCodeOnWorker(
       `
       trustee.is_fresh()
-    `
+    `,
     );
   }
 
@@ -91,7 +96,7 @@ export class TrusteeWrapperAdapter extends WrapperAdapter {
     return this.processPythonCodeOnWorker(
       `
       trustee.backup().hex()
-    `
+    `,
     );
   }
 
@@ -105,13 +110,12 @@ export class TrusteeWrapperAdapter extends WrapperAdapter {
     return this.processPythonCodeOnWorker(
       `
       from js import state
-
       trustee = Trustee.restore(bytes.fromhex(state))
       True
     `,
       {
         state,
-      }
+      },
     );
   }
 
@@ -124,7 +128,7 @@ export class TrusteeWrapperAdapter extends WrapperAdapter {
     return this.processPythonCodeOnWorker(
       `
       trustee.is_key_ceremony_done()
-    `
+    `,
     );
   }
 
@@ -137,7 +141,7 @@ export class TrusteeWrapperAdapter extends WrapperAdapter {
     return this.processPythonCodeOnWorker(
       `
       trustee.is_tally_done()
-    `
+    `,
     );
   }
 }

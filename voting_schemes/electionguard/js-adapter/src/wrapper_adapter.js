@@ -3,7 +3,7 @@
  */
 export class WrapperAdapter {
   /**
-   * Runs an arbitrary python code in the web worker.
+   * Runs arbitrary python code in the web worker
    *
    * @param {String} pythonCode - A string representing valid python code.
    * @param {Object} pythonData - An Object which values can be referenced from
@@ -11,14 +11,14 @@ export class WrapperAdapter {
    * @private
    * @returns {Promise<Object>}
    */
-  processPythonCodeOnWorker(pythonCode, pythonData) {
+  async processPythonCodeOnWorker(pythonCode, pythonData) {
     return new Promise((resolve, reject) => {
       this.worker.onmessage = (event) => {
         resolve(event.data.results);
       };
 
       this.worker.onerror = (error) => {
-        console.error(error);
+        console.error("Error in worker", error);
         reject(error);
       };
 
