@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.24.4] - 2023-10-05
 
+ - Minor bugfixes
+
 ## [0.24.3] - 2023-10-03
 
 - Fixes for the pyodide upgrade
