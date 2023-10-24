@@ -5,6 +5,9 @@ source "https://rubygems.org"
 # Specify your gem's dependencies in decidim-bulletin_board.gemspec
 gemspec
 
+# Graphql version 2.1 breaks graphql-client compatibility See https://github.com/github/graphql-client/pull/310
+gem "graphql", "~> 2.0.0"
+
 gem "rubocop", "~> 1.28.0"
 gem "rubocop-faker", "~> 1.1.0"
 gem "rubocop-rspec", "~> 2.10"
