@@ -17,6 +17,132 @@ This repository follows the monorepo pattern and includes the following projects
 - Or clone the submodules separately after the initial clone by running `git submodule update --init --recursive` in the repository folder
 - Use one of the development methods below
 
+=== Running on Docker
+
+You can run this application conveniently packaged with docker compose.
+
+You can use the existing [docker-composer.yml](docker-composer.yml) as starting point.
+Among the typical Rails ENV vars (such as `SECRET_KEY_BASE`), it is important to define the private key for this instance of the bulletin board:
+
+Keep reading to see how to generate the private key.
+
+Also,it is important to have an additional docker instance running, with the same ENVs, a sidekiq instance. This is very important as they are many background jobs. If using the provided [entrypoint](docker-entrypoint.sh), you can use simply the ENV `RUN_SIDEKIQ` in the worker:
+
+```
+IDENTIFICATION_PRIVATE_KEY=-private-key-for-this-bulletin-board
+RUN_SIDEKIQ=true
+```
+
+==== Configuring a new bulletin board instance
+
+The parameter that defines the identity of a bulletin board, is its private key. This is simply an RSA type of key generate with the OpenSSL library. For convenience you can generate it with the following command:
+
+```bash
+bin/rails client:generate_identification_private_key
+```
+
+You must run this command inside the `bulletin_board/server` folder or, if using docker-compose (you need it up an running first), access to the bash console with `docker-compose exec app bash` and run it there.
+
+The result will look something like this
+
+```
+root@8e29f0e27bcd:/code/bulletin_board/server# bin/rails client:generate_identification_private_key
+
+{"kty":"RSA","n":"xAXGOyY4GbdRqsVDYBvyVDP00eFkEuBN_WAU8IEMndQ-F-Z7K38hzGVrgED02YloFf984bKaLTjyBzpTx5MDA-4Hj1rjxoCRTPUHm-3_ixH511HT0fLI4060MerbFhD1QiQ8V6s-LBt8XicCmNHT-rpxd8zLsFAWnsTP-1FfEzDdzPXFZiL5VFZTUfy-JjXvE1DyCzKIiSFSgM0H2Z6wKgBKEmLt3tzdHZrs2QgaHOmZciPvRy6pXCkcRZs4Sjj0Fr-oaisA--wIcbsnBofkgL--Ncv0w6VfvHmm-r1GPuzX-ucu1IbjPLLaLnE6RpLuq17-W8xpdFbLz9UQ-ZUr0pmvYK5pYprtmqQdG-uagmyOSzFuZCSTEOqeSdeKWRnFubdnEoPP7s6hFqaptpk-Y7WeSamkvtFQ6Ery6CikJWc7kTIhoGpnZH6VeFwLTsKq3t7c2WW7bZio2xlmdo40FFHr_p0Tuf38v0-A-y525jNKriOWC6JZdQN1yJMWnReoReom8ydDqjsepSEgwAmBK38hcXZgHR8otzf_EvGcR2mmwSWnMRk2lu9J1nV2OYBmy1C79vZK8V6MruiRz595Lz-amHbwkikC1GHG9MQUhlUiqKsYLC-ammF01mT9mjZ-fnUcZu09VS9NRq33K9MfXTuZfGlnLEB_848MHr9zDkc","e":"AQAB","kid":"f32df481d9d9d3c73fd88fa819b1ef5a844de5110cd3d72829f5adb90a08ba19","d":"ddca0lgphZwk5kpsNIzYYzJQzRN4O7jIabenHuYVlZQQOAIAradhxCR8Ob_S8iuefQr4Ih5ifSksppez4dhJCcXAmbeEEsMblm3_QwgShaIq1fyFIEOZ7LxVq2SKjHtpVXe_Jtz1JULowxkkgIYzrxkCOYjOMpIS5yNd_LFwPHM2A48EOmBwDvlOYY1VKldl__C7cWvRlM6JcJDRVUwGj1lZLjB223FfI_sMw3QRbqwn6OwdXmd4vMSiEF49urD-W-af8iMkFk5QzT47Obvb7GJYkLKp1CvIn99qOHYskouDU3xDNNRaKxVCAIVlCSQvgqo6syjxhFThdXGbIM9CZestXuYEeo3Ke0wNDzq9crzSK8NKE3hRjX4GiNrIMD1JRpFvpw_rm5cjKs-Bsm5WfF5QiRyJAEJiYsIIEPWgCT6C_k7cCmPyIguJJOvvut4ekMliM8HPvBt_ASgrWpgMQMZ1IEojqNl5Ih6-s02AcxVgV7xzldSmpBERrH6CExWqMn0zyHNg3wFKUaoPY1iVmAJEannxqQq-2FPKji__QdIW5ULZXHtBa6I48JDwR5SfGg4GGJYrlWwEhxKq-GRxhJpZyeOUT94X5ofXPabRXyAc93y_B1adELO7NDRXBSEcXjQHHQg7Ob2W5_gfFNSG2-zJmLh3BfnykOHyOeIufsE","p":"_ieOH8SkgMLld3lpPQ0AU_6oaYrjbDEr5K8HQ5_po44Y6PXnSDHevmuMod3KINs5fr9vEqt10IgvEDlfxbSdIyKqBGWUtJgSCxU4d-al2eDYlbja9uorlzoJeqMmEXaZpUsuXxTyPe1V3dWUhUO3gQJrWOEP5BB2fDc_5ErYV5k3SX-7xFo7zEHM68gby-UQxOqAgCrgCR6JYYAYhscR1FhuU-JqbbJEHldlhAao4nKIAl6BZi7UwEYjq3JK_Y815kWQUwcJF5eJODAnkJq0xvydOS865LjgMQ_5ty8DdNXHIpKs4QVjSG5aWjUGyS1HGjrb4VP71R-yxBV4a3NHsQ","q":"xXIoijqklxLajygaBibOt1XQkVjmZSbsASpBGcob1q_JSHTHRgxspun7r81ah5YTtrprALEuNc1HD3uq1vrR3pMBFG4NFnsIZDkzIq_MXL1Lxf7o-iIkk1pisfrnkJeG2LkLnFtDb1GZ3cmW5jPrWrwYp6zfTrO1lgJKCvuiSaJ9tGea8CBSfdMyFVgjewinFKKXgsRuOEIDnHBiYN5sowL6tgTf50Vunbb34IXmpFSe6uwA-lJU_uXm0ujxWCbQAsduLDcSF0FxmuYn6O0xmJIKZOk3BCGUPJxGjpIVvEg6dVGQ4clJp90vQsDaGIqteq2rXpTr0otd9u7uc3Irdw","dp":"2kBvjRpZxfUYBtQtKm86w-ahCxlpGSTUs6oWi90MTxacj5lzxoyE4nMLLol-pV587jpIkPjK0IvSFpWeh_IFKwH-jI4K-FbKz9emSVi5PfQXKeO3rWgEjPYa48Ss0TxOzyJTrPUY3VMtdLWPuC0hrVi9hHKpKcl1ZlAvvsUDKZ56WtSlEwYF6e7roeKS9DI-h0t1lBq9jzc49JCC_2J-DiLug3ygtpjqZD_a_liVuPhvkdFEP9Khgof446bffQT5XUiJmrMk_Kx1-tlncIdaDLMr9Mp5Qab9Z0R3xfZKeo-GVUstyILO8olJb8Ovkx0dvQmkfsiXLzrsUfS6F1PE0Q","dq":"DkJhVSJJErQE3sPZpUoWMb1b07Nk6Dc4YhkoHHGxMv78_WOZpKBvFFrfl2GwQQyAnfi2k5U4LiCGGkMnImF42KcrM8uC3HXENGDBJacmjigJmeH_91iR5aZobEwffxzCW1J52S_qHdb50r-lSzjCrYnaCfn9IpTt70h5CnQD02eNxoKY-PCMpJOlEU-NOGx2jJH1eTcwcpWp5xlisXY-yEMF0jFl7jDgfTlii2-AKawG0hZ7N5jMlKAL3H2AOIqNCTZX6Y-MmetbBgHLLhI7O7aIU6NYGs9GAl6S5eb89N0Og7yBRx0fWaUqrZp55b3WK37xWmJM6aaxAY1d4S6Enw","qi":"udzzCRwy8Qp-ptLyxpaVy0BCSB8vBAyvYAikYoODil4DkLebcTmGTgXdghTFU5m3T20kEat1mWI4K-wkNSMLRtVRJrM83Jl0bbS_0gMwj0A7fdPM-bm8NWU-CY3lAc4V6iS43RXyJhoakSK2NJOrlvSaRMVYFQDwKP1oL5-ZuEnAPaR0YwDHOkxY40eCk9Ve2x4L9OBUqLTN_l827QrMXldVPnnVwTRDaFGFZ8BniKE4UjFO0I3coe4EH9CaQpFP8TDeLQVDncXuXHHCNi7sH-qzjDOsTLayi4uuxLL4nEZldCHz5geBp7n09GfNQsTKvMEtOC50oPJlkR898mc0vg"}
+
+Above is the generated identification private key.
+
+- You should copy it and store that value on the environment variable IDENTIFICATION_PRIVATE_KEY.
+
+- Ensure that it is not lost between deployments and servers reboots, and that only can be accessed by the application.
+```
+
+Just copy the content of the generated key, exactly as presented, with no break lines to the ENV `IDENTIFICATION_PRIVATE_KEY` and you are ready to run the bulletin board server.
+
+If not done yet, you must initialize the PostgreSQL database first with the command `bin/rails db:create db:migrate`.
+
+Finally, run the bulletin board with `docker-compose up -d`.
+
+You can connect then to the test server in http://localhost:3000. Note that you can add a proxy on top of it to use a custom domain name.
+
+For instance, with Ngnix you could use this configuration (although you need to add SSL, for instance using LetsEncrypt)
+
+```nginx
+server {
+	listen 80;
+	server_name my-bulletin-board.com;
+
+	location / {
+		proxy_pass http://localhost:3000;
+	}
+}
+```
+
+Once the bulletin board is up and running, now you need to configure a new Decidim Authority to use it.
+
+When connection to http://localhost:3000 you will see the public key corresponding to the private key you used to start the bulletin board. This is the public key that you must use to configure a new Decidim Authority.
+
+==== Configuring a new Decidim Authority
+
+Each bulletin board can host many Decidim Authorities. Each authority represents a Decidim tenant and it is also identified as a unique RSA public/private key pairs. A bulletin board instance can host many authorities.
+
+To add a new authority you must first create a new RSA key pair. Note that this key represents the Decidim instance so it **must be generated** by the Decidim instance itself and the bulletin board must only know about the public component. You can use the following command to generate a new key pair **in the Decidim server**:
+
+```bash
+bin/rails decidim_elections:generate_identification_keys
+```
+
+The result will look something like this:
+
+```
+$ bin/rails decidim_elections:generate_identification_keys
+
+PRIVATE KEY:
+
+{"kty":"RSA","n":"wbt6n7uvR7O6KgOP_Idq-YzWf4DrjcpQSdQDCn0NB_nVmgDRq5kxe3z63Dpk2nWY8ZfZz5THCkxkz-BllnxuYMjfBHD4zpkn5V3OIMcTpJTHH9kiAOYFFvCKDHlx9GQ86d_U9bkmLq-ucKNhk-tdLZ0qv4FVJyPn6Q-hBnhkGC_lnGhe0vePVHE2nSGHPRhwqE4yFnSGj6L2o11oG2sQvFlM_a0xyTE-PX4P4quJUZo1I3-hQjPZqmniaL9L7bqBdAYkQLC8IEjLfBJC7GeXmRGkm45TmuKDy57JydhOvzLCFG4U6linqdv-8xkkejlzkYwFJc_R3WiuuFT65JmyiIQVVHFWPPl403bnxi5LB3DP9CT7zngd7tdJwSXzndBOpOoLTWbvrQTHhshw-XxPeP548rN2UDyzUtg1Rh__TmGExj3ZlXOqA1H6TPxmy4kjnqcOfgeH-8omWIq2Woa46EfHQ2BsLzqE6uYeiau22cv3SdPKLuZLQ3fnvKNwRmToJ44Q6aglkkOFoyFnEJdg3FlymddMNBMGEWTHC2kLJhlAHTpR0UPtPNsG2fVjDRoIWgBSpQ4-1LaZc3rxPFDKYermpmA6nImuUBaQ4VJ6KXExzBpcubOm8FWYYLWpiOJsReFDZwzI4uIzY1wC172MNhf4tF6ZJ-qJKeBMcIyVDa8","e":"AQAB","kid":"f18965a6a859e284f0ea076d2140e212f1bbd484e029b69c3d9cc06b34e61b0a","d":"Hl3FGEGCdXI59Xjuek49mdUWEBFEmsqB8DiPq3azcrMZ5JRJSSTviSQrbBapFUcGjKPZK7ztv_L-gEjzk3V4laoWrusITNXb14tvElsx_IOnfJn7xvlHBfP5J4BnuL93fs8rYcK-NeYqqRQq6NUlG0-90huzHbn2kWT2P_3h7pqfWndPmbDdIgbG4TVOrehlTDRJjJSCPQR1tWCgP1_2VReIRmD940PZNilK0yRBF23c823_eFGJRjlnmDSX8bDgtq95wjwRmNvgLVftboHEVOVbkFhsSWRE9Ucz6PQDT9vkaPBiTeNMkIbfvPoNai0ULNWuPuGGyzYr4M_NLcTbo10MsR0uK7RyfP_H6JH8FPkH3azPpoA6J7bM18YNPJVXqfQCr3dVOv-qm4_OB-9mkFrqseOC1qsZD8MsVuPx0_L_68ZnSMyfUZzM043M5szwibw35_GRXrbMHWpE0DeVL1SjOoYu_MiSIjXcuLY1REXnzI3c8rxiQ34ERMCrZipPZezJ-iQgkjcyP6DGQxo7BgrPVQLvGKGNg8z2A_ChR_fywSwAJxm7h7oBjpI7T3C31RVB4PQThe9Qpqrx2KE09xMUeAPPiiYtMDe4B6TDR9vo9ehMVXJ886dsfrhw0LMvHUC7dh1ee1y_M2q_BlZV-DasJsvfv9nSeC63vRe9zRE","p":"-fs7WER4ERpmtRn-0EQ9efOuGsh1TODiveexaK2RyOJ1GR04hFRfrCrMURfwdX5dr-wo_o4xmzKngq4nBFhkyA05IyyNsMy8qX82oTUw8xMHua53Xsb1oahU7c7A9888cEIZ9iNSI556-2M-idwHYw7uMJlXUH7Pbfjj5kj77mpwcd1yuieHOkSdNidzuIORr5PKy0_mqyp0kzHC4iFblZ5iM6O43EasMyNBo0XMHCvSUEC2IbXp37LfAyg0XDF6Ll_mYH77qSLVwBg-QD2BDifwYwwwgtMzekqWI29MQyriFCexd9QzJ8czxVCrpK6S6yrfR4x9yGSqU8xQQ1zxnw","q":"xmWN8VnRgJS3Y3FwJZOuKYdWiHd5a2saQV4Cjw67TubtZcd0a0SbQ5BZdrjzKQVScd_EVMGWY84gfm7VolTjUt6K3Z5Cdvb9EFC2hQyuVwgJjpjtye2pr1shy4aoaehddSS2vmrU5seqUbTcrz57KExkN_silruycjuiOddpOPW0HW_jFXMGl_O13CYvHnv-X1KVUsh9fKNlCKm1XY0uulcNVV9Hy3sETOVQB82XBJVS0Nq9nnuvHtuQujYrmn5OvvFPNmITftWCEMlFoq4ukZhirmY8Y5GOhPMANw2v6y59KXwVDt3Q1HafqMcNy_olS8WI1NiP09ungTz7QQkJ8Q","dp":"1pOXojHLmmq-JNA2kREyb_8CwMy3G5GiL_60ozTyAayZdUBG5hgCs6ddEHLrHf-lbb_ahH8MB7sYXK0eorU5dRsco5u32D4154xiGUiuRshcBj_DCWDhMa1rkWG69Dw4Feg3nrc854Q-7pCG-xEaaiZDwQWvFFJ1vWE6Rs75KfLFqIe81hveEN8az4RX6ddN85d6KMDiMKTVwg-hyDd4BNsaUldD9BjZ8V9fFUZxaPEYq3iQniknorRIh843-7cguLPq7YOyg8F6F1T4Am6I29zelDa_YVznQB7L94iuvq0NuN1FkaVdb9SnFMUlQMv1ItX_KMxon94A8sNbVidu4w","dq":"TxPncc3FLaUZO6_ZbYDhqHfjS92jLeewvWFFT9QlYJu3ABxyENd1s4ZzwliRw0X1yKHSVZ4b3Ygpd3uh92Qyf7NoUlFkWJq136zsMzgMvW_cr1PRY-0w904xuDfiJOSTa7_IfzmBxsLK5mpalBcpa7SXNaEJ9l62D8YpMTjlHekBc8JHFyOT-zkOwcMOgO4XQ9Nc5XQ4YFeYS82pFrLRb0CHdgHWUgqkeinkrleJ3C_QpKKrdeICuR_3HeG9m4TAymbQlfKdpq5fe2VeNiuLMEk2_CCP7Xf1AJUC_u6bsfgDt2dX1Wcgd68YkGNW4njAKOWBVqVDHsSsjVzLIO8DYQ","qi":"qTH8QoemBU0Yh7miZuhLTf61g6kqAawJkmZk9-tQk27QjSYfwZ-AvH0DVwfLiM4FfDz3H-rdGPH5Lfgx4IpLMId0HUN0f-kD04i3VcoCo28qb-eLkPWGLbBuGZczgby5jD_sYgVFbrxno4jioBFMJrEhq2czXiAlFz22zACgSgJBVhkW8yeQQhmoEl6GXEuZs2SkqAbcRSI3vVlRGeuKBOBQlGgeQrdvdfc9OXmV_VSlY--1sLt307Fhtw6CMMmgTDIE0W73vzEXm_9nNyxBWdinlWgO7SLWlFoYqHkso2O6csrGwvPGcp90dBeXQvVKctmCCCDSuqPm5VhtrXsBTA"}
+
+PUBLIC KEY:
+
+kty=RSA&n=wbt6n7uvR7O6KgOP_Idq-YzWf4DrjcpQSdQDCn0NB_nVmgDRq5kxe3z63Dpk2nWY8ZfZz5THCkxkz-BllnxuYMjfBHD4zpkn5V3OIMcTpJTHH9kiAOYFFvCKDHlx9GQ86d_U9bkmLq-ucKNhk-tdLZ0qv4FVJyPn6Q-hBnhkGC_lnGhe0vePVHE2nSGHPRhwqE4yFnSGj6L2o11oG2sQvFlM_a0xyTE-PX4P4quJUZo1I3-hQjPZqmniaL9L7bqBdAYkQLC8IEjLfBJC7GeXmRGkm45TmuKDy57JydhOvzLCFG4U6linqdv-8xkkejlzkYwFJc_R3WiuuFT65JmyiIQVVHFWPPl403bnxi5LB3DP9CT7zngd7tdJwSXzndBOpOoLTWbvrQTHhshw-XxPeP548rN2UDyzUtg1Rh__TmGExj3ZlXOqA1H6TPxmy4kjnqcOfgeH-8omWIq2Woa46EfHQ2BsLzqE6uYeiau22cv3SdPKLuZLQ3fnvKNwRmToJ44Q6aglkkOFoyFnEJdg3FlymddMNBMGEWTHC2kLJhlAHTpR0UPtPNsG2fVjDRoIWgBSpQ4-1LaZc3rxPFDKYermpmA6nImuUBaQ4VJ6KXExzBpcubOm8FWYYLWpiOJsReFDZwzI4uIzY1wC172MNhf4tF6ZJ-qJKeBMcIyVDa8&e=AQAB&kid=f18965a6a859e284f0ea076d2140e212f1bbd484e029b69c3d9cc06b34e61b0a
+
+Above are the generated private and public keys.
+
+See Decidim docs at docs/services/bulletin_board.md in order to set them up.
+```
+
+You need then to add the private part to you Decidim Server as the ENV var `AUTHORITY_PRIVATE_KEY` (`AUTHORITY_PRIVATE_KEY={"kty":"RSA","n":"wbt...`). Copy verbatim, no break lines. Also, create a new name for you Decidim instance and place it in the ENV `AUTHORITY_NAME`. You will need this identifier to configure the bulletin board server. Other variables are important, see the [Decidim docs](https://docs.decidim.org/en/develop/services/elections_bulletin_board.html) for it.
+
+Then you need to add the public part to the bulletin board server. This is done in the **bulletin board server**. You can do it with the following command:
+
+```bash
+bin/rails 'client:add_authority[AuthorityName, public-key]
+```
+
+- **AuthorityName**; is the name of the authority, for instance, the name of the Decidim tenant. It can be anything as long is the same in Decidim and in the bulletin board.
+- **public-key**: is the public key generated in the Decidim server by the previously explained command.
+
+This command will produce and output like this:
+
+```
+$ bin/rails 'client:add_authority[AuthorityName,kty=RSA&n=wbt6n7uvR7O6KgOP_Idq-YzWf4DrjcpQSdQDCn0NB_nVmgDRq5kxe3z63Dpk2nWY8ZfZz5THCkxkz-BllnxuYMjfBHD4zpkn5V3OIMcTpJTHH9kiAOYFFvCKDHlx9GQ86d_U9bkmLq-ucKNhk-tdLZ0qv4FVJyPn6Q-hBnhkGC_lnGhe0vePVHE2nSGHPRhwqE4yFnSGj6L2o11oG2sQvFlM_a0xyTE-PX4P4quJUZo1I3-hQjPZqmniaL9L7bqBdAYkQLC8IEjLfBJC7GeXmRGkm45TmuKDy57JydhOvzLCFG4U6linqdv-8xkkejlzkYwFJc_R3WiuuFT65JmyiIQVVHFWPPl403bnxi5LB3DP9CT7zngd7tdJwSXzndBOpOoLTWbvrQTHhshw-XxPeP548rN2UDyzUtg1Rh__TmGExj3ZlXOqA1H6TPxmy4kjnqcOfgeH-8omWIq2Woa46EfHQ2BsLzqE6uYeiau22cv3SdPKLuZLQ3fnvKNwRmToJ44Q6aglkkOFoyFnEJdg3FlymddMNBMGEWTHC2kLJhlAHTpR0UPtPNsG2fVjDRoIWgBSpQ4-1LaZc3rxPFDKYermpmA6nImuUBaQ4VJ6KXExzBpcubOm8FWYYLWpiOJsReFDZwzI4uIzY1wC172MNhf4tF6ZJ-qJKeBMcIyVDa8&e=AQAB&kid=f18965a6a859e284f0ea076d2140e212f1bbd484e029b69c3d9cc06b34e61b0a]'
+
+Authority 'AuthorityName' successfuly added!
+The API key for this authority is: WbyrkuMrn7Pgk-ebKQpQzpSkKSv-T-r0TaclfMFMspV7g6qoFRqFwYmAnb0PZqATDZx3WdIf6SIF-f40s16wBTbdlST-3ZZ3wWzctyvdb4Wha_hranhHPG6sR2Qmq5uk
+```
+
+Note that an API key is returned, you will also need to add this API key as an ENV var in your Decidim server. This is used to ensure only that Decidim instance can communicate with the bulletin board.
+
+To summarize, these are the ENV vars you need to add to your Decidim server once all this process has finished:
+
+===== ENV vars for the Decidim Server
+
+- `BULLETIN_BOARD_API_KEY`: the API key generated by the bulletin board server when adding an authority. In our example "WbyrkuMrn7Pgk-ebKQpQzpSkKSv-T-r0TaclfMFMspV7g6qoFRqFwYmAnb0PZqATDZx3WdIf6SIF-f40s16wBTbdlST-3ZZ3wWzctyvdb4Wha_hranhHPG6sR2Qmq5uk".
+- `BULLETIN_BOARD_SERVER`: the URL of the bulletin board server, for instance, http://localhost:3000/api (note that you need to specify the path to the API).
+- `AUTHORITY_NAME`: the name of the authority, for instance, the name of the Decidim tenant. In our examples, "AuthorityName".
+- `BULLETIN_BOARD_PUBLIC_KEY`: the public key of the bulletin board (see this value in the homepage of the Bulletin Board).
+- There are other variables relative to the elections configuration. Check it at https://docs.decidim.org/en/develop/services/elections_bulletin_board.html.
+
+
 === Devcontainer
 
 This repository ships with a dev container to get you up and running quickly. This make is easy to get the development environment running without having to install all the dependencies.
