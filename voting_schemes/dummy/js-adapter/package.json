@@ -1,6 +1,6 @@
 {
   "name": "@decidim/voting_schemes-dummy",
-  "version": "0.24.1",
+  "version": "0.24.4",
   "description": "",
   "main": "src/index.js",
   "scripts": {

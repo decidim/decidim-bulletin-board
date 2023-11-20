@@ -13,6 +13,7 @@ services:
       context: .
       dockerfile: Dockerfile
     environment:
+      - SECRET_KEY_BASE=8afc23b1d75eec471f9967b0887ca2cf24e2221a5dac375ca7f62656211c11b9d15d1516f6d04d64dae05632938304cc2e14aff636df4e70c84c89f12ddb0dfc
       - DATABASE_URL=postgresql://postgres:postgres@db/decidim_bulletin_board
       - RAILS_LOG_TO_STDOUT=1
       - RAILS_SERVE_STATIC_FILES=1
@@ -33,6 +34,7 @@ services:
       context: .
       dockerfile: Dockerfile
     environment:
+      - SECRET_KEY_BASE=8afc23b1d75eec471f9967b0887ca2cf24e2221a5dac375ca7f62656211c11b9d15d1516f6d04d64dae05632938304cc2e14aff636df4e70c84c89f12ddb0dfc
       - DATABASE_URL=postgresql://postgres:postgres@db/decidim_bulletin_board
       - RAILS_LOG_TO_STDOUT=1
       - RACK_ENV=development
