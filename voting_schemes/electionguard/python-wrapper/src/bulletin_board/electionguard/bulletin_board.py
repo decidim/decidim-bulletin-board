@@ -14,7 +14,7 @@ from electionguard.tally import CiphertextTally
 from electionguard.type import GUARDIAN_ID
 from electionguard.utils import get_optional
 
-from .common import Content, Context, ElectionStep, Wrapper, async_wrap
+from .common import Content, Context, ElectionStep, Wrapper
 from .dummy_scheduler import DummyScheduler
 from .messages import (
     Compensations,

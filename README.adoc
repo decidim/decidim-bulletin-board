@@ -21,12 +21,12 @@ This repository follows the monorepo pattern and includes the following projects
 
 You can run this application conveniently packaged with docker compose.
 
-You can use the existing [docker-composer.yml](docker-composer.yml) as starting point.
+You can use the existing docker-composer.yml[docker-composer.yml] as starting point.
 Among the typical Rails ENV vars (such as `SECRET_KEY_BASE`), there is also the `IDENTIFICATION_PRIVATE_KEY` env. This is the private key that identifies this bulletin board instance. Keep reading to see how to generate this private key.
 
-Also, you need to have an additional docker instance running, with the same ENVs, a `sidekiq` instance. This is very important as they are many background jobs created by the bulletin board on every cryptographic transaction. If using the provided [entrypoint](docker-entrypoint.sh), you can use simply the ENV `RUN_SIDEKIQ` in the worker:
+Also, you need to have an additional docker instance running, with the same ENVs, a `sidekiq` instance. This is very important as they are many background jobs created by the bulletin board on every cryptographic transaction. If using the provided docker-entrypoint.sh[entrypoint], you can use simply the ENV `RUN_SIDEKIQ` in the worker:
 
-```
+```console
 IDENTIFICATION_PRIVATE_KEY=-private-key-for-this-bulletin-board
 RUN_SIDEKIQ=true
 ```
@@ -35,7 +35,7 @@ RUN_SIDEKIQ=true
 
 The parameter that defines the identity of a bulletin board is its private key. This is simply an RSA type of key generated with the OpenSSL library. For convenience you can generate it with the following command:
 
-```bash
+```console
 bin/rails client:generate_identification_private_key
 ```
 
@@ -43,7 +43,7 @@ You must run this command inside the `bulletin_board/server` folder or, if using
 
 The result will look something like this
 
-```
+```console
 root@8e29f0e27bcd:/code/bulletin_board/server# bin/rails client:generate_identification_private_key
 
 {"kty":"RSA","n":"xAXGOyY4GbdRqsVDYBvyVDP00eFkEuBN_WAU8IEMndQ-F-Z7K38hzGVrgED02YloFf984bKaLTjyBzpTx5MDA-4Hj1rjxoCRTPUHm-3_ixH511HT0fLI4060MerbFhD1QiQ8V6s-LBt8XicCmNHT-rpxd8zLsFAWnsTP-1FfEzDdzPXFZiL5VFZTUfy-JjXvE1DyCzKIiSFSgM0H2Z6wKgBKEmLt3tzdHZrs2QgaHOmZciPvRy6pXCkcRZs4Sjj0Fr-oaisA--wIcbsnBofkgL--Ncv0w6VfvHmm-r1GPuzX-ucu1IbjPLLaLnE6RpLuq17-W8xpdFbLz9UQ-ZUr0pmvYK5pYprtmqQdG-uagmyOSzFuZCSTEOqeSdeKWRnFubdnEoPP7s6hFqaptpk-Y7WeSamkvtFQ6Ery6CikJWc7kTIhoGpnZH6VeFwLTsKq3t7c2WW7bZio2xlmdo40FFHr_p0Tuf38v0-A-y525jNKriOWC6JZdQN1yJMWnReoReom8ydDqjsepSEgwAmBK38hcXZgHR8otzf_EvGcR2mmwSWnMRk2lu9J1nV2OYBmy1C79vZK8V6MruiRz595Lz-amHbwkikC1GHG9MQUhlUiqKsYLC-ammF01mT9mjZ-fnUcZu09VS9NRq33K9MfXTuZfGlnLEB_848MHr9zDkc","e":"AQAB","kid":"f32df481d9d9d3c73fd88fa819b1ef5a844de5110cd3d72829f5adb90a08ba19","d":"ddca0lgphZwk5kpsNIzYYzJQzRN4O7jIabenHuYVlZQQOAIAradhxCR8Ob_S8iuefQr4Ih5ifSksppez4dhJCcXAmbeEEsMblm3_QwgShaIq1fyFIEOZ7LxVq2SKjHtpVXe_Jtz1JULowxkkgIYzrxkCOYjOMpIS5yNd_LFwPHM2A48EOmBwDvlOYY1VKldl__C7cWvRlM6JcJDRVUwGj1lZLjB223FfI_sMw3QRbqwn6OwdXmd4vMSiEF49urD-W-af8iMkFk5QzT47Obvb7GJYkLKp1CvIn99qOHYskouDU3xDNNRaKxVCAIVlCSQvgqo6syjxhFThdXGbIM9CZestXuYEeo3Ke0wNDzq9crzSK8NKE3hRjX4GiNrIMD1JRpFvpw_rm5cjKs-Bsm5WfF5QiRyJAEJiYsIIEPWgCT6C_k7cCmPyIguJJOvvut4ekMliM8HPvBt_ASgrWpgMQMZ1IEojqNl5Ih6-s02AcxVgV7xzldSmpBERrH6CExWqMn0zyHNg3wFKUaoPY1iVmAJEannxqQq-2FPKji__QdIW5ULZXHtBa6I48JDwR5SfGg4GGJYrlWwEhxKq-GRxhJpZyeOUT94X5ofXPabRXyAc93y_B1adELO7NDRXBSEcXjQHHQg7Ob2W5_gfFNSG2-zJmLh3BfnykOHyOeIufsE","p":"_ieOH8SkgMLld3lpPQ0AU_6oaYrjbDEr5K8HQ5_po44Y6PXnSDHevmuMod3KINs5fr9vEqt10IgvEDlfxbSdIyKqBGWUtJgSCxU4d-al2eDYlbja9uorlzoJeqMmEXaZpUsuXxTyPe1V3dWUhUO3gQJrWOEP5BB2fDc_5ErYV5k3SX-7xFo7zEHM68gby-UQxOqAgCrgCR6JYYAYhscR1FhuU-JqbbJEHldlhAao4nKIAl6BZi7UwEYjq3JK_Y815kWQUwcJF5eJODAnkJq0xvydOS865LjgMQ_5ty8DdNXHIpKs4QVjSG5aWjUGyS1HGjrb4VP71R-yxBV4a3NHsQ","q":"xXIoijqklxLajygaBibOt1XQkVjmZSbsASpBGcob1q_JSHTHRgxspun7r81ah5YTtrprALEuNc1HD3uq1vrR3pMBFG4NFnsIZDkzIq_MXL1Lxf7o-iIkk1pisfrnkJeG2LkLnFtDb1GZ3cmW5jPrWrwYp6zfTrO1lgJKCvuiSaJ9tGea8CBSfdMyFVgjewinFKKXgsRuOEIDnHBiYN5sowL6tgTf50Vunbb34IXmpFSe6uwA-lJU_uXm0ujxWCbQAsduLDcSF0FxmuYn6O0xmJIKZOk3BCGUPJxGjpIVvEg6dVGQ4clJp90vQsDaGIqteq2rXpTr0otd9u7uc3Irdw","dp":"2kBvjRpZxfUYBtQtKm86w-ahCxlpGSTUs6oWi90MTxacj5lzxoyE4nMLLol-pV587jpIkPjK0IvSFpWeh_IFKwH-jI4K-FbKz9emSVi5PfQXKeO3rWgEjPYa48Ss0TxOzyJTrPUY3VMtdLWPuC0hrVi9hHKpKcl1ZlAvvsUDKZ56WtSlEwYF6e7roeKS9DI-h0t1lBq9jzc49JCC_2J-DiLug3ygtpjqZD_a_liVuPhvkdFEP9Khgof446bffQT5XUiJmrMk_Kx1-tlncIdaDLMr9Mp5Qab9Z0R3xfZKeo-GVUstyILO8olJb8Ovkx0dvQmkfsiXLzrsUfS6F1PE0Q","dq":"DkJhVSJJErQE3sPZpUoWMb1b07Nk6Dc4YhkoHHGxMv78_WOZpKBvFFrfl2GwQQyAnfi2k5U4LiCGGkMnImF42KcrM8uC3HXENGDBJacmjigJmeH_91iR5aZobEwffxzCW1J52S_qHdb50r-lSzjCrYnaCfn9IpTt70h5CnQD02eNxoKY-PCMpJOlEU-NOGx2jJH1eTcwcpWp5xlisXY-yEMF0jFl7jDgfTlii2-AKawG0hZ7N5jMlKAL3H2AOIqNCTZX6Y-MmetbBgHLLhI7O7aIU6NYGs9GAl6S5eb89N0Og7yBRx0fWaUqrZp55b3WK37xWmJM6aaxAY1d4S6Enw","qi":"udzzCRwy8Qp-ptLyxpaVy0BCSB8vBAyvYAikYoODil4DkLebcTmGTgXdghTFU5m3T20kEat1mWI4K-wkNSMLRtVRJrM83Jl0bbS_0gMwj0A7fdPM-bm8NWU-CY3lAc4V6iS43RXyJhoakSK2NJOrlvSaRMVYFQDwKP1oL5-ZuEnAPaR0YwDHOkxY40eCk9Ve2x4L9OBUqLTN_l827QrMXldVPnnVwTRDaFGFZ8BniKE4UjFO0I3coe4EH9CaQpFP8TDeLQVDncXuXHHCNi7sH-qzjDOsTLayi4uuxLL4nEZldCHz5geBp7n09GfNQsTKvMEtOC50oPJlkR898mc0vg"}
@@ -67,32 +67,32 @@ For instance, with Ngnix you could use this configuration (although you need to 
 
 ```nginx
 server {
-	listen 80;
-	server_name my-bulletin-board.com;
+  listen 80;
+  server_name my-bulletin-board.example.com;
 
-	location / {
-		proxy_pass http://localhost:3000;
-	}
+  location / {
+    proxy_pass http://localhost:3000;
+  }
 }
 ```
 
 Once the bulletin board is up and running, now you need to configure a new Decidim Authority to use it.
 
-When connection to http://localhost:3000 you will see the public key corresponding to the private key you used to start the bulletin board. This is the public key that you must use to configure a new Decidim Authority.
+At this point you can connect your browser to http://localhost:3000 (or your configured URL if in production) and you will see the public key corresponding to the private key you used to start the bulletin board. This is the public key that you must use to configure a new Decidim Authority (see next section).
 
 ==== Configuring a new Decidim Authority
 
-Each bulletin board can host many Decidim Authorities. Each authority represents a Decidim tenant and it is also identified as a unique RSA public/private key pairs. A bulletin board instance can host many authorities.
+Each bulletin board can host many Decidim Authorities. Each authority represents a Decidim Organization (also known as Tenant)  and it is also identified as a unique RSA public/private key pairs. A bulletin board instance can host many authorities.
 
 To add a new authority you must first create a new RSA key pair. Note that this key represents the Decidim instance so it **must be generated by the Decidim instance** itself and the bulletin board must only know about the public component. You can use the following command to generate a new key pair **in the Decidim server**:
 
-```bash
+```console
 bin/rails decidim_elections:generate_identification_keys
 ```
 
 The result will look something like this:
 
-```
+```console
 $ bin/rails decidim_elections:generate_identification_keys
 
 PRIVATE KEY:
@@ -108,11 +108,11 @@ Above are the generated private and public keys.
 See Decidim docs at docs/services/bulletin_board.md in order to set them up.
 ```
 
-You need then to add the private part to you Decidim Server as the ENV var `AUTHORITY_PRIVATE_KEY` (`AUTHORITY_PRIVATE_KEY={"kty":"RSA","n":"wbt...`). Copy verbatim, no break lines. Also, create a new name for you Decidim instance and place it in the ENV `AUTHORITY_NAME`. You will need this identifier to configure the bulletin board server. Other variables are important, see the [Decidim docs](https://docs.decidim.org/en/develop/services/elections_bulletin_board.html) for it.
+You need then to add the private part to you Decidim Server as the ENV var `AUTHORITY_PRIVATE_KEY` (`AUTHORITY_PRIVATE_KEY={"kty":"RSA","n":"wbt...`). Copy verbatim, no break lines. Also, create a new name for you Decidim instance and place it in the ENV `AUTHORITY_NAME`. You will need this identifier to configure the bulletin board server. Other variables are important, see the https://docs.decidim.org/en/develop/services/elections_bulletin_board.html[Decidim docs] for it.
 
 Then you need to add the public part to the bulletin board server. This is done in the **bulletin board server**. You can do it with the following command:
 
-```bash
+```console
 bin/rails 'client:add_authority[AuthorityName, public-key]
 ```
 
@@ -121,7 +121,7 @@ bin/rails 'client:add_authority[AuthorityName, public-key]
 
 This command will produce an output like this:
 
-```
+```console
 $ bin/rails 'client:add_authority[AuthorityName,kty=RSA&n=wbt6n7uvR7O6KgOP_Idq-YzWf4DrjcpQSdQDCn0NB_nVmgDRq5kxe3z63Dpk2nWY8ZfZz5THCkxkz-BllnxuYMjfBHD4zpkn5V3OIMcTpJTHH9kiAOYFFvCKDHlx9GQ86d_U9bkmLq-ucKNhk-tdLZ0qv4FVJyPn6Q-hBnhkGC_lnGhe0vePVHE2nSGHPRhwqE4yFnSGj6L2o11oG2sQvFlM_a0xyTE-PX4P4quJUZo1I3-hQjPZqmniaL9L7bqBdAYkQLC8IEjLfBJC7GeXmRGkm45TmuKDy57JydhOvzLCFG4U6linqdv-8xkkejlzkYwFJc_R3WiuuFT65JmyiIQVVHFWPPl403bnxi5LB3DP9CT7zngd7tdJwSXzndBOpOoLTWbvrQTHhshw-XxPeP548rN2UDyzUtg1Rh__TmGExj3ZlXOqA1H6TPxmy4kjnqcOfgeH-8omWIq2Woa46EfHQ2BsLzqE6uYeiau22cv3SdPKLuZLQ3fnvKNwRmToJ44Q6aglkkOFoyFnEJdg3FlymddMNBMGEWTHC2kLJhlAHTpR0UPtPNsG2fVjDRoIWgBSpQ4-1LaZc3rxPFDKYermpmA6nImuUBaQ4VJ6KXExzBpcubOm8FWYYLWpiOJsReFDZwzI4uIzY1wC172MNhf4tF6ZJ-qJKeBMcIyVDa8&e=AQAB&kid=f18965a6a859e284f0ea076d2140e212f1bbd484e029b69c3d9cc06b34e61b0a]'
 
 Authority 'AuthorityName' successfuly added!
@@ -139,7 +139,6 @@ To summarize, these are the ENV vars you need to add to your Decidim server once
 - `AUTHORITY_NAME`: the name of the authority, for instance, the name of the Decidim tenant. In our examples, "AuthorityName".
 - `BULLETIN_BOARD_PUBLIC_KEY`: the public key of the bulletin board (see this value in the homepage of the Bulletin Board).
 - There are other variables relative to the elections configuration. Check it at https://docs.decidim.org/en/develop/services/elections_bulletin_board.html.
-
 
 === Devcontainer
 
