@@ -21,10 +21,10 @@ This repository follows the monorepo pattern and includes the following projects
 
 You can run this application conveniently packaged with docker compose.
 
-You can use the existing docker-composer.yml[docker-composer.yml] as starting point.
+You can use the existing ./docker-composer.yml[docker-composer.yml] as starting point.
 Among the typical Rails ENV vars (such as `SECRET_KEY_BASE`), there is also the `IDENTIFICATION_PRIVATE_KEY` env. This is the private key that identifies this bulletin board instance. Keep reading to see how to generate this private key.
 
-Also, you need to have an additional docker instance running, with the same ENVs, a `sidekiq` instance. This is very important as they are many background jobs created by the bulletin board on every cryptographic transaction. If using the provided docker-entrypoint.sh[entrypoint], you can use simply the ENV `RUN_SIDEKIQ` in the worker:
+Also, you need to have an additional docker instance running, with the same ENVs, a `sidekiq` instance. This is very important as they are many background jobs created by the bulletin board on every cryptographic transaction. If using the provided ./docker-entrypoint.sh[entrypoint], you can use simply the ENV `RUN_SIDEKIQ` in the worker:
 
 ```console
 IDENTIFICATION_PRIVATE_KEY=-private-key-for-this-bulletin-board
