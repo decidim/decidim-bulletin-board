@@ -92,8 +92,9 @@ RSpec.describe CreateElection do
 
     context "when HOURS_BEFORE_CREATE_ELECTION is set" do
       let(:hours_before) { 2 }
+
       before do
-        allow(Rails.configuration.settings).to receive(:create_election).and_return({hours_before: hours_before})
+        allow(Rails.configuration.settings).to receive(:create_election).and_return({ hours_before: })
       end
 
       it "broadcasts invalid" do
