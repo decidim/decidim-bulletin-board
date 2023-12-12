@@ -157,4 +157,6 @@ install_verifier_electionguard_dependencies:
 	cd ${VERIFIER_ELECTIONGUARD_PATH} && npm i
 
 build_electionguard_java:
-	cd ${ELECTIONGUARD_JAVA_PATH} && git apply ../patches/no-ballot-chaining-verifier.patch && ./gradlew fatJar && git reset --hard
+	cd ${ELECTIONGUARD_JAVA_PATH} && git apply ../patches/no-ballot-chaining-verifier.patch && \
+	   ./gradlew fatJar && \
+	   git reset --hard
