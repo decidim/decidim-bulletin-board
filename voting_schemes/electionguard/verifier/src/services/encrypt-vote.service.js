@@ -7,7 +7,9 @@ const PYTHON_SCRIPT_PATH = path.join(
   path.dirname(fileURLToPath(import.meta.url)),
   "..",
   "..",
-  "scripts",
+  "..",
+  "python-wrapper",
+  "src",
   "encrypt-vote.py",
 );
 
@@ -36,12 +38,16 @@ export const encryptVote = ({
       ballotStyle,
       nonce,
     ]);
+    console.log(`\t${"Running python script to encrypt vote..."}`);
+    // console.log(pythonScript.spawnargs.join(" "));
 
     pythonScript.stdout.on("data", function (data) {
       pythonScriptResult += data.toString();
     });
 
     pythonScript.stderr.on("data", function (error) {
+      console.error(`\t${"Error running python script to encrypt vote..."}`);
+      console.error(error.toString())
       rejects(error.toString());
     });
 
