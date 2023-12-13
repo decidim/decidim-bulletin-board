@@ -21,6 +21,9 @@ We try to let most of the things defined through Environment Variables, as https
 |SECRET_KEY_BASE
 |Secret key base for the Application. It's specially important that this is kept secret from the outside word; do NOT publish it on GitHub/GitLab/BitBucket.
 
+|RAILS_LOG_LEVEL
+|Log level for the application. Defaults to `info` (possible values are `debug`, `info`, `warn`, `error` and `fatal`).
+
 |IAT_EXPIRATION_MINUTES
 |Expiration time for the JWT tokens, in minutes. Defaults to 60 minutes.
 
