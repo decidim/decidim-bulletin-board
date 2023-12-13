@@ -1,5 +1,9 @@
 #! /bin/sh
 
-#make install_verifier
+echo "This script verifies a ballot or a whole election created in a Bulletin Board application"
+echo
+echo "For requirements to run this script, please read:"
+echo "https://github.com/decidim/decidim-bulletin-board/blob/develop/verifier/README.md"
+echo
 
 cd verifier && node src/index.js "$@"
