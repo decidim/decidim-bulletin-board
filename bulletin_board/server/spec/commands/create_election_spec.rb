@@ -90,7 +90,7 @@ RSpec.describe CreateElection do
       expect { subject }.to broadcast(:invalid, "Election should start at least in 1 hours from now.")
     end
 
-    context "when HOURS_BEFORE_CREATE_ELECTION is set" do
+    context "when the `hours before` the election creation is set" do
       let(:hours_before) { 2 }
 
       before do
