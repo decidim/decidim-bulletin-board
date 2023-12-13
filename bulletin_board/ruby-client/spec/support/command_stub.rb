@@ -11,7 +11,7 @@ def stub_command(clazz, called_method, event_to_publish, *published_event_args)
     end
 
     # rubocop:disable Lint/EmptyBlock
-    define_method(:configure) { |*_args|; }
+    define_method(:configure) { |*_args| }
     # rubocop:enable Lint/EmptyBlock
   end)
 end

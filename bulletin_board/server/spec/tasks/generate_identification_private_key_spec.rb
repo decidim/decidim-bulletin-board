@@ -2,6 +2,7 @@
 
 require "rails_helper"
 
+# rubocop:disable RSpec/NoExpectationExample
 RSpec.describe "client:generate_identification_private_key", type: :task do
   subject { task.execute }
 
@@ -25,3 +26,4 @@ RSpec.describe "client:generate_identification_private_key", type: :task do
     end
   end
 end
+# rubocop:enable RSpec/NoExpectationExample

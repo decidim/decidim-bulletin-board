@@ -10,7 +10,7 @@ module Decidim
       end
 
       def self.private_key?(json)
-        (json.keys & JWK_PRIVATE_FIELDS).any?
+        json.keys.intersect?(JWK_PRIVATE_FIELDS)
       end
 
       def self.import_private_key(json)

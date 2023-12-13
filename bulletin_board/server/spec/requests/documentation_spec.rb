@@ -2,7 +2,8 @@
 
 require "rails_helper"
 
-RSpec.describe "Documentation page", type: :request do
+# rubocop:disable RSpec/DescribeClass
+RSpec.describe "Documentation page" do
   subject { get "/api/docs" }
 
   it "returns the documentation home page" do
@@ -15,3 +16,4 @@ RSpec.describe "Documentation page", type: :request do
     expect(response.body).to include("window.renderDocumentation(\"/api\")")
   end
 end
+# rubocop:enable RSpec/DescribeClass
