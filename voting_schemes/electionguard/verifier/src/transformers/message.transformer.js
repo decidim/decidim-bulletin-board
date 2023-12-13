@@ -95,11 +95,11 @@ export const transform = (path, messageType, messageSubType, decodedData) => {
         const {
           owner_id,
           sequence_order,
+          key,
           coefficient_commitments,
           coefficient_proofs,
-          // guardian_id,
-          // partial_keys: [{ coefficient_commitments, coefficient_proofs }],
         } = JSON.parse(content).public_key_set.election;
+
         const coefficientValidationSet = JSON.parse(
           fs.readFileSync(
             join(
@@ -120,6 +120,7 @@ export const transform = (path, messageType, messageSubType, decodedData) => {
               ...coefficientValidationSet,
               sequence_order,
               election_commitments: coefficient_commitments.map(parseBase64),
+              election_public_key: parseBase64(key),
               election_proofs: coefficient_proofs.map(
                 ({
                   challenge,
