@@ -8,6 +8,13 @@ gemspec
 # Graphql version 2.1 breaks graphql-client compatibility See https://github.com/github/graphql-client/pull/310
 gem "graphql", "~> 2.0.0"
 
-gem "rubocop", "~> 1.28.0"
-gem "rubocop-faker", "~> 1.1.0"
-gem "rubocop-rspec", "~> 2.10"
+gem "rubocop", "~> 1.57.0"
+gem "rubocop-faker", "~> 1.1"
+gem "rubocop-rspec", "~> 2.20"
+
+group :development, :test do
+  gem "rake", "~> 13.0"
+  gem "rspec", "~> 3.7"
+  gem "webmock", "~> 3.6"
+  gem "wisper-rspec", "~> 1.1.0"
+end

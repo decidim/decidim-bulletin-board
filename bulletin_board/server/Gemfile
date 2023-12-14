@@ -66,11 +66,11 @@ group :development, :test do
   gem "net-smtp", "~> 0.3.1"
   gem "pry-rails"
   gem "rspec-rails", "~> 4.1"
-  gem "rubocop", "~> 1.28.0"
-  gem "rubocop-faker", "~> 1.1.0"
+  gem "rubocop", "~> 1.57.0"
+  gem "rubocop-faker", "~> 1.1"
   gem "rubocop-graphql", "~> 0.14.4"
-  gem "rubocop-rails", "~> 2.14"
-  gem "rubocop-rspec", "~> 2.10"
+  gem "rubocop-rails", "~> 2.22"
+  gem "rubocop-rspec", "~> 2.20"
 end
 
 group :development do

@@ -1445,7 +1445,7 @@
               "description": "Returns the log entry with the given content hash for the given election",
               "args": [
                 {
-                  "name": "electionUniqueId",
+                  "name": "contentHash",
                   "description": null,
                   "type": {
                     "kind": "NON_NULL",
@@ -1459,7 +1459,7 @@
                   "defaultValue": null
                 },
                 {
-                  "name": "contentHash",
+                  "name": "electionUniqueId",
                   "description": null,
                   "type": {
                     "kind": "NON_NULL",

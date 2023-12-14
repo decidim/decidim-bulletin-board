@@ -2,6 +2,7 @@
 
 require "rails_helper"
 
+# rubocop:disable RSpec/NoExpectationExample
 RSpec.describe "client:add_authority", type: :task do
   subject { task.execute(name:, public_key:) }
 
@@ -48,3 +49,4 @@ RSpec.describe "client:add_authority", type: :task do
     end
   end
 end
+# rubocop:enable RSpec/NoExpectationExample

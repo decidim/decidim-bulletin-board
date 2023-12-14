@@ -206,8 +206,8 @@ export type QueryElectionArgs = {
 
 
 export type QueryLogEntryArgs = {
-  electionUniqueId: Scalars['String'];
   contentHash: Scalars['String'];
+  electionUniqueId: Scalars['String'];
 };
 
 

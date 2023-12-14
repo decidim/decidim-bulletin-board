@@ -87,7 +87,27 @@ RSpec.describe CreateElection do
     it_behaves_like "create election fails"
 
     it "broadcasts invalid" do
-      expect { subject }.to broadcast(:invalid, "Election should start at least in 2 hours from now.")
+      expect { subject }.to broadcast(:invalid, "Election should start at least in 1 hours from now.")
+    end
+
+    context "when the `hours before` the election creation is set" do
+      let(:hours_before) { 2 }
+
+      before do
+        allow(Rails.configuration.settings).to receive(:create_election).and_return({ hours_before: })
+      end
+
+      it "broadcasts invalid" do
+        expect { subject }.to broadcast(:invalid, "Election should start at least in 2 hours from now.")
+      end
+
+      context "and is zero" do
+        let(:hours_before) { 0 }
+
+        it "broadcasts ok" do
+          expect { subject }.to broadcast(:ok)
+        end
+      end
     end
   end
 

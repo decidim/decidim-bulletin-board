@@ -1,7 +1,7 @@
 default: &default
-  iat_expiration_minutes: 60
+  iat_expiration_minutes: <%= ENV.fetch("IAT_EXPIRATION_MINUTES", 60).to_i %>
   create_election:
-    hours_before: 2
+    hours_before: <%= ENV.fetch("HOURS_BEFORE_CREATE_ELECTION", 1).to_i %>
 
 development:
   <<: *default

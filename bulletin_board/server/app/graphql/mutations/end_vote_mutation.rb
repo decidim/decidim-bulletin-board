@@ -5,8 +5,8 @@ module Mutations
     argument :message_id, String, required: true
     argument :signed_data, String, required: true
 
-    field :pending_message, Types::PendingMessageType, null: true
     field :error, String, null: true
+    field :pending_message, Types::PendingMessageType, null: true
 
     def resolve(message_id:, signed_data:)
       authority = find_authority(message_id)

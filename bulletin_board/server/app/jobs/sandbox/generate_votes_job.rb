@@ -47,7 +47,7 @@ module Sandbox
     private
 
     def remove_existing_file
-      File.delete(file_path) if File.exist?(file_path)
+      FileUtils.rm_f(file_path)
     end
 
     def random_plaintext_ballot

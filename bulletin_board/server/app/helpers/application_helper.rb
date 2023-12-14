@@ -4,7 +4,7 @@ require "redcarpet"
 
 module ApplicationHelper
   def render_doc(file)
-    md_render File.read(Rails.root.join("docs", "#{file}.md"))
+    md_render Rails.root.join("docs", "#{file}.md").read
   end
 
   def md_render(text)
