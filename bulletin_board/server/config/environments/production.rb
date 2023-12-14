@@ -50,7 +50,7 @@ Rails.application.configure do
 
   # Use the lowest log level to ensure availability of diagnostic information
   # when problems arise.
-  config.log_level = :info
+  config.log_level = %w(debug info warn error fatal).include?(ENV["RAILS_LOG_LEVEL"]) ? ENV["RAILS_LOG_LEVEL"] : :info
 
   # Prepend all log lines with the following tags.
   config.log_tags = [:request_id]
@@ -77,7 +77,7 @@ Rails.application.configure do
   config.active_support.deprecation = :notify
 
   # Use default logging formatter so that PID and timestamp are not suppressed.
-  config.log_formatter = ::Logger::Formatter.new
+  config.log_formatter = Logger::Formatter.new
 
   # Use a different logger for distributed setups.
   # require 'syslog/logger'

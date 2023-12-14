@@ -3,6 +3,11 @@ inherit_from:
   - https://raw.githubusercontent.com/decidim/decidim/develop/decidim-dev/config/rubocop/rspec.yml
   - https://raw.githubusercontent.com/decidim/decidim/develop/decidim-dev/config/rubocop/rails.yml
 
+require:
+  - rubocop-factory_bot
+  # TODO: Uncomment the following line when all the app/graphql/types have a description in their fields
+  # - rubocop-graphql
+
 AllCops:
   Include:
     - "**/*.rb"
@@ -20,3 +25,8 @@ Style/OpenStructUse:
 
 Rails/HasManyOrHasOneDependent:
   Enabled: false
+
+FactoryBot/FactoryAssociationWithStrategy:
+  Enabled: false
+
+

@@ -34,7 +34,7 @@ We divide the test phase in 4 steps:
 Make sure you set the `SANDBOX` environment variable to any value to activate it;
 * The web server and the background worker server shall run in separate machines in order for web traffic and background jobs not to affect each other;
 * Use Sidekiq as queue adapter;
-* In `bulletin_board/server/config/settings.yml`, set `iat_expiration_minutes` to few hours/days.
+* In `bulletin_board/server/config/settings.yml`, set `iat_expiration_minutes` to few hours/days (or use the ENV variable `IAT_EXPIRATION_MINUTES`).
 This is the amount of time a vote is considered valid from its emission - since the vote generation phase could take a few hours, you don't want it to be too low and have the Bulletin Board to reject the votes when you start the load test.
 
 [#generate-votes]

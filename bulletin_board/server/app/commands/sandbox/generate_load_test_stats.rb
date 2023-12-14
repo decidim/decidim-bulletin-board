@@ -82,7 +82,7 @@ module Sandbox
     end
 
     def clear_existing_file
-      File.delete(STATS_OUTPUT_FILE_PATH) if File.exist?(STATS_OUTPUT_FILE_PATH)
+      FileUtils.rm_f(STATS_OUTPUT_FILE_PATH)
     end
 
     def write_stats_to_file(stats)

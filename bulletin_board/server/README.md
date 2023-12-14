@@ -2,7 +2,7 @@
 
 The Bulletin Board is a service composed by an Encryption Engine and an Append-Only Log. External queries to the Encryption Engine are allowed through an API.
 
-- Ruby version: 2.6
+- Ruby version: 3.1
 - Rails version: 6
 - Python version: 3.8.2
 
