@@ -28,5 +28,3 @@ Rails/HasManyOrHasOneDependent:
 
 FactoryBot/FactoryAssociationWithStrategy:
   Enabled: false
-
-
