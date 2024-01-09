@@ -4,22 +4,25 @@ The Bulletin Board is a service composed by an Encryption Engine and an Append-O
 
 This gem provides a collection of commands to interact with such API using Ruby. Mainly for it's use in a backend service.
 
-
 ## Installation
 
-Add this line to your application's Gemfile:
+Run this command to add the gem to your Gemfile:
 
-```ruby
-gem 'decidim-bulletin_board', "~> 0.24.4"
+```console
+bundle add decidim-bulletin_board
 ```
 
 And then execute:
 
-    $ bundle install
+```console
+bundle install
+```
 
 Or install it yourself as:
 
-    $ gem install decidim-bulletin_board
+```console
+gem install decidim-bulletin_board
+```
 
 ## Usage
 
@@ -36,7 +39,6 @@ end
 ```
 
 See a list of available operations here: https://github.com/decidim/decidim-bulletin-board/blob/develop/bulletin_board/ruby-client/lib/decidim/bulletin_board/client.rb
-
 
 This module is used by the module Decidim Elections, check it out here: 
 

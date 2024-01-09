@@ -9,7 +9,7 @@ The Bulletin Board is a service composed by an Encryption Engine and an Append-O
 - System dependencies:
 - Python gmpy2 package dependencies: libgmp, libmpfr and libmpc
 
-The Bulletin Board is intended to use alongside a Decidim installation. It's main purpose is to provide a GraphQL interface to a secure, auditable and verifiable voting system. This is currently achieved by using the [ElectionGuard python implementation](https://github.com/microsoft/electionguard-python), developed by Microsoft. So this server acts as a [wrapper to the ElectionGuard python code](../../voting_schemes/electionguard/python-wrapper).
+The Bulletin Board is intended to use alongside a Decidim installation. Its main purpose is to provide a GraphQL interface to a secure, auditable and verifiable voting system. This is currently achieved by using the [ElectionGuard python implementation](https://github.com/microsoft/electionguard-python), developed by Microsoft. So this server acts as a [wrapper to the ElectionGuard python code](../../voting_schemes/electionguard/python-wrapper).
 
 See how python code is executed using PyCall here:
 - https://github.com/decidim/decidim-bulletin-board/blob/develop/bulletin_board/server/app/services/voting_scheme/electionguard/voter.rb
