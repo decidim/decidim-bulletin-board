@@ -71,6 +71,6 @@ bin/verify_election ELECTION_TAR_FILE
 For help and examples, run the script with the `--help` modifier:
 
 ```bash
-node src/index.js --help
+bin/verify --help
 ```
 

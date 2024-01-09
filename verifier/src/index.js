@@ -11,10 +11,10 @@ if (process.argv.length < 3 || process.argv[2] === "-h" || process.argv[2] === "
   console.log("Examples:");
   console.log("");
   console.log("Verify a single ballot:");
-  console.log("node src/index.js 01234556.txt");
+  console.log("bin/verify 01234556.txt");
   console.log("");
   console.log("Verify a single ballot:");
-  console.log("node src/index.js election-42.tar http://localhost:8000/api");
+  console.log("bin/verify election-42.tar http://localhost:8000/api");
   process.exit(1);
 }
 
