@@ -1,34 +1,50 @@
 # Decidim::BulletinBoard
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/decidim/bulletin_board`. To experiment with that code, run `bin/console` for an interactive prompt.
+The Bulletin Board is a service composed by an Encryption Engine and an Append-Only Log. External queries to the Encryption Engine are allowed through a GraphQL API (see https://github.com/decidim/decidim-bulletin-board).
 
-TODO: Delete this and the text above, and describe your gem
+This gem provides a collection of commands to interact with such API using Ruby, mainly for its use in a backend service.
 
 ## Installation
 
-Add this line to your application's Gemfile:
+Run this command to add the gem to your Gemfile:
 
-```ruby
-gem 'decidim-bulletin_board'
+```console
+bundle add decidim-bulletin_board
 ```
-
-And then execute:
-
-    $ bundle install
 
 Or install it yourself as:
 
-    $ gem install decidim-bulletin_board
+```console
+gem install decidim-bulletin_board
+```
 
 ## Usage
 
-TODO: Write usage instructions here
+Basic usage involves creating a client and using it to perform the desired operations:
 
-## Development
+```ruby
+# Instantiate a client
+bulletin_board = Decidim::BulletinBoard::Client.new
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+# Perform operations
+bulletin_board.cast_vote(election_id, voter_id, encrypted_data) do |message_id|
+  # Do something else with the message_id
+end
+```
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+See a list of available operations here: https://github.com/decidim/decidim-bulletin-board/blob/develop/bulletin_board/ruby-client/lib/decidim/bulletin_board/client.rb
+
+This module is used by the module Decidim Elections, check it out here: 
+
+- https://github.com/decidim/decidim/tree/develop/decidim-elections
+
+Usage examples:
+
+- https://github.com/decidim/decidim/blob/develop/decidim-elections/lib/decidim/elections.rb
+- https://github.com/decidim/decidim/blob/develop/decidim-elections/app/commands/decidim/elections/voter/cast_vote.rb
+- https://github.com/decidim/decidim/blob/develop/decidim-elections/app/commands/decidim/elections/voter/update_vote_status.rb
+- https://github.com/decidim/decidim/blob/develop/decidim-elections/app/commands/decidim/elections/admin/setup_election.rb
+
 
 ## Contributing
 

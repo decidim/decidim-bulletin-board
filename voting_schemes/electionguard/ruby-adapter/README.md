@@ -1,8 +1,13 @@
 # VotingSchemes::Electionguard
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/voting_schemes/electionguard`. To experiment with that code, run `bin/console` for an interactive prompt.
+The Bulletin Board is a generic API for storing and retrieving ballots and tallies for elections. The final implementation of the protocol used for creating an election may vary. This gem provides the [Microsoft's ElectionGuard](https://github.com/microsoft/electionguard-python) Javascript implementation for production use in Decidim.
 
-TODO: Delete this and the text above, and describe your gem
+Note that the ElectionGuard implementation works by using two different wrappers around Electionguard:
+
+- A [Python Wrapper](../python-wrapper) for its use in the backend of the [GraphQL API server](../../../bulletin_board/server).
+- A [Javascript Wrapper](../js-adapter) that compiles the whole Electionguard python app into web-assembly and allows to use it in the frontend (this ensure that the voting process is not tampered by sending any data to the backend).
+
+This gem provides a very simple gem that wraps the Javascript implementation and allows to use it in the frontend of a Decidim application (Elections module).
 
 ## Installation
 
@@ -22,14 +27,12 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+You can see examples of usage by looking at the Decidim Elections module:
 
-## Development
+- https://github.com/decidim/decidim/blob/develop/decidim-elections/app/packs/src/decidim/elections/voter/casting-vote.js
+- https://github.com/decidim/decidim/blob/develop/decidim-elections/app/packs/src/decidim/elections/election_log.js
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
-
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and the created tag, and push the `.gem` file to [rubygems.org](https://rubygems.org).
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/voting_schemes-electionguard.
+Bug reports and pull requests are welcome on GitHub at https://github.com/decidim/decidim-bulletin-board.
