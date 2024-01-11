@@ -12,7 +12,9 @@ import { verifyBallot } from "decidim-bulletin_board-verifier-electionguard";
 
 // Constants
 const BULLETIN_BOARD_API_URL =
-  process.env.BULLETIN_BOARD_API_URL || "http://localhost:8000/api";
+  process.argv[3] ||
+  process.env.BULLETIN_BOARD_API_URL ||
+  "http://localhost:8000/api";
 
 /**
  * Parse the ballot file and run some verifiers.

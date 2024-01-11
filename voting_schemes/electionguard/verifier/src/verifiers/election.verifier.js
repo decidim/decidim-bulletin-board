@@ -34,6 +34,8 @@ export const verifyElection = (allElectionFilesStream) => {
       const decodedData = JSON.parse(
         jose.util.base64url.decode(signedData.split(".")[1]),
       );
+      // console.log("decodedData", decodedData);
+
       const [message] = messageId.split("+");
       const [, , messageType, messageSubType] = message.split(".");
 
@@ -44,9 +46,11 @@ export const verifyElection = (allElectionFilesStream) => {
       exec(
         `java -jar ${ELECTIONGUARD_JAVA_JAR_PATH} -in ${targetPath}`,
         (error, stdout, stderr) => {
+          console.log(stdout)
           if (error) {
             console.log(`\t${chalk.red("[ERROR]")} Electionguard verified.`);
             console.error(error);
+            console.error(stderr);
             resolve(false);
           } else if (stderr) {
             console.log(`\t${chalk.red("[ERROR]")} Electionguard verified.`);

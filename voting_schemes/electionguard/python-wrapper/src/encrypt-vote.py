@@ -1,5 +1,6 @@
 import sys
 import json
+import asyncio
 from base64 import b64decode
 
 from bulletin_board.electionguard.voter import Voter
@@ -13,9 +14,9 @@ nonce = int.from_bytes(b64decode(sys.argv[6]), 'big', signed=False)
 
 voter = Voter(voter_id)
 
-voter.process_message("create_election", json.loads(create_election_decoded_data))
-voter.process_message("end_key_ceremony", json.loads(end_key_ceremony_decoded_data))
+asyncio.run(voter.process_message("create_election", json.loads(create_election_decoded_data)))
+asyncio.run(voter.process_message("end_key_ceremony", json.loads(end_key_ceremony_decoded_data)))
 
-auditable_vote, _ = voter.encrypt(json.loads(plain_vote), ballot_style, nonce)
+auditable_vote, _ = asyncio.run(voter.encrypt(json.loads(plain_vote), ballot_style, nonce))
 
 print(auditable_vote)

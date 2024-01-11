@@ -6,7 +6,7 @@ import { parseBase64 } from "./utils.js";
 const MANIFEST_FILE_NAME = "manifest.json";
 const CONTEXT_FILE_NAME = "context.json";
 const CONSTANTS_FILE_NAME = "constants.json";
-const COEFFICIENTS_FOLDER_NAME = "coefficients";
+const COEFFICIENTS_FOLDER_NAME = "guardians";
 const COEFFICIENT_VALIDATION_FILE_NAME_PREFIX = "coefficient_validation_set";
 const DEVICES_FOLDER_NAME = "devices";
 const ENCRYPTED_BALLOTS_FOLDER_NAME = "encrypted_ballots";
@@ -78,7 +78,7 @@ export const transform = (path, messageType, messageSubType, decodedData) => {
           ),
           JSON.stringify(
             {
-              owner_id: slug,
+              guardian_id: slug,
             },
             null,
             2,
@@ -89,34 +89,39 @@ export const transform = (path, messageType, messageSubType, decodedData) => {
       break;
     }
     case "key_ceremony": {
-      if (messageSubType === "trustee_partial_election_keys") {
+                           // trustee_partial_election_keys
+      if (messageSubType === "trustee_election_keys") {
         const { content } = decodedData;
         const {
-          guardian_id,
-          partial_keys: [{ coefficient_commitments, coefficient_proofs }],
-        } = JSON.parse(content);
+          owner_id,
+          sequence_order,
+          key,
+          coefficient_commitments,
+          coefficient_proofs,
+        } = JSON.parse(content).public_key_set.election;
 
         const coefficientValidationSet = JSON.parse(
           fs.readFileSync(
             join(
               path,
               COEFFICIENTS_FOLDER_NAME,
-              `${COEFFICIENT_VALIDATION_FILE_NAME_PREFIX}_${guardian_id}.json`,
+              `${COEFFICIENT_VALIDATION_FILE_NAME_PREFIX}_${owner_id}.json`,
             ),
           ),
         );
-
         fs.writeFileSync(
           join(
             path,
             COEFFICIENTS_FOLDER_NAME,
-            `${COEFFICIENT_VALIDATION_FILE_NAME_PREFIX}_${guardian_id}.json`,
+            `${COEFFICIENT_VALIDATION_FILE_NAME_PREFIX}_${owner_id}.json`,
           ),
           JSON.stringify(
             {
               ...coefficientValidationSet,
-              coefficient_commitments: coefficient_commitments.map(parseBase64),
-              coefficient_proofs: coefficient_proofs.map(
+              sequence_order,
+              election_commitments: coefficient_commitments.map(parseBase64),
+              election_public_key: parseBase64(key),
+              election_proofs: coefficient_proofs.map(
                 ({
                   challenge,
                   commitment,
@@ -145,7 +150,6 @@ export const transform = (path, messageType, messageSubType, decodedData) => {
     case "end_key_ceremony": {
       const { content } = decodedData;
       const { election_joint_key, context, constants } = JSON.parse(content);
-
       const existingContext = JSON.parse(
         fs.readFileSync(join(path, CONTEXT_FILE_NAME)),
       );
@@ -162,8 +166,7 @@ export const transform = (path, messageType, messageSubType, decodedData) => {
             crypto_base_hash: parseBase64(context.crypto_base_hash),
             crypto_extended_base_hash: parseBase64(
               context.crypto_extended_base_hash,
-            ),
-            description_hash: parseBase64(context.description_hash),
+            )
           },
           null,
           2,
@@ -193,7 +196,7 @@ export const transform = (path, messageType, messageSubType, decodedData) => {
         crypto_hash,
         manifest_hash,
         contests,
-        previous_code,
+        code_seed,
         code,
       } = JSON.parse(content);
 
@@ -274,7 +277,7 @@ export const transform = (path, messageType, messageSubType, decodedData) => {
                 },
               }),
             ),
-            previous_code: parseBase64(previous_code),
+            code_seed: parseBase64(code_seed),
             code: parseBase64(code),
           },
           null,

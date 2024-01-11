@@ -3,8 +3,18 @@ import { isElectionLogFile, isAuditBallotFile } from "./file-utils.js";
 import { verify as electionVerify } from "./election/index.js";
 import { verify as ballotVerify } from "./ballot/index.js";
 
-if (process.argv.length < 3) {
-  console.log("usage: verify <filename>");
+if (process.argv.length < 3 || process.argv[2] === "-h" || process.argv[2] === "--help") {
+  console.log("usage: verify <filename> BULLETIN_BOARD_API_URL");
+  console.log("");
+  console.log("Alternavely, you can skip the third argument and specify the ENV var BULLETIN_BOARD_API_URL with the URL of the bulletin board API.");
+  console.log("");
+  console.log("Examples:");
+  console.log("");
+  console.log("Verify a single ballot:");
+  console.log("bin/verify 01234556.txt");
+  console.log("");
+  console.log("Verify a single ballot:");
+  console.log("bin/verify election-42.tar http://localhost:8000/api");
   process.exit(1);
 }
 
