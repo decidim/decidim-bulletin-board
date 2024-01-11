@@ -12,9 +12,6 @@ Run this command to add the gem to your Gemfile:
 bundle add decidim-bulletin_board
 ```
 
-```console
-bundle install
-```
 
 Or install it yourself as:
 
