@@ -2,7 +2,7 @@
 
 The Bulletin Board is a service composed by an Encryption Engine and an Append-Only Log. External queries to the Encryption Engine are allowed through a GraphQL API (see https://github.com/decidim/decidim-bulletin-board).
 
-This gem provides a collection of commands to interact with such API using Ruby. Mainly for it's use in a backend service.
+This gem provides a collection of commands to interact with such API using Ruby, mainly for its use in a backend service.
 
 ## Installation
 
